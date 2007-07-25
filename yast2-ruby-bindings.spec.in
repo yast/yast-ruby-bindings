@@ -1,0 +1,58 @@
+
+
+#
+# spec file for package yast2-ruby-bindings (Version 0.1)
+#
+# norootforbuild
+
+Name:           yast2-ruby-bindings
+Version:        @VERSION@
+Release:        0
+License:        GPL
+Group:          System/YaST
+BuildRoot:      %{_tmppath}/%{name}-%{version}-build
+Source0:        yast2-ruby-bindings-%{version}.tar.bz2
+prefix:         /usr
+
+#BuildRequires:	cmake blocxx-devel curl-devel gcc-c++ libxcrypt-devel rpm-devel yast2-core-devel yast2-devtools libzypp-devel
+BuildRequires:	cmake blocxx-devel curl-devel gcc-c++ libxcrypt-devel rpm-devel yast2-core-devel yast2-devtools
+# libzypp-devel is missing .la requires
+BuildRequires:	boost-devel dbus-1-devel hal-devel ruby-devel
+Requires:	yast2-core >= 2.13.28
+Requires:	ruby
+Summary:	-
+
+%description
+-
+
+%prep
+%setup -n yast2-ruby-bindings-%{version}
+%build
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=%{prefix} \
+      -DLIB=%{_lib} \
+      -DCMAKE_C_FLAGS="%{optflags}" \
+      -DCMAKE_CXX_FLAGS="%{optflags}" \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_SKIP_RPATH=1 \
+      ..
+make %{?jobs:-j %jobs}
+
+%install
+cd build
+make install DESTDIR=$RPM_BUILD_ROOT
+cd ..
+
+%clean
+rm -rf "$RPM_BUILD_ROOT"
+
+@CLEAN@
+
+%files
+%defattr (-, root, root)
+#@YAST_PLUGIN_DIR@/libpy2lang_ruby.so.*
+@YAST_PLUGIN_DIR@/libpy2lang_ruby.so
+# libYCP goes elsewhere
+#%{_libdir}/ruby/vendor_ruby/%{rb_ver}/%{rb_arch}/yast.so
+%{_libdir}/ruby/%{rb_ver}/%{rb_arch}/yast.so

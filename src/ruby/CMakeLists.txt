@@ -1,0 +1,46 @@
+
+ADD_DEFINITIONS(-DY2LOG=\\\"Ruby\\\")
+
+SET(yast_ruby_module_SRCS
+  YCP.cc
+  Y2RubyTypeConv.cc
+  RubyLogger.cc
+  RubyLogger.h
+)
+
+SET(ruby_yast_plugin_SRCS
+  RubyLogger.cc
+  Y2CCRuby.cc
+  Y2RubyComponent.cc
+  YRuby.cc
+  YRubyNamespace.cc
+  Y2RubyTypeConv.cc
+)
+  
+SET(ruby_yast_plugin_HEADERS
+  RubyLogger.h
+  Y2CCRuby.h
+  Y2RubyComponent.h
+  YRuby.h
+  YRubyNamespace.h )
+  
+INCLUDE_DIRECTORIES( ${RUBY_INCLUDE_PATH} )
+INCLUDE_DIRECTORIES( ${YAST_INCLUDE_DIR} )
+  
+ADD_LIBRARY( yast SHARED ${yast_ruby_module_SRCS})
+SET_TARGET_PROPERTIES( yast PROPERTIES PREFIX "" )
+TARGET_LINK_LIBRARIES( yast ${YAST_LIBRARY} )
+TARGET_LINK_LIBRARIES( yast ${YAST_YCP_LIBRARY} )
+TARGET_LINK_LIBRARIES( yast ${YAST_PLUGIN_WFM_LIBRARY} )
+TARGET_LINK_LIBRARIES( yast ${YAST_PLUGIN_SCR_LIBRARY} )
+TARGET_LINK_LIBRARIES( yast ${RUBY_LIBRARY} )
+INSTALL(TARGETS yast LIBRARY DESTINATION ${RUBY_ARCH_DIR} )
+
+ADD_LIBRARY( py2lang_ruby SHARED ${ruby_yast_plugin_SRCS})
+TARGET_LINK_LIBRARIES( py2lang_ruby ${YAST_LIBRARY} )
+TARGET_LINK_LIBRARIES( py2lang_ruby ${YAST_YCP_LIBRARY} )
+TARGET_LINK_LIBRARIES( py2lang_ruby ${YAST_PLUGIN_WFM_LIBRARY} )
+TARGET_LINK_LIBRARIES( py2lang_ruby ${RUBY_LIBRARY} )
+INSTALL(TARGETS py2lang_ruby LIBRARY DESTINATION ${YAST_PLUGIN_DIR} )
+
+#SET_TARGET_PROPERTIES( y2lang_ruby PROPERTIES PREFIX "" )

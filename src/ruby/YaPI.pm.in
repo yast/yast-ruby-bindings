@@ -1,0 +1,246 @@
+# -*- perl -*-
+# @configure_input@
+# $Id: YaPI.pm.in 33405 2006-10-13 13:12:42Z mvidner $
+
+package YaPI;
+
+=head1 NAME
+
+YaPI - common functions for modules implementing YaST API
+
+=cut
+
+BEGIN {
+    # substituted by configure
+    my $modules = '@yast2dir4perl@/modules';
+    # unconditional 'use lib' could override a "use lib ." that
+    # we do during compilation, #197099
+    grep { $_ eq $modules } @INC or unshift(@INC, $modules);
+}
+use strict;
+
+use Exporter;
+our @ISA = qw(Exporter);
+our @EXPORT = qw(textdomain __);
+
+use YaST::YCP;
+use ycp;
+
+use Locale::gettext ("!textdomain");
+use POSIX ();     # Needed for setlocale()
+
+POSIX::setlocale(&POSIX::LC_MESSAGES, "");
+
+our %TYPEINFO;
+my %__error = ();
+my $VERSION = "";
+our @CAPABILITIES = ();
+
+=head2 base functions
+
+These are to be used by modules that use YaPI as their base class.
+
+  use YaPI;
+  our @ISA = ("YaPI");
+
+=head3 Interface
+
+Returns a reference to a list of hashes describing the functions
+in the current package. The information is taken from TYPEINFO.
+
+  [
+   {
+      functionName => "contains",
+      return => "boolean",
+      argument => [ "string", ["list", "string"]],
+   },
+   ...
+  ]
+
+=cut
+
+BEGIN { $TYPEINFO{Interface} = ["function", "any"]; }
+sub Interface {
+    my $self = shift;
+    my @ret = ();
+
+    no strict "refs";
+    my %TI = %{"${self}::TYPEINFO"};
+
+    foreach my $k (keys %TYPEINFO) {
+        $TI{$k} = $TYPEINFO{$k};
+    }
+
+    foreach my $funcName (sort keys %TI) {
+        my @dummy = @{$TI{$funcName}};
+        my $hash = {};
+
+        $hash->{'functionName'} = $funcName;
+        $hash->{'return'}       = $dummy[1];
+        splice(@dummy, 0, 2);
+        $hash->{'argument'} = \@dummy;
+        push @ret, $hash;
+    }
+    return \@ret;
+}
+
+=head3 Version
+
+Returns the version of the current package.
+
+=cut
+
+BEGIN { $TYPEINFO{Version} = ["function", "string"]; }
+sub Version {
+    my $self = shift;
+    no strict "refs";
+    return ${"${self}::VERSION"};
+}
+
+=head3 Supports
+
+Greps C<@CAPABILITIES> of the current package.
+
+  if (YaPI::Foo->Supports ("frobnicate")) {...}
+
+=cut
+
+BEGIN { $TYPEINFO{Supports} = ["function", "boolean", "string"]; }
+sub Supports {
+    my $self = shift;
+    my $cap  = shift;
+
+    no strict "refs";
+    my @c = @{"${self}::CAPABILITIES"};
+    foreach my $k (@CAPABILITIES) {
+        push @c, $k;
+    }
+
+    return !!grep( ($_ eq $cap), @c);
+}
+
+
+=head3 SetError
+
+Logs an error and remembers it for L</Error>.
+
+Error map:
+
+  {
+    code		# mandatory, an uppercase short string
+    summary
+    description
+  # if all of the following are missing, caller () is used
+    package
+    file
+    line
+  }
+
+=cut
+
+BEGIN { $TYPEINFO{SetError} = ["function", "boolean", ["map", "string", "any" ]]; }
+sub SetError {
+    my $self = shift;
+    %__error = @_;
+    if( !$__error{package} && !$__error{file} && !$__error{line})
+    {
+        @__error{'package','file','line'} = caller();
+    }
+    if ( defined $__error{summary} ) {
+        y2error($__error{code}."[".$__error{line}.":".$__error{file}."] ".$__error{summary});
+    } else {
+        y2error($__error{code});
+    }
+    if(defined $__error{description} && $__error{description} ne "") {
+        y2error("Description: ".$__error{description});
+    }
+
+    return undef;
+}
+
+=head3 Error
+
+Returns the error set by L</SetError>
+
+=cut
+
+BEGIN { $TYPEINFO{Error} = ["function", ["map", "string", "any"] ]; }
+sub Error {
+    my $self = shift;
+    return \%__error;
+}
+
+=head2 i18n
+
+C<< use YaPI; >>
+
+C<< textdomain "mydomain"; >>
+
+Just use a double underscore to mark text to be translated: C<__("my text")>.
+Both C<textdomain> and C<__> are exported to the calling package.
+
+These must not be used any longer because they collide with symbols
+exported by this module:
+
+ #  use Locale::gettext;    # textdomain
+ #  sub _ { ... }
+
+These don't hurt but aren't necessary:
+
+ #  use POSIX ();
+ #  POSIX::setlocale(LC_MESSAGES, "");    # YaPI calls it itself now
+
+=head3 textdomain
+
+Calls Locale::gettext::textdomain
+and also
+remembers an association between the calling package and the
+domain. Later calls of __ use this domain as an argument to dgettext.
+
+=cut
+
+# See also bug 38613 where untranslated texts were seen because
+# a random textdomain was used instead of the proper one.
+my %textdomains;
+
+sub textdomain
+{
+    my $domain = shift;
+    my ($package, $filename, $line) = caller;
+
+    if (defined ($textdomains{package}))
+    {
+	if ($textdomains{package} ne $domain)
+	{
+	    y2error ("Textdomain '$domain' overrides old textdomain '$textdomains{package}' in package $package, $filename:$line");
+	}
+    }
+    $textdomains{$package} = $domain;
+    return Locale::gettext::textdomain ($domain);
+}
+
+=head3 __ (double underscore)
+
+Calls Locale::gettext::dgettext, supplying the textdomain of the calling
+package (set by calling textdomain).
+
+Note: the single underscore function (_) will be removed because it
+is automaticaly exported to main:: which causes namespace conflicts.
+
+=cut
+
+# bug 39954: __ better than _
+sub __ {
+    my $msgid = shift;
+    my $package = caller;
+    my $domain = $textdomains{$package};
+    return Locale::gettext::dgettext ($domain, $msgid);
+}
+
+# Compatibility by partial typeglob assignment:
+# &_ will call &__ but $_ will not be $__ which would happen
+# if we just asigned *_ = *__.
+# Cannot just call __ from _ because of "caller".
+*_ = \&__;
+
+1;

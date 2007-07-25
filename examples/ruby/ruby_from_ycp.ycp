@@ -1,0 +1,13 @@
+
+{
+    import "Duncan";
+    string result = (string) multiply_by_eight(10);
+    UI::OpenDialog(
+         `VBox(
+         `Label(result),
+         `PushButton("OK")
+         )
+         );
+    UI::UserInput();
+    UI::CloseDialog();
+}

@@ -1,0 +1,14 @@
+{
+   module "MyModule";
+
+   global void nothing()
+   {
+    y2milestone("doing nothing, returning nothing");
+   }
+
+   global integer half( integer value )
+   {
+      return value / 2;
+   } 
+}
+	  

@@ -1,0 +1,12 @@
+{
+    import "Bar";
+    string result = (string) Bar::try();
+    UI::OpenDialog(
+         `VBox(
+         `Label(result),
+         `PushButton("OK")
+         )
+         );
+    UI::UserInput();
+    UI::CloseDialog();
+}
