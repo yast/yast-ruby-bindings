@@ -1,3 +1,24 @@
+/*---------------------------------------------------------------------\
+|                                                                      |
+|                      __   __    ____ _____ ____                      |
+|                      \ \ / /_ _/ ___|_   _|___ \                     |
+|                       \ V / _` \___ \ | |   __) |                    |
+|                        | | (_| |___) || |  / __/                     |
+|                        |_|\__,_|____/ |_| |_____|                    |
+|                                                                      |
+|                                                                      |
+| ruby language support                              (C) Novell Inc.   |
+\----------------------------------------------------------------------/
+
+Author: Duncan Mac-Vicar <dmacvicar@suse.de>
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version
+2 of the License, or (at your option) any later version.
+
+*/
+
 // #include <y2/Y2Namespace.h>
 // #include <y2/Y2Component.h>
 #include <y2/Y2ComponentCreator.h>
@@ -24,12 +45,16 @@
 #include <ycp/YCPFloat.h>
 #include <ycp/YCPElement.h>
 #include <ycp/Import.h>
+#include <ycp/y2log.h>
 
 #include "ruby.h"
 
 //#include "YRuby.h"
 #include "RubyLogger.h"
+#include "Y2RubyTypePath.h"
+#include "Y2RubyTypeTerm.h"
 #include "Y2RubyTypeConv.h"
+#include "YRuby.h"
 
 static VALUE rb_mYaST;
 static VALUE rb_cBroker;
@@ -276,7 +301,7 @@ YCPValue ycp_call_builtin ( const string &module_name, const string &func_name, 
   // maybe a special exceptional hack to make Path for the 1st argument?
 
   // go through the actual parameters
-  unsigned j;
+  int j;
   for (j = 1; j < argc; ++j)
   {
     y2milestone("builtin param '%d'", j-1);
@@ -343,7 +368,7 @@ YCPValue ycp_call_builtin ( const string &module_name, const string &func_name, 
   delete bi_call;
 
   return ret_yv;
-} 
+}
 
 extern "C"
 {
@@ -362,12 +387,14 @@ extern "C"
 
     rb_mYaST = rb_define_module("YaST");
 
-    // CIMClient
     rb_cBroker = rb_define_class_under( rb_mYaST, "Module", rb_cObject);
     //rb_define_singleton_method( rb_cBroker, "new", RB_METHOD(module_new), 1);
     rb_define_alloc_func(rb_cBroker, yast_module_allocate);
     rb_define_method(rb_cBroker, "initialize", RB_METHOD(yast_module_initialize), 1);
     rb_define_method( rb_cBroker, "method_missing", RB_METHOD(yast_module_proxy_method), -1);
     rb_define_method( rb_cBroker, "name", RB_METHOD(yast_module_name), -1);
+
+    ryast_path_init(rb_mYaST);
+    ryast_term_init(rb_mYaST);
   }
 }

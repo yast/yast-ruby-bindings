@@ -1,3 +1,24 @@
+/*---------------------------------------------------------------------\
+|                                                                      |
+|                      __   __    ____ _____ ____                      |
+|                      \ \ / /_ _/ ___|_   _|___ \                     |
+|                       \ V / _` \___ \ | |   __) |                    |
+|                        | | (_| |___) || |  / __/                     |
+|                        |_|\__,_|____/ |_| |_____|                    |
+|                                                                      |
+|                                                                      |
+| ruby language support                              (C) Novell Inc.   |
+\----------------------------------------------------------------------/
+
+Author: Duncan Mac-Vicar <dmacvicar@suse.de>
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version
+2 of the License, or (at your option) any later version.
+
+*/
+
 #include <stdlib.h>
 #include <list>
 #include <iosfwd>
@@ -31,8 +52,6 @@
 
 #define DIM(ARRAY)	( sizeof( ARRAY )/sizeof( ARRAY[0] ) )
 
-#define YCP_EXTERNAL_MAGIC "Reference to perl object (v1.0)"
-
 #include "Y2RubyTypeConv.h"
 
 static void prependModulePath()
@@ -45,11 +64,11 @@ static void prependModulePath()
       i;
       
   // count the number of directories to prepend
-  int n = 0;
-  for (i = b; i != e; ++i)
-  {
-    // do something
-  }
+//   int n = 0;
+//   for (i = b; i != e; ++i)
+//   {
+//     // do something
+//   }
 }
 
 YRuby * YRuby::_yRuby = 0;
@@ -108,7 +127,7 @@ YRuby::loadModule( YCPList argList )
   string require_module = "require(\"" + module_path + "\")";
   //y2milestone("loadModule 3.5");
   VALUE result = rb_eval_string((require_module).c_str());
-  if ( result = Qfalse )
+  if ( result == Qfalse )
     return YCPError( "Ruby::loadModule() / Can't load ruby module '" + module_path + "'" );
   //y2milestone("loadModule 4");
   return YCPVoid();

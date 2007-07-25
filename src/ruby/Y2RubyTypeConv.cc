@@ -1,3 +1,23 @@
+/*---------------------------------------------------------------------\
+|                                                                      |
+|                      __   __    ____ _____ ____                      |
+|                      \ \ / /_ _/ ___|_   _|___ \                     |
+|                       \ V / _` \___ \ | |   __) |                    |
+|                        | | (_| |___) || |  / __/                     |
+|                        |_|\__,_|____/ |_| |_____|                    |
+|                                                                      |
+|                                                                      |
+| ruby language support                              (C) Novell Inc.   |
+\----------------------------------------------------------------------/
+
+Author: Duncan Mac-Vicar <dmacvicar@suse.de>
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version
+2 of the License, or (at your option) any later version.
+
+*/
 
 #include <ycp/y2log.h>
 
@@ -7,6 +27,7 @@
 #include <ycp/YCPMap.h>
 #include <ycp/YCPString.h>
 #include <ycp/YCPInteger.h>
+#include <ycp/YCPTerm.h>
 #include <ycp/YCPFloat.h>
 #include <ycp/YCPElement.h>
 #include <ycp/YCPSymbol.h>
@@ -14,7 +35,38 @@
 #include <ycp/YCPVoid.h>
 #include <ycp/Import.h>
 
+#include "Y2RubyTypePath.h"
+#include "Y2RubyTypeTerm.h"
+
 #include "Y2RubyTypeConv.h"
+
+static YCPMap rbhash_2_ycpmap( VALUE value )
+{
+  YCPMap map;
+  VALUE keys = rb_funcall(value, rb_intern("keys"), 0);
+  int n = NUM2LONG(rb_funcall(keys, rb_intern("size"), 0));
+  for ( int i=0; i<n; ++i)
+  {
+    VALUE rkey = rb_funcall(keys, rb_intern("at"), 1, i);
+    YCPValue ykey = rbvalue_2_ycpvalue(rkey);
+    YCPValue yvalue = rbvalue_2_ycpvalue( rb_funcall(value, rb_intern("[]"), 1, rkey) );
+    map.add(ykey, yvalue);
+  }
+  return map;
+}
+
+static YCPList rbarray_2_ycplist( VALUE value )
+{
+  YCPList list;
+  int n = NUM2LONG(rb_funcall(value, rb_intern("size"), 0));
+  for ( int i=0; i<n; ++i)
+  {
+    VALUE element = rb_funcall(value, rb_intern("[]"), 1, i);
+    list.add( rbvalue_2_ycpvalue(element) );
+  }
+  return list;
+}
+
 
 /**
  * Converts a YCPValue into a Ruby Value
@@ -37,9 +89,22 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
   {
     return rb_str_new2(ycpval->asString()->value().c_str());
   }
+  else if (ycpval->isPath())
+  {
+    // FIXME implement a ruby class for YCPPath
+    return rb_str_new2(ycpval->asPath()->asString()->value().c_str());
+  }
+  else if (ycpval->isTerm())
+  {
+    return ryast_term_from_term(ycpval->asTerm());
+  }
   else if (ycpval->isInteger())
   {
     return INT2NUM( ycpval->asInteger()->value() );
+  }
+  else if (ycpval->isFloat())
+  {
+    return rb_float_new(ycpval->asFloat()->value());
   }
   else if ( ycpval->isMap() )
   {
@@ -103,18 +168,13 @@ rbvalue_2_ycpvalue( VALUE value )
     return YCPFloat(NUM2DBL(value));
     break;
   case T_ARRAY:
-    // FIXME
-    return YCPValue();
+    return rbarray_2_ycplist(value);
     break;
   case T_HASH:
-    // FIXME
-    return YCPValue();
+    return rbhash_2_ycpmap(value);
     break;
   case T_SYMBOL:
-    y2internal("mira un mono!!!");
-    //return YCPSymbol(RSTRING(rb_funcall(value, rb_intern("to_s"), 0))->ptr);
     return YCPSymbol(rb_id2name(rb_to_id(value)));
-    
   case T_DATA:
     rb_raise( rb_eRuntimeError, "Object");
     break;
@@ -131,3 +191,4 @@ rbvalue_2_ycppath( VALUE value )
   VALUE stringrep = rb_funcall(value, rb_intern("to_s"), 0);
   return  YCPPath(RSTRING(stringrep)->ptr);
 }
+

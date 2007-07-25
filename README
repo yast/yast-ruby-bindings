@@ -1,2 +1,17 @@
-- Some attempts to access YaST from another languages
-  <dmacvicar@suse.de>
+/*---------------------------------------------------------------------\
+|                                                                      |
+|                      __   __    ____ _____ ____                      |
+|                      \ \ / /_ _/ ___|_   _|___ \                     |
+|                       \ V / _` \___ \ | |   __) |                    |
+|                        | | (_| |___) || |  / __/                     |
+|                        |_|\__,_|____/ |_| |_____|                    |
+|                                                                      |
+|                                                                      |
+| ruby language support                              (C) Novell Inc.   |
+\----------------------------------------------------------------------/
+
+Author: Duncan Mac-Vicar <dmacvicar@suse.de>
+
+Based on yast2-perl-bindings by
+  Martin Vidner <mvidner@suse.cz>
+  Stefan Hundhammer <sh@suse.de>

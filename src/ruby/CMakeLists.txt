@@ -15,6 +15,8 @@ SET(ruby_yast_plugin_SRCS
   YRuby.cc
   YRubyNamespace.cc
   Y2RubyTypeConv.cc
+  Y2RubyTypePath.cc
+  Y2RubyTypeTerm.cc
 )
   
 SET(ruby_yast_plugin_HEADERS
@@ -22,7 +24,10 @@ SET(ruby_yast_plugin_HEADERS
   Y2CCRuby.h
   Y2RubyComponent.h
   YRuby.h
-  YRubyNamespace.h )
+  YRubyNamespace.h
+  Y2RubyTypePath.h
+  Y2RubyTypeTerm.h
+)
   
 INCLUDE_DIRECTORIES( ${RUBY_INCLUDE_PATH} )
 INCLUDE_DIRECTORIES( ${YAST_INCLUDE_DIR} )
