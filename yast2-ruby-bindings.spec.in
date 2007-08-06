@@ -20,10 +20,13 @@ BuildRequires:	cmake blocxx-devel curl-devel gcc-c++ libxcrypt-devel rpm-devel y
 BuildRequires:	boost-devel dbus-1-devel hal-devel ruby-devel
 Requires:	yast2-core >= 2.13.28
 Requires:	ruby
-Summary:	-
+Summary:	Ruby bindings for the YaST platform.
 
 %description
--
+The bindings allow YaST modules to be written using the Ruby language and also
+Ruby scripts can use YaST agents, APIs and modules.
+
+Author
 
 %prep
 %setup -n yast2-ruby-bindings-%{version}
