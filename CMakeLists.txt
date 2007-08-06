@@ -87,11 +87,11 @@ SET( AUTOBUILD_COMMAND
   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/package/${PACKAGE}.changes" "${CMAKE_BINARY_DIR}/package/${PACKAGE}.changes"
 )
 
-ADD_CUSTOM_TARGET( autobuild_local
+ADD_CUSTOM_TARGET( srcpackage_local
   ${AUTOBUILD_COMMAND}
 )
 
-ADD_CUSTOM_TARGET( autobuild
+ADD_CUSTOM_TARGET( srcpackage
   COMMAND ${CMAKE_MAKE_PROGRAM} svncheck
   ${AUTOBUILD_COMMAND}
 )
