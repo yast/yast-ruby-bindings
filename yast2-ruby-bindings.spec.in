@@ -14,10 +14,9 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Source0:        yast2-ruby-bindings-%{version}.tar.bz2
 prefix:         /usr
 
-#BuildRequires:	cmake blocxx-devel curl-devel gcc-c++ libxcrypt-devel rpm-devel yast2-core-devel yast2-devtools libzypp-devel
-BuildRequires:	cmake blocxx-devel curl-devel gcc-c++ libxcrypt-devel rpm-devel yast2-core-devel yast2-devtools
+BuildRequires:	swig cmake gcc-c++ libxcrypt-devel yast2-core-devel yast2-devtools
 # libzypp-devel is missing .la requires
-BuildRequires:	boost-devel dbus-1-devel hal-devel ruby-devel
+BuildRequires:	ruby-devel
 Requires:	yast2-core >= 2.13.28
 Requires:	ruby
 Summary:	Ruby bindings for the YaST platform.
@@ -54,8 +53,5 @@ rm -rf "$RPM_BUILD_ROOT"
 
 %files
 %defattr (-, root, root)
-#@YAST_PLUGIN_DIR@/libpy2lang_ruby.so.*
-@YAST_PLUGIN_DIR@/libpy2lang_ruby.so
-# libYCP goes elsewhere
-#%{_libdir}/ruby/vendor_ruby/%{rb_ver}/%{rb_arch}/yast.so
-%{_libdir}/ruby/%{rb_ver}/%{rb_arch}/yast.so
+%{_libdir}/YaST2/plugin/libpy2lang_ruby.so
+%{_libdir}/ruby/vendor_ruby/%{rb_ver}/%{rb_arch}/yast.so

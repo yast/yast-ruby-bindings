@@ -64,7 +64,7 @@ FIND_PACKAGE(Yast REQUIRED)
 FIND_PACKAGE(Ruby REQUIRED)
 
 #RUBY_RUBY_LIB_PATH
-MESSAGE( STATUS "Ruby arch dir: ${RUBY_ARCH_DIR}" )
+MESSAGE( STATUS "Ruby vendor arch dir: ${RUBY_VENDORARCH_DIR}" )
 
 ####################################################################
 # RPM SPEC                                                         #
