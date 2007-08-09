@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Thu Aug  9 12:01:39 CEST 2007 - dmacvicar@suse.de
+
+- Fix build on 64 bits
+- Use ruby vendor arch dir
+
+-------------------------------------------------------------------
 Mon Aug  6 13:33:43 CEST 2007 - dmacvicar@suse.de
 
 - Initial release 0.1.0 
