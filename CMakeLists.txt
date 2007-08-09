@@ -38,7 +38,7 @@ SET( CPACK_SOURCE_PACKAGE_FILE_NAME "${PACKAGE}-${VERSION}" )
 # in absolute path + filename to find files or directories to be excluded
 # from source tarball.
 SET (CPACK_SOURCE_IGNORE_FILES
-"/CVS/;/.svn/;/.libs/;/.deps/;.swp$;.#;/#;/build/"
+"/CVS/;/.svn/;/.libs/;/.deps/;/.git/;.swp$;.#;/#;/build/"
 "~$"
 "\\\\.cvsignore$"
 "/package"
