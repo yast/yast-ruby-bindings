@@ -90,6 +90,25 @@ ryast_term_initialize( int argc, VALUE *argv, VALUE self )
     return self;
 }
 
+static VALUE
+ryast_term_add( int argc, VALUE *argv, VALUE self )
+{
+    ryast_Term_Wrapper *wrapper;
+    Data_Get_Struct(self, ryast_Term_Wrapper, wrapper);
+    
+    // we should be using rb_scan_args here but I couldn't get it to work.
+
+    // add the remaining YCPTerm arguments
+    if (argc > 0)
+    {
+      int i=0;
+      for ( ; i<argc; ++i )
+      {
+        wrapper->term->add(rbvalue_2_ycpvalue(argv[i]));
+      }
+    }
+    return self;
+}
 
 static VALUE
 ryast_term_allocate(VALUE klass)
@@ -100,10 +119,22 @@ ryast_term_allocate(VALUE klass)
   return Data_Wrap_Struct (klass, ryast_term_mark, ryast_term_free, wrapper);
 }
 
+
+static VALUE
+ryast_term_to_s(VALUE klass)
+{
+  ryast_Term_Wrapper *wrapper;
+  Data_Get_Struct(self, ryast_Term_Wrapper, wrapper);
+    
+  return rb_str_new2(wrapper->term.toString().c_str());
+}
+    
 void
 ryast_term_init( VALUE super )
 {
   ryast_cTerm = rb_define_class_under( super, "Term", rb_cObject );
   rb_define_alloc_func( ryast_cTerm, ryast_term_allocate );
   rb_define_method( ryast_cTerm, "initialize", RB_METHOD( ryast_term_initialize ), -1 );
+  rb_define_method( ryast_cTerm, "add", RB_METHOD( ryast_term_add ), -1 );
+  rb_define_method( ryast_cTerm, "to_s", RB_METHOD( ryast_term_to_s ), 0 );
 }

@@ -1,5 +1,23 @@
 require 'yast'
 
+ui = YaST::Module.new("UI")
+
+
+t = YaST::Builder.new do 
+  VBox do
+    Label "Now we can call YaST UI from other languages!", "wooho"
+    PushButton "&So What?", "So what*** what"
+  end
+end
+puts t.to_s
+exit
+
+dialog = nil
+ 
+puts dialog.class
+ui.OpenDialog(dialog)
+
+exit
 m = YaST::Module.new("SCR")
 m.Read(".proc.modules")
 

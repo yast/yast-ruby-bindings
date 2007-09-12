@@ -373,7 +373,7 @@ YCPValue ycp_call_builtin ( const string &module_name, const string &func_name, 
 extern "C"
 {
   void
-  Init_yast()
+  Init_yastx()
   {
     YCPPathSearch::initialize ();
 
