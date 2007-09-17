@@ -32,7 +32,7 @@ module YaST
     def initialize(&block)
         @buffer = Array.new
         @term = nil
-        instance_eval(&block)
+        @term = instance_eval(&block)
     end
     
     def method_missing(name, *args, &block )
@@ -40,8 +40,8 @@ module YaST
       term = nil
       elements = block ? nil : args
       @__to_s = nil # invalidate to_s cache
-      term = YaST::Term(name)
-      if elements
+      term = YaST::Term.new(name.to_s)
+      if not elements.nil?
   #puts "here"
         @buffer << name << "("
         elements.each do | e |
@@ -54,14 +54,15 @@ module YaST
   #     puts "there"
         @buffer << name << "(" 
         r = instance_eval(&block)
-        term.add(r) if r
+        puts term.class
+        term.add(r) if not r.nil?
         @buffer << ") "
       end
       return term
     end
     
     def to_s
-      return @buffer.to_s
+      return @term.to_s
     end
   end
 

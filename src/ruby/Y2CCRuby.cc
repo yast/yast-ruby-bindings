@@ -46,9 +46,10 @@ Y2Component *Y2CCRuby::provideNamespace (const char *name)
     // is there a ruby module?
     // must be the same in Y2CCRuby and Y2RubyComponent
     string module = YCPPathSearch::find (YCPPathSearch::Module, string (name) + ".rb");
-    y2milestone("Find result '%s'", module.c_str());
+    
     if (!module.empty ())
     {
+      y2milestone("Find module result: '%s'", module.c_str());
       if (!cruby)
       {
         y2milestone("new ruby component");

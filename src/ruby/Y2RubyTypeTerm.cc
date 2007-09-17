@@ -48,11 +48,19 @@ ryast_term_set_term( VALUE self, const YCPTerm & term )
 }
 
 VALUE
-ryast_term_from_term( const YCPTerm &term )
+ryast_rterm_from_yterm( const YCPTerm &term )
 {
   VALUE rterm_obj = rb_funcall( ryast_cTerm, rb_intern("new"), 0);
   ryast_term_set_term( rterm_obj, term );
   return rterm_obj;
+}
+
+YCPTerm
+ryast_yterm_from_rterm( VALUE term )
+{
+  ryast_Term_Wrapper *wrapper;
+  Data_Get_Struct(term, ryast_Term_Wrapper, wrapper);
+  return wrapper->term;
 }
 
 static void
@@ -104,7 +112,9 @@ ryast_term_add( int argc, VALUE *argv, VALUE self )
       int i=0;
       for ( ; i<argc; ++i )
       {
-        wrapper->term->add(rbvalue_2_ycpvalue(argv[i]));
+        std::cout << "Hi! term::add: " << TYPE(argv[i]) << std::endl;
+        YCPValue value = rbvalue_2_ycpvalue(argv[i]);
+        wrapper->term->add(value);
       }
     }
     return self;
@@ -121,17 +131,17 @@ ryast_term_allocate(VALUE klass)
 
 
 static VALUE
-ryast_term_to_s(VALUE klass)
+ryast_term_to_s(VALUE self)
 {
   ryast_Term_Wrapper *wrapper;
   Data_Get_Struct(self, ryast_Term_Wrapper, wrapper);
-    
   return rb_str_new2(wrapper->term.toString().c_str());
 }
     
 void
 ryast_term_init( VALUE super )
 {
+  //std::cout << "Hi! term" << std::endl;
   ryast_cTerm = rb_define_class_under( super, "Term", rb_cObject );
   rb_define_alloc_func( ryast_cTerm, ryast_term_allocate );
   rb_define_method( ryast_cTerm, "initialize", RB_METHOD( ryast_term_initialize ), -1 );

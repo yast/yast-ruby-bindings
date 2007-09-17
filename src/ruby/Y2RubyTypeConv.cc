@@ -96,7 +96,7 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
   }
   else if (ycpval->isTerm())
   {
-    return ryast_term_from_term(ycpval->asTerm());
+    return ryast_rterm_from_yterm(ycpval->asTerm());
   }
   else if (ycpval->isInteger())
   {
@@ -146,7 +146,9 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
 YCPValue
 rbvalue_2_ycpvalue( VALUE value )
 {
-  y2internal("type: '%d'", TYPE(value));
+  VALUE klass = rb_funcall( value, rb_intern("class"), 0);
+  std::cout << RSTRING( rb_funcall( klass, rb_intern("to_s"), 0))->ptr << " | " << RSTRING(rb_funcall( value, rb_intern("inspect"), 0))->ptr << std::endl;
+  //y2internal("type: '%d'", TYPE(value));
   // TODO conver integers, and add support for lists, ah, and boleans!
   switch (TYPE(value))
   {
@@ -179,6 +181,17 @@ rbvalue_2_ycpvalue( VALUE value )
     rb_raise( rb_eRuntimeError, "Object");
     break;
   default:
+    /* get the Term class object */
+    VALUE cTerm = rb_funcall( rb_mKernel, rb_intern("const_get"), 1, rb_str_new2("YaST::Term") );
+    VALUE is_term = rb_funcall(value, rb_intern("is_a?"), cTerm);
+    if ( TYPE(is_term) == T_TRUE )
+    {
+      return ryast_yterm_from_rterm(value);
+    }
+    else
+    {
+      std::cout << "no term" << std::endl;
+    }
     std::cout << TYPE(value) << std::endl;
     rb_raise( rb_eRuntimeError, "Conversion of Ruby type not supported");
     return YCPValue();

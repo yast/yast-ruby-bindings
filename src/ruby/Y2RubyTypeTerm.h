@@ -27,7 +27,10 @@ as published by the Free Software Foundation; either version
 void ryast_term_init( VALUE super );
 
 VALUE
-ryast_term_from_term( const YCPTerm &term );
+ryast_rterm_from_yterm( const YCPTerm &term );
+
+YCPTerm
+ryast_yterm_from_rterm( VALUE term );
 
 #endif
 

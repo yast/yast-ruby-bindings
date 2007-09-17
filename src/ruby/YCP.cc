@@ -382,9 +382,6 @@ extern "C"
       y2internal("%s\n", (*it).c_str() );
     }
 
-    string module = YCPPathSearch::find (YCPPathSearch::Module, string ("MyModule.ycp"));
-    y2internal("%s\n", module.c_str() );
-
     rb_mYaST = rb_define_module("YaST");
 
     rb_cBroker = rb_define_class_under( rb_mYaST, "Module", rb_cObject);
