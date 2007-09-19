@@ -40,6 +40,8 @@ as published by the Free Software Foundation; either version
 
 #include "Y2RubyTypeConv.h"
 
+#define IS_A(obj,klass) ((rb_obj_is_kind_of((obj),(klass))==Qtrue)?1:0)
+
 static YCPMap rbhash_2_ycpmap( VALUE value )
 {
   YCPMap map;
@@ -138,7 +140,7 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
     YCPSymbol symbol = ycpval->asSymbol();
     return rb_intern(symbol->symbol_cstr());
   }
-  rb_raise( rb_eRuntimeError, "Conversion of YCP type %s not supported", ycpval->toString().c_str() );
+  rb_raise( rb_eTypeError, "Conversion of YCP type %s not supported", ycpval->toString().c_str() );
   return Qnil;
 }
 
@@ -147,7 +149,7 @@ YCPValue
 rbvalue_2_ycpvalue( VALUE value )
 {
   VALUE klass = rb_funcall( value, rb_intern("class"), 0);
-  std::cout << RSTRING( rb_funcall( klass, rb_intern("to_s"), 0))->ptr << " | " << RSTRING(rb_funcall( value, rb_intern("inspect"), 0))->ptr << std::endl;
+  //std::cout << RSTRING( rb_funcall( klass, rb_intern("to_s"), 0))->ptr << " | " << RSTRING(rb_funcall( value, rb_intern("inspect"), 0))->ptr << std::endl;
   //y2internal("type: '%d'", TYPE(value));
   // TODO conver integers, and add support for lists, ah, and boleans!
   switch (TYPE(value))
@@ -177,23 +179,17 @@ rbvalue_2_ycpvalue( VALUE value )
     break;
   case T_SYMBOL:
     return YCPSymbol(rb_id2name(rb_to_id(value)));
-  case T_DATA:
-    rb_raise( rb_eRuntimeError, "Object");
+  //case T_DATA:
+  //  rb_raise( rb_eRuntimeError, "Object");
     break;
   default:
+    string class_name(RSTRING(rb_funcall(rb_funcall(value, rb_intern("class"), 0), rb_intern("to_s"), 0))->ptr);
     /* get the Term class object */
-    VALUE cTerm = rb_funcall( rb_mKernel, rb_intern("const_get"), 1, rb_str_new2("YaST::Term") );
-    VALUE is_term = rb_funcall(value, rb_intern("is_a?"), cTerm);
-    if ( TYPE(is_term) == T_TRUE )
+    if ( class_name == "YaST::Term" )
     {
       return ryast_yterm_from_rterm(value);
     }
-    else
-    {
-      std::cout << "no term" << std::endl;
-    }
-    std::cout << TYPE(value) << std::endl;
-    rb_raise( rb_eRuntimeError, "Conversion of Ruby type not supported");
+    rb_raise( rb_eTypeError, "Conversion of Ruby type not supported");
     return YCPValue();
   }
 }

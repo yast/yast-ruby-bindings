@@ -57,6 +57,7 @@ as published by the Free Software Foundation; either version
 #include "YRuby.h"
 
 static VALUE rb_mYaST;
+static VALUE rb_mUi;
 static VALUE rb_cBroker;
 
 // make the compiler happy when
@@ -91,7 +92,7 @@ getNs (const char * ns_name, const char * func_name)
   return ns;
 }
 
-void init_wfm ()
+void init_wfm()
 {
     y2milestone("init_wfm");
 //     if (Y2WFMComponent::instance () == 0)
@@ -103,6 +104,53 @@ void init_wfm ()
           y2error ("Cannot create WFM component");
       }
 //     }
+}
+
+static VALUE
+rb_init_ui( int argc, VALUE *argv, VALUE self )
+{
+  const char *ui_name = "ncurses";
+
+  if (argc == 1)
+  {
+    Check_Type(argv[0], T_STRING);
+    ui_name = RSTRING(argv[0])->ptr;
+  }
+  else if (argc != 0)
+  {
+    y2error ("Zero or one arguments required (ui name, default %s", ui_name);
+    return Qnil;
+  }
+
+  Y2Component *c = YUIComponent::uiComponent ();
+  if (c == 0)
+  {
+    y2debug ("UI component not created yet, creating %s", ui_name);
+
+    c = Y2ComponentBroker::createServer (ui_name);
+    if (c == 0)
+    {
+      y2error ("Cannot create component %s", ui_name);
+      return Qnil;
+    }
+
+    if (YUIComponent::uiComponent () == 0)
+    {
+      y2error ("Component %s is not a UI", ui_name);
+      return Qnil;
+    }
+    else
+    {
+      // got it - initialize, remember
+      c->setServerOptions (0, NULL);
+      owned_uic = c;
+    }
+  }
+  else
+  {
+    y2debug ("UI component already present: %s", c->name ().c_str ());
+  }
+  return Qnil;
 }
 
 typedef struct brokerinfo
@@ -139,7 +187,7 @@ yast_module_initialize( VALUE self, VALUE param_ns_name )
 {
   Check_Type(param_ns_name, T_STRING);
   rb_iv_set(self, "@namespace_name", param_ns_name);
-  init_wfm ();
+  init_wfm();
   return self;
 }
 
@@ -370,6 +418,30 @@ YCPValue ycp_call_builtin ( const string &module_name, const string &func_name, 
   return ret_yv;
 }
 
+
+
+//y2_logger_helper
+
+//y2_logger (level, comp, file, line, function, "%s", message);
+
+static VALUE
+rb_y2_logger( int argc, VALUE *argv, VALUE self )
+{
+  Check_Type(argv[0], T_FIXNUM);
+  Check_Type(argv[1], T_STRING);
+  Check_Type(argv[2], T_STRING);
+  Check_Type(argv[3], T_FIXNUM);
+  Check_Type(argv[4], T_STRING);
+
+  int i;
+  for ( i = 5; i < argc; i++)
+  {
+    Check_Type(argv[i], T_STRING);
+  }
+  y2_logger((loglevel_t)NUM2INT(argv[0]),RSTRING(argv[1])->ptr,RSTRING(argv[2])->ptr,NUM2INT(argv[3]),"",RSTRING(argv[5])->ptr);
+  return Qnil;
+}
+
 extern "C"
 {
   void
@@ -383,7 +455,11 @@ extern "C"
     }
 
     rb_mYaST = rb_define_module("YaST");
-
+    rb_mUi = rb_define_module_under(rb_mYaST, "Ui");
+    rb_define_singleton_method( rb_mUi, "init", RB_METHOD(rb_init_ui), -1);
+    
+    rb_define_method( rb_mYaST, "y2_logger", RB_METHOD(rb_y2_logger), -1);
+    
     rb_cBroker = rb_define_class_under( rb_mYaST, "Module", rb_cObject);
     //rb_define_singleton_method( rb_cBroker, "new", RB_METHOD(module_new), 1);
     rb_define_alloc_func(rb_cBroker, yast_module_allocate);

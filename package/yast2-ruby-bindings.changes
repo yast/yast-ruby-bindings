@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Wed Sep 19 16:42:35 CEST 2007 - dmacvicar@suse.de
+
+- Lot of improvements, examples and
+  support for the YaST UI
+- 0.2.0
+
+-------------------------------------------------------------------
 Thu Aug  9 12:01:39 CEST 2007 - dmacvicar@suse.de
 
 - Fix build on 64 bits

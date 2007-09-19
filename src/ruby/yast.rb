@@ -24,13 +24,56 @@ ENV['LD_LIBRARY_PATH'] = "/usr/lib/YaST2/plugin"
 require 'yastx'
 
 module YaST
+  module Ui
+    #my @e_logging = qw(y2debug y2milestone y2warning y2error y2security y2internal);
+    
+  # Define symbols for the UI
+  ui_terms = [ :BarGraph, :Bottom, :CheckBox, :ColoredLabel, :ComboBox, :Date,
+    :DownloadProgress, :DumbTab, :DummySpecialWidget, :Empty, :Frame, :HBox, :HBoxvHCenter,
+    :HMultiProgressMeter, :HSpacing, :HSquash, :HStretch, :HVCenter, :HVSquash,
+    :HVStretch, :HWeight, :Heading, :IconButton, :Image, :IntField, :Label, :Left, :LogView,
+    :MarginBox, :MenuButton, :MinHeight, :MinSize, :MinWidth, :MultiLineEdit,
+    :MultiSelectionBox, :PackageSelector, :PatternSelector, :PartitionSplitter,
+    :Password, :PkgSpecial, :ProgressBar, :PushButton, :RadioButton,
+    :RadioButtonGroup, :ReplacePoint, :RichText, :Right, :SelectionBox, :Slider, :Table,
+    :TextEntry, :Time, :Top, :Tree, :VBox, :VCenter, :VMultiProgressMeter, :VSpacing,
+    :VSquash, :VStretch, :VWeight, :Wizard,
+    :id, :opt ]
+       
+#     buffer = String.new
+#     buffer << "["
+#     ui_terms.each do |t|
+#       buffer << " :" << t.to_s.downcase << ","
+#     end
+#     buffer <<  " ]"
+#     puts buffer
+    # If the method name contains underscores, convert to camel case
+#     while method =~ /([^_]*)_(.)(.*)/ 
+#            method = $1 + $2.upcase + $3
+#        end
+         
+    # for each symbol define a util function that will create a term
+    ui_terms.each do | term_name |
+      define_method(term_name) do | *args |
+        t = YaST::Term.new(term_name.to_s)
+        args.each do |arg|
+          t.add(arg)
+        end
+        return t
+      end
+      alias_method term_name.to_s.downcase, term_name
+    end
 
-  class Builder
+  end # end Ui module
+end
+
+module YaST
+
+  class TermBuilder
     # blank slate
     instance_methods.each { |m| undef_method m unless (m =~ /^__|instance_eval$/)}
     
     def initialize(&block)
-        @buffer = Array.new
         @term = nil
         @term = instance_eval(&block)
     end
@@ -42,21 +85,14 @@ module YaST
       @__to_s = nil # invalidate to_s cache
       term = YaST::Term.new(name.to_s)
       if not elements.nil?
-  #puts "here"
-        @buffer << name << "("
         elements.each do | e |
-          @buffer << e.to_s
           term.add(e)
         end
-        @buffer << ") "
         return term
       else
-  #     puts "there"
-        @buffer << name << "(" 
         r = instance_eval(&block)
         puts term.class
         term.add(r) if not r.nil?
-        @buffer << ") "
       end
       return term
     end
@@ -64,6 +100,42 @@ module YaST
     def to_s
       return @term.to_s
     end
+    
+    def term
+      return @term
+    end
+    
   end
 
+  def y2_logger_helper(*args)
+    level = args.shift
+    
+    caller[0] =~ /(.+):(\d+):in `([^']+)'/
+    y2_logger(level,"Ruby",$1,$2.to_i,"",args[0])
+  end
+  
+  def y2debug(*args)
+    y2_logger_helper(0, args)
+  end
+  
+  def y2milestone(*args)
+    y2_logger_helper(1, args)
+  end
+  
+  def y2warning(*args)
+    y2_logger_helper(2, args)
+  end
+  
+  def y2error(*args)
+    y2_logger_helper(3, args)
+  end
+  
+  def y2security(*args)
+    y2_logger_helper(4, args)
+  end
+  
+  def y2internal(*args)
+    y2_logger_helper(5, args)
+  end
+  
 end # module YaST

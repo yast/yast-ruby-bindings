@@ -112,7 +112,7 @@ ryast_term_add( int argc, VALUE *argv, VALUE self )
       int i=0;
       for ( ; i<argc; ++i )
       {
-        std::cout << "Hi! term::add: " << TYPE(argv[i]) << std::endl;
+        //std::cout << "Hi! term::add: " << TYPE(argv[i]) << std::endl;
         YCPValue value = rbvalue_2_ycpvalue(argv[i]);
         wrapper->term->add(value);
       }
@@ -137,7 +137,26 @@ ryast_term_to_s(VALUE self)
   Data_Get_Struct(self, ryast_Term_Wrapper, wrapper);
   return rb_str_new2(wrapper->term.toString().c_str());
 }
-    
+
+static VALUE
+ryast_term_name(VALUE self)
+{
+  ryast_Term_Wrapper *wrapper;
+  Data_Get_Struct(self, ryast_Term_Wrapper, wrapper);
+  return rb_str_new2(wrapper->term.name().c_str());
+}
+
+// static VALUE
+// ryast_term_set_name(VALUE self, VALUE name)
+// {
+//   Check_Type(name, T_STRING);
+//   ryast_Term_Wrapper *wrapper;
+//   Data_Get_Struct(self, ryast_Term_Wrapper, wrapper);
+//   
+//   wrapper->term->setName(RSTRING(name)->ptr);
+//   return self;
+// }
+
 void
 ryast_term_init( VALUE super )
 {
@@ -146,5 +165,7 @@ ryast_term_init( VALUE super )
   rb_define_alloc_func( ryast_cTerm, ryast_term_allocate );
   rb_define_method( ryast_cTerm, "initialize", RB_METHOD( ryast_term_initialize ), -1 );
   rb_define_method( ryast_cTerm, "add", RB_METHOD( ryast_term_add ), -1 );
+  //rb_define_method( ryast_cTerm, "name=", RB_METHOD( ryast_term_set_name ), 1 );
+  rb_define_method( ryast_cTerm, "name", RB_METHOD( ryast_term_name ), 0 );
   rb_define_method( ryast_cTerm, "to_s", RB_METHOD( ryast_term_to_s ), 0 );
 }
