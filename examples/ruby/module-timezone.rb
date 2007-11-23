@@ -1,7 +1,7 @@
 require 'yast'
+require 'ycp/timezone'
 
-m = YaST::Module.new("Timezone")
-zonemap = m.get_zonemap()
+zonemap = YCP::Timezone::get_zonemap
 puts zonemap.class
 zonemap.each do | element |
   element.each do | key, value |
