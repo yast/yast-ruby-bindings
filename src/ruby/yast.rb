@@ -23,6 +23,44 @@ ENV['LD_LIBRARY_PATH'] = "/usr/lib/YaST2/plugin"
 # Load the native part (.so)
 require 'yastx'
 
+module YCP
+  def self.method_missing(id, *args)
+    puts "stop"
+  end
+
+  def self.add_ycp_module(mname)
+    puts "import #{mname}"
+    YCP::import(mname)
+    m = Module.new
+    YCP::each_symbol(mname) do |sname,stype|
+      if (stype == :function) and !sname.empty?
+        m.module_eval <<-"END"
+          def self.#{sname}(*args)
+            args.insert(0, "#{mname}")
+            args.insert(0, :#{sname})
+            puts "to forward call #{sname.to_s} in #{mname}"
+            return YCP::forward_call(args)
+          end
+        END
+      end
+    end
+    YCP.const_set(mname, m)
+  end
+end
+
+module Kernel
+  alias require_ require 
+  def require(name)
+    if name =~ /^ycp\/(.+)$/
+      ycpns = $1
+      YCP::add_ycp_module(ycpns.capitalize)
+      return true
+    end
+    return require_(name)
+  end
+end
+
+
 module YaST
   module Ui
     #my @e_logging = qw(y2debug y2milestone y2warning y2error y2security y2internal);

@@ -1,6 +1,7 @@
-%module ycp
+%module ycpx
 %include std_string.i
 %include stl.i
+%include file.i
  %{
 /* Includes the header in the wrapper code */
 #define y2log_component "Y2Ruby"
@@ -25,15 +26,11 @@
 #include <ycp/YCPByteblock.h>
 #include <ycp/Parser.h>
 #include <ycp/pathsearch.h>
-
+#include <y2util/Rep.h>
 
 //static swig_type_info _swigt__p_YCPValue;
 
 %}
-
-#ifdef SWIGRUBY
-//%include "ruby.i"
-#endif
 
 %rename("+") "operator+";
 %rename("<<") "operator<<";
@@ -41,8 +38,10 @@
 %rename("!") "operator!";
 %rename("==") "operator==";
 
-%include <ycp/YCode.h>
+//%include <y2util/Rep.h>
+
 %include <ycp/YCPCode.h>
+
 //%include <ycp/YCPElement.h>
 //%include <ycp/YCPExternal.h>
 %include <ycp/YCPValue.h>
@@ -76,7 +75,19 @@
 %nodefaultctor YCPByteblock;
 %include <ycp/YCPByteblock.h>
 
-%include <ycp/YBlock.h>
+%include <ycp/YCode.h>
+%predicate YCode::isBlock();
+%predicate YCode::isStatement();
+
+class YCodePtr
+{
+  public:
+  YCodePtr(const YCodePtr &);
+  YCodePtr(YCode*);
+  YCode* operator->();
+};
+
 %include <ycp/Parser.h>
 //%include <ycp/pathsearch.h>
 
+%include <ycp/YBlock.h>
