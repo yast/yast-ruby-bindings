@@ -294,6 +294,7 @@ ycp_module_each_symbol(VALUE self, VALUE namespace_name)
 VALUE
 ycp_module_forward_call(int argc, VALUE *argv, VALUE self)
 {
+  y2internal("Dynamic Proxy: [%d] params\n", argc);
   VALUE symbol = argv[1];
   VALUE namespace_name = argv[0];
 
@@ -370,8 +371,8 @@ ycp_module_forward_call(int argc, VALUE *argv, VALUE self)
     {
       VALUE arg = argv[i];
       y2internal ("Appending parameter #%d\n", i);
-      YCPValue v = rbvalue_2_ycpvalue(arg);
-      y2internal ("Appending parameter #%s : %s\n", i, v->toString());
+      YCPValue v = rbvalue_2_ycpvalue(argv[i]);
+      y2internal ("Appending parameter #%d : %s\n", i, v->toString().c_str());
       call->appendParameter (v);
     }
     call->finishParameters ();

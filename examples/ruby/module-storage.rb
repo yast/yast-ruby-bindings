@@ -1,7 +1,10 @@
 require 'yast'
+require 'ycp/storage'
 
-m = YaST::Module.new("Storage")
-dp = m.GetDiskPartition("/dev/sda1")
+
+puts YCP::Storage.methods
+
+dp = YCP::Storage::GetDiskPartition("/dev/sda1")
 dp.each do | key, value |
   puts "#{key} #{value}"
 end

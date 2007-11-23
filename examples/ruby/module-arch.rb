@@ -1,6 +1,7 @@
 require 'yast'
+require 'ycp/arch'
 
-m = YaST::Module.new("Arch")
-puts m.sparc32
-puts m.arch_short
-puts m.is_xen
+puts YCP::Arch::sparc32
+puts YCP::Arch::arch_short
+puts YCP::Arch::is_xen
+

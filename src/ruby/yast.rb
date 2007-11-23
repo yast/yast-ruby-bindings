@@ -36,13 +36,10 @@ module YCP
       if (stype == :function) and !sname.empty?
         m.module_eval <<-"END"
           def self.#{sname}(*args)
-            args.insert(0, "#{mname}")
-            args.insert(0, :#{sname})
-            puts "to forward call #{sname.to_s} in #{mname}"
-            return YCP::forward_call(args)
+            return YCP::forward_call("#{mname}", :#{sname}, *args)
           end
         END
-      end
+      end # if function
     end
     YCP.const_set(mname, m)
   end
@@ -61,7 +58,7 @@ module Kernel
 end
 
 
-module YaST
+module YCP
   module Ui
     #my @e_logging = qw(y2debug y2milestone y2warning y2error y2security y2internal);
     
