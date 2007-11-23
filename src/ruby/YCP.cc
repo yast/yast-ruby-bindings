@@ -19,8 +19,6 @@ as published by the Free Software Foundation; either version
 
 */
 
-// #include <y2/Y2Namespace.h>
-// #include <y2/Y2Component.h>
 #include <y2/Y2ComponentCreator.h>
 
 #include <yui/YUIComponent.h>
@@ -60,10 +58,8 @@ as published by the Free Software Foundation; either version
     Data_Get_Struct(obj, Y2Namespace, po)
 
 static VALUE rb_mYaST;
-static VALUE rb_mY2ModuleProxy;
 static VALUE rb_mUi;
 static VALUE rb_mYCP;
-static VALUE rb_cBroker;
 
 // make the compiler happy when
 // calling rb_define_method()
@@ -254,7 +250,7 @@ static VALUE
 ycp_module_import( VALUE self, VALUE name)
 {
   ycp_module_lookup_namespace_component(self,name);
-  ycp_module_import_namespace(self,name);
+  return ycp_module_import_namespace(self,name);
 }
 
 /**
@@ -275,7 +271,7 @@ ycp_module_each_symbol(VALUE self, VALUE namespace_name)
     y2internal("Got namespace from %s\n", ns->filename().c_str());
   }
 
-  for (int i=0; i < ns->symbolCount(); ++i)
+  for (unsigned int i=0; i < ns->symbolCount(); ++i)
   {
     SymbolEntryPtr s = ns->symbolEntry(i);
     VALUE arr = rb_ary_new();
@@ -369,10 +365,7 @@ ycp_module_forward_call(int argc, VALUE *argv, VALUE self)
     // add the parameters
     for (int i=2; i < argc; i++)
     {
-      VALUE arg = argv[i];
-      y2internal ("Appending parameter #%d\n", i);
       YCPValue v = rbvalue_2_ycpvalue(argv[i]);
-      y2internal ("Appending parameter #%d : %s\n", i, v->toString().c_str());
       call->appendParameter (v);
     }
     call->finishParameters ();
@@ -539,20 +532,11 @@ extern "C"
     rb_define_singleton_method( rb_mYCP, "import", RB_METHOD(ycp_module_import), 1);
     rb_define_singleton_method( rb_mYCP, "forward_call", RB_METHOD(ycp_module_forward_call), -1);
     rb_define_singleton_method( rb_mYCP, "each_symbol", RB_METHOD(ycp_module_each_symbol), 1);
-    
 
     rb_mUi = rb_define_module_under(rb_mYCP, "Ui");
     rb_define_singleton_method( rb_mUi, "init", RB_METHOD(rb_init_ui), -1);
     
-    
     rb_define_method( rb_mYaST, "y2_logger", RB_METHOD(rb_y2_logger), -1);
-    
-    rb_cBroker = rb_define_class_under( rb_mYaST, "Module", rb_cObject);
-    //rb_define_singleton_method( rb_cBroker, "new", RB_METHOD(module_new), 1);
-    rb_define_alloc_func(rb_cBroker, yast_module_allocate);
-    rb_define_method(rb_cBroker, "initialize", RB_METHOD(yast_module_initialize), 1);
-    //rb_define_method( rb_cBroker, "method_missing", RB_METHOD(yast_module_proxy_method), -1);
-    rb_define_method( rb_cBroker, "name", RB_METHOD(yast_module_name), -1);
 
     ryast_path_init(rb_mYaST);
     ryast_term_init(rb_mYaST);
