@@ -47,9 +47,6 @@ cd build
 make install DESTDIR=$RPM_BUILD_ROOT
 cd ..
 
-%clean
-rm -rf "$RPM_BUILD_ROOT"
-
 @CLEAN@
 
 %files
