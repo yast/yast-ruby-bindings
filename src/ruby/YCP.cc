@@ -21,7 +21,7 @@ as published by the Free Software Foundation; either version
 
 #include <y2/Y2ComponentCreator.h>
 
-#include <yui/YUIComponent.h>
+#include <ycp-ui/YUIComponent.h>
 #include <wfm/Y2WFMComponent.h>
 
 #include <y2/Y2ComponentBroker.h>

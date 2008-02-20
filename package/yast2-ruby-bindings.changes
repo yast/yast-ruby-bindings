@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Wed Feb 20 14:10:33 CET 2008 - coolo@suse.de
+
+- fix against latest yast2-core
+
+-------------------------------------------------------------------
 Wed Sep 19 16:42:35 CEST 2007 - dmacvicar@suse.de
 
 - Lot of improvements, examples and
