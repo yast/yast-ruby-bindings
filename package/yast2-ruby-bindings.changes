@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Thu Feb 21 17:56:05 CET 2008 - sh@suse.de
+
+- Added new UI packages to Requires/BuildRequires in .spec file
+- V 0.3.1 
+
+-------------------------------------------------------------------
 Wed Feb 20 14:10:33 CET 2008 - coolo@suse.de
 
 - fix against latest yast2-core
