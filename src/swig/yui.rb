@@ -21,4 +21,4 @@
 ENV['LD_LIBRARY_PATH'] = "/usr/lib/YaST2/plugin"
 
 # Load the native part (.so)
-require 'ycpx'
+require 'yuix'
