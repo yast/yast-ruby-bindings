@@ -1,7 +1,7 @@
 require 'yast'
+require 'ycp/scr'
 
-m = YaST::Module.new("SCR")
-modules = m.Read(".proc.modules")
+modules = YCP::SCR::read(".proc.modules")
 modules.each do | k, v |
   puts "#{k}:"
   v.each do | a, b |

@@ -28,6 +28,18 @@ SET(ruby_yast_plugin_HEADERS
   Y2RubyTypePath.h
   Y2RubyTypeTerm.h
 )
+
+# skip the full RPATH for the build tree
+SET(CMAKE_SKIP_BUILD_RPATH  TRUE)
+# when building, use the install RPATH already
+# (so it doesn't need to relink when installing)
+SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE) 
+# the RPATH to be used when installing
+SET(CMAKE_INSTALL_RPATH "${LIB_INSTALL_DIR}/YaST2/plugins")
+# add the automatically determined parts of the RPATH
+# which point to directories outside the build tree to the install RPATH
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
   
 INCLUDE_DIRECTORIES( ${RUBY_INCLUDE_PATH} )
 INCLUDE_DIRECTORIES( ${YAST_INCLUDE_DIR} )

@@ -23,20 +23,82 @@ ENV['LD_LIBRARY_PATH'] = "/usr/lib/YaST2/plugin"
 # Load the native part (.so)
 require 'yastx'
 
+module YaST
+  def y2_logger_helper(*args)
+    level = args.shift
+    
+    caller[0] =~ /(.+):(\d+):in `([^']+)'/
+    y2_logger(level,"Ruby",$1,$2.to_i,"",args[0])
+  end
+  
+  def y2debug(*args)
+    y2_logger_helper(0, args)
+  end
+  
+  def y2milestone(*args)
+    y2_logger_helper(1, args)
+  end
+  
+  def y2warning(*args)
+    y2_logger_helper(2, args)
+  end
+  
+  def y2error(*args)
+    y2_logger_helper(3, args)
+  end
+  
+  def y2security(*args)
+    y2_logger_helper(4, args)
+  end
+  
+  def y2internal(*args)
+    y2_logger_helper(5, args)
+  end
+end # module YaST
+
 module YCP
-  def self.method_missing(id, *args)
-    puts "stop"
+  
+  # inserts a builtin in the
+  # ycp module
+  def self.import_builtin(name)
+    YCP::each_builtin do |bi, cat|
+      if name == bi
+        if cat == :namespace
+          m = Module.new
+          YCP::each_builtin_symbol(bi) do |bs, scat|
+            if scat == :builtin
+              m.module_eval <<-"END"
+                def self.#{bs.downcase.to_s}(*args)
+                  return YCP::call_ycp_builtin("SCR", "#{bs.to_s}", *args)
+                end
+              END
+            end
+          end # each builtin symbol
+          YCP.const_set(bi.to_s, m)
+          return
+        else
+          raise "builtin #{bi} can't be imported (not namespace)"
+        end # if namespace
+      end
+    end # each builtin
+    raise "can't import builtin '#{bi}'"
+  end
+
+  # initialize builtins and add them to
+  # the ycp module
+  def self.init_builtins
+
   end
 
   def self.add_ycp_module(mname)
-    puts "import #{mname}"
+    #y2internal("tryng to add import #{mname}")
     YCP::import(mname)
     m = Module.new
     YCP::each_symbol(mname) do |sname,stype|
       if (stype == :function) and !sname.empty?
         m.module_eval <<-"END"
           def self.#{sname}(*args)
-            return YCP::forward_call("#{mname}", :#{sname}, *args)
+            return YCP::call_ycp_function("#{mname}", :#{sname}, *args)
           end
         END
       end # if function
@@ -45,12 +107,27 @@ module YCP
   end
 end
 
+YCP::init_builtins
+
 module Kernel
   alias require_ require 
   def require(name)
     if name =~ /^ycp\/(.+)$/
       ycpns = $1
-      YCP::add_ycp_module(ycpns.capitalize)
+      
+      YCP::each_builtin do |bi, cat|
+        if bi.downcase == ycpns.downcase
+          YCP::import_builtin(bi)
+          return
+        end
+      end
+
+      begin
+        YCP::add_ycp_module(ycpns.upcase)
+      rescue RuntimeError => e
+        puts e
+        YCP::add_ycp_module(ycpns.capitalize)
+      end
       return true
     end
     return require_(name)
@@ -103,7 +180,6 @@ module YCP
 end
 
 module YaST
-
   class TermBuilder
     # blank slate
     instance_methods.each { |m| undef_method m unless (m =~ /^__|instance_eval$/)}
@@ -141,36 +217,4 @@ module YaST
     end
     
   end
-
-  def y2_logger_helper(*args)
-    level = args.shift
-    
-    caller[0] =~ /(.+):(\d+):in `([^']+)'/
-    y2_logger(level,"Ruby",$1,$2.to_i,"",args[0])
-  end
-  
-  def y2debug(*args)
-    y2_logger_helper(0, args)
-  end
-  
-  def y2milestone(*args)
-    y2_logger_helper(1, args)
-  end
-  
-  def y2warning(*args)
-    y2_logger_helper(2, args)
-  end
-  
-  def y2error(*args)
-    y2_logger_helper(3, args)
-  end
-  
-  def y2security(*args)
-    y2_logger_helper(4, args)
-  end
-  
-  def y2internal(*args)
-    y2_logger_helper(5, args)
-  end
-  
 end # module YaST

@@ -75,6 +75,9 @@ typedef VALUE (ruby_method)(...);
 
 Y2Component *owned_uic = 0;
 Y2Component *owned_wfmc = 0;
+//Y2Component *owned_scr = 0;
+
+extern "C" {
 
 static
 Y2Namespace *
@@ -84,7 +87,7 @@ getNs (const char * ns_name)
   Y2Namespace *ns = import.nameSpace();
   if (ns == NULL)
   {
-    y2error ("Ruby call: Can't import namespace '%s'", ns_name);
+    y2error ("ruby call: Can't import namespace '%s'", ns_name);
   }
   else
   {
@@ -107,6 +110,20 @@ void init_wfm()
 //     }
 }
 
+// void init_scr()
+// {
+//     y2milestone("init_scr");
+// //     if (Y2WFMComponent::instance () == 0)
+// //     {
+//       y2milestone("WFM init");
+//       owned_scr = Y2ComponentBroker::createClient ("scr");
+//       if (owned_scr == 0)
+//       {
+//           y2error ("Cannot create WFM component");
+//       }
+// //     }
+// }
+
 static VALUE
 rb_init_ui( int argc, VALUE *argv, VALUE self )
 {
@@ -119,7 +136,7 @@ rb_init_ui( int argc, VALUE *argv, VALUE self )
   }
   else if (argc != 0)
   {
-    y2error ("Zero or one arguments required (ui name, default %s", ui_name);
+    y2error ("zero or one arguments required (ui name, default %s", ui_name);
     return Qnil;
   }
 
@@ -131,13 +148,13 @@ rb_init_ui( int argc, VALUE *argv, VALUE self )
     c = Y2ComponentBroker::createServer (ui_name);
     if (c == 0)
     {
-      y2error ("Cannot create component %s", ui_name);
+      y2error ("can't create component %s", ui_name);
       return Qnil;
     }
 
     if (YUIComponent::uiComponent () == 0)
     {
-      y2error ("Component %s is not a UI", ui_name);
+      y2error ("component %s is not a UI", ui_name);
       return Qnil;
     }
     else
@@ -154,59 +171,8 @@ rb_init_ui( int argc, VALUE *argv, VALUE self )
   return Qnil;
 }
 
-typedef struct brokerinfo
-{
-  Y2Component *component;
-  Y2Namespace *ns;
-}
-BrokerInfo;
-
-//  mark for garbage collection
-// NOT USED, ONLY WHEN USING DATA_WRAP_STRUCT
-void
-yast_module_mark( BrokerInfo *info )
-{}
-
-// dispose a namespace
-// NOT USED, ONLY WHEN USING DATA_WRAP_STRUCT
-void
-yast_module_free( BrokerInfo *info )
-{
-  //std::cout << "Deleting namespace." << std::endl;
-  //delete info;
-}
-
-VALUE
-yast_module_allocate( VALUE klass )
-{
-  BrokerInfo *info = new BrokerInfo;
-  return Data_Wrap_Struct( klass, yast_module_mark, RB_FINALIZER(yast_module_free), info );
-}
-
-VALUE
-yast_module_initialize( VALUE self, VALUE param_ns_name )
-{
-  Check_Type(param_ns_name, T_STRING);
-  rb_iv_set(self, "@namespace_name", param_ns_name);
-  init_wfm();
-  return self;
-}
-
-
-VALUE
-yast_module_name( VALUE self )
-{
-  return rb_iv_get(self, "@namespace_name");
-}
-
-VALUE
-yast_module_methods( VALUE self )
-{
-  return Qnil;
-}
-
 //forward declaration
-YCPValue ycp_call_builtin ( const string &module_name, const string &func_name, int argc, VALUE *argv );
+YCPValue _call_ycp_builtin ( const string &module_name, const string &func_name, int argc, VALUE *argv );
 
 /**
  * looks a component for a namespace
@@ -219,8 +185,8 @@ ycp_module_lookup_namespace_component(VALUE self, VALUE name)
   c = Y2ComponentBroker::getNamespaceComponent(RSTRING(name)->ptr);
   if (c == NULL)
   {
-    y2internal("No component can provide namespace %s\n", RSTRING (name)->ptr);
-    rb_raise( rb_eRuntimeError, "No YaST component can provide namespace %s\n", RSTRING (name)->ptr);
+    y2internal("no component can provide namespace %s\n", RSTRING (name)->ptr);
+    rb_raise( rb_eRuntimeError, "no YaST component can provide namespace %s\n", RSTRING (name)->ptr);
   }
   y2internal("component name %s\n", c->name().c_str());
   return Qtrue;
@@ -236,12 +202,12 @@ ycp_module_import_namespace( VALUE self, VALUE namespace_name)
   Y2Namespace *ns = getNs( RSTRING (namespace_name)->ptr);
   if (ns == NULL)
   {
-    rb_raise( rb_eNameError, "Component cannot import namespace '%s'", RSTRING (namespace_name)->ptr);
+    rb_raise( rb_eNameError, "component cannot import namespace '%s'", RSTRING (namespace_name)->ptr);
     return Qnil;
   }
   else
   {
-    y2internal("Namespace created from %s\n", ns->filename().c_str());
+    y2internal("namespace created from %s\n", ns->filename().c_str());
   }
   return Qtrue;
 }
@@ -257,18 +223,18 @@ ycp_module_import( VALUE self, VALUE name)
  * iterates all symbols in a namespace and yields the
  * symbol name and category
  */
-VALUE
+static VALUE
 ycp_module_each_symbol(VALUE self, VALUE namespace_name)
 {
   Y2Namespace *ns = getNs( RSTRING (namespace_name)->ptr);
   if (ns == NULL)
   {
-    rb_raise( rb_eRuntimeError, "Error getting namespace '%s'", RSTRING (namespace_name)->ptr );
+    rb_raise( rb_eRuntimeError, "error getting namespace '%s'", RSTRING (namespace_name)->ptr );
     return Qnil;
   }
   else
   {
-    y2internal("Got namespace from %s\n", ns->filename().c_str());
+    y2internal("got namespace from %s\n", ns->filename().c_str());
   }
 
   for (unsigned int i=0; i < ns->symbolCount(); ++i)
@@ -283,12 +249,76 @@ ycp_module_each_symbol(VALUE self, VALUE namespace_name)
 }
 
 /**
+ * helper method
+ */
+static bool _yield_symbol_entry(const SymbolEntry & s)
+{
+  VALUE arr = rb_ary_new();
+  rb_ary_push(arr, rb_str_new2(s.name()));
+  rb_ary_push(arr, ID2SYM(rb_intern(s.catString().c_str())));
+  rb_yield(arr);
+  return true;
+}
+
+/** 
+ * helper for each_builtin_symbol
+ */
+static const SymbolEntry * __symbol = 0L;
+static string __name;
+
+static
+bool __find_symbol(const SymbolEntry & s)
+{
+  if (s.name() == __name)
+  {
+    __symbol = &s;
+    return false;
+  }
+  return true;
+}
+
+/**
+ * iterates all symbols in a namespace and yields the
+ * symbol name and category
+ */
+static VALUE
+ycp_module_each_builtin_symbol(VALUE self, VALUE name)
+{
+  extern StaticDeclaration static_declarations;
+  __name = RSTRING(name)->ptr;
+  static_declarations.symbolTable()->forEach(__find_symbol);
+
+  const SymbolEntry *se = __symbol;
+  if (se == NULL)
+  {
+    y2error ("no such builtin '%s'", RSTRING(name)->ptr);
+    rb_raise( rb_eRuntimeError, "no YCP builtin %s\n", RSTRING(name)->ptr);
+  }
+
+  // convert to a YSymbol to access child symbols
+  const YSymbolEntry *ys = dynamic_cast<const YSymbolEntry *>(se);
+  if ( ys )
+  {
+    if ( ys->table() ) ys->table()->forEach(_yield_symbol_entry);
+  }
+  return Qnil;
+}
+
+static VALUE
+ycp_module_each_builtin(VALUE self)
+{
+  extern StaticDeclaration static_declarations;
+  static_declarations.symbolTable()->forEach(_yield_symbol_entry);
+  return Qnil;
+}
+
+/**
  * Forwards a ruby call to the namespace
  * First argument is the namespace
  * then function name and arguments
  */
-VALUE
-ycp_module_forward_call(int argc, VALUE *argv, VALUE self)
+static VALUE
+ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
 {
   y2internal("Dynamic Proxy: [%d] params\n", argc);
   VALUE symbol = argv[1];
@@ -306,18 +336,6 @@ ycp_module_forward_call(int argc, VALUE *argv, VALUE self)
 
   // get the name of the module
   //VALUE namespace_name = rb_funcall(self, rb_intern("name"), 0);
-  
-
-  // SCR
-  // this is a hack before the builtin namespaces get a uniform interface:
-  if (! strcmp (RSTRING (namespace_name)->ptr, "SCR"))
-  {
-    y2internal("Dynamic Proxy: [%s::%s] is a call to SCR\n", RSTRING(namespace_name)->ptr, RSTRING(symbol_str)->ptr);
-    YCPValue res;
-    res = ycp_call_builtin( RSTRING(namespace_name)->ptr, RSTRING(symbol_str)->ptr, argc, argv);
-    return ycpvalue_2_rbvalue(res);
-    //return Qnil;
-  }
 
   ycp_module_lookup_namespace_component(self, namespace_name);
 
@@ -358,8 +376,8 @@ ycp_module_forward_call(int argc, VALUE *argv, VALUE self)
 
     if (call == NULL)
     {
-      y2internal ("Cannot create function call %s\n", RSTRING(symbol_str)->ptr);
-      rb_raise( rb_eRuntimeError, "Can't create call to %s::%s", RSTRING (namespace_name)->ptr, RSTRING(symbol_str)->ptr);
+      y2internal ("cannot create function call %s\n", RSTRING(symbol_str)->ptr);
+      rb_raise( rb_eRuntimeError, "can't create call to %s::%s", RSTRING (namespace_name)->ptr, RSTRING(symbol_str)->ptr);
     }
 
     // add the parameters
@@ -372,39 +390,28 @@ ycp_module_forward_call(int argc, VALUE *argv, VALUE self)
 
     YCPValue res = call->evaluateCall ();
     delete call;
-    y2internal ("Call succeded\n");
+    y2internal ("call succeded\n");
     //y2internal ("Result: %i\n", res->asList()->size());
     return ycpvalue_2_rbvalue(res);
   }
   return Qnil;
 }
 
-YCPValue ycp_call_builtin ( const string &module_name, const string &func_name, int argc, VALUE *argv )
+YCPValue _call_ycp_builtin ( const string &module_name, const string &func_name, int argc, VALUE *argv )
 {
   // access directly the statically declared builtins
   extern StaticDeclaration static_declarations;
+
   string qualified_name_s = module_name + "::" + func_name;
   const char *qualified_name = qualified_name_s.c_str ();
 
-  y2milestone("Qualified name '%s'", qualified_name);
-  /*
-    this does not work across namespaces
-      TableEntry *bi_te = static_declarations.symbolTable ()->find (qualified_name);
-      if (bi_te == NULL)
-      {
-    y2error ("No such builtin %s",qualified_name);
-    return YCPNull ();
-      }
+  y2milestone("qualified name '%s', %d args", qualified_name, argc);
   
-      SymbolEntry *bi_se = bi_te->sentry ();
-      assert (bi_se != NULL);
-      assert (bi_se->isBuiltin ());
-      declaration_t bi_dt = bi_se->declaration ();
-  */
   declaration_t *bi_dt = static_declarations.findDeclaration (qualified_name);
   if (bi_dt == NULL)
   {
-    y2error ("No such builtin '%s'", qualified_name);
+    y2error ("no such builtin '%s'", qualified_name);
+    rb_raise( rb_eRuntimeError, "no YCP builtin %s\n", RSTRING(qualified_name)->ptr);
     return YCPNull ();
   }
   y2milestone("builtin '%s' found.", module_name.c_str());
@@ -416,26 +423,22 @@ YCPValue ycp_call_builtin ( const string &module_name, const string &func_name, 
   // we would like to know the destination type so that we could
   // convert eg a Ruby scalar to a YCP symbol, but because the
   // builtins may be overloaded, let's say we want Any
-
   // maybe a special exceptional hack to make Path for the 1st argument?
-
   // go through the actual parameters
   int j;
-  for (j = 1; j < argc; ++j)
+  for (j = 0; j < argc; ++j)
   {
-    y2milestone("builtin param '%d'", j-1);
     // convert the value according to the expected type:
     constTypePtr param_tp = (j == 0)? Type::Path : Type::Any;
-    y2milestone("builtin param '%d' 1", j-1);
     
     // convert the first argument to a path
     YCPValue param_v;
-    if ( j == 1 )
+    // HACK SCR path conversion
+    if ( (j == 0) && (module_name == "SCR") )
       param_v = rbvalue_2_ycppath(argv[j]);
     else
       param_v = rbvalue_2_ycpvalue(argv[j] /*, param_tp */);
     
-    y2milestone("builtin param '%d' 2", j-1);
     if (param_v.isNull ())
     {
       // an error has already been reported, now refine it.
@@ -489,8 +492,21 @@ YCPValue ycp_call_builtin ( const string &module_name, const string &func_name, 
   return ret_yv;
 }
 
+VALUE
+ycp_module_call_ycp_builtin( int argc, VALUE *argv, VALUE self )
+{
+  VALUE symbol = argv[1];
+  VALUE namespace_name = argv[0];
 
+  // the func name (1st argument, is a symbol
+  // lets convert it to string
+  VALUE symbol_str = rb_funcall(symbol, rb_intern("to_s"), 0);
 
+  y2internal("builtin proxy: [%s::%s] is a builtin call with %d params\n", RSTRING(namespace_name)->ptr, RSTRING(symbol_str)->ptr, argc);
+  YCPValue res;
+  res = _call_ycp_builtin( RSTRING(namespace_name)->ptr, RSTRING(symbol_str)->ptr, argc-2, argv+2);
+  return ycpvalue_2_rbvalue(res);
+}
 //y2_logger_helper
 
 //y2_logger (level, comp, file, line, function, "%s", message);
@@ -513,16 +529,19 @@ rb_y2_logger( int argc, VALUE *argv, VALUE self )
   return Qnil;
 }
 
+} //extern C
+
 extern "C"
 {
   void
   Init_yastx()
   {
     YCPPathSearch::initialize ();
-
+    init_wfm();
+  
     for ( list<string>::const_iterator it = YCPPathSearch::searchListBegin (YCPPathSearch::Module); it != YCPPathSearch::searchListEnd (YCPPathSearch::Module) ; ++it )
     {
-      y2internal("%s\n", (*it).c_str() );
+      y2internal("search path %s\n", (*it).c_str() );
     }
 
     rb_mYaST = rb_define_module("YaST");
@@ -530,11 +549,16 @@ extern "C"
     //rb_mYCP = rb_define_module_under(rb_mYaST, "YCP");
     rb_mYCP = rb_define_module("YCP");
     rb_define_singleton_method( rb_mYCP, "import", RB_METHOD(ycp_module_import), 1);
-    rb_define_singleton_method( rb_mYCP, "forward_call", RB_METHOD(ycp_module_forward_call), -1);
+    rb_define_singleton_method( rb_mYCP, "call_ycp_function", RB_METHOD(ycp_module_call_ycp_function), -1);
+    rb_define_singleton_method( rb_mYCP, "call_ycp_builtin", RB_METHOD(ycp_module_call_ycp_builtin), -1);
+
     rb_define_singleton_method( rb_mYCP, "each_symbol", RB_METHOD(ycp_module_each_symbol), 1);
+    rb_define_singleton_method( rb_mYCP, "each_builtin_symbol", RB_METHOD(ycp_module_each_builtin_symbol), 1);
+    rb_define_singleton_method( rb_mYCP, "each_builtin", RB_METHOD(ycp_module_each_builtin), 0);
 
     rb_mUi = rb_define_module_under(rb_mYCP, "Ui");
     rb_define_singleton_method( rb_mUi, "init", RB_METHOD(rb_init_ui), -1);
+    
     
     rb_define_method( rb_mYaST, "y2_logger", RB_METHOD(rb_y2_logger), -1);
 
@@ -542,3 +566,4 @@ extern "C"
     ryast_term_init(rb_mYaST);
   }
 }
+
