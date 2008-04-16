@@ -1,4 +1,13 @@
 -------------------------------------------------------------------
+Wed Apr 16 17:27:57 CEST 2008 - dmacvicar@suse.de
+
+- find yast pugins without requiring LD_LIBRARY_PATH
+  (bnc #353405)
+- require 'yast' is now require 'ycp'
+- misc. fixes
+- 0.3.2
+
+-------------------------------------------------------------------
 Thu Feb 21 17:56:05 CET 2008 - sh@suse.de
 
 - Added new UI packages to Requires/BuildRequires in .spec file
