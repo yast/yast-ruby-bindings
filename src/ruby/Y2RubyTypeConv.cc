@@ -113,7 +113,7 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
     VALUE rbhash;
     rbhash = rb_hash_new();
     YCPMap map = ycpval->asMap();
-    y2internal("map size %d\n", (int) map.size());
+    //y2internal("map size %d\n", (int) map.size());
 
     for ( YCPMapIterator it = map.begin(); it != map.end(); ++it )
     {
@@ -128,7 +128,7 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
     VALUE rblist;
     rblist = rb_ary_new();
     YCPList list = ycpval->asList();
-    y2internal("list size %d\n",list.size());
+    //y2internal("list size %d\n",list.size());
     for (int i=0; i < list.size(); i++)
     {
       rb_ary_push( rblist, ycpvalue_2_rbvalue(list.value(i)));

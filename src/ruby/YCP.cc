@@ -534,7 +534,7 @@ rb_y2_logger( int argc, VALUE *argv, VALUE self )
 extern "C"
 {
   void
-  Init_yastx()
+  Init_ycpx()
   {
     YCPPathSearch::initialize ();
     init_wfm();

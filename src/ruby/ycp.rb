@@ -18,10 +18,8 @@
 # 2 of the License, or (at your option) any later version.
 #
 
-ENV['LD_LIBRARY_PATH'] = "/usr/lib/YaST2/plugin"
-
 # Load the native part (.so)
-require 'yastx'
+require 'ycpx'
 
 module YaST
   def y2_logger_helper(*args)
