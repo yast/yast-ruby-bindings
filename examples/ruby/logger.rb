@@ -1,5 +1,3 @@
-require 'yast'
-include YaST
-#ui = YaST::Module.new("UI")
+require 'ycp'
 
-y2milestone("Hello")
+YCP::y2milestone("Hello")

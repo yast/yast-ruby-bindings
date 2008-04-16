@@ -1,6 +1,7 @@
-require 'yast'
-ui = YaST::Module.new("UI")
-YaST::Ui::init("qt")
+require 'ycp'
+require 'ycp/ui'
+
+YCP::Ui::init("qt")
 include YaST::Ui
 
 t = HBox( Label("Welcome to Ruby!"), PushButton("Push me") )
