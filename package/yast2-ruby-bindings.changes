@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Tue May  6 10:00:50 CEST 2008 - aj@suse.de
+
+- Fix spec file for last change. 
+
+-------------------------------------------------------------------
 Wed Apr 16 17:27:57 CEST 2008 - dmacvicar@suse.de
 
 - find yast pugins without requiring LD_LIBRARY_PATH
