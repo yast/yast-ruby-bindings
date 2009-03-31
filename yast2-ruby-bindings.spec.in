@@ -19,8 +19,9 @@ BuildRequires:  yast2-devtools >= 2.16.3
 # libzypp-devel is missing .la requires
 BuildRequires:	ruby-devel
 Requires:	yast2-core >= 2.16.37
-BuildRequires:  yast2-ycp-ui-bindings-devel >= 2.16.37
+BuildRequires:  yast2-core-devel >= 2.16.37
 Requires:       yast2-ycp-ui-bindings       >= 2.16.37
+BuildRequires:  yast2-ycp-ui-bindings-devel >= 2.16.37
 Requires:	ruby
 Summary:	Ruby bindings for the YaST platform.
 
