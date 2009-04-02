@@ -29,20 +29,32 @@ SET(ruby_yast_plugin_HEADERS
   Y2RubyTypeTerm.h
 )
 
+#
+# Use rpath to find YaST plugin libs
+#
+# ref. http://www.cmake.org/Wiki/CMake_RPATH_handling
+
 # skip the full RPATH for the build tree
 SET(CMAKE_SKIP_BUILD_RPATH  TRUE)
 # when building, use the install RPATH already
 # (so it doesn't need to relink when installing)
 SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE) 
 # the RPATH to be used when installing
-SET(CMAKE_INSTALL_RPATH "${LIB_INSTALL_DIR}/YaST2/plugins")
+SET(CMAKE_INSTALL_RPATH "${YAST_PLUGIN_DIR}")
 # add the automatically determined parts of the RPATH
 # which point to directories outside the build tree to the install RPATH
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
   
 INCLUDE_DIRECTORIES( ${RUBY_INCLUDE_PATH} )
 INCLUDE_DIRECTORIES( ${YAST_INCLUDE_DIR} )
-  
+
+LINK_DIRECTORIES(${YAST_PLUGIN_DIR})
+
+#
+# Ruby -> YCP
+# ycp.rb + ycpx.so
+#
+
 ADD_LIBRARY( ycpx SHARED ${yast_ruby_module_SRCS})
 SET_TARGET_PROPERTIES( ycpx PROPERTIES PREFIX "" )
 TARGET_LINK_LIBRARIES( ycpx ${YAST_LIBRARY} )
@@ -53,6 +65,11 @@ TARGET_LINK_LIBRARIES( ycpx ${RUBY_LIBRARY} )
 INSTALL(TARGETS ycpx LIBRARY DESTINATION ${RUBY_VENDORARCH_DIR} )
 
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/ycp.rb DESTINATION ${RUBY_VENDORLIB_DIR} )
+
+#
+# YCP -> Ruby
+# libpy2lang_ruby
+#
 
 ADD_LIBRARY( py2lang_ruby SHARED ${ruby_yast_plugin_SRCS})
 TARGET_LINK_LIBRARIES( py2lang_ruby ${YAST_LIBRARY} )
