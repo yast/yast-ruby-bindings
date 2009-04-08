@@ -7,7 +7,6 @@ if(COMMAND cmake_policy)
   # escape preprocessor, see -DVERSION below
   cmake_policy(SET CMP0005 OLD)
 endif(COMMAND cmake_policy)
-    
 
 PROJECT(yast2-ruby-bindings)
 SET(PACKAGE "yast2-ruby-bindings")
@@ -60,6 +59,14 @@ ENDIF ( NOT RUBY_EXECUTABLE )
 #
 
 ADD_SUBDIRECTORY(src)
+
+#
+# -> tests/
+#
+INCLUDE(CTest)
+ENABLE_TESTING()
+
+ADD_SUBDIRECTORY(tests)
 
 #
 # packaging
