@@ -1,4 +1,13 @@
 -------------------------------------------------------------------
+Thu Apr  9 15:15:09 CEST 2009 - kkaempf@suse.de
+
+- add and enable CTest
+- generate rdoc documentation
+- pass explicit rpath to linker so plugins are found
+- general code cleanup
+- 0.3.3
+
+-------------------------------------------------------------------
 Tue May  6 10:00:50 CEST 2008 - aj@suse.de
 
 - Fix spec file for last change. 

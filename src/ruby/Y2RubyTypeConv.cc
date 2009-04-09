@@ -19,6 +19,16 @@ as published by the Free Software Foundation; either version
 
 */
 
+/*
+ * Y2RubyTypeConv.cc provides type mapping between YaST (YCPValue)
+ * and Ruby (VALUE) with
+ * 
+ * extern "C" VALUE ycpvalue_2_rbvalue( YCPValue ycpval )
+ * 
+ * YCPValue rbvalue_2_ycpvalue( VALUE value )
+ *
+ */
+
 #include <ycp/y2log.h>
 
 #include <ycp/YCPValue.h>
@@ -42,6 +52,13 @@ as published by the Free Software Foundation; either version
 
 #define IS_A(obj,klass) ((rb_obj_is_kind_of((obj),(klass))==Qtrue)?1:0)
 
+/*
+ * rbhash_2_ycpmap
+ * 
+ * Internal helper for Hash -> YCPMap
+ * 
+ */
+
 static YCPMap rbhash_2_ycpmap( VALUE value )
 {
   YCPMap map;
@@ -57,6 +74,14 @@ static YCPMap rbhash_2_ycpmap( VALUE value )
   return map;
 }
 
+
+/*
+ * rbarray_2_ycplist
+ * 
+ * Internal helper for Array -> YCPList
+ * 
+ */
+
 static YCPList rbarray_2_ycplist( VALUE value )
 {
   YCPList list;
@@ -71,9 +96,13 @@ static YCPList rbarray_2_ycplist( VALUE value )
 
 
 /**
+ * 
+ * ycpvalue_2_rbvalue
+ * 
  * Converts a YCPValue into a Ruby Value
  * Supports neested lists using recursion.
  */
+
 extern "C" VALUE
 ycpvalue_2_rbvalue( YCPValue ycpval )
 {
@@ -115,10 +144,10 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
     YCPMap map = ycpval->asMap();
     //y2internal("map size %d\n", (int) map.size());
 
-    for ( YCPMapIterator it = map.begin(); it != map.end(); ++it )
+    for (YCPMap::const_iterator it = map->begin(); it != map->end(); ++it)
     {
-      YCPValue key = it.key();
-      YCPValue value = it.value();
+      YCPValue key = it->first;
+      YCPValue value = it->second;
       rb_hash_aset(rbhash, ycpvalue_2_rbvalue(key), ycpvalue_2_rbvalue(value) );
     }
     return rbhash;
@@ -144,20 +173,29 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
   return Qnil;
 }
 
+
 // isEmpty size add remove (value n) toString
+
+/*
+ * rbvalue_2_ycpvalue
+ * 
+ * Converts Ruby VALUE to YCP YCPValue
+ * 
+ */
+
 YCPValue
 rbvalue_2_ycpvalue( VALUE value )
 {
-  VALUE klass = rb_funcall( value, rb_intern("class"), 0);
-  //std::cout << RSTRING( rb_funcall( klass, rb_intern("to_s"), 0))->ptr << " | " << RSTRING(rb_funcall( value, rb_intern("inspect"), 0))->ptr << std::endl;
+  //VALUE klass = rb_funcall( value, rb_intern("class"), 0);
+  //std::cout << StringValuePtr( rb_funcall( klass, rb_intern("to_s"), 0)) << " | " << StringValuePtr(rb_funcall( value, rb_intern("inspect"), 0)) << std::endl;
   //y2internal("type: '%d'", TYPE(value));
-  // TODO conver integers, and add support for lists, ah, and boleans!
+  // TODO convert integers, and add support for lists
   switch (TYPE(value))
   {
   case T_NIL:
     return YCPVoid();
   case T_STRING:
-    return YCPString(RSTRING (value)->ptr);
+    return YCPString(StringValuePtr(value));
     break;
   case T_TRUE:
     return YCPBoolean(true);
@@ -183,21 +221,31 @@ rbvalue_2_ycpvalue( VALUE value )
   //  rb_raise( rb_eRuntimeError, "Object");
     break;
   default:
-    string class_name(RSTRING(rb_funcall(rb_funcall(value, rb_intern("class"), 0), rb_intern("to_s"), 0))->ptr);
-    /* get the Term class object */
-    if ( class_name == "YaST::Term" )
-    {
-      return ryast_yterm_from_rterm(value);
-    }
-    rb_raise( rb_eTypeError, "Conversion of Ruby type not supported");
-    return YCPValue();
+      {
+	VALUE cname = rb_funcall(rb_funcall(value, rb_intern("class"), 0), rb_intern("to_s"), 0);
+	const char *class_name = StringValuePtr(cname);
+	/* get the Term class object */
+	if ( !strcmp(class_name, "Yast::Term") )
+	  {
+	    return ryast_yterm_from_rterm(value);
+	  }
+	rb_raise( rb_eTypeError, "Conversion of Ruby type not supported");
+	return YCPValue();
+      }
   }
 }
+
+
+/*
+ * rbvalue_2_ycppath
+ * 
+ * Converts Ruby value to YCPPath
+ * 
+ */
 
 YCPValue
 rbvalue_2_ycppath( VALUE value )
 {
   VALUE stringrep = rb_funcall(value, rb_intern("to_s"), 0);
-  return  YCPPath(RSTRING(stringrep)->ptr);
+  return  YCPPath(StringValuePtr(stringrep));
 }
-

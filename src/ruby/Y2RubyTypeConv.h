@@ -23,7 +23,7 @@ as published by the Free Software Foundation; either version
 #define Y2RUBYTYPECONV_H
 
 #include <ycp/YCPValue.h>
-#include "ruby.h"
+#include <ruby.h>
 
 /**
  * Converts a YCPValue into a Ruby Value
