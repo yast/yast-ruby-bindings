@@ -72,7 +72,6 @@ static VALUE rb_mYCP;
 
 
 static Y2Component *owned_uic = 0;
-static Y2Component *owned_wfmc = 0;
 
 extern "C" {
 
@@ -90,20 +89,6 @@ getNs (const char * ns_name)
     ns->initialize ();
   }
   return ns;
-}
-
-  
-static Y2Component *
-init_wfm()
-{
-  y2milestone("init_wfm");
-  owned_wfmc = Y2ComponentBroker::createClient("wfm");
-  if (owned_wfmc == 0)
-    y2error("Cannot create WFM component");
-  else 
-    y2milestone("WFM init");
-  
-  return owned_wfmc;
 }
 
   
@@ -667,11 +652,7 @@ extern "C"
   Init_ycpx()
   {
     YCPPathSearch::initialize();
-#if 0    
-    /* start WFM client, will start SCR server */
-    if (init_wfm() == 0)
-      rb_raise( rb_eRuntimeError, "WFM init failure");
-#endif
+
     /*
      * Debug: log search pathes
      */
