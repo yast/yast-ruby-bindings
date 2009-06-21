@@ -26,10 +26,8 @@ Requires:	ruby
 Summary:	Ruby bindings for the YaST platform
 
 %description
-The bindings allow YaST modules to be written using the Ruby language and also
-Ruby scripts can use YaST agents, APIs and modules.
-
-Author
+The bindings allow YaST modules to be written using the Ruby language
+and also Ruby scripts can use YaST agents, APIs and modules.
 
 %prep
 %setup -n yast2-ruby-bindings-%{version}
