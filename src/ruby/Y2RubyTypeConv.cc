@@ -66,7 +66,7 @@ static YCPMap rbhash_2_ycpmap( VALUE value )
   int n = NUM2LONG(rb_funcall(keys, rb_intern("size"), 0));
   for ( int i=0; i<n; ++i)
   {
-    VALUE rkey = rb_funcall(keys, rb_intern("at"), 1, i);
+    VALUE rkey = rb_funcall(keys, rb_intern("at"), 1, INT2NUM(i));
     YCPValue ykey = rbvalue_2_ycpvalue(rkey);
     YCPValue yvalue = rbvalue_2_ycpvalue( rb_funcall(value, rb_intern("[]"), 1, rkey) );
     map.add(ykey, yvalue);
