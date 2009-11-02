@@ -1,7 +1,7 @@
 
 {
     import "Foo";
-    string result = (string) multiply_by_eight(10);
+    string result = tostring(Foo::multiply_by_eight(10));
     UI::OpenDialog(
          `VBox(
          `Label(result),
