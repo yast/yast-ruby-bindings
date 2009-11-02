@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Mon Nov  2 09:59:47 UTC 2009 - dmacvicar@suse.de
+
+- fix convertion of ruby hashes to ycp maps
+- 0.3.4
+
+-------------------------------------------------------------------
 Thu Apr  9 15:15:09 CEST 2009 - kkaempf@suse.de
 
 - add and enable CTest
