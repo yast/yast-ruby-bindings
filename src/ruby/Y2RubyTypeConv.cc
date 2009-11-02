@@ -88,7 +88,7 @@ static YCPList rbarray_2_ycplist( VALUE value )
   int n = NUM2LONG(rb_funcall(value, rb_intern("size"), 0));
   for ( int i=0; i<n; ++i)
   {
-    VALUE element = rb_funcall(value, rb_intern("[]"), 1, i);
+    VALUE element = rb_funcall(value, rb_intern("[]"), 1, INT2NUM(i));
     list.add( rbvalue_2_ycpvalue(element) );
   }
   return list;
