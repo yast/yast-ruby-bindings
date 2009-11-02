@@ -12,7 +12,7 @@ License:        GPL
 Group:          System/YaST
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Source0:        yast2-ruby-bindings-%{version}.tar.bz2
-prefix:         /usr
+Prefix:         /usr
 
 BuildRequires:	swig cmake gcc-c++ libxcrypt-devel yast2-core-devel
 BuildRequires:  yast2-devtools >= 2.16.3
