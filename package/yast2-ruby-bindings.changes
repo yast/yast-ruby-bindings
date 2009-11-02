@@ -2,6 +2,7 @@
 Mon Nov  2 09:59:47 UTC 2009 - dmacvicar@suse.de
 
 - fix convertion of ruby hashes to ycp maps
+  (bnc #551791)
 - 0.3.4
 
 -------------------------------------------------------------------
