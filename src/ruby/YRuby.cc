@@ -49,6 +49,7 @@ as published by the Free Software Foundation; either version
 #include <ycp/YCPExternal.h>
 
 #include "YRuby.h"
+#include "Y2RubyUtils.h"
 
 #define DIM(ARRAY)	( sizeof( ARRAY )/sizeof( ARRAY[0] ) )
 
@@ -142,7 +143,7 @@ YCPValue
 YRuby::callInner (string module_name, string function, bool method,
                   YCPList argList, constTypePtr wanted_result_type)
 {
-  VALUE module = rb_funcall( rb_mKernel, rb_intern("const_get"), 1, rb_str_new2(module_name.c_str()) );
+  VALUE module = y2ruby_nested_const_get(module_name);
   if (module == Qnil)
   {
     y2error ("The Ruby module '%s' is not provided by its rb file", module_name.c_str());

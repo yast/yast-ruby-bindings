@@ -7,6 +7,7 @@ SET(yast_ruby_module_SRCS
   Y2RubyTypeTerm.cc       # YCP.cc -> ryast_term_init()
   Y2RubyTypeConv.cc       # YCP.cc -> ycpvalue_2_rbvalue(), rbvalue_2_ycpvalue()
   RubyLogger.cc
+  Y2RubyUtils.cc
   RubyLogger.h
 )
 
@@ -19,6 +20,7 @@ SET(ruby_yast_plugin_SRCS
   Y2RubyTypeConv.cc
   Y2RubyTypePath.cc
   Y2RubyTypeTerm.cc
+  Y2RubyUtils.cc
 )
   
 SET(ruby_yast_plugin_HEADERS
@@ -27,6 +29,7 @@ SET(ruby_yast_plugin_HEADERS
   Y2RubyComponent.h
   YRuby.h
   YRubyNamespace.h
+  Y2RubyUtils.h
   Y2RubyTypePath.h
   Y2RubyTypeTerm.h
 )

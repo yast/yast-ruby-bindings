@@ -31,8 +31,10 @@ as published by the Free Software Foundation; either version
 #include <ycp/Type.h>
 #include <ycp/YCPVoid.h>
 //#include <YCP.h>
-#include "YRuby.h"
 #include <stdio.h>
+
+#include "YRuby.h"
+#include "Y2RubyUtils.h"
 
 /**
  * using this instead of plain strcmp
@@ -175,18 +177,12 @@ public:
   }
 };
 
-
-
 YRubyNamespace::YRubyNamespace (string name)
     : m_name (name),
     m_all_methods (true)
 {
   y2milestone("Creating namespace for '%s'", name.c_str());
-
-  //y2milestone("loadModule 3.5");
-  //VALUE result = rb_eval_string((require_module).c_str());
-  
-  VALUE module = rb_funcall( rb_mKernel, rb_intern("const_get"), 1, rb_str_new2(name.c_str()) );
+  VALUE module = y2ruby_nested_const_get(name);
   if (module == Qnil)
   {
     y2error ("The Ruby module '%s' is not provided by its rb file", name.c_str());
@@ -222,7 +218,6 @@ YRubyNamespace::YRubyNamespace (string name)
     {
       //sym_tp = new FunctionType (Type::Any, new FunctionType(Type::Any) );
       // figure out arity.
-      y2milestone("1.");
       Check_Type(module,T_MODULE);
       VALUE methodobj = rb_funcall( module, rb_intern("method"), 1, current );
       //VALUE methodobj = rb_funcall( module, rb_intern("send"), 2, rb_str_new2("method"), current );
@@ -231,10 +226,8 @@ YRubyNamespace::YRubyNamespace (string name)
         y2error ("Cannot access method object '%s'", RSTRING(current)->ptr);
         continue;
       }
-      y2milestone("2.");
       string signature = "any( ";
       VALUE rbarity = rb_funcall( methodobj, rb_intern("arity"), 0);
-      y2milestone("3.");
       int arity = NUM2INT(rbarity);
       for ( int k=0; k < arity; ++k )
       {
