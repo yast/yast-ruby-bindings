@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Tue Nov  3 12:43:21 UTC 2009 - dmacvicar@novell.com
+
+- support for nested namespaces (Foo::Bar)
+  (bnc #551881)
+- 0.3.5
+
+-------------------------------------------------------------------
 Mon Nov  2 09:59:47 UTC 2009 - dmacvicar@suse.de
 
 - fix convertion of ruby hashes to ycp maps
