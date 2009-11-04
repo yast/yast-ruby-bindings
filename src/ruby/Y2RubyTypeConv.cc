@@ -144,10 +144,10 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
     YCPMap map = ycpval->asMap();
     //y2internal("map size %d\n", (int) map.size());
 
-    for (YCPMapIterator it = map->begin (); it != map->end (); ++it)
+    for (YCPMap::const_iterator it = map->begin(); it != map->end(); ++it)
     {
-      YCPValue key = it.key();
-      YCPValue value = it.value();
+      YCPValue key = it->first;
+      YCPValue value = it->second;
       rb_hash_aset(rbhash, ycpvalue_2_rbvalue(key), ycpvalue_2_rbvalue(value) );
     }
     return rbhash;

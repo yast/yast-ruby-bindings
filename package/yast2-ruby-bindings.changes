@@ -1,9 +1,4 @@
 -------------------------------------------------------------------
-Wed Nov  4 15:23:41 UTC 2009 - dmacvicar@novell.com
-
-- use old style YCPMap iterators for SLE11 GA compatibility 
-
--------------------------------------------------------------------
 Tue Nov  3 12:43:21 UTC 2009 - dmacvicar@novell.com
 
 - support for nested namespaces (Foo::Bar)
