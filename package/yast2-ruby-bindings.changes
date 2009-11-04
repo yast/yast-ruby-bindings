@@ -1,4 +1,13 @@
 -------------------------------------------------------------------
+Thu Nov  5 00:50:44 CET 2009 - dmacvicar@suse.de
+
+- backport from trunk
+  * pass explicit rpath to linker so plugins are found
+  * support for nested namespaces (Foo::Bar)
+    (bnc #551881
+  * fix convertion of ruby hashes to ycp maps
+
+-------------------------------------------------------------------
 Tue May  6 10:00:50 CEST 2008 - aj@suse.de
 
 - Fix spec file for last change. 
