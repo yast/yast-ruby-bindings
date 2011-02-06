@@ -1,4 +1,4 @@
-require 'yast'
+require 'ycp'
 require 'ycp/timezone'
 
 zonemap = YCP::Timezone::get_zonemap

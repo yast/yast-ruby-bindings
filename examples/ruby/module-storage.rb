@@ -1,4 +1,4 @@
-require 'yast'
+require 'ycp'
 require 'ycp/storage'
 
 
