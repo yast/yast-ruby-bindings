@@ -54,11 +54,6 @@ typedef VALUE (ruby_method)(...);
 // more useful macros
 #define RB_FINALIZER(func) ((void (*)(...))func)
 
-// this macro saves us from typing
-// (ruby_method*) & method_name
-// in rb_define_method
-#define RB_METHOD(func) ((VALUE (*)(...))func)
-
 #define GetY2Object(obj, po) \
     Data_Get_Struct(obj, Y2Namespace, po)
 
@@ -94,7 +89,7 @@ getNs (const char * ns_name)
   
 /*--------------------------------------------
  * 
- * Document-module: Ui
+ * Document-module: YCP::Ui
  * 
  *--------------------------------------------
  */
@@ -666,26 +661,26 @@ extern "C"
      * module YCP
      */
     rb_mYCP = rb_define_module("YCP");
-    rb_define_singleton_method( rb_mYCP, "import", RB_METHOD(ycp_module_import), 1);
-    rb_define_singleton_method( rb_mYCP, "call_ycp_function", RB_METHOD(ycp_module_call_ycp_function), -1);
-    rb_define_singleton_method( rb_mYCP, "call_ycp_builtin", RB_METHOD(ycp_module_call_ycp_builtin), -1);
-    rb_define_singleton_method( rb_mYCP, "method_missing", RB_METHOD(ycp_method_missing), -1);
+    rb_define_singleton_method( rb_mYCP, "import", RUBY_METHOD_FUNC(ycp_module_import), 1);
+    rb_define_singleton_method( rb_mYCP, "call_ycp_function", RUBY_METHOD_FUNC(ycp_module_call_ycp_function), -1);
+    rb_define_singleton_method( rb_mYCP, "call_ycp_builtin", RUBY_METHOD_FUNC(ycp_module_call_ycp_builtin), -1);
+    rb_define_singleton_method( rb_mYCP, "method_missing", RUBY_METHOD_FUNC(ycp_method_missing), -1);
 
-    rb_define_singleton_method( rb_mYCP, "each_symbol", RB_METHOD(ycp_module_each_symbol), 1);
-    rb_define_singleton_method( rb_mYCP, "each_builtin_symbol", RB_METHOD(ycp_module_each_builtin_symbol), 1);
-    rb_define_singleton_method( rb_mYCP, "each_builtin", RB_METHOD(ycp_module_each_builtin), 0);
+    rb_define_singleton_method( rb_mYCP, "each_symbol", RUBY_METHOD_FUNC(ycp_module_each_symbol), 1);
+    rb_define_singleton_method( rb_mYCP, "each_builtin_symbol", RUBY_METHOD_FUNC(ycp_module_each_builtin_symbol), 1);
+    rb_define_singleton_method( rb_mYCP, "each_builtin", RUBY_METHOD_FUNC(ycp_module_each_builtin), 0);
 
     /*
      * module YCP::Ui
      */
     rb_mUi = rb_define_module_under(rb_mYCP, "Ui");
-    rb_define_singleton_method( rb_mUi, "init", RB_METHOD(ui_init), -1);
+    rb_define_singleton_method( rb_mUi, "init", RUBY_METHOD_FUNC(ui_init), -1);
 
     /*
      * module YaST
      */
     rb_mYaST = rb_define_module("YaST");
-    rb_define_method( rb_mYaST, "logger", RB_METHOD(yast_y2_logger), -1);
+    rb_define_method( rb_mYaST, "logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
     
     y2internal("ryast_path_init\n");
     ryast_path_init(rb_mYaST);
