@@ -1,23 +1,16 @@
 require 'ycp'
-require 'ycp/ui'
-
 YCP::Ui::init("qt")
-include YaST::Ui
+include YCP::Ui
 
 t = HBox( Label("Welcome to Ruby!"), PushButton("Push me") )
-
-puts "#{t.to_s} #{t.class}"
-
-ui.OpenDialog(t)
-ui.UserInput()
-
 # You can also use downcase, as the symbols are aliased
-t = hbox( label("Welcome to Ruby!"), pushbutton("Push me") )
+#t = hbox( label("Welcome to Ruby!"), pushbutton("Push me") )
 
 puts "#{t.to_s} #{t.class}"
 
-ui.OpenDialog(t)
-ui.UserInput()
+# how should this work?
+# ui.OpenDialog(t)
+# ui.UserInput()
 
-
-exit
+p YCP::call_ycp_function( "UI", "OpenDialog", t )
+p YCP::call_ycp_function( "UI", "UserInput" )

@@ -225,11 +225,11 @@ rbvalue_2_ycpvalue( VALUE value )
 	VALUE cname = rb_funcall(rb_funcall(value, rb_intern("class"), 0), rb_intern("to_s"), 0);
 	const char *class_name = StringValuePtr(cname);
 	/* get the Term class object */
-	if ( !strcmp(class_name, "Yast::Term") )
+	if ( !strcmp(class_name, "YaST::Term") )
 	  {
 	    return ryast_yterm_from_rterm(value);
 	  }
-	rb_raise( rb_eTypeError, "Conversion of Ruby type not supported");
+	rb_raise( rb_eTypeError, "Conversion of Ruby type %s not supported", class_name);
 	return YCPValue();
       }
   }
