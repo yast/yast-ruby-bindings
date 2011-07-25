@@ -126,9 +126,7 @@ YRuby::loadModule( YCPList argList )
   string module_name = argList->value(0)->asString()->value();
   string module_path = argList->value(1)->asString()->value();
   //y2milestone("loadModule 3: '%s'", module_name.c_str());
-  string require_module = "require(\"" + module_path + "\")";
-  //y2milestone("loadModule 3.5");
-  VALUE result = rb_eval_string((require_module).c_str());
+  VALUE result = rb_require(module_path.c_str());
   if ( result == Qfalse )
     return YCPError( "Ruby::loadModule() / Can't load ruby module '" + module_path + "'" );
   //y2milestone("loadModule 4");
