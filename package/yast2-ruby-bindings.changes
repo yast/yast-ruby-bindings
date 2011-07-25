@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Mon Jul 25 13:28:56 UTC 2011 - kkaempf@novell.com
+
+- wrap rb_funcall in rb_protect to prevent segfaults if the
+  calling function raises an exception (bnc#705425)
+- 0.3.6
+
+-------------------------------------------------------------------
 Tue Nov  3 12:43:21 UTC 2009 - dmacvicar@novell.com
 
 - support for nested namespaces (Foo::Bar)
