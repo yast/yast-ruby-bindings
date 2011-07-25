@@ -20,6 +20,7 @@ as published by the Free Software Foundation; either version
 */
 
 #include <stdlib.h>
+#include <stdarg.h>
 #include <list>
 #include <iosfwd>
 #include <sstream>
@@ -135,6 +136,40 @@ YRuby::loadModule( YCPList argList )
 }
 
 
+// snprintf into a temp string
+static char *
+fmtstr(const char* fmt, ...)
+{
+    va_list ap; 
+    int len; 
+    char* str;
+
+    va_start(ap, fmt); 
+    len = vsnprintf(NULL, 0, fmt, ap); 
+    va_end(ap); 
+    if (len <= 0)
+    {
+        return NULL; 
+    }
+    str = (char*)malloc(len+1); 
+    if (str == NULL)
+    {
+        return NULL; 
+    }
+    va_start(ap, fmt); 
+    vsnprintf(str, len+1, fmt, ap); 
+    va_end(ap); 
+    return str; 
+}
+
+
+// rb_protect-enabled rb_funcall, see below
+static VALUE
+protected_call(VALUE args)
+{
+  VALUE *values = (VALUE *)args;
+  return rb_funcall3(values[0], values[1], (int)values[2], values+3);	
+}
 
 /**
  * @param argList arguments start 1!, 0 is dummy
@@ -155,20 +190,39 @@ YRuby::callInner (string module_name, string function, bool method,
   
   // make rooms for size-1 arguments to
   // the ruby function
-  VALUE values[size-1];
+  // +3 for module, function, and number of args
+  // to pass to protected_call()
+  VALUE values[size-1+3];
+  int error;
   int i=0;
   for ( ; i < size-1; ++i )
   {
     // get the
     YCPValue v = argList->value(i+1);
     y2milestone("Adding argument %d of type %s", i, v->valuetype_str());
-    values[i] = ycpvalue_2_rbvalue(v);
+    values[i+3] = ycpvalue_2_rbvalue(v);
   }
 
-  y2milestone( "Wll call function '%s' in module '%s' with '%d' arguments", function.c_str(), module_name.c_str(), size-1);
-  VALUE result = rb_funcall2( module, rb_intern(function.c_str()), size-1, values );
+  y2milestone( "Will call function '%s' in module '%s' with '%d' arguments", function.c_str(), module_name.c_str(), size-1);
+  values[0] = module;
+  values[1] = rb_intern(function.c_str());
+  values[2] = size-1;
+  VALUE result = rb_protect(protected_call, (VALUE)values, &error);
+  if (error)
+  {
+    VALUE exception = rb_gv_get("$!"); /* get last exception */
+    VALUE reason = rb_funcall(exception, rb_intern("to_s"), 0 );
+    VALUE trace = rb_gv_get("$@"); /* get last exception trace */
+    VALUE backtrace = rb_funcall(trace, rb_intern("join"), 1, rb_str_new("\n\t", 2));
+
+    char* tmp = fmtstr("%s\n\t%s", StringValuePtr(reason), StringValuePtr(backtrace)); 
+    y2error("%s.%s failed\n%s", module_name.c_str(), function.c_str(), tmp);
+  }
+  else
+  {
   //VALUE result = rb_funcall( module, rb_intern(function.c_str()), 2, INT2NUM(2), INT2NUM(3) );
-  y2milestone( "Called function '%s' in module '%s'", function.c_str(), module_name.c_str());
+    y2milestone( "Called function '%s' in module '%s'", function.c_str(), module_name.c_str());
+  }
   return rbvalue_2_ycpvalue(result);
 }
 
