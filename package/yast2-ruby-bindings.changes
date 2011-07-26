@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Jul 26 07:58:02 UTC 2011 - kkaempf@novell.com
+
+- Re-init the Ruby stack when calling a Ruby function. bnc#708059
+- 0.3.7
+
+-------------------------------------------------------------------
 Mon Jul 25 13:28:56 UTC 2011 - kkaempf@novell.com
 
 - wrap rb_funcall in rb_protect to prevent segfaults if the

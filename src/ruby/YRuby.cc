@@ -176,6 +176,7 @@ YCPValue
 YRuby::callInner (string module_name, string function, bool method,
                   YCPList argList, constTypePtr wanted_result_type)
 {
+  RUBY_INIT_STACK  // bnc#708059
   VALUE module = y2ruby_nested_const_get(module_name);
   if (module == Qnil)
   {
