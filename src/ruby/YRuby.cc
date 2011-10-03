@@ -222,6 +222,6 @@ YRuby::callInner (string module_name, string function, bool method,
   //VALUE result = rb_funcall( module, rb_intern(function.c_str()), 2, INT2NUM(2), INT2NUM(3) );
     y2milestone( "Called function '%s' in module '%s'", function.c_str(), module_name.c_str());
   }
-  return rbvalue_2_ycpvalue(result, DONT_RAISE);
+  return rbvalue_2_ycpvalue(result);
 }
 

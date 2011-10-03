@@ -32,17 +32,12 @@ as published by the Free Software Foundation; either version
 extern "C" VALUE
 ycpvalue_2_rbvalue( YCPValue ycpval );
 
-enum ConversionFlags {
-  NONE,
-  DONT_RAISE,
-};
-
 /**
  * Converts a Ruby Value into a YCPValue
  * Supports neested lists and maps using recursion.
  */
 YCPValue
-rbvalue_2_ycpvalue( VALUE value, ConversionFlags flags = NONE);
+rbvalue_2_ycpvalue( VALUE value );
 
 
 /**
