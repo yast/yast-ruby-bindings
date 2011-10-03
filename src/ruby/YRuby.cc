@@ -82,6 +82,32 @@ YRuby::YRuby()
   //ruby_options(argc - 1, ++argv);
   ruby_script("yast");
   ruby_init_loadpath();
+
+  VALUE ycp_references = Data_Wrap_Struct(rb_cObject, gc_mark, gc_free, & value_references_from_ycp);
+  rb_global_variable(&ycp_references);
+}
+
+void YRuby::gc_mark(void *object)
+{
+  refcount_map_t * vrby = (refcount_map_t *) object;
+
+  y2internal("mark: map size is %u", vrby->size());
+  refcount_map_t::iterator
+    b = vrby->begin(),
+    e = vrby->end(),
+    it;
+  for (it = b; it != e; ++it) {
+    y2internal("marking: value %ld refcount %d", it->first, it->second);
+    rb_gc_mark(it->first);
+  }
+}
+
+void YRuby::gc_free(void *object)
+{
+  refcount_map_t * vrby = (refcount_map_t *) object;
+
+  y2internal("free: map size is %u", vrby->size());
+  y2internal("should happen quite last or we are in trouble FIXME");
 }
 
 YRuby::~YRuby()

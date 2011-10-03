@@ -46,6 +46,9 @@ as published by the Free Software Foundation; either version
 #include <ycp/YCPExternal.h>
 #include <ycp/Import.h>
 
+#include <cassert>
+
+#include "YRuby.h"
 #include "Y2RubyTypePath.h"
 #include "Y2RubyTypeTerm.h"
 
@@ -98,9 +101,31 @@ static YCPList rbarray_2_ycplist( VALUE value )
 
 #define YCP_EXTERNAL_MAGIC "Ruby object"
 
+static void ycpexternal_finalizer(void * value_v, string /*magic*/)
+{
+  VALUE value = (VALUE)value_v;
+
+  YRuby::refcount_map_t& vrby = YRuby::yRuby()->value_references_from_ycp;
+  YRuby::refcount_map_t::iterator it = vrby.find(value);
+  assert(it != vrby.end());
+
+  int & count = it->second;
+  --count;
+  y2internal("Refcount of value %ld decremented to %d", value, count);
+  assert(count >= 0);
+
+  if (count == 0) {
+    vrby.erase(it);
+  }
+}
+
 static YCPExternal rbobject_2_ycpexternal( VALUE value )
 {
-  YCPExternal ex((void*) value, string(YCP_EXTERNAL_MAGIC), NULL);
+  YCPExternal ex((void*) value, string(YCP_EXTERNAL_MAGIC), ycpexternal_finalizer);
+
+  // defaults to zero, ok
+  int count = ++YRuby::yRuby()->value_references_from_ycp[value];
+  y2internal("Refcount of value %ld incremented to %d", value, count);
   return ex;
 }
 
