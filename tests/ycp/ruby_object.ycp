@@ -9,6 +9,9 @@
 
   // my_uri is an opaque ruby object
   any my_uri = URI::parse("http://www.ruby-lang.org/");
+
+  URI::garbage_collect();
+
   string scheme = (string) URI::scheme(my_uri);
   y2milestone("scheme: %1", scheme);
   return scheme == "http";
