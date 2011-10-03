@@ -23,6 +23,7 @@ as published by the Free Software Foundation; either version
 
 #include <ycp-ui/YUIComponent.h>
 #include <wfm/Y2WFMComponent.h>
+#include <wfm/WFM.h>
 
 #include <y2/Y2ComponentBroker.h>
 #include <y2/Y2Namespace.h>
@@ -646,6 +647,11 @@ extern "C"
   void
   Init_ycpx()
   {
+    if (!WFM::registered)
+    {
+      y2milestone("WFM not registered (so what?!)");
+    }
+
     YCPPathSearch::initialize();
 
     /*

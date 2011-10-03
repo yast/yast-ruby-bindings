@@ -1,0 +1,6 @@
+//
+{
+    import "InRuby";
+    string result = tostring(InRuby::multiply_by_eight(10));
+    y2milestone("result: %1", result);
+}

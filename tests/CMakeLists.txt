@@ -2,10 +2,10 @@
 # CMakeLists.txt for yast2/ruby-bindings/tests
 #
 
-ENABLE_TESTING()
+enable_testing()
 
 # Ruby -> YaST tests
-ADD_SUBDIRECTORY(ruby)
+add_subdirectory(ruby)
 
 # YCP -> Ruby tests
-#ADD_SUBDIRECTORY(ycp)
+add_subdirectory(ycp)

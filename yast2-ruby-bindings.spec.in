@@ -41,11 +41,16 @@ cmake -DCMAKE_INSTALL_PREFIX=%{prefix} \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_SKIP_RPATH=1 \
       ..
-make %{?jobs:-j %jobs}
+make %{?jobs:-j %jobs} VERBOSE=1
 
 %install
 cd build
 make install DESTDIR=$RPM_BUILD_ROOT
+cd ..
+
+%check
+cd build
+make test ARGS=-V
 cd ..
 
 @CLEAN@
