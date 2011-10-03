@@ -1,4 +1,13 @@
 -------------------------------------------------------------------
+Mon Oct  3 17:18:29 CEST 2011 - mvidner@suse.cz
+
+- WIP: Ruby objects usable from YCP (FATE#312825).
+    except those that get garbage collected :-/)
+- Run the tests at RPM build time.
+- Less log clutter when importing a Ruby namespace.
+- 0.3.8
+
+-------------------------------------------------------------------
 Tue Jul 26 07:58:02 UTC 2011 - kkaempf@novell.com
 
 - Re-init the Ruby stack when calling a Ruby function. bnc#708059
