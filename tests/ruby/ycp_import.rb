@@ -4,6 +4,7 @@
 
 $:.unshift "../../build/src/ruby"
 $:.unshift "../../src/ruby"
+ENV["Y2DIR"] = File.dirname(__FILE__)
 
 require 'test/unit'
 require 'ycp'

@@ -1,0 +1,14 @@
+// mock Arch
+{
+    module "Arch";
+
+    global boolean sparc32() {
+        return false;
+    }
+    global boolean is_xen() {
+        return false;
+    }
+    global string arch_short() {
+        return "ZX Spectrum";
+    }
+}
