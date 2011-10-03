@@ -11,4 +11,5 @@
   any my_uri = URI::parse("http://www.ruby-lang.org/");
   string scheme = (string) URI::scheme(my_uri);
   y2milestone("scheme: %1", scheme);
+  return scheme == "http";
 }
