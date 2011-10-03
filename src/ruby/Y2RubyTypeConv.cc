@@ -43,6 +43,7 @@ as published by the Free Software Foundation; either version
 #include <ycp/YCPSymbol.h>
 #include <ycp/YCPPath.h>
 #include <ycp/YCPVoid.h>
+#include <ycp/YCPExternal.h>
 #include <ycp/Import.h>
 
 #include <y2util/stringutil.h>
@@ -96,6 +97,14 @@ static YCPList rbarray_2_ycplist( VALUE value )
   return list;
 }
 
+
+#define YCP_EXTERNAL_MAGIC "Ruby object"
+
+static YCPExternal rbobject_2_ycpexternal( VALUE value )
+{
+  YCPExternal ex((void*) value, string(YCP_EXTERNAL_MAGIC), NULL);
+  return ex;
+}
 
 /**
  * 
@@ -171,6 +180,14 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
     YCPSymbol symbol = ycpval->asSymbol();
     return rb_intern(symbol->symbol_cstr());
   }
+  else if (ycpval->isExternal())
+  {
+    YCPExternal ex = ycpval->asExternal();
+    if (ex->magic() == string(YCP_EXTERNAL_MAGIC)) {
+      return (VALUE)(ex->payload()); // FIXME reference counting
+    }
+    y2error("Unexpected magic '%s'.", (ex->magic()).c_str());
+  }
   rb_raise( rb_eTypeError, "Conversion of YCP type %s not supported", ycpval->toString().c_str() );
   return Qnil;
 }
@@ -232,6 +249,8 @@ rbvalue_2_ycpvalue( VALUE value, ConversionFlags flags )
 	    return ryast_yterm_from_rterm(value);
 	  }
 
+        return rbobject_2_ycpexternal(value);
+        /*
         string msg = stringutil::form("Conversion of Ruby type %s not supported", class_name);
         if (flags & DONT_RAISE) {
           y2error("%s", msg.c_str());
@@ -239,6 +258,7 @@ rbvalue_2_ycpvalue( VALUE value, ConversionFlags flags )
           rb_raise(rb_eTypeError, msg.c_str());
         }
 	return YCPVoid();
+        */
       }
   }
 }
