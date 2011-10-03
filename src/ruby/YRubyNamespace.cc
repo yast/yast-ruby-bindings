@@ -252,8 +252,8 @@ YRubyNamespace::YRubyNamespace (string name)
     // enter it to the symbol table
     enterSymbol (fun_se, 0);
     y2milestone("method: '%s' added", RSTRING(current)->ptr);
-    y2milestone("%s", symbolsToString().c_str());
   }
+  y2milestone("%s", symbolsToString().c_str());
 }
 
 YRubyNamespace::~YRubyNamespace ()
