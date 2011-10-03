@@ -1,7 +1,6 @@
+add_definitions(-DY2LOG=\"Ruby\")
 
-ADD_DEFINITIONS(-DY2LOG=\\\"Ruby\\\")
-
-SET(yast_ruby_module_SRCS
+set(yast_ruby_module_SRCS
   YCP.cc
   Y2RubyTypePath.cc       # YCP.cc -> ryast_path_init()
   Y2RubyTypeTerm.cc       # YCP.cc -> ryast_term_init()
@@ -11,7 +10,7 @@ SET(yast_ruby_module_SRCS
   RubyLogger.h
 )
 
-SET(ruby_yast_plugin_SRCS
+set(ruby_yast_plugin_SRCS
   RubyLogger.cc
   Y2CCRuby.cc
   Y2RubyComponent.cc
@@ -23,7 +22,7 @@ SET(ruby_yast_plugin_SRCS
   Y2RubyUtils.cc
 )
   
-SET(ruby_yast_plugin_HEADERS
+set(ruby_yast_plugin_HEADERS
   RubyLogger.h
   Y2CCRuby.h
   Y2RubyComponent.h
@@ -34,12 +33,12 @@ SET(ruby_yast_plugin_HEADERS
   Y2RubyTypeTerm.h
 )
 
-INCLUDE_DIRECTORIES( ${RUBY_INCLUDE_PATH} )
-INCLUDE_DIRECTORIES( ${YAST_INCLUDE_DIR} )
+include_directories( ${RUBY_INCLUDE_PATH} )
+include_directories( ${YAST_INCLUDE_DIR} )
 
-LINK_DIRECTORIES(${YAST_PLUGIN_DIR})
+link_directories(${YAST_PLUGIN_DIR})
 
-ADD_DEFINITIONS( ${CC_FLAGS} -Wno-deprecated)
+add_definitions(${CC_FLAGS} -Wno-deprecated)
 
 #
 # Ruby -> YCP/YaST
@@ -47,8 +46,9 @@ ADD_DEFINITIONS( ${CC_FLAGS} -Wno-deprecated)
 #
 
 
-ADD_LIBRARY( ycpx SHARED ${yast_ruby_module_SRCS})
-SET_TARGET_PROPERTIES( ycpx PROPERTIES PREFIX "" )
+add_library(ycpx SHARED ${yast_ruby_module_SRCS})
+# libycpx.so -> ycpx.so
+set_target_properties(ycpx PROPERTIES PREFIX "")
 
 #
 # Use rpath to find YaST plugin libs (wfm has static constructors :-( )
@@ -57,35 +57,35 @@ SET_TARGET_PROPERTIES( ycpx PROPERTIES PREFIX "" )
 # tight control) CMake should be able to handle this. However, it somehow does
 # not work.
 #
-#SET_TARGET_PROPERTIES( ycpx PROPERTIES SKIP_BUILD_RPATH FALSE)
-#SET_TARGET_PROPERTIES( ycpx PROPERTIES BUILD_WITH_INSTALL_RPATH FALSE) 
-#SET_TARGET_PROPERTIES( ycpx PROPERTIES INSTALL_RPATH_USE_LINK_PATH FALSE)
-#SET_TARGET_PROPERTIES( ycpx PROPERTIES INSTALL_RPATH "${YAST_PLUGIN_DIR}")
+#set_target_properties( ycpx PROPERTIES SKIP_BUILD_RPATH FALSE)
+#set_target_properties( ycpx PROPERTIES BUILD_WITH_INSTALL_RPATH FALSE) 
+#set_target_properties( ycpx PROPERTIES INSTALL_RPATH_USE_LINK_PATH FALSE)
+#set_target_properties( ycpx PROPERTIES INSTALL_RPATH "${YAST_PLUGIN_DIR}")
 #
 # So using an explicit linker option instead:
 # (http://www.cmake.org/pipermail/cmake/2008-January/019321.html)
 #
 SET ( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-rpath,'${YAST_PLUGIN_DIR}'" )
 
-TARGET_LINK_LIBRARIES( ycpx ${YAST_LIBRARY} )
-TARGET_LINK_LIBRARIES( ycpx ${YAST_YCP_LIBRARY} )
+target_link_libraries( ycpx ${YAST_LIBRARY} )
+target_link_libraries( ycpx ${YAST_YCP_LIBRARY} )
 #
 # The WFM and SCR component can only be initialized statically
 # (e.g. through Y2CCWFM), thus we must link against the plugin libs
 # and set the executables 'rpath' accordingly
 #
-TARGET_LINK_LIBRARIES( ycpx ${YAST_PLUGIN_WFM_LIBRARY} )
-TARGET_LINK_LIBRARIES( ycpx ${YAST_PLUGIN_SCR_LIBRARY} )
-TARGET_LINK_LIBRARIES( ycpx ${YAST_PLUGIN_UI_LIBRARY} )
-TARGET_LINK_LIBRARIES( ycpx ${RUBY_LIBRARY} )
+target_link_libraries( ycpx ${YAST_PLUGIN_WFM_LIBRARY} )
+target_link_libraries( ycpx ${YAST_PLUGIN_SCR_LIBRARY} )
+target_link_libraries( ycpx ${YAST_PLUGIN_UI_LIBRARY} )
+target_link_libraries( ycpx ${RUBY_LIBRARY} )
 
 
-INSTALL(TARGETS ycpx LIBRARY DESTINATION ${RUBY_VENDORARCH_DIR} )
+install(TARGETS ycpx LIBRARY DESTINATION ${RUBY_VENDORARCH_DIR} )
 
-INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/ycp.rb DESTINATION ${RUBY_VENDORLIB_DIR} )
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/ycp.rb DESTINATION ${RUBY_VENDORLIB_DIR} )
 
 # rdoc
-SET(rdoc_dir "${CMAKE_CURRENT_BINARY_DIR}/html")
+set(rdoc_dir "${CMAKE_CURRENT_BINARY_DIR}/html")
 ADD_CUSTOM_COMMAND (
    OUTPUT ${rdoc_dir}
    COMMAND ${CMAKE_COMMAND} -E echo_append "Creating rdoc documentation ..."
@@ -95,19 +95,17 @@ ADD_CUSTOM_COMMAND (
    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src/ruby
    DEPENDS ${CMAKE_SOURCE_DIR}/src/ruby/YCP.cc ${CMAKE_SOURCE_DIR}/src/ruby/*.rb
 )
-ADD_CUSTOM_TARGET(ruby_rdoc ALL DEPENDS "${rdoc_dir}")
-ADD_DEPENDENCIES(ruby_rdoc ycpx)
+add_custom_target(ruby_rdoc ALL DEPENDS "${rdoc_dir}")
+add_dependencies(ruby_rdoc ycpx)
 
 #
 # YCP -> Ruby
 # libpy2lang_ruby (YCP plugin library)
 #
 
-ADD_LIBRARY( py2lang_ruby SHARED ${ruby_yast_plugin_SRCS})
-TARGET_LINK_LIBRARIES( py2lang_ruby ${YAST_LIBRARY} )
-TARGET_LINK_LIBRARIES( py2lang_ruby ${YAST_YCP_LIBRARY} )
-TARGET_LINK_LIBRARIES( py2lang_ruby ${YAST_PLUGIN_WFM_LIBRARY} )
-TARGET_LINK_LIBRARIES( py2lang_ruby ${RUBY_LIBRARY} )
-INSTALL(TARGETS py2lang_ruby LIBRARY DESTINATION ${YAST_PLUGIN_DIR} )
-
-#SET_TARGET_PROPERTIES( y2lang_ruby PROPERTIES PREFIX "" )
+add_library( py2lang_ruby SHARED ${ruby_yast_plugin_SRCS})
+target_link_libraries( py2lang_ruby ${YAST_LIBRARY} )
+target_link_libraries( py2lang_ruby ${YAST_YCP_LIBRARY} )
+target_link_libraries( py2lang_ruby ${YAST_PLUGIN_WFM_LIBRARY} )
+target_link_libraries( py2lang_ruby ${RUBY_LIBRARY} )
+install(TARGETS py2lang_ruby LIBRARY DESTINATION ${YAST_PLUGIN_DIR} )

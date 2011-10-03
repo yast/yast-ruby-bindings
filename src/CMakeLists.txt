@@ -1,2 +1,1 @@
-
-ADD_SUBDIRECTORY(ruby)
+add_subdirectory(ruby)
