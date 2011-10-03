@@ -45,6 +45,8 @@ as published by the Free Software Foundation; either version
 #include <ycp/YCPVoid.h>
 #include <ycp/Import.h>
 
+#include <y2util/stringutil.h>
+
 #include "Y2RubyTypePath.h"
 #include "Y2RubyTypeTerm.h"
 
@@ -184,7 +186,7 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
  */
 
 YCPValue
-rbvalue_2_ycpvalue( VALUE value )
+rbvalue_2_ycpvalue( VALUE value, ConversionFlags flags )
 {
   //VALUE klass = rb_funcall( value, rb_intern("class"), 0);
   //std::cout << StringValuePtr( rb_funcall( klass, rb_intern("to_s"), 0)) << " | " << StringValuePtr(rb_funcall( value, rb_intern("inspect"), 0)) << std::endl;
@@ -229,8 +231,14 @@ rbvalue_2_ycpvalue( VALUE value )
 	  {
 	    return ryast_yterm_from_rterm(value);
 	  }
-	rb_raise( rb_eTypeError, "Conversion of Ruby type %s not supported", class_name);
-	return YCPValue();
+
+        string msg = stringutil::form("Conversion of Ruby type %s not supported", class_name);
+        if (flags & DONT_RAISE) {
+          y2error("%s", msg.c_str());
+        } else {
+          rb_raise(rb_eTypeError, msg.c_str());
+        }
+	return YCPVoid();
       }
   }
 }
