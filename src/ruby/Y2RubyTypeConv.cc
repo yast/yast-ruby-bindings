@@ -107,7 +107,10 @@ static void ycpexternal_finalizer(void * value_v, string /*magic*/)
 
   YRuby::refcount_map_t& vrby = YRuby::yRuby()->value_references_from_ycp;
   YRuby::refcount_map_t::iterator it = vrby.find(value);
-  assert(it != vrby.end());
+  if (it == vrby.end()) {
+    // YRuby got re-constructed during final cleanup; do nothing
+    return;
+  }
 
   int & count = it->second;
   --count;
