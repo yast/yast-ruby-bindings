@@ -8,7 +8,7 @@
 Name:           yast2-ruby-bindings
 Version:        @VERSION@
 Release:        0
-License:        GPL
+License:        GPL-2.0+
 Group:          System/YaST
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Source0:        yast2-ruby-bindings-%{version}.tar.bz2

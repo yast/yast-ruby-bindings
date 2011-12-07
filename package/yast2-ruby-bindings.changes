@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Wed Dec  7 10:06:27 UTC 2011 - coolo@suse.com
+
+- fix license to be in spdx.org format
+
+-------------------------------------------------------------------
 Mon Oct  3 17:18:29 CEST 2011 - mvidner@suse.cz
 
 - WIP: Ruby objects usable from YCP (FATE#312825).
