@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Mon Jan 16 14:47:57 UTC 2012 - jreidinger@suse.com
+
+- allows loading modules which follows rails ruby convention
+  ( ActiveSupport module is in active_support.rb file )
+  (bnc#705417)
+
+-------------------------------------------------------------------
 Wed Dec  7 10:06:27 UTC 2011 - coolo@suse.com
 
 - fix license to be in spdx.org format
