@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Mon Jan 16 15:16:39 UTC 2012 - coolo@suse.com
+
+- license should be GPL-2.0 without or later
+
+-------------------------------------------------------------------
 Mon Jan 16 14:47:57 UTC 2012 - jreidinger@suse.com
 
 - allows loading modules which follows rails ruby convention
