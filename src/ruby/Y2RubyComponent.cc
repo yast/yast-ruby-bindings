@@ -57,8 +57,12 @@ Y2Namespace *Y2RubyComponent::import (const char* name)
   string module = YCPPathSearch::find (YCPPathSearch::Module, string (name) + ".rb");
   if (module.empty ())
   {
-    y2internal ("Couldn't find %s after Y2CCRuby pointed to us", name);
-    return NULL;
+    module = YCPPathSearch::find (YCPPathSearch::Module, Y2RubyComponent::CamelCase2DelimSepated(name) + ".rb");
+    if (module.empty ())
+    {
+      y2internal ("Couldn't find %s after Y2CCRuby pointed to us", name);
+      return NULL;
+    }
   }
   y2milestone("Found in '%s'", module.c_str());
   module.erase (module.size () - 3 /* strlen (".pm") */);
@@ -72,4 +76,23 @@ Y2Namespace *Y2RubyComponent::import (const char* name)
   Y2Namespace *ns = new YRubyNamespace (name);
 
   return ns;
+}
+
+const string Y2RubyComponent::CamelCase2DelimSepated( const char* name)
+{
+  string res(name);
+  size_t size = res.size();
+  if (size==0)
+    return res;
+  res[0] = tolower(res[0]); //first character breaks rule with replace upper with _lower
+  for (size_t i = 1; i< res.size();i++)
+  {
+    if (isupper(res[i]))
+    {
+      string tmp = "_";
+      tmp.push_back (tolower(res[i]));
+      res.replace(i,1,tmp); //replace upper by _lower
+    }
+  }
+  return res;
 }
