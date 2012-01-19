@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Thu Jan 19 12:11:56 UTC 2012 - jreidinger@suse.com
+
+- improve previous fix to allow loading also file in namespace (
+  e.g. Name::Test in name/test ) (bnc#705417) 
+
+-------------------------------------------------------------------
 Mon Jan 16 15:16:39 UTC 2012 - coolo@suse.com
 
 - license should be GPL-2.0 without or later

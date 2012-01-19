@@ -84,7 +84,14 @@ const string Y2RubyComponent::CamelCase2DelimSepated( const char* name)
   size_t size = res.size();
   if (size==0)
     return res;
-  res[0] = tolower(res[0]); //first character breaks rule with replace upper with _lower
+  res[0] = tolower(res[0]);
+  //first character and first char after :: is lowercase without underscore
+  for(size_t i = res.find("::",i+1); i!= string::npos; i = res.find("::",i+1))
+  {
+    size_t c_pos = i+2; //::<c> so we want c
+    if (c_pos >= size) break; //handle string finishing with ::
+    res[c_pos] = tolower(res[c_pos]);
+  }
   for (size_t i = 1; i< res.size();i++)
   {
     if (isupper(res[i]))
