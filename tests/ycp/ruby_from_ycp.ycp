@@ -3,6 +3,15 @@
     import "InRuby";
     string result = tostring(InRuby::multiply_by_eight(10));
     y2milestone("result: %1", result);
+    if (InRuby::raising_code()==nil)
+    {
+      string result = tostring(InRuby::last_exception());
+      y2milestone("result: %1", result);
+    }
+    else
+    {
+      y2error("exception completely ignored");
+    }
     import "CamelCase";
     result = tostring(CamelCase::inc(10));
     y2milestone("result: %1", result);
