@@ -242,6 +242,7 @@ YRuby::callInner (string module_name, string function, bool method,
 
     char* tmp = fmtstr("%s\n\t%s", StringValuePtr(reason), StringValuePtr(backtrace)); 
     y2error("%s.%s failed\n%s", module_name.c_str(), function.c_str(), tmp);
+    free(tmp);
     //workaround if last_exception failed, then return always string with message
     if(function == "last_exception") //TODO constantify last_exception
     {
