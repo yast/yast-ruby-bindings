@@ -253,6 +253,18 @@ YRubyNamespace::YRubyNamespace (string name)
     enterSymbol (fun_se, 0);
     y2milestone("method: '%s' added", RSTRING(current)->ptr);
   }
+  //add to all modules method last_exception to get last exception raised inside module
+  constTypePtr sym_tp = Type::fromSignature("any()");
+  // symbol entry for the function
+  SymbolEntry *fun_se = new SymbolEntry ( this,
+                                          i,// position. arbitrary numbering.
+                                          "last_exception", // passed to Ustring, no need to strdup
+                                          SymbolEntry::c_function,
+                                          sym_tp);
+  fun_se->setGlobal (true);
+  // enter it to the symbol table
+  enterSymbol (fun_se, 0);
+  y2milestone("method: 'last_exception' added");
   y2milestone("%s", symbolsToString().c_str());
 }
 
