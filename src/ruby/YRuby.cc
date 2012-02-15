@@ -56,6 +56,17 @@ as published by the Free Software Foundation; either version
 
 #include "Y2RubyTypeConv.h"
 
+void inject_last_exception_method(VALUE& module,const string& message, const string& module_name)
+{
+  //doing injection from C++ is quite complex, but we have eval, so we can do it in ruby :)
+  string code("module ");
+  code += module_name;
+  code += "\ndef self.last_exception\n'";
+  code += message;
+  code += "'\nend\nend";
+  rb_funcall(module, rb_intern("eval"), 1, rb_str_new2(code.c_str()));
+}
+
 static void prependModulePath()
 {
   YCPPathSearch::initialize ();
@@ -248,6 +259,7 @@ YRuby::callInner (string module_name, string function, bool method,
     {
       return YCPString(StringValuePtr(reason));
     }
+    inject_last_exception_method(module,StringValuePtr(reason),module_name);
     return YCPVoid();
   }
   else
