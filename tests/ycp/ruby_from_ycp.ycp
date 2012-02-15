@@ -8,10 +8,13 @@
     {
       result = tostring(InRuby::last_exception());
       y2milestone("result: %1", result);
+      if(result != "Wow exception!")
+        return false;
     }
     else
     {
       y2error("exception completely ignored result: %1",result);
+      return false;
     }
     import "CamelCase";
     result = tostring(CamelCase::inc(10));
