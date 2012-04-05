@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Thu Apr  5 10:32:47 CEST 2012 - jsuchome@suse.cz
+
+- removed libxcrypt-devel from buildrequires
+
+-------------------------------------------------------------------
 Thu Jan 19 12:11:56 UTC 2012 - jreidinger@suse.com
 
 - improve previous fix to allow loading also file in namespace (
