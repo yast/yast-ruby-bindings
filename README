@@ -15,3 +15,8 @@ Author: Duncan Mac-Vicar <dmacvicar@suse.de>
 Based on yast2-perl-bindings by
   Martin Vidner <mvidner@suse.cz>
   Stefan Hundhammer <sh@suse.de>
+
+
+Exception handling
+=================
+When ruby code raise exception, then method return `nil` in YCP and add method last_exception, that returns message of exception. Also exception details are logged.
