@@ -17,7 +17,8 @@
       return false;
     }
     map h = tomap(InRuby::get_hash());
-    if ( tostring(h["a"]:"") != "b")
+    y2milestone("get hash: %1",h);
+    if ( tostring(h["a"]:"") != "b" || tostring(h["b"]:"") != "c" )
     {
       y2error("map is not properly returned: %1",result);
       return false;

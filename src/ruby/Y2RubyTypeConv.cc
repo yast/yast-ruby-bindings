@@ -66,13 +66,12 @@ as published by the Free Software Foundation; either version
 static YCPMap rbhash_2_ycpmap( VALUE value )
 {
   YCPMap map;
-  VALUE keys = rb_funcall(value, rb_intern("keys"), 0);
-  int n = NUM2LONG(rb_funcall(keys, rb_intern("size"), 0));
-  for ( int i=0; i<n; ++i)
+  VALUE list = rb_funcall(value, rb_intern("to_a"), 0); //get array of two items array, first is key and second is value
+  for ( unsigned i=0; i<RARRAY_LEN(list); ++i)
   {
-    VALUE rkey = rb_funcall(keys, rb_intern("at"), 1, INT2NUM(i));
-    YCPValue ykey = rbvalue_2_ycpvalue(rkey);
-    YCPValue yvalue = rbvalue_2_ycpvalue( rb_funcall(value, rb_intern("[]"), 1, rkey) );
+    VALUE kv_list = *(RARRAY_PTR(list)+i);
+    YCPValue ykey = rbvalue_2_ycpvalue(*RARRAY_PTR(kv_list)); 
+    YCPValue yvalue = rbvalue_2_ycpvalue(*(RARRAY_PTR(kv_list)+1));
     map.add(ykey, yvalue);
   }
   return map;
