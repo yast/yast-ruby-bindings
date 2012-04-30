@@ -37,17 +37,6 @@ as published by the Free Software Foundation; either version
 #include "Y2RubyUtils.h"
 
 /**
- * using this instead of plain strcmp
- * enables embedding argument names into the typeinfo
- */
-static bool firstWordIs (const char *where, const char *what)
-{
-  size_t n = strlen (what);
-  return !strncmp (where, what, n) &&
-         (where[n] == '\0' || isspace (where[n]));
-}
-
-/**
  * The definition of a function that is implemented in Ruby
  */
 class Y2RubyFunctionCall : public Y2Function
@@ -207,38 +196,26 @@ YRubyNamespace::YRubyNamespace (string name)
     VALUE current = RARRAY(methods)->ptr[i];
     y2milestone("New method: '%s'", RSTRING(current)->ptr);
     
-    constTypePtr sym_tp = Type::Unspec;
-    //sym_tp = parseTypeinfo (*sym_ti)
-    if (sym_tp->isError ())
+    // figure out arity.
+    Check_Type(module,T_MODULE);
+    VALUE methodobj = rb_funcall( module, rb_intern("method"), 1, current );
+    if ( methodobj == Qnil )
     {
-      y2error ("Cannot parse $TYPEINFO{%s}", RSTRING(current)->ptr);
+      y2error ("Cannot access method object '%s'", RSTRING(current)->ptr);
       continue;
     }
-    if (sym_tp->isUnspec ())
+    string signature = "any( ";
+    VALUE rbarity = rb_funcall( methodobj, rb_intern("arity"), 0);
+    int arity = NUM2INT(rbarity);
+    for ( int k=0; k < arity; ++k )
     {
-      //sym_tp = new FunctionType (Type::Any, new FunctionType(Type::Any) );
-      // figure out arity.
-      Check_Type(module,T_MODULE);
-      VALUE methodobj = rb_funcall( module, rb_intern("method"), 1, current );
-      //VALUE methodobj = rb_funcall( module, rb_intern("send"), 2, rb_str_new2("method"), current );
-      if ( methodobj == Qnil )
-      {
-        y2error ("Cannot access method object '%s'", RSTRING(current)->ptr);
-        continue;
-      }
-      string signature = "any( ";
-      VALUE rbarity = rb_funcall( methodobj, rb_intern("arity"), 0);
-      int arity = NUM2INT(rbarity);
-      for ( int k=0; k < arity; ++k )
-      {
-        signature += "any";
-        if ( k < (arity - 1) )
-            signature += ",";
-      }
-      signature += ")";
-      y2internal("going to parse signature: '%s'", signature.c_str());
-      sym_tp = Type::fromSignature(signature);
+      signature += "any";
+      if ( k < (arity - 1) )
+          signature += ",";
     }
+    signature += ")";
+    y2internal("going to parse signature: '%s'", signature.c_str());
+    constTypePtr sym_tp = Type::fromSignature(signature);
     
     constFunctionTypePtr fun_tp = (constFunctionTypePtr) sym_tp;
 
