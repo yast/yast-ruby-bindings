@@ -67,30 +67,12 @@ void inject_last_exception_method(VALUE& module,const string& message, const str
   rb_funcall(module, rb_intern("eval"), 1, rb_str_new2(code.c_str()));
 }
 
-static void prependModulePath()
-{
-  YCPPathSearch::initialize ();
-
-  list<string>::const_iterator
-      b = YCPPathSearch::searchListBegin (YCPPathSearch::Module),
-      e = YCPPathSearch::searchListEnd (YCPPathSearch::Module),
-      i;
-      
-  // count the number of directories to prepend
-//   int n = 0;
-//   for (i = b; i != e; ++i)
-//   {
-//     // do something
-//   }
-}
-
 YRuby * YRuby::_yRuby = 0;
 
 YRuby::YRuby()
 {
   y2milestone( "Initializing ruby interpreter." );
   ruby_init();
-  //ruby_options(argc - 1, ++argv);
   ruby_script("yast");
   ruby_init_loadpath();
 
@@ -102,13 +84,13 @@ void YRuby::gc_mark(void *object)
 {
   refcount_map_t * vrby = (refcount_map_t *) object;
 
-  y2internal("mark: map size is %u", vrby->size());
+  y2milestone("mark: map size is %u", vrby->size());
   refcount_map_t::iterator
     b = vrby->begin(),
     e = vrby->end(),
     it;
   for (it = b; it != e; ++it) {
-    y2internal("marking: value %ld refcount %d", it->first, it->second);
+    y2milestone("marking: value %ld refcount %d", it->first, it->second);
     rb_gc_mark(it->first);
   }
 }
@@ -117,7 +99,7 @@ void YRuby::gc_free(void *object)
 {
   refcount_map_t * vrby = (refcount_map_t *) object;
 
-  y2internal("free: map size is %u", vrby->size());
+  y2milestone("free: map size is %u", vrby->size());
   y2internal("should happen quite last or we are in trouble FIXME");
 }
 
@@ -142,9 +124,10 @@ YCPValue
 YRuby::destroy()
 {
   if ( _yRuby )
+  {
     delete _yRuby;
-
-  _yRuby = 0;
+    _yRuby = 0;
+  }
 
   return YCPVoid();
 }
@@ -156,47 +139,14 @@ YCPValue
 YRuby::loadModule( YCPList argList )
 {
   YRuby::yRuby();
-  //y2milestone("loadModule 1");
   if ( argList->size() != 2 || ! argList->value(0)->isString() || ! argList->value(1)->isString() )
     return YCPError( "Ruby::loadModule() / Ruby::Use() : Bad arguments: String expected!" );
-  //y2milestone("loadModule 2");
-  string module_name = argList->value(0)->asString()->value();
   string module_path = argList->value(1)->asString()->value();
-  //y2milestone("loadModule 3: '%s'", module_name.c_str());
   VALUE result = rb_require(module_path.c_str());
   if ( result == Qfalse )
     return YCPError( "Ruby::loadModule() / Can't load ruby module '" + module_path + "'" );
-  //y2milestone("loadModule 4");
   return YCPVoid();
 }
-
-
-// snprintf into a temp string
-static char *
-fmtstr(const char* fmt, ...)
-{
-    va_list ap; 
-    int len; 
-    char* str;
-
-    va_start(ap, fmt); 
-    len = vsnprintf(NULL, 0, fmt, ap); 
-    va_end(ap); 
-    if (len <= 0)
-    {
-        return NULL; 
-    }
-    str = (char*)malloc(len+1); 
-    if (str == NULL)
-    {
-        return NULL; 
-    }
-    va_start(ap, fmt); 
-    vsnprintf(str, len+1, fmt, ap); 
-    va_end(ap); 
-    return str; 
-}
-
 
 // rb_protect-enabled rb_funcall, see below
 static VALUE
@@ -250,10 +200,7 @@ YRuby::callInner (string module_name, string function, bool method,
     VALUE reason = rb_funcall(exception, rb_intern("message"), 0 );
     VALUE trace = rb_gv_get("$@"); /* get last exception trace */
     VALUE backtrace = rb_funcall(trace, rb_intern("join"), 1, rb_str_new("\n\t", 2));
-
-    char* tmp = fmtstr("%s\n\t%s", StringValuePtr(reason), StringValuePtr(backtrace)); 
-    y2error("%s.%s failed\n%s", module_name.c_str(), function.c_str(), tmp);
-    free(tmp);
+    y2error("%s.%s failed\n%s\n\t%s", module_name.c_str(), function.c_str(), StringValuePtr(reason),StringValuePtr(backtrace));
     //workaround if last_exception failed, then return always string with message
     if(function == "last_exception") //TODO constantify last_exception
     {
@@ -264,7 +211,6 @@ YRuby::callInner (string module_name, string function, bool method,
   }
   else
   {
-  //VALUE result = rb_funcall( module, rb_intern(function.c_str()), 2, INT2NUM(2), INT2NUM(3) );
     y2milestone( "Called function '%s' in module '%s'", function.c_str(), module_name.c_str());
   }
   return rbvalue_2_ycpvalue(result);
