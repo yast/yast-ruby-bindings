@@ -16,7 +16,14 @@
       y2error("exception completely ignored result: %1",result);
       return false;
     }
+    map h = tomap(InRuby::get_hash());
+    if ( tostring(h["a"]:"") != "b")
+    {
+      y2error("map is not properly returned: %1",result);
+      return false;
+    }
     import "CamelCase";
     result = tostring(CamelCase::inc(10));
     y2milestone("result: %1", result);
+    return true;
 }
