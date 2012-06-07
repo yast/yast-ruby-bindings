@@ -34,6 +34,8 @@ set(ruby_yast_plugin_HEADERS
 )
 
 include_directories( ${RUBY_INCLUDE_PATH} )
+#include also arch specific config.h
+include_directories( ${RUBY_HEADER_DIR}/${RUBY_ARCH} )
 include_directories( ${YAST_INCLUDE_DIR} )
 
 link_directories(${YAST_PLUGIN_DIR})

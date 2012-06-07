@@ -15,65 +15,46 @@ if(RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
    set(RUBY_FIND_QUIETLY TRUE)
 endif (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
 
-#   RUBY_ARCHDIR=`$RUBY -r rbconfig -e 'printf("%s",Config::CONFIG@<:@"archdir"@:>@)'`
-#   RUBY_SITEARCHDIR=`$RUBY -r rbconfig -e 'printf("%s",Config::CONFIG@<:@"sitearchdir"@:>@)'`
-#   RUBY_SITEDIR=`$RUBY -r rbconfig -e 'printf("%s",Config::CONFIG@<:@"sitelibdir"@:>@)'`
-#   RUBY_LIBDIR=`$RUBY -r rbconfig -e 'printf("%s",Config::CONFIG@<:@"libdir"@:>@)'`
-#   RUBY_LIBRUBYARG=`$RUBY -r rbconfig -e 'printf("%s",Config::CONFIG@<:@"LIBRUBYARG_SHARED"@:>@)'`
+FIND_PROGRAM(RUBY_EXECUTABLE NAMES ruby ruby1.9 ruby19 )
 
-FIND_PROGRAM(RUBY_EXECUTABLE NAMES ruby ruby1.8 ruby18 )
-
-EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print Config::CONFIG['archdir']"
+EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print RbConfig::CONFIG['archdir']"
    OUTPUT_VARIABLE RUBY_ARCH_DIR)
 
-EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print Config::CONFIG['libdir']"
+ EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print RbConfig::CONFIG['libdir']"
    OUTPUT_VARIABLE RUBY_POSSIBLE_LIB_PATH)
 
-EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print Config::CONFIG['rubylibdir']"
+ EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print RbConfig::CONFIG['rubylibdir']"
    OUTPUT_VARIABLE RUBY_RUBY_LIB_PATH)
 
 # site_ruby
-EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print Config::CONFIG['sitearchdir']"
+EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print RbConfig::CONFIG['sitearchdir']"
    OUTPUT_VARIABLE RUBY_SITEARCH_DIR)
 
-EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print Config::CONFIG['sitelibdir']"
+EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print RbConfig::CONFIG['sitelibdir']"
    OUTPUT_VARIABLE RUBY_SITELIB_DIR)
 
 
-# vendor_ruby
-EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r vendor-specific -e "print '-rvendor-specific'"
-   OUTPUT_VARIABLE RUBY_VENDOR_ARG)
+EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print RbConfig::CONFIG['vendorarchdir']"
+   OUTPUT_VARIABLE RUBY_VENDORARCH_DIR)
 
-IF(RUBY_VENDOR_ARG)
-    EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print Config::CONFIG['vendorarchdir']"
-       OUTPUT_VARIABLE RUBY_VENDORARCH_DIR)
+EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print RbConfig::CONFIG['vendorlibdir']"
+   OUTPUT_VARIABLE RUBY_VENDORLIB_DIR)
 
-    EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print Config::CONFIG['vendorlibdir']"
-       OUTPUT_VARIABLE RUBY_VENDORLIB_DIR)
-ELSE(RUBY_VENDOR_ARG)
-    # fall back to site*dir
-    EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print Config::CONFIG['sitearchdir']"
-       OUTPUT_VARIABLE RUBY_VENDORARCH_DIR)
+EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print RbConfig::CONFIG['rubyhdrdir']"
+  OUTPUT_VARIABLE RUBY_HEADER_DIR)
 
-    EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print Config::CONFIG['sitelibdir']"
-       OUTPUT_VARIABLE RUBY_VENDORLIB_DIR)
-ENDIF(RUBY_VENDOR_ARG)
-
-# this is not needed if you use "print" inside the ruby statements
-# remove the new lines from the output by replacing them with empty strings
-#STRING(REPLACE "\n" "" RUBY_ARCH_DIR "${RUBY_ARCH_DIR}")
-#STRING(REPLACE "\n" "" RUBY_POSSIBLE_LIB_PATH "${RUBY_POSSIBLE_LIB_PATH}")
-#STRING(REPLACE "\n" "" RUBY_RUBY_LIB_PATH "${RUBY_RUBY_LIB_PATH}")
+EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print RbConfig::CONFIG['arch']"
+  OUTPUT_VARIABLE RUBY_ARCH)
 
 
 FIND_PATH(RUBY_INCLUDE_PATH
    NAMES ruby.h
   PATHS
-   ${RUBY_ARCH_DIR}
-  /usr/lib/ruby/1.8/i586-linux-gnu/ )
+  ${RUBY_HEADER_DIR}
+)
 
 FIND_LIBRARY(RUBY_LIBRARY
-  NAMES ruby ruby1.8
+  NAMES ruby ruby1.9
   PATHS ${RUBY_POSSIBLE_LIB_PATH}
   )
 

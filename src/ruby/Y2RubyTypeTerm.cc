@@ -85,7 +85,7 @@ ryast_term_initialize( int argc, VALUE *argv, VALUE self )
 
     // we need at least the name to create a YCPTerm
     Check_Type( argv[0], T_STRING);
-    wrapper->term = YCPTerm( RSTRING(argv[0])->ptr );
+    wrapper->term = YCPTerm( RSTRING_PTR(argv[0]));
     // add the remaining YCPTerm arguments
     if (argc > 1)
     {
@@ -145,17 +145,6 @@ ryast_term_name(VALUE self)
   Data_Get_Struct(self, ryast_Term_Wrapper, wrapper);
   return rb_str_new2(wrapper->term.name().c_str());
 }
-
-// static VALUE
-// ryast_term_set_name(VALUE self, VALUE name)
-// {
-//   Check_Type(name, T_STRING);
-//   ryast_Term_Wrapper *wrapper;
-//   Data_Get_Struct(self, ryast_Term_Wrapper, wrapper);
-//   
-//   wrapper->term->setName(RSTRING(name)->ptr);
-//   return self;
-// }
 
 void
 ryast_term_init( VALUE super )

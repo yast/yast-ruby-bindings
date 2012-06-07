@@ -191,17 +191,17 @@ YRubyNamespace::YRubyNamespace (string name)
   }
   
   int i;
-  for(i = 0; i < RARRAY(methods)->len; i++)
+  for(i = 0; i < RARRAY_LEN(methods); i++)
   {
-    VALUE current = RARRAY(methods)->ptr[i];
-    y2milestone("New method: '%s'", RSTRING(current)->ptr);
+    VALUE current = rb_funcall( methods, rb_intern("at"), 1, rb_fix_new(i) );
+    y2milestone("New method: '%s'", RSTRING_PTR(current));
     
     // figure out arity.
     Check_Type(module,T_MODULE);
     VALUE methodobj = rb_funcall( module, rb_intern("method"), 1, current );
     if ( methodobj == Qnil )
     {
-      y2error ("Cannot access method object '%s'", RSTRING(current)->ptr);
+      y2error ("Cannot access method object '%s'", RSTRING_PTR(current));
       continue;
     }
     string signature = "any( ";
@@ -222,13 +222,13 @@ YRubyNamespace::YRubyNamespace (string name)
     // symbol entry for the function
     SymbolEntry *fun_se = new SymbolEntry ( this,
                                             i,// position. arbitrary numbering. must stay consistent when?
-                                            RSTRING(current)->ptr, // passed to Ustring, no need to strdup
+                                            RSTRING_PTR(current), // passed to Ustring, no need to strdup
                                             SymbolEntry::c_function,
                                             sym_tp);
     fun_se->setGlobal (true);
     // enter it to the symbol table
     enterSymbol (fun_se, 0);
-    y2milestone("method: '%s' added", RSTRING(current)->ptr);
+    y2milestone("method: '%s' added", RSTRING_PTR(current));
   }
   //add to all modules method last_exception to get last exception raised inside module
   constTypePtr sym_tp = Type::fromSignature("any()");

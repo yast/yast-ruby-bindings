@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Thu Jun  7 15:44:29 UTC 2012 - jreidinger@suse.com
+
+- port to ruby 1.9 
+
+-------------------------------------------------------------------
 Thu Apr  5 10:32:47 CEST 2012 - jsuchome@suse.cz
 
 - removed libxcrypt-devel from buildrequires
