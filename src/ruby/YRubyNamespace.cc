@@ -194,6 +194,9 @@ YRubyNamespace::YRubyNamespace (string name)
   for(i = 0; i < RARRAY_LEN(methods); i++)
   {
     VALUE current = rb_funcall( methods, rb_intern("at"), 1, rb_fix_new(i) );
+    if (rb_type(current) == RUBY_T_SYMBOL) {
+	current = rb_funcall( current, rb_intern("to_s"), 0);
+    }
     y2milestone("New method: '%s'", RSTRING_PTR(current));
     
     // figure out arity.

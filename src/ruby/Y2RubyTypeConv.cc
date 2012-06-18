@@ -104,6 +104,10 @@ static void ycpexternal_finalizer(void * value_v, string /*magic*/)
 {
   VALUE value = (VALUE)value_v;
 
+  if (!YRuby::yRuby()) {
+    return; // we're finalized
+  }
+
   YRuby::refcount_map_t& vrby = YRuby::yRuby()->value_references_from_ycp;
   YRuby::refcount_map_t::iterator it = vrby.find(value);
   if (it == vrby.end()) {

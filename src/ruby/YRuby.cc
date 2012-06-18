@@ -28,6 +28,7 @@ as published by the Free Software Foundation; either version
 
 // Ruby stuff
 #include <ruby.h>
+#include <ruby/encoding.h>
 
 
 #define y2log_component "Y2Ruby"
@@ -68,13 +69,18 @@ void inject_last_exception_method(VALUE& module,const string& message, const str
 }
 
 YRuby * YRuby::_yRuby = 0;
+bool YRuby::_y_ruby_finalized = false;
 
 YRuby::YRuby()
 {
   y2milestone( "Initializing ruby interpreter." );
+  
+  RUBY_INIT_STACK;
   ruby_init();
   ruby_script("yast");
   ruby_init_loadpath();
+
+  rb_enc_find_index("encdb");
 
   VALUE ycp_references = Data_Wrap_Struct(rb_cObject, gc_mark, gc_free, & value_references_from_ycp);
   rb_global_variable(&ycp_references);
@@ -107,13 +113,14 @@ YRuby::~YRuby()
 {
     y2milestone( "Shutting down ruby interpreter." );
     ruby_finalize();
+    _y_ruby_finalized = true;
 }
 
 
 YRuby *
 YRuby::yRuby()
 {
-  if ( ! _yRuby )
+  if ( ! _yRuby && !_y_ruby_finalized )
     _yRuby = new YRuby();
 
   return _yRuby;
@@ -142,8 +149,9 @@ YRuby::loadModule( YCPList argList )
   if ( argList->size() != 2 || ! argList->value(0)->isString() || ! argList->value(1)->isString() )
     return YCPError( "Ruby::loadModule() / Ruby::Use() : Bad arguments: String expected!" );
   string module_path = argList->value(1)->asString()->value();
-  VALUE result = rb_require(module_path.c_str());
-  if ( result == Qfalse )
+  int error = 0;
+  VALUE result = rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) module_path.c_str(), &error);
+  if ( result == Qfalse || error)
     return YCPError( "Ruby::loadModule() / Can't load ruby module '" + module_path + "'" );
   return YCPVoid();
 }

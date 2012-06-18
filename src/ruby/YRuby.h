@@ -113,6 +113,7 @@ private:
 
 public:
     static YRuby *	_yRuby;
+    static bool  _y_ruby_finalized;
     refcount_map_t value_references_from_ycp;
 };
 
