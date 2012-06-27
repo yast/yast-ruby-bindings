@@ -22,21 +22,19 @@ as published by the Free Software Foundation; either version
 #include "RubyLogger.h"
 #include <ycp/ExecutionEnvironment.h>
 
-extern ExecutionEnvironment ee;
-
 void
 RubyLogger::error (string error_message)
 {
-  y2_logger (LOG_ERROR,"Ruby",ee.filename ().c_str ()
-             ,ee.linenumber (),"","%s", error_message.c_str ());
+  y2_logger (LOG_ERROR,"Ruby",YaST::ee.filename ().c_str ()
+             ,YaST::ee.linenumber (),"","%s", error_message.c_str ());
 }
 
 
 void
 RubyLogger::warning (string warning_message)
 {
-  y2_logger (LOG_ERROR,"Ruby",ee.filename ().c_str ()
-             ,ee.linenumber (),"","%s", warning_message.c_str ());
+  y2_logger (LOG_ERROR,"Ruby",YaST::ee.filename ().c_str ()
+             ,YaST::ee.linenumber (),"","%s", warning_message.c_str ());
 }
 
 RubyLogger*
