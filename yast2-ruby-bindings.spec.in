@@ -18,8 +18,8 @@ BuildRequires:	swig cmake gcc-c++ yast2-core-devel
 BuildRequires:  yast2-devtools >= 2.16.3
 # libzypp-devel is missing .la requires
 BuildRequires:	ruby-devel
-Requires:	yast2-core >= 2.18.1
-BuildRequires:  yast2-core-devel >= 2.18.1
+Requires:	yast2-core >= 2.23.4
+BuildRequires:  yast2-core-devel >= 2.23.4
 Requires:       yast2-ycp-ui-bindings       >= 2.16.37
 BuildRequires:  yast2-ycp-ui-bindings-devel >= 2.16.37
 Requires:	ruby

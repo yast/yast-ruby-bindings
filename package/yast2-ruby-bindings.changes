@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed Jun 27 08:02:14 UTC 2012 - jreidinger@suse.com
+
+- adapt to changes in yast2-core
+- 0.3.13 
+
+-------------------------------------------------------------------
 Tue Jun 12 13:33:01 UTC 2012 - coolo@suse.com
 
 - finish the ruby 1.9 port
