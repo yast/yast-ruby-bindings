@@ -97,11 +97,24 @@ public:
      **/
     YCPValue callInner (string module, string function, bool method,
 			YCPList argList, constTypePtr wanted_result_type);
+    /**
+     * Ruby VALUEs do not have a reference count like YCP or Perl.
+     * To protect them from being garbage-collected, they must be marked
+     * via ruby_gc_mark
+     *
+     * A set is not enough: one VALUE can be referenced by multiple
+     * YCPValueReps
+     */
+    typedef std::map<VALUE, int> refcount_map_t;
     
-protected:
-    
+private:
+    static void gc_mark(void *object);
+    static void gc_free(void *object);
+
 public:
     static YRuby *	_yRuby;
+    static bool  _y_ruby_finalized;
+    refcount_map_t value_references_from_ycp;
 };
 
 #endif	// YRuby_h

@@ -46,6 +46,11 @@ Y2Component *Y2CCRuby::provideNamespace (const char *name)
     // is there a ruby module?
     // must be the same in Y2CCRuby and Y2RubyComponent
     string module = YCPPathSearch::find (YCPPathSearch::Module, string (name) + ".rb");
+    //lets try convert it with rails coding convention
+    if (module.empty())
+    {
+      module = YCPPathSearch::find (YCPPathSearch::Module, Y2RubyComponent::CamelCase2DelimSepated(name) + ".rb");
+    }
     
     if (!module.empty ())
     {

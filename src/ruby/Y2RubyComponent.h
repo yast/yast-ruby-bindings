@@ -23,6 +23,7 @@ as published by the Free Software Foundation; either version
 #define Y2RubyComponent_h
 
 #include "Y2.h"
+#include <string.h>
 
 
 /**
@@ -71,6 +72,13 @@ public:
      * free it. Thus, it's possible to share the instance.
      */
     Y2Namespace *import (const char* name);
+
+    /**
+     * Utility method to translate camelcase name of module to delimeter
+     * separated one. It is useful for loading modules which follows conventions
+     * so ActiveSupport namespace is from active_support.rb.
+     */
+    static const std::string CamelCase2DelimSepated (const char* name);
 };
 
 #endif	// Y2RubyComponent_h
