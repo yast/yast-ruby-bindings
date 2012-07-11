@@ -1,4 +1,15 @@
 -------------------------------------------------------------------
+Wed Jul 11 11:41:56 UTC 2012 - jreidinger@suse.com
+
+- backport from trunk
+  * survive exceptions in ruby and allow to access exception
+    message from ycp
+  * search for modules also in namespaces and with ruby convention
+    (bnc#705417)
+  * fix ruby stack initialization (bnc#708059)
+- 0.3.2.2
+
+-------------------------------------------------------------------
 Mon Feb  8 15:14:51 UTC 2010 - dmacvicar@suse.de
 
 - 0.3.2.1 
