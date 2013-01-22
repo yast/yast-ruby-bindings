@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 $LOAD_PATH << File.dirname(__FILE__)
 require "test_helper"
 
@@ -52,5 +54,21 @@ class BuiltinsPathTest < YCP::TestCase
     assert_equal nil, YCP::Builtins.substring(str, nil)
     assert_equal nil, YCP::Builtins.substring(str, nil, nil)
     assert_equal nil, YCP::Builtins.substring(str, 1, nil)
+  end
+
+  def test_tolower
+    assert_equal nil, YCP::Builtins.tolower(nil)
+    assert_equal "", YCP::Builtins.tolower("")
+    assert_equal "abc", YCP::Builtins.tolower("abc")
+    assert_equal "abc", YCP::Builtins.tolower("ABC")
+    assert_equal "abcÁÄÖČ", YCP::Builtins.tolower("ABCÁÄÖČ")
+  end
+
+  def test_toupper
+    assert_equal nil, YCP::Builtins.toupper(nil)
+    assert_equal "", YCP::Builtins.toupper("")
+    assert_equal "ABC", YCP::Builtins.toupper("ABC")
+    assert_equal "ABC", YCP::Builtins.toupper("abc")
+    assert_equal "ABCáäöč", YCP::Builtins.toupper("abcáäöč")
   end
 end

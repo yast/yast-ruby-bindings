@@ -27,5 +27,16 @@ module YCP
 
       string[offset, length]
     end
+
+    # tolower() YCP built-in
+    def self.tolower string
+      return nil if string.nil?
+      string.downcase
+    end
+
+    def self.toupper string
+      return nil if string.nil?
+      string.upcase
+    end
   end
 end
