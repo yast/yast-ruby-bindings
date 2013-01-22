@@ -27,39 +27,6 @@ require 'ycpx'
 #
 
 module YCP
-
-  # inserts a builtin in the
-  # ycp module
-  def self.import_builtin(name)
-    self.each_builtin do |bi, cat|
-      if name == bi
-        if cat == :namespace
-          m = Module.new
-          self.each_builtin_symbol(bi) do |bs, scat|
-            if scat == :builtin
-              m.module_eval <<-"END"
-                def self.#{bs.downcase.to_s}(*args)
-                  return YCP::call_ycp_builtin("SCR", "#{bs.to_s}", *args)
-                end
-              END
-            end
-          end # each builtin symbol
-          self.const_set(bi.to_s, m)
-          return
-        else
-          raise "builtin #{bi} can't be imported (not namespace)"
-        end # if namespace
-      end
-    end # each builtin
-    raise "can't import builtin '#{bi}'"
-  end
-
-  # initialize builtins and add them to
-  # the ycp module
-  def self.init_builtins
-    $stderr.puts "YCP::init_builtins"
-  end
-
   def self.add_ycp_module(mname)
     #y2internal("trying to add import #{mname}")
     self.import(mname)
@@ -87,13 +54,6 @@ module Kernel
   def require(name)
     if name =~ /^ycp\/(.+)$/
       ycpns = $1
-      
-      YCP::each_builtin do |bi, cat|
-        if bi.downcase == ycpns.downcase
-          YCP::import_builtin(bi)
-          return
-        end
-      end
 
       begin
         YCP::add_ycp_module(ycpns.upcase)
