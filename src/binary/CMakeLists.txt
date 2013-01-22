@@ -2,9 +2,9 @@ add_definitions(-DY2LOG=\"Ruby\")
 
 set(yast_ruby_module_SRCS
   YCP.cc
-  Y2RubyTypePath.cc       # YCP.cc -> ryast_path_init()
   Y2RubyTypeTerm.cc       # YCP.cc -> ryast_term_init()
   Y2RubyTypeConv.cc       # YCP.cc -> ycpvalue_2_rbvalue(), rbvalue_2_ycpvalue()
+  Y2YCPTypeConv.cc       # YCP.cc -> ycpvalue_2_rbvalue(), rbvalue_2_ycpvalue()
   RubyLogger.cc
   Y2RubyUtils.cc
   RubyLogger.h
@@ -17,7 +17,7 @@ set(ruby_yast_plugin_SRCS
   YRuby.cc
   YRubyNamespace.cc
   Y2RubyTypeConv.cc
-  Y2RubyTypePath.cc
+  Y2YCPTypeConv.cc
   Y2RubyTypeTerm.cc
   Y2RubyUtils.cc
 )
@@ -29,7 +29,6 @@ set(ruby_yast_plugin_HEADERS
   YRuby.h
   YRubyNamespace.h
   Y2RubyUtils.h
-  Y2RubyTypePath.h
   Y2RubyTypeTerm.h
 )
 

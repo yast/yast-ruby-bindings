@@ -19,12 +19,17 @@ as published by the Free Software Foundation; either version
 
 */
 
-#ifndef Y2RUBY_TYPE_PATH_H
-#define Y2RUBY_TYPE_PATH_H
+#ifndef Y2YCPTYPECONV_H
+#define Y2YCPTYPECONV_H
 
+#include <ycp/YCPValue.h>
 #include <ruby.h>
 
-void ryast_path_init( VALUE super );
+/**
+ * Converts a YCPValue into a Ruby Value
+ * Supports neested lists and maps using recursion.
+ */
+extern "C" VALUE
+ycpvalue_2_rbvalue( YCPValue ycpval );
 
 #endif
-

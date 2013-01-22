@@ -26,25 +26,11 @@ as published by the Free Software Foundation; either version
 #include <ruby.h>
 
 /**
- * Converts a YCPValue into a Ruby Value
- * Supports neested lists and maps using recursion.
- */
-extern "C" VALUE
-ycpvalue_2_rbvalue( YCPValue ycpval );
-
-/**
  * Converts a Ruby Value into a YCPValue
  * Supports neested lists and maps using recursion.
  */
 YCPValue
 rbvalue_2_ycpvalue( VALUE value );
-
-
-/**
- * excplicitly create a YCPPath from a Ruby value
- */
-YCPValue
-rbvalue_2_ycppath( VALUE value );
 
 #endif
 

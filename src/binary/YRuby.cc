@@ -56,6 +56,7 @@ as published by the Free Software Foundation; either version
 #define DIM(ARRAY)	( sizeof( ARRAY )/sizeof( ARRAY[0] ) )
 
 #include "Y2RubyTypeConv.h"
+#include "Y2YCPTypeConv.h"
 
 void inject_last_exception_method(VALUE& module,const string& message, const string& module_name)
 {

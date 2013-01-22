@@ -5,13 +5,13 @@ require "ycp/builtins"
 require "ycp/path"
 
 class BuiltinsPathTest < YCP::TestCase
-  def test_add_array
+  def test_add_list
     a = [1,2]
     assert_equal [1,2,3], YCP::Builtins.add(a,3)
     assert_equal [1,2], a
   end
 
-  def test_add_hash
+  def test_add_map
     h = { :a => 1, :b => 2 }
     res = YCP::Builtins.add(h,:c,3)
     assert_equal ({:a => 1, :b => 2, :c => 3}),res

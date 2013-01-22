@@ -41,8 +41,8 @@ as published by the Free Software Foundation; either version
 
 //#include "YRuby.h"
 #include "RubyLogger.h"
-#include "Y2RubyTypePath.h"
 #include "Y2RubyTypeTerm.h"
+#include "Y2YCPTypeConv.h"
 #include "Y2RubyTypeConv.h"
 #include "YRuby.h"
 
@@ -304,70 +304,6 @@ bool __find_symbol(const SymbolEntry & s)
 
 
 /*
- * each_builtin_symbol(name) -> iterator
- * 
- * each_builtin_symbol iterates all symbols in a +namespace+
- * and yields the symbol name and category
- * 
- *   YCP.each_builtin do |ns, cat|
- *     if cat == :namespace
- *       YCP.each_builtin_symbol(ns) do |sym, cat|
- *       ...
- *       end
- *     end
- *   end
- * 
- * 
- * call-seq:
- *   each_builtin_symbol("name") { |name, category| ... }
- * 
- */
-
-static VALUE
-ycp_module_each_builtin_symbol(VALUE self, VALUE name)
-{
-  extern StaticDeclaration static_declarations;
-  __name = StringValuePtr(name);
-  static_declarations.symbolTable()->forEach(__find_symbol);
-
-  const SymbolEntry *se = __symbol;
-  if (se == NULL)
-  {
-    y2error ("no such builtin '%s'", __name.c_str());
-    rb_raise( rb_eRuntimeError, "no YCP builtin %s\n", __name.c_str());
-  }
-
-  // convert to a YSymbol to access child symbols
-  const YSymbolEntry *ys = dynamic_cast<const YSymbolEntry *>(se);
-  if ( ys )
-  {
-    if ( ys->table() ) ys->table()->forEach(_yield_symbol_entry);
-  }
-  return Qnil;
-}
-
-
-/*
- * each_builtin
- * 
- * each_builtin iterates through YCP builtin symbols,
- * those of category +namespace+ can be
- * imported with import_builtin
- * 
- * call-seq:
- *   each_builtin { |name, category| ... }
- * 
- */
-
-static VALUE
-ycp_module_each_builtin(VALUE self)
-{
-  extern StaticDeclaration static_declarations;
-  static_declarations.symbolTable()->forEach(_yield_symbol_entry);
-  return Qnil;
-}
-
-/*
  * call_ycp_function
  * 
  * Forwards a ruby call to the namespace
@@ -498,15 +434,9 @@ _call_ycp_builtin ( const string &module_name, const string &func_name, int argc
   {
     // convert the value according to the expected type:
     constTypePtr param_tp = (j == 0)? Type::Path : Type::Any;
-    
-    // convert the first argument to a path
-    YCPValue param_v;
-    // HACK SCR path conversion
-    if ( (j == 0) && (module_name == "SCR") )
-      param_v = rbvalue_2_ycppath(argv[j]);
-    else
-      param_v = rbvalue_2_ycpvalue(argv[j] /*, param_tp */);
-    
+
+    YCPValue param_v = rbvalue_2_ycpvalue(argv[j] /*, param_tp */);
+
     if (param_v.isNull ())
     {
       // an error has already been reported, now refine it.
@@ -558,25 +488,6 @@ _call_ycp_builtin ( const string &module_name, const string &func_name, int argc
   delete bi_call;
 
   return ret_yv;
-}
-
-
-VALUE
-ycp_module_call_ycp_builtin( int argc, VALUE *argv, VALUE self )
-{
-  YCPValue res;
-  VALUE symbol_s;
-  VALUE symbol = argv[1];
-  const char *namespace_name = StringValuePtr(argv[0]);
-
-  // the func name (1st argument, is a symbol
-  // lets convert it to string
-  symbol_s = rb_funcall(symbol, rb_intern("to_s"), 0);
-  const char *symbol_str = StringValuePtr(symbol_s);
-
-  y2internal("builtin proxy: [%s::%s] is a builtin call with %d params\n", namespace_name, symbol_str, argc);
-  res = _call_ycp_builtin( namespace_name, symbol_str, argc-2, argv+2);
-  return ycpvalue_2_rbvalue(res);
 }
 
 
@@ -669,12 +580,9 @@ extern "C"
     rb_mYCP = rb_define_module("YCP");
     rb_define_singleton_method( rb_mYCP, "import", RUBY_METHOD_FUNC(ycp_module_import), 1);
     rb_define_singleton_method( rb_mYCP, "call_ycp_function", RUBY_METHOD_FUNC(ycp_module_call_ycp_function), -1);
-    rb_define_singleton_method( rb_mYCP, "call_ycp_builtin", RUBY_METHOD_FUNC(ycp_module_call_ycp_builtin), -1);
     rb_define_singleton_method( rb_mYCP, "method_missing", RUBY_METHOD_FUNC(ycp_method_missing), -1);
 
     rb_define_singleton_method( rb_mYCP, "each_symbol", RUBY_METHOD_FUNC(ycp_module_each_symbol), 1);
-    rb_define_singleton_method( rb_mYCP, "each_builtin_symbol", RUBY_METHOD_FUNC(ycp_module_each_builtin_symbol), 1);
-    rb_define_singleton_method( rb_mYCP, "each_builtin", RUBY_METHOD_FUNC(ycp_module_each_builtin), 0);
 
     /*
      * module YCP::Ui
@@ -687,9 +595,7 @@ extern "C"
      */
     rb_mYaST = rb_define_module("YaST");
     rb_define_method( rb_mYaST, "logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
-    
-    y2internal("ryast_path_init\n");
-    ryast_path_init(rb_mYaST);
+
     y2internal("ryast_term_init\n");
     ryast_term_init(rb_mYaST);
 
