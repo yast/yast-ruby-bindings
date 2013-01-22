@@ -39,5 +39,16 @@ module YCP
       return nil if string.nil?
       string.upcase
     end
+
+    # size() YCP built-in
+    def self.size object
+      return nil if object.nil?
+
+      case object
+      when String, Array, Hash then return object.size
+      else
+        raise "Invalid object for size() builtin"
+      end
+    end
   end
 end
