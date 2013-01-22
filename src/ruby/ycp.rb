@@ -27,9 +27,8 @@ require 'ycpx'
 #
 
 module YCP
-  def self.add_ycp_module(mname)
-    #y2internal("trying to add import #{mname}")
-    self.import(mname)
+  def self.import(mname)
+    self.import_pure(mname)
     m = Module.new
     self.each_symbol(mname) do |sname,stype|
       if (stype == :function) and !sname.empty?
@@ -46,36 +45,12 @@ end
 
 #--------------------------------------
 #
-# Kernel
-#
-
-module Kernel
-  alias require_ require 
-  def require(name)
-    if name =~ /^ycp\/(.+)$/
-      ycpns = $1
-
-      begin
-        YCP::add_ycp_module(ycpns.upcase)
-      rescue RuntimeError => e
-        YCP::add_ycp_module(ycpns.capitalize)
-      end
-      return true
-    end
-    return require_(name)
-  end
-end
-
-
-#--------------------------------------
-#
 # YCP::Ui
 #
 
 module YCP
   module Ui
-    #my @e_logging = qw(y2debug y2milestone y2warning y2error y2security y2internal);
-    
+
   # Define symbols for the UI
   ui_terms = [ :BarGraph, :Bottom, :CheckBox, :ColoredLabel, :ComboBox, :Date,
     :DownloadProgress, :DumbTab, :DummySpecialWidget, :Empty, :Frame, :HBox, :HBoxvHCenter,
@@ -88,20 +63,8 @@ module YCP
     :TextEntry, :Time, :Top, :Tree, :VBox, :VCenter, :VMultiProgressMeter, :VSpacing,
     :VSquash, :VStretch, :VWeight, :Wizard,
     :id, :opt ]
-       
-#     buffer = String.new
-#     buffer << "["
-#     ui_terms.each do |t|
-#       buffer << " :" << t.to_s.downcase << ","
-#     end
-#     buffer <<  " ]"
-#     puts buffer
-    # If the method name contains underscores, convert to camel case
-#     while method =~ /([^_]*)_(.)(.*)/ 
-#            method = $1 + $2.upcase + $3
-#        end
-         
-    # for each symbol define a util function that will create a term
+
+   # for each symbol define a util function that will create a term
     ui_terms.each do | term_name |
       define_method(term_name) do | *args |
         t = YaST::Term.new(term_name.to_s)
@@ -116,51 +79,6 @@ module YCP
   end # end Ui module
 end
 
-
-#--------------------------------------
-#
-# YaST::TermBuilder
-#
-
-module YaST
-  class TermBuilder
-    # blank slate
-    instance_methods.each { |m| undef_method m unless (m =~ /^__|instance_eval$/)}
-    
-    def initialize(&block)
-        @term = nil
-        @term = instance_eval(&block)
-    end
-    
-    def method_missing(name, *args, &block )
-  #    puts "hi #{name.to_s} | #{args}"
-      term = nil
-      elements = block ? nil : args
-      @__to_s = nil # invalidate to_s cache
-      term = YaST::Term.new(name.to_s)
-      if not elements.nil?
-        elements.each do | e |
-          term.add(e)
-        end
-        return term
-      else
-        r = instance_eval(&block)
-        puts term.class
-        term.add(r) if not r.nil?
-      end
-      return term
-    end
-    
-    def to_s
-      return @term.to_s
-    end
-    
-    def term
-      return @term
-    end
-    
-  end
-end # module YaST
 
 #--------------------------------------
 #

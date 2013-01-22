@@ -270,47 +270,14 @@ ycp_module_each_symbol(VALUE self, VALUE namespace_name)
 }
 
 
-/**
- * helper method
- * 
- * yield a SymbolEntry as [ name, category ]
- */
-static bool _yield_symbol_entry(const SymbolEntry & s)
-{
-  VALUE arr = rb_ary_new();
-  rb_ary_push(arr, rb_str_new2(s.name()));
-  rb_ary_push(arr, ID2SYM(rb_intern(s.catString().c_str())));
-  rb_yield(arr);
-  return true;
-}
-
-  
-/** 
- * helper for each_builtin_symbol
- */
-static const SymbolEntry * __symbol = 0L;
-static string __name;
-
-static
-bool __find_symbol(const SymbolEntry & s)
-{
-  if (s.name() == __name)
-  {
-    __symbol = &s;
-    return false;
-  }
-  return true;
-}
-
-
 /*
  * call_ycp_function
- * 
+ *
  * Forwards a ruby call to the namespace
- * 
+ *
  * First argument is the namespace
  * then function name and arguments
- * 
+ *
  */
 
 static VALUE
@@ -491,29 +458,6 @@ _call_ycp_builtin ( const string &module_name, const string &func_name, int argc
 }
 
 
-/*
- * YCP::method_missing
- *
- */
-
-VALUE
-ycp_method_missing( int argc, VALUE *argv, VALUE self )
-{
-  const char *function_name;
-  VALUE symbol = argv[0];
-
-  if (SYMBOL_P(symbol)) 
-    function_name = (const char *)rb_id2name( SYM2ID( symbol ) );
-  else
-    function_name = StringValuePtr( symbol );
-
-  y2internal("builtin proxy: [%s] is a builtin call with %d params\n", function_name, argc);
-  YCPValue res;
-  res = _call_ycp_builtin( "", function_name, argc-1, argv+1);
-  return ycpvalue_2_rbvalue(res);
-}
-
-
 /*--------------------------------------------
  * 
  * Document-module: YaST
@@ -578,9 +522,8 @@ extern "C"
      * module YCP
      */
     rb_mYCP = rb_define_module("YCP");
-    rb_define_singleton_method( rb_mYCP, "import", RUBY_METHOD_FUNC(ycp_module_import), 1);
+    rb_define_singleton_method( rb_mYCP, "import_pure", RUBY_METHOD_FUNC(ycp_module_import), 1);
     rb_define_singleton_method( rb_mYCP, "call_ycp_function", RUBY_METHOD_FUNC(ycp_module_call_ycp_function), -1);
-    rb_define_singleton_method( rb_mYCP, "method_missing", RUBY_METHOD_FUNC(ycp_method_missing), -1);
 
     rb_define_singleton_method( rb_mYCP, "each_symbol", RUBY_METHOD_FUNC(ycp_module_each_symbol), 1);
 
