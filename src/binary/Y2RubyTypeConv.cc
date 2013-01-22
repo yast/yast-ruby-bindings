@@ -39,7 +39,6 @@ as published by the Free Software Foundation; either version
 #include <cassert>
 
 #include "YRuby.h"
-#include "Y2RubyTypeTerm.h"
 
 #include "Y2RubyTypeConv.h"
 
@@ -130,6 +129,17 @@ rbpath_2_ycppath( VALUE value )
   VALUE stringrep = rb_funcall(value, rb_intern("value"), 0);
   return  YCPPath(StringValuePtr(stringrep));
 }
+static YCPValue
+rbterm_2_ycpterm( VALUE value )
+{
+  VALUE id = rb_funcall(value, rb_intern("value"), 0);
+  VALUE params = rb_funcall(value, rb_intern("params"), 0);
+  const char * id_s = rb_id2name(SYM2ID(id));
+  if (params == Qnil)
+    return YCPTerm(id_s);
+  return YCPTerm(id_s,rbarray_2_ycplist(params));
+}
+
 
 /*
  * rbvalue_2_ycpvalue
@@ -176,14 +186,13 @@ rbvalue_2_ycpvalue( VALUE value )
   {
     VALUE cname = rb_funcall(rb_funcall(value, rb_intern("class"), 0), rb_intern("to_s"), 0);
     const char *class_name = StringValuePtr(cname);
-    /* get the Term class object */
-    if ( !strcmp(class_name, "YaST::Term") )
-    {
-      return ryast_yterm_from_rterm(value);
-    }
-    else if ( !strcmp(class_name, "YaST::Path"))
+    if ( !strcmp(class_name, "YCP::Path"))
     {
       return rbpath_2_ycppath(value);
+    }
+    else if ( !strcmp(class_name, "YCP::Term"))
+    {
+      return rbterm_2_ycpterm(value);
     }
     else
     {

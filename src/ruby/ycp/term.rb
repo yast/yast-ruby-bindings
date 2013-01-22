@@ -17,10 +17,10 @@ module YCP
     def != second
       !(self == second)
     end
-    
+
     def [] index
       params[index]
     end
-    
+
   end
 end

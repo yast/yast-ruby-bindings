@@ -41,7 +41,6 @@ as published by the Free Software Foundation; either version
 
 //#include "YRuby.h"
 #include "RubyLogger.h"
-#include "Y2RubyTypeTerm.h"
 #include "Y2YCPTypeConv.h"
 #include "Y2RubyTypeConv.h"
 #include "YRuby.h"
@@ -538,10 +537,5 @@ extern "C"
      */
     rb_mYaST = rb_define_module("YaST");
     rb_define_method( rb_mYaST, "logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
-
-    y2internal("ryast_term_init\n");
-    ryast_term_init(rb_mYaST);
-
-    y2internal("Init_ycpx done\n");
   }
 }
