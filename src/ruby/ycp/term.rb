@@ -7,7 +7,7 @@ module YCP
 
     def initialize value, *params
       @value = value
-      @params = *params
+      @params = params
     end
 
     def == second
