@@ -84,4 +84,8 @@ class BuiltinsPathTest < YCP::TestCase
     assert_equal 2, YCP::Builtins.size(YCP::Term.new(:HBox, "test", "test"))
     assert_equal 1, YCP::Builtins.size(YCP::Term.new(:HBox, YCP::Term.new(:VBox, "test", "test")))
   end
+
+  def test_time
+    assert YCP::Builtins.time > 0
+  end
 end

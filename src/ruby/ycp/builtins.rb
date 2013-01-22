@@ -50,5 +50,10 @@ module YCP
         raise "Invalid object for size() builtin"
       end
     end
+
+    # time() YCP built-in
+    def self.time
+      Time.now.to_i
+    end
   end
 end
