@@ -19,7 +19,7 @@ module YCP
     # substring() YCP built-in
     # little bit complicated because YCP returns different values
     # in corner cases (nil or negative parameters, out of range...)
-    def self.substring string, offset, length = (string.nil? ? nil : string.size - (offset.nil? ? 0 : offset))
+    def self.substring string, offset, length = -1
       return nil if string.nil? || offset.nil? || length.nil?
       return "" if offset < 0 || offset >= string.size
 
