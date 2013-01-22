@@ -2,14 +2,12 @@
 # Test Ycp.import
 #
 
-$:.unshift "../../build/src/ruby"
-$:.unshift "../../src/ruby"
-ENV["Y2DIR"] = File.dirname(__FILE__)
+$LOAD_PATH << File.dirname(__FILE__)
+require "test_helper"
 
-require 'test/unit'
 require 'ycp'
 
-class YcpTest < Test::Unit::TestCase
+class YcpImportTest < YCP::TestCase
   def test_import
     assert YCP
     # testing explicit import of ycp module

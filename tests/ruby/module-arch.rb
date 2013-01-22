@@ -1,16 +1,13 @@
 #
 # Test Arch.ycp
 #
+$LOAD_PATH << File.dirname(__FILE__)
+require "test_helper"
 
-$:.unshift "../../build/src/ruby" # ycpx.so
-$:.unshift "../../src/ruby"       # ycp.rb
-ENV["Y2DIR"] = File.dirname(__FILE__)
+require 'ycp'
 
-require 'test/unit'
-
-class ArchTest < Test::Unit::TestCase
+class ArchTest < YCP::TestCase
   def test_arch
-    require 'ycp'
     # testing implicit import of ycp module
     # see also ycp_import.rb
     require 'ycp/arch'

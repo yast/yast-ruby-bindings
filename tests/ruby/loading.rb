@@ -2,13 +2,10 @@
 # Test loading of the bindings
 #
 
-$:.unshift "../../build/src/ruby" # ycpx.so
-$:.unshift "../../src/ruby"       # ycp.rb
+$LOAD_PATH << File.dirname(__FILE__)
+require "test_helper"
 
-# test loading of extension
-require 'test/unit'
-
-class LoadTest < Test::Unit::TestCase
+class LoadTest < YCP::TestCase
   def test_loadingx
     require 'ycpx'
     assert true
