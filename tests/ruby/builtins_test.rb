@@ -27,4 +27,30 @@ class BuiltinsPathTest < YCP::TestCase
     assert_equal expected_res, YCP::Builtins.add(p1,p3)
     assert_equal YCP::Path.new(".etc"),p1
   end
+
+  def test_substring
+    str = "12345"
+
+    assert_equal str, YCP::Builtins.substring(str, 0)
+    assert_equal "345", YCP::Builtins.substring(str, 2)
+
+    assert_equal "", YCP::Builtins.substring(str, 2, 0)
+    assert_equal "34", YCP::Builtins.substring(str, 2, 2)
+
+    # tests from YCP documentation
+    assert_equal "text", YCP::Builtins.substring("some text", 5)
+    assert_equal "", YCP::Builtins.substring("some text", 42)
+    assert_equal "te", YCP::Builtins.substring("some text", 5, 2)
+    assert_equal "", YCP::Builtins.substring("some text", 42, 2)
+    assert_equal "345", YCP::Builtins.substring("123456789", 2, 3)
+
+    # check some corner cases to be YCP compatible
+    assert_equal nil, YCP::Builtins.substring(nil, 2)
+    assert_equal "", YCP::Builtins.substring(str, -1)
+    assert_equal "345", YCP::Builtins.substring(str, 2, -1)
+
+    assert_equal nil, YCP::Builtins.substring(str, nil)
+    assert_equal nil, YCP::Builtins.substring(str, nil, nil)
+    assert_equal nil, YCP::Builtins.substring(str, 1, nil)
+  end
 end

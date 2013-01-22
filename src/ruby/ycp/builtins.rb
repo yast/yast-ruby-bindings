@@ -15,5 +15,17 @@ module YCP
         raise "Invalid object for add builtin"
       end
     end
+
+    # substring() YCP built-in
+    # little bit complicated because YCP returns different values
+    # in corner cases (nil or negative parameters, out of range...)
+    def self.substring string, offset, length = (string.nil? ? nil : string.size - (offset.nil? ? 0 : offset))
+      return nil if string.nil? || offset.nil? || length.nil?
+      return "" if offset < 0 || offset >= string.size
+
+      length = string.size - offset if length < 0
+
+      string[offset, length]
+    end
   end
 end
