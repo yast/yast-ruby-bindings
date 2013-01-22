@@ -5,6 +5,7 @@ require "test_helper"
 
 require "ycp/builtins"
 require "ycp/path"
+require "ycp/term"
 
 class BuiltinsPathTest < YCP::TestCase
   def test_add_list
@@ -77,5 +78,10 @@ class BuiltinsPathTest < YCP::TestCase
     assert_equal 0, YCP::Builtins.size([])
     assert_equal 0, YCP::Builtins.size({})
     assert_equal 0, YCP::Builtins.size("")
+
+    assert_equal 0, YCP::Builtins.size(YCP::Term.new(:HBox))
+    assert_equal 1, YCP::Builtins.size(YCP::Term.new(:HBox, "test"))
+    assert_equal 2, YCP::Builtins.size(YCP::Term.new(:HBox, "test", "test"))
+    assert_equal 1, YCP::Builtins.size(YCP::Term.new(:HBox, YCP::Term.new(:VBox, "test", "test")))
   end
 end

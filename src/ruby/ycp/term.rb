@@ -21,6 +21,9 @@ module YCP
     def [] index
       params[index]
     end
-    
+
+    def size
+      params.size
+    end
   end
 end

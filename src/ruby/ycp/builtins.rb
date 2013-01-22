@@ -45,7 +45,7 @@ module YCP
       return nil if object.nil?
 
       case object
-      when String, Array, Hash then return object.size
+      when String, Array, Hash, YCP::Term then return object.size
       else
         raise "Invalid object for size() builtin"
       end
