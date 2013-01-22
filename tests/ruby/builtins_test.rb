@@ -19,8 +19,8 @@ class BuiltinsPathTest < YCP::TestCase
   end
 
   def test_add_path
-    p1 = YCP::Path.new (".etc")
-    p2 = YCP::Path.new (".sysconfig")
+    p1 = YCP::Path.new(".etc")
+    p2 = YCP::Path.new(".sysconfig")
     p3 = "sysconfig"
     expected_res = YCP::Path.new(".etc.sysconfig")
     assert_equal expected_res, YCP::Builtins.add(p1,p2)
