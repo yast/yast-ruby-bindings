@@ -27,7 +27,7 @@ require 'ycpx'
 #
 
 module YCP
-  
+
   # inserts a builtin in the
   # ycp module
   def self.import_builtin(name)
