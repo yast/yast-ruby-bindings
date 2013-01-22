@@ -34,6 +34,7 @@ module YCP
       string.downcase
     end
 
+    # toupper() YCP built-in
     def self.toupper string
       return nil if string.nil?
       string.upcase
