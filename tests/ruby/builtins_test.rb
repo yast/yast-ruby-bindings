@@ -146,4 +146,12 @@ class BuiltinsPathTest < YCP::TestCase
   def test_time
     assert YCP::Builtins.time > 0
   end
+
+  def test_find
+    assert_equal nil, YCP::Builtins.find(nil, nil)
+    assert_equal nil, YCP::Builtins.find("", nil)
+
+    assert_equal 0, YCP::Builtins.find("", "")
+    assert_equal 2, YCP::Builtins.find("1234", "3")
+  end
 end

@@ -86,5 +86,16 @@ module YCP
     def self.time
       Time.now.to_i
     end
+
+    # find() YCP built-in
+    def self.find object, what
+      return nil if object.nil? || what.nil?
+
+      case object
+      when String then return object.index what
+      else
+        raise "Invalid object for find() builtin"
+      end
+    end
   end
 end
