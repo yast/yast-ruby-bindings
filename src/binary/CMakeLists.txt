@@ -56,7 +56,7 @@ set_target_properties(ycpx PROPERTIES PREFIX "")
 # not work.
 #
 #set_target_properties( ycpx PROPERTIES SKIP_BUILD_RPATH FALSE)
-#set_target_properties( ycpx PROPERTIES BUILD_WITH_INSTALL_RPATH FALSE) 
+#set_target_properties( ycpx PROPERTIES BUILD_WITH_INSTALL_RPATH FALSE)
 #set_target_properties( ycpx PROPERTIES INSTALL_RPATH_USE_LINK_PATH FALSE)
 #set_target_properties( ycpx PROPERTIES INSTALL_RPATH "${YAST_PLUGIN_DIR}")
 #

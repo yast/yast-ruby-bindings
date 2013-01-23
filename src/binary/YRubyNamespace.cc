@@ -183,13 +183,13 @@ YRubyNamespace::YRubyNamespace (string name)
   VALUE moduleklassmethods = rb_funcall( rb_cModule, rb_intern("methods"), 0);
   VALUE mymodulemethods = rb_funcall( module, rb_intern("methods"), 0);
   VALUE methods = rb_funcall( mymodulemethods, rb_intern("-"), 1, moduleklassmethods );
-      
+
   if (methods == Qnil)
   {
     y2error ("Can't see methods in module '%s'", name.c_str());
     return;
   }
-  
+
   int i;
   for(i = 0; i < RARRAY_LEN(methods); i++)
   {
@@ -198,7 +198,7 @@ YRubyNamespace::YRubyNamespace (string name)
 	current = rb_funcall( current, rb_intern("to_s"), 0);
     }
     y2milestone("New method: '%s'", RSTRING_PTR(current));
-    
+
     // figure out arity.
     Check_Type(module,T_MODULE);
     VALUE methodobj = rb_funcall( module, rb_intern("method"), 1, current );
@@ -219,7 +219,7 @@ YRubyNamespace::YRubyNamespace (string name)
     signature += ")";
     y2internal("going to parse signature: '%s'", signature.c_str());
     constTypePtr sym_tp = Type::fromSignature(signature);
-    
+
     constFunctionTypePtr fun_tp = (constFunctionTypePtr) sym_tp;
 
     // symbol entry for the function

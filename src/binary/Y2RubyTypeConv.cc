@@ -68,9 +68,9 @@ static YCPMap rbhash_2_ycpmap( VALUE value )
 
 /*
  * rbarray_2_ycplist
- * 
+ *
  * Internal helper for Array -> YCPList
- * 
+ *
  */
 
 static YCPList rbarray_2_ycplist( VALUE value )

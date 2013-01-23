@@ -85,22 +85,22 @@ getNs (const char * ns_name)
   return ns;
 }
 
-  
+
 /*--------------------------------------------
- * 
+ *
  * Document-module: YCP::Ui
- * 
+ *
  *--------------------------------------------
  */
 
 /*
  * ui_init()
- * 
+ *
  * Load and initialize UI component
- * 
+ *
  * call-seq:
  *   Ui::init( name = "ncurses" )
- * 
+ *
  */
 
 static VALUE
@@ -151,13 +151,13 @@ ui_init( int argc, VALUE *argv, VALUE self )
 
 
 /*--------------------------------------------
- * 
+ *
  * Document-module: YCP
- * 
+ *
  * The YCP module gives access to primitives of the YCP language.
- * 
+ *
  * Its here for completeness, you're mostly better off using Ruby library functions.
- * 
+ *
  *--------------------------------------------
  */
 
@@ -167,7 +167,7 @@ ui_init( int argc, VALUE *argv, VALUE self )
  * Helper
  *
  * lookup_namespace_component()
- * 
+ *
  * looks a component for a namespace
  * throws RuntimeError is namespace cannot be found
  *
@@ -186,13 +186,13 @@ lookup_namespace_component(const char *name)
   return;
 }
 
-  
+
 /*
  * import_namespace
- * 
+ *
  * tries to import a namespace
  * throws a NameError if failed
- * 
+ *
  */
 static VALUE
 import_namespace( const char *name)
@@ -213,14 +213,14 @@ import_namespace( const char *name)
 
 /*
  * import( name )
- * 
+ *
  * Tries to import a YCP namespace
  *
  * call-seq:
  *   YCP::import("name")
- * 
+ *
  */
-  
+
 static VALUE
 ycp_module_import( VALUE self, VALUE name)
 {
@@ -229,18 +229,18 @@ ycp_module_import( VALUE self, VALUE name)
   return import_namespace(s);
 }
 
-  
+
 /*
  * ycp_module_each_symbol(namespace) -> iterator
- * 
+ *
  * iterates all symbols in a namespace and yields the
  * symbol name and category
- * 
+ *
  * call-seq:
  *   each_symbol("namespace") { |symbol,category| ... }
- * 
+ *
  */
-  
+
 static VALUE
 ycp_module_each_symbol(VALUE self, VALUE namespace_name)
 {
@@ -286,11 +286,11 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
   const char *function_name;
   VALUE symbol = argv[1];
 
-  if (SYMBOL_P(symbol)) 
+  if (SYMBOL_P(symbol))
     function_name = (const char *)rb_id2name( SYM2ID( symbol ) );
   else
     function_name = StringValuePtr( symbol );
-  
+
   y2internal("Dynamic Proxy: [%s::%s] with [%d] params\n", namespace_name, function_name, argc);
 
   //Data_Get_Struct( self, class Y2Namespace, ns );
@@ -362,7 +362,7 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
 
 /*
  * helper for call_ycp_builtin
- * 
+ *
  */
 
 YCPValue
@@ -375,7 +375,7 @@ _call_ycp_builtin ( const string &module_name, const string &func_name, int argc
   const char *qualified_name = qualified_name_s.c_str ();
 
   y2milestone("qualified name '%s', %d args", qualified_name, argc);
-  
+
   declaration_t *bi_dt = static_declarations.findDeclaration (qualified_name);
   if (bi_dt == NULL)
   {
@@ -457,11 +457,11 @@ _call_ycp_builtin ( const string &module_name, const string &func_name, int argc
 
 
 /*--------------------------------------------
- * 
+ *
  * Document-module: YaST
- * 
+ *
  * The YaST module gives access to the YaST infrastructure, mostly implemented in the YCP language.
- * 
+ *
  *--------------------------------------------
  */
 
@@ -493,10 +493,10 @@ extern "C"
 {
   /*
    * Ruby module initializer
-   * 
+   *
    * "require 'ycpx'" will call Init_ycpx()
    */
-  
+
   void
   Init_ycpx()
   {

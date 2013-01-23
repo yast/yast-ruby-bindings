@@ -75,7 +75,7 @@ bool YRuby::_y_ruby_finalized = false;
 YRuby::YRuby()
 {
   y2milestone( "Initializing ruby interpreter." );
-  
+
   RUBY_INIT_STACK;
   ruby_init();
   ruby_script("yast");
@@ -162,7 +162,7 @@ static VALUE
 protected_call(VALUE args)
 {
   VALUE *values = (VALUE *)args;
-  return rb_funcall3(values[0], values[1], (int)values[2], values+3);	
+  return rb_funcall3(values[0], values[1], (int)values[2], values+3);
 }
 
 /**
@@ -179,10 +179,10 @@ YRuby::callInner (string module_name, string function, bool method,
     y2error ("The Ruby module '%s' is not provided by its rb file", module_name.c_str());
     return YCPVoid();
   }
-  
+
   // first element of the list is ignored
   int size = argList.size();
-  
+
   // make rooms for size-1 arguments to
   // the ruby function
   // +3 for module, function, and number of args

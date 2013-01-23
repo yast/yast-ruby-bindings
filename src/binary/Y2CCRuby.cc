@@ -51,7 +51,7 @@ Y2Component *Y2CCRuby::provideNamespace (const char *name)
     {
       module = YCPPathSearch::find (YCPPathSearch::Module, Y2RubyComponent::CamelCase2DelimSepated(name) + ".rb");
     }
-    
+
     if (!module.empty ())
     {
       y2milestone("Find module result: '%s'", module.c_str());

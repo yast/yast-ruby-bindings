@@ -67,7 +67,7 @@ public:
      **/
     static YCPValue destroy();
 
-    
+
 protected:
 
     /**
@@ -80,7 +80,7 @@ protected:
      * Protected constructor. Use one of the static methods rather than
      * instantiate an object of this class yourself.
      **/
-    
+
     /**
      * Destructor.
      **/
@@ -106,7 +106,7 @@ public:
      * YCPValueReps
      */
     typedef std::map<VALUE, int> refcount_map_t;
-    
+
 private:
     static void gc_mark(void *object);
     static void gc_free(void *object);
