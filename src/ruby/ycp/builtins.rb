@@ -1,4 +1,5 @@
 require "ycp/path"
+require "ycp/helper"
 
 module YCP
   module Builtins
@@ -41,6 +42,14 @@ module YCP
 
       # the big negative value forces keeping empty values in the list
       string.split /[#{Regexp.escape sep}]/, -1 * 2**20
+    end
+
+    # regexpmatch() YCP built-in
+    def self.regexpmatch string, regexp
+      return nil if string.nil? || regexp.nil?
+
+      ruby_regexp = YCP::Helper.ruby_regexp regexp
+      !string.match(ruby_regexp).nil?
     end
 
     # tolower() YCP built-in

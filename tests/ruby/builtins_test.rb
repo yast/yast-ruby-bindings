@@ -82,6 +82,16 @@ class BuiltinsPathTest < YCP::TestCase
     assert_equal ["text", "with", "different", "separators"], YCP::Builtins.splitstring("text/with:different/separators", "/:")
   end
 
+  def test_regexpmatch
+    assert_equal nil, YCP::Builtins.regexpmatch(nil, nil)
+    assert_equal nil, YCP::Builtins.regexpmatch("", nil)
+    assert_equal true, YCP::Builtins.regexpmatch("", "")
+    assert_equal true, YCP::Builtins.regexpmatch("abc", "")
+
+    assert_equal true, YCP::Builtins.regexpmatch("abc", "^a")
+    assert_equal true, YCP::Builtins.regexpmatch("abc", "c$")
+  end
+
   def test_tolower
     assert_equal nil, YCP::Builtins.tolower(nil)
     assert_equal "", YCP::Builtins.tolower("")
