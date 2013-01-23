@@ -174,64 +174,102 @@ YRubyNamespace::YRubyNamespace (string name)
   VALUE module = y2ruby_nested_const_get(name);
   if (module == Qnil)
   {
-    y2error ("The Ruby module '%s' is not provided by its rb file", name.c_str());
-    return;
+    y2milestone ("The Ruby module '%s' is not provided by its rb file. Try it with YCP prefix.", name.c_str());
+    //modules can live in YCP namespace, it is OK
+    string alternative_name = string("YCP::")+name;
+    module = y2ruby_nested_const_get(alternative_name);
+    if (module == Qnil)
+    {
+      y2error ("The Ruby module '%s' is not provided by its rb file", alternative_name.c_str());
+      return;
+    }
   }
   y2milestone("The module '%s' was found", name.c_str());
 
-  // we will perform operator- to determine the module methods
-  VALUE moduleklassmethods = rb_funcall( rb_cModule, rb_intern("methods"), 0);
-  VALUE mymodulemethods = rb_funcall( module, rb_intern("methods"), 0);
-  VALUE methods = rb_funcall( mymodulemethods, rb_intern("-"), 1, moduleklassmethods );
-
-  if (methods == Qnil)
+  long i = 0; //trace number of added method, so we can add extra one at the end
+  //detect if module use new approach for exporting methods or old one
+  if (rb_respond_to(module, rb_intern("published_methods" )))
   {
-    y2error ("Can't see methods in module '%s'", name.c_str());
-    return;
+    VALUE methods = rb_funcall(module, rb_intern("published_methods"),0);
+    methods = rb_funcall(methods,rb_intern("values"),0);
+    for (i = 0; i < RARRAY_LEN(methods); ++i)
+    {
+      VALUE method = rb_ary_entry(methods,i);
+      VALUE method_name = rb_funcall(method, rb_intern("method_name"), 0);
+      VALUE type = rb_funcall(method,rb_intern("type"),0);
+      string signature = StringValueCStr(type);
+      constTypePtr sym_tp = Type::fromSignature(signature);
+
+      constFunctionTypePtr fun_tp = (constFunctionTypePtr) sym_tp;
+
+      // symbol entry for the function
+      SymbolEntry *fun_se = new SymbolEntry ( this,
+                                              i,// position. arbitrary numbering. must stay consistent when?
+                                              RSTRING_PTR(method_name), // passed to Ustring, no need to strdup
+                                              SymbolEntry::c_function,
+                                              sym_tp);
+      fun_se->setGlobal (true);
+      // enter it to the symbol table
+      enterSymbol (fun_se, 0);
+      y2milestone("method: '%s' added", RSTRING_PTR(method_name));
+
+    }
   }
-
-  int i;
-  for(i = 0; i < RARRAY_LEN(methods); i++)
+  else
   {
-    VALUE current = rb_funcall( methods, rb_intern("at"), 1, rb_fix_new(i) );
-    if (rb_type(current) == RUBY_T_SYMBOL) {
-	current = rb_funcall( current, rb_intern("to_s"), 0);
-    }
-    y2milestone("New method: '%s'", RSTRING_PTR(current));
+    // we will perform operator- to determine the module methods
+    VALUE moduleklassmethods = rb_funcall( rb_cModule, rb_intern("methods"), 0);
+    VALUE mymodulemethods = rb_funcall( module, rb_intern("methods"), 0);
+    VALUE methods = rb_funcall( mymodulemethods, rb_intern("-"), 1, moduleklassmethods );
 
-    // figure out arity.
-    Check_Type(module,T_MODULE);
-    VALUE methodobj = rb_funcall( module, rb_intern("method"), 1, current );
-    if ( methodobj == Qnil )
+    if (methods == Qnil)
     {
-      y2error ("Cannot access method object '%s'", RSTRING_PTR(current));
-      continue;
+      y2error ("Can't see methods in module '%s'", name.c_str());
+      return;
     }
-    string signature = "any( ";
-    VALUE rbarity = rb_funcall( methodobj, rb_intern("arity"), 0);
-    int arity = NUM2INT(rbarity);
-    for ( int k=0; k < arity; ++k )
+
+    for(i = 0; i < RARRAY_LEN(methods); i++)
     {
-      signature += "any";
-      if ( k < (arity - 1) )
-          signature += ",";
+      VALUE current = rb_funcall( methods, rb_intern("at"), 1, rb_fix_new(i) );
+      if (rb_type(current) == RUBY_T_SYMBOL) {
+    current = rb_funcall( current, rb_intern("to_s"), 0);
+      }
+      y2milestone("New method: '%s'", RSTRING_PTR(current));
+
+      // figure out arity.
+      Check_Type(module,T_MODULE);
+      VALUE methodobj = rb_funcall( module, rb_intern("method"), 1, current );
+      if ( methodobj == Qnil )
+      {
+        y2error ("Cannot access method object '%s'", RSTRING_PTR(current));
+        continue;
+      }
+      string signature = "any( ";
+      VALUE rbarity = rb_funcall( methodobj, rb_intern("arity"), 0);
+      int arity = NUM2INT(rbarity);
+      for ( int k=0; k < arity; ++k )
+      {
+        signature += "any";
+        if ( k < (arity - 1) )
+            signature += ",";
+      }
+      signature += ")";
+      y2internal("going to parse signature: '%s'", signature.c_str());
+      constTypePtr sym_tp = Type::fromSignature(signature);
+
+      constFunctionTypePtr fun_tp = (constFunctionTypePtr) sym_tp;
+
+      // symbol entry for the function
+      SymbolEntry *fun_se = new SymbolEntry ( this,
+                                              i,// position. arbitrary numbering. must stay consistent when?
+                                              RSTRING_PTR(current), // passed to Ustring, no need to strdup
+                                              SymbolEntry::c_function,
+                                              sym_tp);
+      fun_se->setGlobal (true);
+      // enter it to the symbol table
+      enterSymbol (fun_se, 0);
+      y2milestone("method: '%s' added", RSTRING_PTR(current));
     }
-    signature += ")";
-    y2internal("going to parse signature: '%s'", signature.c_str());
-    constTypePtr sym_tp = Type::fromSignature(signature);
-
-    constFunctionTypePtr fun_tp = (constFunctionTypePtr) sym_tp;
-
-    // symbol entry for the function
-    SymbolEntry *fun_se = new SymbolEntry ( this,
-                                            i,// position. arbitrary numbering. must stay consistent when?
-                                            RSTRING_PTR(current), // passed to Ustring, no need to strdup
-                                            SymbolEntry::c_function,
-                                            sym_tp);
-    fun_se->setGlobal (true);
-    // enter it to the symbol table
-    enterSymbol (fun_se, 0);
-    y2milestone("method: '%s' added", RSTRING_PTR(current));
   }
   //add to all modules method last_exception to get last exception raised inside module
   constTypePtr sym_tp = Type::fromSignature("any()");

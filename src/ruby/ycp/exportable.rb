@@ -12,7 +12,7 @@ module YCP
     end
 
     module ClassMethods
-      class ExportData < OpenStruct; end
+      class ExportData < OpenStruct;end
 
       def published_methods
         @__published_methods ||= {}
@@ -25,6 +25,7 @@ module YCP
       def publish options
         raise "Missing signature" unless options[:type]
         if options[:method]
+          options[:method_name] = options[:method].to_s #tricky part to not be overcloaked by internal method
           published_methods[options[:method]] = ExportData.new options
         elsif options[:variable]
           published_variables[options[:variable]] = ExportData.new options

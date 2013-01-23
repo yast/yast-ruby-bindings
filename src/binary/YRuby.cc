@@ -176,8 +176,14 @@ YRuby::callInner (string module_name, string function, bool method,
   VALUE module = y2ruby_nested_const_get(module_name);
   if (module == Qnil)
   {
-    y2error ("The Ruby module '%s' is not provided by its rb file", module_name.c_str());
-    return YCPVoid();
+    y2milestone ("The Ruby module '%s' is not provided by its rb file. Try YCP prefix.", module_name.c_str());
+    string alternative_name = string("YCP::")+module_name;
+    module = y2ruby_nested_const_get(alternative_name);
+    if (module == Qnil)
+    {
+      y2error ("The Ruby module '%s' is not provided by its rb file", alternative_name.c_str());
+      return YCPVoid();
+    }
   }
 
   // first element of the list is ignored
