@@ -55,6 +55,7 @@ module YCP
     def self.regexpmatch string, regexp
       return nil if string.nil? || regexp.nil?
 
+      # TODO FIXME: handle invalid regexps
       ruby_regexp = YCP::Helper.ruby_regexp regexp
       !string.match(ruby_regexp).nil?
     end
@@ -64,6 +65,7 @@ module YCP
       return nil if string.nil? || regexp.nil? || output.nil?
 
       ruby_regexp = YCP::Helper.ruby_regexp regexp
+      # TODO FIXME: handle invalid regexps
       if match = string.match(ruby_regexp)
 
         # replace the \num places
