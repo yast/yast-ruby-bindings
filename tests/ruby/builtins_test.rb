@@ -115,6 +115,14 @@ class BuiltinsPathTest < YCP::TestCase
     assert_equal true, YCP::Builtins.regexpmatch("abc", "c$")
   end
 
+  def test_regexpsub
+    assert_equal nil, YCP::Builtins.regexpsub(nil, nil, nil)
+
+    # from YCP documentation
+    assert_equal "s_aaab_e", YCP::Builtins.regexpsub("aaabbb", "(.*ab)", "s_\\1_e")
+    assert_equal nil, YCP::Builtins.regexpsub("aaabbb", "(.*ba)", "s_\\1_e")
+  end
+
   def test_tolower
     assert_equal nil, YCP::Builtins.tolower(nil)
     assert_equal "", YCP::Builtins.tolower("")

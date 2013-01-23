@@ -59,6 +59,25 @@ module YCP
       !string.match(ruby_regexp).nil?
     end
 
+    # regexpsub() YCP built-in
+    def self.regexpsub string, regexp, output
+      return nil if string.nil? || regexp.nil? || output.nil?
+
+      ruby_regexp = YCP::Helper.ruby_regexp regexp
+      if match = string.match(ruby_regexp)
+
+        # replace the \num places
+        ret = output.dup
+        match.captures.each_with_index do |str, i|
+          ret.gsub! "\\#{i + 1}", str
+        end
+
+        return ret
+      end
+
+      nil
+    end
+
     # tolower() YCP built-in
     def self.tolower string
       return nil if string.nil?
