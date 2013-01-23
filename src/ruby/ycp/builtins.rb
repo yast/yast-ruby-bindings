@@ -34,6 +34,15 @@ module YCP
       string.include? substring
     end
 
+    # splitstring() YCP built-in
+    def self.splitstring string, sep
+      return nil if string.nil? || sep.nil?
+      return [] if sep.empty?
+
+      # the big negative value forces keeping empty values in the list
+      string.split /[#{Regexp.escape sep}]/, -1 * 2**20
+    end
+
     # tolower() YCP built-in
     def self.tolower string
       return nil if string.nil?

@@ -68,6 +68,20 @@ class BuiltinsPathTest < YCP::TestCase
     assert_equal true, YCP::Builtins.issubstring("", "")
   end
 
+  def test_splitstring
+    assert_equal nil, YCP::Builtins.splitstring(nil, nil)
+    assert_equal nil, YCP::Builtins.splitstring("", nil)
+    assert_equal nil, YCP::Builtins.splitstring(nil, "")
+    assert_equal [], YCP::Builtins.splitstring("", "")
+    assert_equal [], YCP::Builtins.splitstring("ABC", "")
+
+    assert_equal ["a", "b", "c", "d"], YCP::Builtins.splitstring("a b c d", " ")
+    assert_equal ["ABC"], YCP::Builtins.splitstring("ABC", "abc")
+
+    assert_equal ["a", "", "", "a"], YCP::Builtins.splitstring("a   a", " ")
+    assert_equal ["text", "with", "different", "separators"], YCP::Builtins.splitstring("text/with:different/separators", "/:")
+  end
+
   def test_tolower
     assert_equal nil, YCP::Builtins.tolower(nil)
     assert_equal "", YCP::Builtins.tolower("")
