@@ -123,6 +123,13 @@ class BuiltinsPathTest < YCP::TestCase
     assert_equal nil, YCP::Builtins.regexpsub("aaabbb", "(.*ba)", "s_\\1_e")
   end
 
+  def test_regexptokenize
+    assert_equal ["aaabbB"], YCP::Builtins.regexptokenize("aaabbBb", "(.*[A-Z]).*")
+    assert_equal ["aaab", "bb"], YCP::Builtins.regexptokenize("aaabbb", "(.*ab)(.*)")
+    assert_equal [], YCP::Builtins.regexptokenize("aaabbb", "(.*ba).*")
+    assert_equal nil, YCP::Builtins.regexptokenize("aaabbb", "(.*ba).*(");
+  end
+
   def test_tolower
     assert_equal nil, YCP::Builtins.tolower(nil)
     assert_equal "", YCP::Builtins.tolower("")

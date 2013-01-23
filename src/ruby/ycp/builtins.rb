@@ -78,6 +78,23 @@ module YCP
       nil
     end
 
+    # regexptokenize() YCP built-in
+    def self.regexptokenize string, regexp
+      return nil if string.nil? || regexp.nil?
+
+      begin
+        ruby_regexp = YCP::Helper.ruby_regexp regexp
+        if match = string.match(ruby_regexp)
+          return match.captures
+        end
+      rescue RegexpError
+        # handle invalid regexps
+        return nil
+      end
+
+      []
+    end
+
     # tolower() YCP built-in
     def self.tolower string
       return nil if string.nil?
