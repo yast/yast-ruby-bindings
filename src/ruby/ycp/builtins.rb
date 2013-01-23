@@ -28,6 +28,12 @@ module YCP
       string[offset, length]
     end
 
+    # issubstring() YCP built-in
+    def self.issubstring string, substring
+      return nil if string.nil? || substring.nil?
+      string.include? substring
+    end
+
     # tolower() YCP built-in
     def self.tolower string
       return nil if string.nil?

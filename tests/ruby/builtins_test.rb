@@ -57,6 +57,17 @@ class BuiltinsPathTest < YCP::TestCase
     assert_equal nil, YCP::Builtins.substring(str, 1, nil)
   end
 
+  def test_issubstring
+    assert_equal nil, YCP::Builtins.issubstring(nil, nil)
+    assert_equal nil, YCP::Builtins.issubstring("", nil)
+    assert_equal nil, YCP::Builtins.issubstring(nil, "")
+
+    assert_equal true, YCP::Builtins.issubstring("abcd", "bc")
+    assert_equal false, YCP::Builtins.issubstring("ABC", "abc")
+    assert_equal true, YCP::Builtins.issubstring("a", "a")
+    assert_equal true, YCP::Builtins.issubstring("", "")
+  end
+
   def test_tolower
     assert_equal nil, YCP::Builtins.tolower(nil)
     assert_equal "", YCP::Builtins.tolower("")
