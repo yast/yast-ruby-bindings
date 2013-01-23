@@ -61,7 +61,6 @@ typedef VALUE (ruby_method)(...);
  * Ruby module anchors
  *
  */
-static VALUE rb_mYaST;
 static VALUE rb_mUi;
 static VALUE rb_mYCP;
 
@@ -535,7 +534,7 @@ extern "C"
     /*
      * module YaST
      */
-    rb_mYaST = rb_define_module("YaST");
-    rb_define_method( rb_mYaST, "logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
+    rb_define_method( rb_mYCP, "logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
+    rb_define_singleton_method( rb_mYCP, "logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
   }
 }
