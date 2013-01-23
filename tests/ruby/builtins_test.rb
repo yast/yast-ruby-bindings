@@ -82,6 +82,29 @@ class BuiltinsPathTest < YCP::TestCase
     assert_equal ["text", "with", "different", "separators"], YCP::Builtins.splitstring("text/with:different/separators", "/:")
   end
 
+  def test_mergestring
+    assert_equal nil, YCP::Builtins.mergestring(nil, nil)
+    assert_equal nil, YCP::Builtins.mergestring([], nil)
+    assert_equal nil, YCP::Builtins.mergestring(nil, "")
+
+    assert_equal "", YCP::Builtins.mergestring([], "")
+    assert_equal "ABC", YCP::Builtins.mergestring(["A", "B", "C"], "")
+    assert_equal "A B C", YCP::Builtins.mergestring(["A", "B", "C"], " ")
+
+    assert_equal "a b c d", YCP::Builtins.mergestring(["a", "b", "c", "d"], " ")
+    assert_equal "ABC", YCP::Builtins.mergestring(["ABC"], "abc")
+    assert_equal "a   a", YCP::Builtins.mergestring(["a", "", "", "a"], " ")
+
+    # tests from Yast documentation
+    assert_equal "/abc/dev/ghi", YCP::Builtins.mergestring(["", "abc", "dev", "ghi"], "/")
+    assert_equal "abc/dev/ghi/", YCP::Builtins.mergestring(["abc", "dev", "ghi", ""], "/")
+    assert_equal "1.a.3", YCP::Builtins.mergestring([1, "a", 3], ".")
+    assert_equal "1.a.3", YCP::Builtins.mergestring(["1", "a", "3"], ".")
+    assert_equal "", YCP::Builtins.mergestring([], ".")
+    assert_equal "abcdevghi", YCP::Builtins.mergestring(["abc", "dev", "ghi"], "")
+    assert_equal "abc123dev123ghi", YCP::Builtins.mergestring(["abc", "dev", "ghi"], "123")
+  end
+
   def test_regexpmatch
     assert_equal nil, YCP::Builtins.regexpmatch(nil, nil)
     assert_equal nil, YCP::Builtins.regexpmatch("", nil)

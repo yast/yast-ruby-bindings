@@ -44,6 +44,13 @@ module YCP
       string.split /[#{Regexp.escape sep}]/, -1 * 2**20
     end
 
+    # mergestring() YCP built-in
+    def self.mergestring string, sep
+      return nil if string.nil? || sep.nil?
+
+      string.join sep
+    end
+
     # regexpmatch() YCP built-in
     def self.regexpmatch string, regexp
       return nil if string.nil? || regexp.nil?
