@@ -608,12 +608,7 @@ module YCP
     end
 
     # Converts a value to a term.
-    def self.toterm
-      raise "Builtin toterm() is not implemented yet"
-    end
-
-    # Constructs a term from a symbol and a list.
-    def self.toterm
+    def self.toterm symbol, list
       raise "Builtin toterm() is not implemented yet"
     end
 
