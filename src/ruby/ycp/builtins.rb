@@ -162,6 +162,7 @@ module YCP
       array.sort
     end
 
+    # toset() YCP built-in
     def self.toset array
       return nil if array.nil?
       array.uniq.sort
