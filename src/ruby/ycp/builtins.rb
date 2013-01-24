@@ -78,6 +78,12 @@ module YCP
       raise "Builtin remove() is not implemented yet"
     end
 
+    # - Selects a list element (deprecated, use LIST[INDEX]:DEFAULT)
+    # - Select item from term
+    def self.select
+      raise "Builtin select() is not implemented yet"
+    end
+
 
     ###########################################################
     # YCP Byteblock Builtins
@@ -201,11 +207,6 @@ module YCP
     # Prepends a list with a new element
     def self.prepend
       raise "Builtin prepend() is not implemented yet"
-    end
-
-    # Selects a list element (deprecated, use LIST[INDEX]:DEFAULT)
-    def self.select
-      raise "Builtin select() is not implemented yet"
     end
 
     # setcontains() YCP built-in
@@ -637,11 +638,6 @@ module YCP
     # Returns the arguments of a term.
     def self.argsof
       raise "Builtin argsof() is not implemented yet"
-    end
-
-    # Select item from term
-    def self.select
-      raise "Builtin select() is not implemented yet"
     end
 
     # Returns the number of arguments of the term TERM.
