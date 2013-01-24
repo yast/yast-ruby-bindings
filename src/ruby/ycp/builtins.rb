@@ -32,6 +32,12 @@ module YCP
       raise "Builtin change() is not implemented yet"
     end
 
+    # - Filters a List
+    # - Filter a Map
+    def self.filter
+      raise "Builtin filter() is not implemented yet"
+    end
+
 
     ###########################################################
     # YCP Byteblock Builtins
@@ -111,11 +117,6 @@ module YCP
     def self.contains list, value
       return nil if list.nil? || value.nil?
       list.include? value
-    end
-
-    # Filters a List
-    def self.filter
-      raise "Builtin filter() is not implemented yet"
     end
 
     # Searches for the first occurence of a certain element in a list
@@ -260,11 +261,6 @@ module YCP
     ###########################################################
     # Map Builtins
     ###########################################################
-
-    # Filter a Map
-    def self.filter
-      raise "Builtin filter() is not implemented yet"
-    end
 
     # Process the content of a map
     def self.foreach
