@@ -3,170 +3,6 @@ require "ycp/helper"
 
 module YCP
   module Builtins
-    # Method that simulates behavior of add in ycp builtin.
-    # Most notably difference is that it always create new object
-    # For new code it is recommended to use directly methods on objects
-    def self.add object, *params
-      case object
-      when Array then return object + params
-      when Hash then  return object.merge(Hash[*params])
-        #TODO when YCP::Term:
-      when YCP::Path then return object + params.first
-      else
-        raise "Invalid object for add builtin"
-      end
-    end
-
-    # substring() YCP built-in
-    # little bit complicated because YCP returns different values
-    # in corner cases (nil or negative parameters, out of range...)
-    def self.substring string, offset, length = -1
-      return nil if string.nil? || offset.nil? || length.nil?
-      return "" if offset < 0 || offset >= string.size
-
-      length = string.size - offset if length < 0
-
-      string[offset, length]
-    end
-
-    # issubstring() YCP built-in
-    def self.issubstring string, substring
-      return nil if string.nil? || substring.nil?
-      string.include? substring
-    end
-
-    # splitstring() YCP built-in
-    def self.splitstring string, sep
-      return nil if string.nil? || sep.nil?
-      return [] if sep.empty?
-
-      # the big negative value forces keeping empty values in the list
-      string.split /[#{Regexp.escape sep}]/, -1 * 2**20
-    end
-
-    # mergestring() YCP built-in
-    def self.mergestring string, sep
-      return nil if string.nil? || sep.nil?
-
-      string.join sep
-    end
-
-    # regexpmatch() YCP built-in
-    def self.regexpmatch string, regexp
-      return nil if string.nil? || regexp.nil?
-
-      # TODO FIXME: handle invalid regexps
-      ruby_regexp = YCP::Helper.ruby_regexp regexp
-      !string.match(ruby_regexp).nil?
-    end
-
-    # regexpsub() YCP built-in
-    def self.regexpsub string, regexp, output
-      return nil if string.nil? || regexp.nil? || output.nil?
-
-      ruby_regexp = YCP::Helper.ruby_regexp regexp
-      # TODO FIXME: handle invalid regexps
-      if match = string.match(ruby_regexp)
-
-        # replace the \num places
-        ret = output.dup
-        match.captures.each_with_index do |str, i|
-          ret.gsub! "\\#{i + 1}", str
-        end
-
-        return ret
-      end
-
-      nil
-    end
-
-    # regexptokenize() YCP built-in
-    def self.regexptokenize string, regexp
-      return nil if string.nil? || regexp.nil?
-
-      begin
-        ruby_regexp = YCP::Helper.ruby_regexp regexp
-        if match = string.match(ruby_regexp)
-          return match.captures
-        end
-      rescue RegexpError
-        # handle invalid regexps
-        return nil
-      end
-
-      []
-    end
-
-    # tolower() YCP built-in
-    def self.tolower string
-      return nil if string.nil?
-      string.downcase
-    end
-
-    # toupper() YCP built-in
-    def self.toupper string
-      return nil if string.nil?
-      string.upcase
-    end
-
-    # size() YCP built-in
-    def self.size object
-      return nil if object.nil?
-
-      case object
-      when String, Array, Hash, YCP::Term then return object.size
-      else
-        raise "Invalid object for size() builtin"
-      end
-    end
-
-    # time() YCP built-in
-    def self.time
-      Time.now.to_i
-    end
-
-    # find() YCP built-in
-    def self.find object, what
-      return nil if object.nil? || what.nil?
-
-      case object
-      when String then return object.index what
-      else
-        raise "Invalid object for find() builtin"
-      end
-    end
-
-    # contains() YCP built-in
-    def self.contains list, value
-      return nil if list.nil? || value.nil?
-      list.include? value
-    end
-
-    # setcontains() YCP built-in
-    def self.setcontains list, value
-      # simply call contains(), setcontains() is just optimized contains() call
-      contains list, value
-    end
-
-    # merge() YCP built-in
-    def self.merge a1, a2
-      return nil if a1.nil? || a2.nil?
-      a1 + a2
-    end
-
-    # sort() YCP built-in
-    # TODO FIXME: support also block parameter
-    def self.sort array
-      return nil if array.nil?
-
-      array.sort
-    end
-
-    # toset() YCP built-in
-    def self.toset array
-      return nil if array.nil?
-      array.uniq.sort
-    end
 
     ###########################################################
     # YCP Byteblock Builtins
@@ -251,9 +87,11 @@ module YCP
       raise "Builtin change() is not implemented yet"
     end
 
+    # contains() YCP built-in
     # Checks if a list contains an element
-    def self.contains
-      raise "Builtin contains() is not implemented yet"
+    def self.contains list, value
+      return nil if list.nil? || value.nil?
+      list.include? value
     end
 
     # Filters a List
@@ -313,9 +151,11 @@ module YCP
       raise "Builtin maplist() is not implemented yet"
     end
 
+    # merge() YCP built-in
     # Merges two lists into one
-    def self.merge
-      raise "Builtin merge() is not implemented yet"
+    def self.merge a1, a2
+      return nil if a1.nil? || a2.nil?
+      a1 + a2
     end
 
     # Prepends a list with a new element
@@ -333,29 +173,42 @@ module YCP
       raise "Builtin select() is not implemented yet"
     end
 
+    # setcontains() YCP built-in
     # Checks if a sorted list contains an element
-    def self.setcontains
-      raise "Builtin setcontains() is not implemented yet"
+    def self.setcontains list, value
+      # simply call contains(), setcontains() is just optimized contains() call
+      contains list, value
     end
 
+    # size() YCP built-in
     # Returns size of list
-    def self.size
-      raise "Builtin size() is not implemented yet"
+    def self.size object
+      return nil if object.nil?
+
+      case object
+      when String, Array, Hash, YCP::Term then return object.size
+      else
+        raise "Invalid object for size() builtin"
+      end
     end
 
+    # sort() YCP built-in
     # Sorts a List according to the YCP builtin predicate
-    def self.sort
-      raise "Builtin sort() is not implemented yet"
+    # TODO FIXME: Sort list using an expression
+    def self.sort array
+      return nil if array.nil?
+
+      array.sort
     end
 
-    # Sort list using an expression
-    def self.sort
-      raise "Builtin sort() is not implemented yet"
-    end
-
+    # splitstring() YCP built-in
     # Split a string by delimiter
-    def self.splitstring
-      raise "Builtin splitstring() is not implemented yet"
+    def self.splitstring string, sep
+      return nil if string.nil? || sep.nil?
+      return [] if sep.empty?
+
+      # the big negative value forces keeping empty values in the list
+      string.split /[#{Regexp.escape sep}]/, -1 * 2**20
     end
 
     # Extracts a sublist
@@ -373,9 +226,11 @@ module YCP
       raise "Builtin tolist() is not implemented yet"
     end
 
+    # toset() YCP built-in
     # Sorts list and removes duplicates
-    def self.toset
-      raise "Builtin toset() is not implemented yet"
+    def self.toset array
+      return nil if array.nil?
+      array.uniq.sort
     end
 
     # Unions of lists
@@ -388,8 +243,18 @@ module YCP
     ###########################################################
 
     # Add a key/value pair to a map
-    def self.add
-      raise "Builtin add() is not implemented yet"
+    # Method that simulates behavior of add in ycp builtin.
+    # Most notably difference is that it always create new object
+    # For new code it is recommended to use directly methods on objects
+    def self.add object, *params
+      case object
+      when Array then return object + params
+      when Hash then  return object.merge(Hash[*params])
+        #TODO when YCP::Term:
+      when YCP::Path then return object + params.first
+      else
+        raise "Invalid object for add builtin"
+      end
     end
 
     # Change element pair in a map. Deprecated, use MAP[KEY] = VALUE.
@@ -505,9 +370,10 @@ module YCP
       raise "Builtin srandom() is not implemented yet"
     end
 
+    # time() YCP built-in
     # Return the number of seconds since 1.1.1970.
     def self.time
-      raise "Builtin time() is not implemented yet"
+      Time.now.to_i
     end
 
     # Log a message to the y2log.
@@ -618,9 +484,16 @@ module YCP
       raise "Builtin filterchars() is not implemented yet"
     end
 
+    # find() YCP built-in
     # Returns position of a substring
-    def self.find
-      raise "Builtin find() is not implemented yet"
+    def self.find object, what
+      return nil if object.nil? || what.nil?
+
+      case object
+      when String then return object.index what
+      else
+        raise "Invalid object for find() builtin"
+      end
     end
 
     # Searches string for the first non matching chars
@@ -648,9 +521,11 @@ module YCP
       raise "Builtin isempty() is not implemented yet"
     end
 
+    # issubstring() YCP built-in
     # searches for a specific string within another string
-    def self.issubstring
-      raise "Builtin issubstring() is not implemented yet"
+    def self.issubstring string, substring
+      return nil if string.nil? || substring.nil?
+      string.include? substring
     end
 
     # Extracts a substring in UTF-8 encoded string
@@ -663,14 +538,22 @@ module YCP
       raise "Builtin lsubstring() is not implemented yet"
     end
 
+    # mergestring() YCP built-in
     # Joins list elements with a string
-    def self.mergestring
-      raise "Builtin mergestring() is not implemented yet"
+    def self.mergestring string, sep
+      return nil if string.nil? || sep.nil?
+
+      string.join sep
     end
 
+    # regexpmatch() YCP built-in
     # Searches a string for a POSIX Extended Regular Expression match.
-    def self.regexpmatch
-      raise "Builtin regexpmatch() is not implemented yet"
+    def self.regexpmatch string, regexp
+      return nil if string.nil? || regexp.nil?
+
+      # TODO FIXME: handle invalid regexps
+      ruby_regexp = YCP::Helper.ruby_regexp regexp
+      !string.match(ruby_regexp).nil?
     end
 
     # Returns a pair with position and length of the first match.
@@ -678,14 +561,43 @@ module YCP
       raise "Builtin regexppos() is not implemented yet"
     end
 
+    # regexpsub() YCP built-in
     # Regex Substitution
-    def self.regexpsub
-      raise "Builtin regexpsub() is not implemented yet"
+    def self.regexpsub string, regexp, output
+      return nil if string.nil? || regexp.nil? || output.nil?
+
+      ruby_regexp = YCP::Helper.ruby_regexp regexp
+      # TODO FIXME: handle invalid regexps
+      if match = string.match(ruby_regexp)
+
+        # replace the \num places
+        ret = output.dup
+        match.captures.each_with_index do |str, i|
+          ret.gsub! "\\#{i + 1}", str
+        end
+
+        return ret
+      end
+
+      nil
     end
 
+    # regexptokenize() YCP built-in
     # Regex tokenize
-    def self.regexptokenize
-      raise "Builtin regexptokenize() is not implemented yet"
+    def self.regexptokenize string, regexp
+      return nil if string.nil? || regexp.nil?
+
+      begin
+        ruby_regexp = YCP::Helper.ruby_regexp regexp
+        if match = string.match(ruby_regexp)
+          return match.captures
+        end
+      rescue RegexpError
+        # handle invalid regexps
+        return nil
+      end
+
+      []
     end
 
     # Returns position of a substring
@@ -703,9 +615,17 @@ module YCP
       raise "Builtin substring() is not implemented yet"
     end
 
+    # substring() YCP built-in
     # Extracts a substring
-    def self.substring
-      raise "Builtin substring() is not implemented yet"
+    # little bit complicated because YCP returns different values
+    # in corner cases (nil or negative parameters, out of range...)
+    def self.substring string, offset, length = -1
+      return nil if string.nil? || offset.nil? || length.nil?
+      return "" if offset < 0 || offset >= string.size
+
+      length = string.size - offset if length < 0
+
+      string[offset, length]
     end
 
     # Returns time string
@@ -728,9 +648,11 @@ module YCP
       raise "Builtin tohexstring() is not implemented yet"
     end
 
+    # tolower() YCP built-in
     # Makes a string lowercase
-    def self.tolower
-      raise "Builtin tolower() is not implemented yet"
+    def self.tolower string
+      return nil if string.nil?
+      string.downcase
     end
 
     # Converts a value to a string.
@@ -738,9 +660,11 @@ module YCP
       raise "Builtin tostring() is not implemented yet"
     end
 
+    # toupper() YCP built-in
     # Makes a string uppercase
-    def self.toupper
-      raise "Builtin toupper() is not implemented yet"
+    def self.toupper string
+      return nil if string.nil?
+      string.upcase
     end
 
     ###########################################################
