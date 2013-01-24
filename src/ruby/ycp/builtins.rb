@@ -58,6 +58,13 @@ module YCP
       raise "Builtin foreach() is not implemented yet"
     end
 
+    # - Returns whether the map m is empty.
+    # - Returns whether the string s is empty.
+    # - Returns whether the list l is empty.
+    def self.isempty
+      raise "Builtin isempty() is not implemented yet"
+    end
+
 
     ###########################################################
     # YCP Byteblock Builtins
@@ -144,11 +151,6 @@ module YCP
       raise "Builtin flatten() is not implemented yet"
     end
     
-    # Returns whether the list l is empty.
-    def self.isempty
-      raise "Builtin isempty() is not implemented yet"
-    end
-
     module List
       # Reduces a list to a single value.
       def self.reduce
@@ -275,11 +277,6 @@ module YCP
     # Check if map has a certain key
     def self.haskey
       raise "Builtin haskey() is not implemented yet"
-    end
-
-    # Returns whether the map m is empty.
-    def self.isempty
-      raise "Builtin isempty() is not implemented yet"
     end
 
     # Select a map element (deprecated, use MAP[KEY]:DEFAULT)
@@ -497,11 +494,6 @@ module YCP
     # Searches string for the last match
     def self.findlastof
       raise "Builtin findlastof() is not implemented yet"
-    end
-
-    # Returns whether the string s is empty.
-    def self.isempty
-      raise "Builtin isempty() is not implemented yet"
     end
 
     # issubstring() YCP built-in
