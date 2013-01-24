@@ -131,32 +131,32 @@ module YCP
     module Float
     	# absolute value
       def self.abs
-        raise "Builtin abs() is not implemented yet"
+        raise "Builtin float::abs() is not implemented yet"
       end
 
     	# round upwards to integer
       def self.ceil
-        raise "Builtin ceil() is not implemented yet"
+        raise "Builtin float::ceil() is not implemented yet"
       end
 
     	# round downwards to integer
       def self.floor
-        raise "Builtin floor() is not implemented yet"
+        raise "Builtin float::floor() is not implemented yet"
       end
 
     	# power function
       def self.pow
-        raise "Builtin pow() is not implemented yet"
+        raise "Builtin float::pow() is not implemented yet"
       end
 
     	# Converts a floating point number to a localized string
       def self.tolstring
-        raise "Builtin tolstring() is not implemented yet"
+        raise "Builtin float::tolstring() is not implemented yet"
       end
 
     	# round to integer, towards zero
       def self.trunc
-        raise "Builtin trunc() is not implemented yet"
+        raise "Builtin float::trunc() is not implemented yet"
       end
     end
     
