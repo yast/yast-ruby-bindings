@@ -333,11 +333,7 @@ module YCP
     end
 
     # Change or add an environment variable
-    def self.setenv
-      raise "Builtin setenv() is not implemented yet"
-    end
-    # Change or add an environment variable
-    def self.setenv
+    def self.setenv env, value, overwrite = true
       raise "Builtin setenv() is not implemented yet"
     end
 
