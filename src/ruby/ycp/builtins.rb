@@ -154,5 +154,12 @@ module YCP
       a1 + a2
     end
 
+    # sort() YCP built-in
+    # TODO FIXME: support also block parameter
+    def self.sort array
+      return nil if array.nil?
+
+      array.sort
+    end
   end
 end

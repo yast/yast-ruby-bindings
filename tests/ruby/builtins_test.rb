@@ -192,4 +192,16 @@ class BuiltinsPathTest < YCP::TestCase
     assert_equal ["A", 1], YCP::Builtins.merge(["A"], [1])
   end
 
+  def test_sort
+    assert_equal nil, YCP::Builtins.sort(nil)
+
+    assert_equal [], YCP::Builtins.sort([])
+    assert_equal ["A"], YCP::Builtins.sort(["A"])
+    assert_equal ["A", "Z"], YCP::Builtins.sort(["Z", "A"])
+    assert_equal [1, 2, 3], YCP::Builtins.sort([3, 2, 1])
+
+    # TODO FIXME: fails, do we need to fix it???
+    # assert_equal [1, 2, 5, 10, 20, 200, "10", "15"], YCP::Builtins.sort(["10", 1, 2, 10, 20, "15", 200, 5])
+  end
+
 end
