@@ -168,6 +168,8 @@ class BuiltinsPathTest < YCP::TestCase
 
     assert_equal 0, YCP::Builtins.find("", "")
     assert_equal 2, YCP::Builtins.find("1234", "3")
+    assert_equal 2, YCP::Builtins.find("1234", "3")
+    assert_equal -1, YCP::Builtins.find("1234", "9")
   end
 
   def test_contains

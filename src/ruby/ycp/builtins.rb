@@ -46,7 +46,9 @@ module YCP
       return nil if object.nil? || what.nil?
 
       case object
-      when String then return object.index what
+      when String
+        ret = object.index what
+        return ret.nil? ? -1 : ret
       when Array then raise "find(<Array>) is not implemented"
       else
         raise "Invalid object for find() builtin"
