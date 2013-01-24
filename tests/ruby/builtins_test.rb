@@ -267,4 +267,15 @@ class BuiltinsPathTest < YCP::TestCase
     assert_equal 120, YCP::Builtins.tointeger("120")
     assert_equal 120, YCP::Builtins.tointeger(120.0)
   end
+
+  def test_search
+    assert_equal nil, YCP::Builtins.search(nil, nil)
+    assert_equal nil, YCP::Builtins.search("", nil)
+
+    assert_equal 0, YCP::Builtins.search("", "")
+    assert_equal 2, YCP::Builtins.search("1234", "3")
+    assert_equal 2, YCP::Builtins.search("1234", "3")
+    assert_equal nil, YCP::Builtins.search("1234", "9")
+  end
+
 end

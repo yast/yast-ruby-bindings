@@ -40,7 +40,7 @@ module YCP
     end
 
     # find() YCP built-in
-    # - Returns position of a substring
+    # - Returns position of a substring (-1 if not found)
     # - Searches for the first occurence of a certain element in a list
     def self.find object, what
       return nil if object.nil? || what.nil?
@@ -559,9 +559,10 @@ module YCP
       []
     end
 
-    # Returns position of a substring
-    def self.search
-      raise "Builtin search() is not implemented yet"
+    # Returns position of a substring (nil if not found)
+    def self.search string, substring
+      return nil if string.nil? || substring.nil?
+      string.index substring
     end
 
     # substring() YCP built-in
