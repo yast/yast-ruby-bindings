@@ -169,4 +169,16 @@ class BuiltinsPathTest < YCP::TestCase
     assert_equal 0, YCP::Builtins.find("", "")
     assert_equal 2, YCP::Builtins.find("1234", "3")
   end
+
+  def test_contains
+    assert_equal nil, YCP::Builtins.contains(nil, nil)
+    assert_equal nil, YCP::Builtins.contains([], nil)
+    assert_equal nil, YCP::Builtins.contains(nil, "")
+
+    assert_equal false, YCP::Builtins.contains([], "")
+    assert_equal false, YCP::Builtins.contains(["A", "B", "C"], "")
+    assert_equal false, YCP::Builtins.contains(["A", "B", "C"], "X")
+    assert_equal true, YCP::Builtins.contains(["A", "B", "C"], "B")
+  end
+
 end

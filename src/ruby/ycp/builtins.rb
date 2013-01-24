@@ -135,5 +135,11 @@ module YCP
         raise "Invalid object for find() builtin"
       end
     end
+
+    # contains() YCP built-in
+    def self.contains list, value
+      return nil if list.nil? || value.nil?
+      list.include? value
+    end
   end
 end
