@@ -243,4 +243,14 @@ class BuiltinsPathTest < YCP::TestCase
     assert_equal ({:a => 1, :b => 2}), h
   end
 
+  def test_isempty
+    assert_equal nil, YCP::Builtins.isempty(nil)
+    assert_equal true, YCP::Builtins.isempty([])
+    assert_equal true, YCP::Builtins.isempty({})
+    assert_equal true, YCP::Builtins.isempty("")
+    assert_equal false, YCP::Builtins.isempty([1])
+    assert_equal false, YCP::Builtins.isempty({"a" => "b"})
+    assert_equal false, YCP::Builtins.isempty("foo")
+  end
+
 end

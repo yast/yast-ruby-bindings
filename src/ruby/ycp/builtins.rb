@@ -35,7 +35,7 @@ module YCP
 
     # - Filters a List
     # - Filter a Map
-    def self.filter
+    def self.filter object, block
       raise "Builtin filter() is not implemented yet"
     end
 
@@ -55,15 +55,16 @@ module YCP
 
     # - Process the content of a map
     # - Processes the content of a list
-    def self.foreach
+    def self.foreach object, block
       raise "Builtin foreach() is not implemented yet"
     end
 
     # - Returns whether the map m is empty.
     # - Returns whether the string s is empty.
     # - Returns whether the list l is empty.
-    def self.isempty
-      raise "Builtin isempty() is not implemented yet"
+    def self.isempty object
+      return nil if object.nil?
+      object.empty?
     end
 
     # - Maps an operation onto all elements key/value and create a list
