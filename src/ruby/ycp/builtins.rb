@@ -108,6 +108,12 @@ module YCP
       raise "Builtin srandom() is not implemented yet"
     end
 
+    # - Unions of lists
+    # - Union of 2 maps
+    def self.union
+      raise "Builtin union() is not implemented yet"
+    end
+
 
     ###########################################################
     # YCP Byteblock Builtins
@@ -268,11 +274,6 @@ module YCP
       array.uniq.sort
     end
 
-    # Unions of lists
-    def self.union
-      raise "Builtin union() is not implemented yet"
-    end
-
     ###########################################################
     # Map Builtins
     ###########################################################
@@ -295,11 +296,6 @@ module YCP
     # Converts a value to a map.
     def self.tomap
       raise "Builtin tomap() is not implemented yet"
-    end
-
-    # Union of 2 maps
-    def self.union
-      raise "Builtin union() is not implemented yet"
     end
 
     ###########################################################
