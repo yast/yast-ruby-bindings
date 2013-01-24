@@ -346,8 +346,9 @@ module YCP
     end
 
     # Sleeps a number of milliseconds.
-    def self.sleep
-      raise "Builtin sleep() is not implemented yet"
+    def self.sleep milisecs
+      # ruby sleep() accepts seconds (float)
+      sleep milisecs / 1000.0
     end
 
     # time() YCP built-in
