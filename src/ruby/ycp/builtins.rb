@@ -71,6 +71,13 @@ module YCP
       raise "Builtin maplist() is not implemented yet"
     end
 
+    # - Removes element from a list
+    # - Remove key/value pair from a map
+    # - Remove item from term
+    def self.remove
+      raise "Builtin remove() is not implemented yet"
+    end
+
 
     ###########################################################
     # YCP Byteblock Builtins
@@ -196,11 +203,6 @@ module YCP
       raise "Builtin prepend() is not implemented yet"
     end
 
-    # Removes element from a list
-    def self.remove
-      raise "Builtin remove() is not implemented yet"
-    end
-
     # Selects a list element (deprecated, use LIST[INDEX]:DEFAULT)
     def self.select
       raise "Builtin select() is not implemented yet"
@@ -288,11 +290,6 @@ module YCP
     # Maps an operation onto all key/value pairs of a map
     def self.mapmap
       raise "Builtin mapmap() is not implemented yet"
-    end
-
-    # Remove key/value pair from a map
-    def self.remove
-      raise "Builtin remove() is not implemented yet"
     end
 
     # Size of a map
@@ -640,11 +637,6 @@ module YCP
     # Returns the arguments of a term.
     def self.argsof
       raise "Builtin argsof() is not implemented yet"
-    end
-
-    # Remove item from term
-    def self.remove
-      raise "Builtin remove() is not implemented yet"
     end
 
     # Select item from term
