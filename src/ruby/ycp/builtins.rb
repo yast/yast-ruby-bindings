@@ -26,10 +26,11 @@ module YCP
       end
     end
 
-    # - Changes a list. Deprecated, use LIST[size(LIST)] = value.
-    # - Change element pair in a map. Deprecated, use MAP[KEY] = VALUE.
-    def self.change
-      raise "Builtin change() is not implemented yet"
+    # - Changes a list. Deprecated, use LIST[size(LIST)] = value. - change(<list>, <val>)
+    # - Change element pair in a map. Deprecated, use MAP[KEY] = VALUE. - change(<map>, <key>, <value>)
+    # it's obsoleted, behaves like add() builtin now
+    def self.change object, *params
+      add object, *params
     end
 
     # - Filters a List

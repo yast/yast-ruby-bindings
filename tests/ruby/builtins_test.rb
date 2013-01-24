@@ -232,4 +232,15 @@ class BuiltinsPathTest < YCP::TestCase
     # assert_equal "$[]", YCP::Builtins.tostring({})
   end
 
+  def test_change
+    a = [1,2]
+    assert_equal [1,2,3], YCP::Builtins.change(a,3)
+    assert_equal [1,2], a
+
+    h = { :a => 1, :b => 2 }
+    res = YCP::Builtins.change(h, :c, 3)
+    assert_equal ({:a => 1, :b => 2, :c => 3}),res
+    assert_equal ({:a => 1, :b => 2}), h
+  end
+
 end
