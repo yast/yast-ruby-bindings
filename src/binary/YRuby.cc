@@ -78,6 +78,9 @@ YRuby::YRuby()
 
   RUBY_INIT_STACK;
   ruby_init();
+  //trick to prelude - http://www.ruby-forum.com/topic/4408161
+  static char* args[] = { "ruby", "/dev/null" };
+  ruby_process_options(2, args);
   ruby_script("yast");
   ruby_init_loadpath();
 
