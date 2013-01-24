@@ -368,28 +368,33 @@ module YCP
     end
 
     # Log a message to the y2log.
-    def self.y2debug
-      raise "Builtin y2debug() is not implemented yet"
+    def self.y2debug *args
+      YCP.y2debug *args
     end
 
     # Log an error to the y2log.
-    def self.y2error
-      raise "Builtin y2error() is not implemented yet"
+    def self.y2error *args
+      YCP.y2error *args
     end
 
     # Log an internal message to the y2log.
-    def self.y2internal
-      raise "Builtin y2internal() is not implemented yet"
+    def self.y2internal *args
+      YCP.y2internal *args
     end
 
     # Log a milestone to the y2log.
-    def self.y2milestone
-      raise "Builtin y2milestone() is not implemented yet"
+    def self.y2milestone*args
+      YCP.y2milestone *args
     end
 
     # Log a security message to the y2log.
-    def self.y2security
-      raise "Builtin y2security() is not implemented yet"
+    def self.y2security *args
+      YCP.y2security *args
+    end
+
+    # Log a warning to the y2log.
+    def self.y2warning *args
+      YCP.y2warning *args
     end
 
     # Log an user-level system message to the y2changes
@@ -400,11 +405,6 @@ module YCP
     # Log an user-level addional message to the y2changes
     def self.y2usernote
       raise "Builtin y2usernote() is not implemented yet"
-    end
-
-    # Log a warning to the y2log.
-    def self.y2warning
-      raise "Builtin y2warning() is not implemented yet"
     end
 
     ###########################################################
