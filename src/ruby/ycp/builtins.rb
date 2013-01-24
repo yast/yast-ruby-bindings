@@ -556,11 +556,6 @@ module YCP
       raise "Builtin search() is not implemented yet"
     end
 
-    # Returns part of a string
-    def self.substring
-      raise "Builtin substring() is not implemented yet"
-    end
-
     # substring() YCP built-in
     # Extracts a substring
     # little bit complicated because YCP returns different values
