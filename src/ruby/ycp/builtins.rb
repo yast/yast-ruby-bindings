@@ -84,15 +84,28 @@ module YCP
       raise "Builtin select() is not implemented yet"
     end
 
+    # size() YCP built-in
+    # - Size of a map
+    # - Returns the number of path elements
+    # - Returns size of list
+    # - Returns a size of a byteblock in bytes.
+    # - Returns the number of arguments of the term TERM.
+    # - Returns the number of characters of the string s
+    def self.size object
+      return nil if object.nil?
+
+      case object
+      when String, Array, Hash, YCP::Term then return object.size
+      # TODO: byteblock, path
+      else
+        raise "Invalid object for size() builtin"
+      end
+    end
+
 
     ###########################################################
     # YCP Byteblock Builtins
     ###########################################################
-
-    # Returns a size of a byteblock in bytes.
-    def self.size
-      raise "Builtin size() is not implemented yet"
-    end
 
     # Converts a value to a byteblock.
     def self.tobyteblock
@@ -216,18 +229,6 @@ module YCP
       contains list, value
     end
 
-    # size() YCP built-in
-    # Returns size of list
-    def self.size object
-      return nil if object.nil?
-
-      case object
-      when String, Array, Hash, YCP::Term then return object.size
-      else
-        raise "Invalid object for size() builtin"
-      end
-    end
-
     # sort() YCP built-in
     # Sorts a List according to the YCP builtin predicate
     # TODO FIXME: Sort list using an expression
@@ -291,11 +292,6 @@ module YCP
     # Maps an operation onto all key/value pairs of a map
     def self.mapmap
       raise "Builtin mapmap() is not implemented yet"
-    end
-
-    # Size of a map
-    def self.size
-      raise "Builtin size() is not implemented yet"
     end
 
     # Converts a value to a map.
@@ -406,11 +402,6 @@ module YCP
     ###########################################################
     # YCP Path Builtins
     ###########################################################
-
-    # Returns the number of path elements
-    def self.size
-      raise "Builtin size() is not implemented yet"
-    end
 
     # Converts a value to a path.
     def self.topath
@@ -565,11 +556,6 @@ module YCP
       raise "Builtin search() is not implemented yet"
     end
 
-    # Returns the number of characters of the string s
-    def self.size
-      raise "Builtin size() is not implemented yet"
-    end
-
     # Returns part of a string
     def self.substring
       raise "Builtin substring() is not implemented yet"
@@ -634,11 +620,6 @@ module YCP
     # Returns the arguments of a term.
     def self.argsof
       raise "Builtin argsof() is not implemented yet"
-    end
-
-    # Returns the number of arguments of the term TERM.
-    def self.size
-      raise "Builtin size() is not implemented yet"
     end
 
     # Returns the symbol of the term TERM.
