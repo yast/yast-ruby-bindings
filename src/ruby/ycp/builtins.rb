@@ -161,5 +161,11 @@ module YCP
 
       array.sort
     end
+
+    def self.toset array
+      return nil if array.nil?
+      array.uniq.sort
+    end
+
   end
 end

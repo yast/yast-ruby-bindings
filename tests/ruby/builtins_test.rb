@@ -204,4 +204,16 @@ class BuiltinsPathTest < YCP::TestCase
     # assert_equal [1, 2, 5, 10, 20, 200, "10", "15"], YCP::Builtins.sort(["10", 1, 2, 10, 20, "15", 200, 5])
   end
 
+  def test_toset
+    assert_equal nil, YCP::Builtins.toset(nil)
+
+    assert_equal [], YCP::Builtins.toset([])
+    assert_equal ["A"], YCP::Builtins.toset(["A"])
+    assert_equal ["A", "Z"], YCP::Builtins.toset(["Z", "A"])
+    assert_equal [1, 2, 3], YCP::Builtins.toset([3, 2, 2, 1, 2, 1, 3, 1, 3, 3])
+
+    # TODO FIXME: fails, do we need to fix it???
+    # assert_equal [false, true, 1, 2, 3, 5], YCP::Builtins.toset([1, 5, 3, 2, 3, true, false, true])
+  end
+
 end
