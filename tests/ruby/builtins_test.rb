@@ -181,4 +181,15 @@ class BuiltinsPathTest < YCP::TestCase
     assert_equal true, YCP::Builtins.contains(["A", "B", "C"], "B")
   end
 
+  def test_merge
+    assert_equal nil, YCP::Builtins.merge(nil, nil)
+    assert_equal nil, YCP::Builtins.merge([], nil)
+    assert_equal nil, YCP::Builtins.merge(nil, [])
+
+    assert_equal [], YCP::Builtins.merge([], [])
+    assert_equal ["A"], YCP::Builtins.merge(["A"], [])
+    assert_equal ["A", "B"], YCP::Builtins.merge(["A"], ["B"])
+    assert_equal ["A", 1], YCP::Builtins.merge(["A"], [1])
+  end
+
 end

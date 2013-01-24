@@ -147,5 +147,12 @@ module YCP
       # simply call contains(), setcontains() is just optimized contains() call
       contains list, value
     end
+
+    # merge() YCP built-in
+    def self.merge a1, a2
+      return nil if a1.nil? || a2.nil?
+      a1 + a2
+    end
+
   end
 end
