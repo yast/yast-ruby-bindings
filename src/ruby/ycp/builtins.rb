@@ -38,6 +38,20 @@ module YCP
       raise "Builtin filter() is not implemented yet"
     end
 
+    # find() YCP built-in
+    # - Returns position of a substring
+    # - Searches for the first occurence of a certain element in a list
+    def self.find object, what
+      return nil if object.nil? || what.nil?
+
+      case object
+      when String then return object.index what
+      when Array then raise "find(<Array>) is not implemented"
+      else
+        raise "Invalid object for find() builtin"
+      end
+    end
+
 
     ###########################################################
     # YCP Byteblock Builtins
@@ -117,11 +131,6 @@ module YCP
     def self.contains list, value
       return nil if list.nil? || value.nil?
       list.include? value
-    end
-
-    # Searches for the first occurence of a certain element in a list
-    def self.find
-      raise "Builtin find() is not implemented yet"
     end
 
     # Flattens List
@@ -472,18 +481,6 @@ module YCP
     # Filters characters out of a String
     def self.filterchars
       raise "Builtin filterchars() is not implemented yet"
-    end
-
-    # find() YCP built-in
-    # Returns position of a substring
-    def self.find object, what
-      return nil if object.nil? || what.nil?
-
-      case object
-      when String then return object.index what
-      else
-        raise "Invalid object for find() builtin"
-      end
     end
 
     # Searches string for the first non matching chars
