@@ -106,8 +106,19 @@ module YCP
 
     # Initialize random number generator - srandom(<int>)
     # Get the current random number generator seed - int srandom()
-    def self.srandom
-      raise "Builtin srandom() is not implemented yet"
+    def self.srandom *param
+      if param.empty?
+        # srandom()
+        t = Time.now.to_i
+        srand t
+        t
+      else
+        # srandom(int)
+        p = param.first
+
+        srand p unless p.nil?
+        nil
+      end
     end
 
     # - Unions of lists

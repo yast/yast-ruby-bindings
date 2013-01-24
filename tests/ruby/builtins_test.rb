@@ -253,4 +253,10 @@ class BuiltinsPathTest < YCP::TestCase
     assert_equal false, YCP::Builtins.isempty("foo")
   end
 
+  def test_srandom
+    assert_equal nil, YCP::Builtins.srandom(nil)
+    assert YCP::Builtins.srandom() > 0
+    assert_equal nil, YCP::Builtins.srandom(10)
+  end
+
 end
