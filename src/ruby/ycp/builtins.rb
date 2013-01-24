@@ -508,11 +508,6 @@ module YCP
       raise "Builtin lsubstring() is not implemented yet"
     end
 
-    # Extracts a substring in UTF-8 encoded string
-    def self.lsubstring
-      raise "Builtin lsubstring() is not implemented yet"
-    end
-
     # mergestring() YCP built-in
     # Joins list elements with a string
     def self.mergestring string, sep
