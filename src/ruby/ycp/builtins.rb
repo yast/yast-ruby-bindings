@@ -8,10 +8,10 @@ module YCP
     # Overloaded Builtins
     ###########################################################
 
-    # Add a key/value pair to a map - add(<map>, <key>, <value)
-    # Create a new list with a new element - add(<list>, <value>)
-    # Add value to term - add(<term>, <value>)
-    # Add a path element to existing path - add(<path>, <value>)
+    # - Add a key/value pair to a map - add(<map>, <key>, <value)
+    # - Create a new list with a new element - add(<list>, <value>)
+    # - Add value to term - add(<term>, <value>)
+    # - Add a path element to existing path - add(<path>, <value>)
     # Method that simulates behavior of add in ycp builtin.
     # Most notably difference is that it always create new object
     # For new code it is recommended to use directly methods on objects
@@ -25,6 +25,13 @@ module YCP
         raise "Invalid object for add builtin"
       end
     end
+
+    # - Changes a list. Deprecated, use LIST[size(LIST)] = value.
+    # - Change element pair in a map. Deprecated, use MAP[KEY] = VALUE.
+    def self.change
+      raise "Builtin change() is not implemented yet"
+    end
+
 
     ###########################################################
     # YCP Byteblock Builtins
@@ -98,11 +105,6 @@ module YCP
     ###########################################################
     # YCP List Builtins
     ###########################################################
-
-    # Changes a list. Deprecated, use LIST[size(LIST)] = value.
-    def self.change
-      raise "Builtin change() is not implemented yet"
-    end
 
     # contains() YCP built-in
     # Checks if a list contains an element
@@ -258,11 +260,6 @@ module YCP
     ###########################################################
     # Map Builtins
     ###########################################################
-
-    # Change element pair in a map. Deprecated, use MAP[KEY] = VALUE.
-    def self.change
-      raise "Builtin change() is not implemented yet"
-    end
 
     # Filter a Map
     def self.filter
