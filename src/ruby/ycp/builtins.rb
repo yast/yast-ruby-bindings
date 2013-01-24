@@ -183,8 +183,16 @@ module YCP
     ###########################################################
 
     # Converts a value to an integer.
-    def self.tointeger
-      raise "Builtin tointeger() is not implemented yet"
+    def self.tointeger object
+      return nil if object.nil?
+
+      case object
+      # use full qualified ::Float to avoid clash with YCP::Builtins::Float
+      when String, ::Float, Fixnum, Bignum
+        object.to_i
+      else
+        nil
+      end
     end
 
     ###########################################################

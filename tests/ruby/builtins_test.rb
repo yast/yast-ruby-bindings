@@ -259,4 +259,10 @@ class BuiltinsPathTest < YCP::TestCase
     assert_equal nil, YCP::Builtins.srandom(10)
   end
 
+  def test_tointeger()
+    assert_equal nil, YCP::Builtins.tointeger(nil)
+    assert_equal 120, YCP::Builtins.tointeger(120)
+    assert_equal 120, YCP::Builtins.tointeger("120")
+    assert_equal 120, YCP::Builtins.tointeger(120.0)
+  end
 end
