@@ -159,11 +159,6 @@ module YCP
       raise "Builtin tofloat() is not implemented yet"
     end
 
-    # Converts a floating point number to a string
-    def self.tostring
-      raise "Builtin tostring() is not implemented yet"
-    end
-
     ###########################################################
     # YCP Integer Builtins
     ###########################################################
@@ -587,8 +582,8 @@ module YCP
     end
 
     # Converts a value to a string.
-    def self.tostring
-      raise "Builtin tostring() is not implemented yet"
+    def self.tostring val
+      val.to_s
     end
 
     # toupper() YCP built-in
