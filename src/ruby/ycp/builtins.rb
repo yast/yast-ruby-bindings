@@ -255,11 +255,8 @@ module YCP
     end
 
     # Extracts a sublist
-    def self.sublist
-      raise "Builtin sublist() is not implemented yet"
-    end
-
-    # Extracts a sublist
+    # - sublist(<list>, <offset>)
+    # - sublist(<list>, <offset>, <length>)
     def self.sublist
       raise "Builtin sublist() is not implemented yet"
     end
