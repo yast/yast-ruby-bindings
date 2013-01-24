@@ -141,5 +141,11 @@ module YCP
       return nil if list.nil? || value.nil?
       list.include? value
     end
+
+    # setcontains() YCP built-in
+    def self.setcontains list, value
+      # simply call contains(), setcontains() is just optimized contains() call
+      contains list, value
+    end
   end
 end
