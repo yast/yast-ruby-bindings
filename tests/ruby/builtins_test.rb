@@ -216,4 +216,20 @@ class BuiltinsPathTest < YCP::TestCase
     # assert_equal [false, true, 1, 2, 3, 5], YCP::Builtins.toset([1, 5, 3, 2, 3, true, false, true])
   end
 
+  def test_tostring
+    assert_equal "<NULL>", YCP::Builtins.tostring(nil)
+    assert_equal "", YCP::Builtins.tostring("")
+    assert_equal "str", YCP::Builtins.tostring("str")
+    assert_equal "[]", YCP::Builtins.tostring([])
+    assert_equal "[1, 2]", YCP::Builtins.tostring([1, 2])
+    assert_equal "3.1415", YCP::Builtins.tostring(3.1415)
+    assert_equal "42", YCP::Builtins.tostring(42)
+    assert_equal "`sym", YCP::Builtins.tostring(:sym)
+    assert_equal "`term ()", YCP::Builtins.tostring(YCP::Term.new(:term))
+    assert_equal "`term (`term (`t))", YCP::Builtins.tostring(YCP::Term.new(:term, YCP::Term.new(:term, :t)))
+
+    # TODO FIXME: Hash does not work, do we need to fix it?
+    # assert_equal "$[]", YCP::Builtins.tostring({})
+  end
+
 end

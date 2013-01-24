@@ -17,13 +17,21 @@ module YCP
     def != second
       !(self == second)
     end
-    
+
     def [] index
       params[index]
     end
 
     def size
       params.size
+    end
+
+    def to_s
+      if params.empty?
+        "`#{value} ()"
+      else
+        "`#{value} (#{params.map{|p| YCP::Builtins.tostring p}.join ', '})"
+      end
     end
   end
 end

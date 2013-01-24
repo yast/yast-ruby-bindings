@@ -159,7 +159,7 @@ module YCP
         raise "Builtin float::trunc() is not implemented yet"
       end
     end
-    
+
     # Converts a value to a floating point number.
     def self.tofloat
       raise "Builtin tofloat() is not implemented yet"
@@ -189,7 +189,7 @@ module YCP
     def self.flatten
       raise "Builtin flatten() is not implemented yet"
     end
-    
+
     module List
       # Reduces a list to a single value.
       def self.reduce
@@ -579,6 +579,9 @@ module YCP
 
     # Converts a value to a string.
     def self.tostring val
+      return "<NULL>" if val.nil?
+      return "`#{val}" if val.is_a? Symbol
+
       val.to_s
     end
 
