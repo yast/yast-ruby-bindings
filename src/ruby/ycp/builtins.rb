@@ -52,6 +52,12 @@ module YCP
       end
     end
 
+    # - Process the content of a map
+    # - Processes the content of a list
+    def self.foreach
+      raise "Builtin foreach() is not implemented yet"
+    end
+
 
     ###########################################################
     # YCP Byteblock Builtins
@@ -138,11 +144,6 @@ module YCP
       raise "Builtin flatten() is not implemented yet"
     end
     
-    # Processes the content of a list
-    def self.foreach
-      raise "Builtin foreach() is not implemented yet"
-    end
-
     # Returns whether the list l is empty.
     def self.isempty
       raise "Builtin isempty() is not implemented yet"
@@ -270,11 +271,6 @@ module YCP
     ###########################################################
     # Map Builtins
     ###########################################################
-
-    # Process the content of a map
-    def self.foreach
-      raise "Builtin foreach() is not implemented yet"
-    end
 
     # Check if map has a certain key
     def self.haskey
