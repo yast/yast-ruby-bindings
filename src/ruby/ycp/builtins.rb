@@ -573,11 +573,8 @@ module YCP
     end
 
     # Converts an integer to a hexadecimal string.
-    def self.tohexstring
-      raise "Builtin tohexstring() is not implemented yet"
-    end
-
-    # Converts an integer to a hexadecimal string.
+    # - tohexstring(<int>)
+    # - tohexstring(<int>, <int>width)
     def self.tohexstring
       raise "Builtin tohexstring() is not implemented yet"
     end
