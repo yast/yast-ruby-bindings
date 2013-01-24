@@ -102,6 +102,12 @@ module YCP
       end
     end
 
+    # Initialize random number generator - srandom(<int>)
+    # Get the current random number generator seed - int srandom()
+    def self.srandom
+      raise "Builtin srandom() is not implemented yet"
+    end
+
 
     ###########################################################
     # YCP Byteblock Builtins
@@ -341,16 +347,6 @@ module YCP
     # Sleeps a number of milliseconds.
     def self.sleep
       raise "Builtin sleep() is not implemented yet"
-    end
-
-    # Initialize random number generator
-    def self.srandom
-      raise "Builtin srandom() is not implemented yet"
-    end
-
-    # Initialize random number generator.
-    def self.srandom
-      raise "Builtin srandom() is not implemented yet"
     end
 
     # time() YCP built-in
