@@ -65,6 +65,12 @@ module YCP
       raise "Builtin isempty() is not implemented yet"
     end
 
+    # - Maps an operation onto all elements key/value and create a list
+    # - Maps an operation onto all elements of a list and thus creates a new list.
+    def self.maplist
+      raise "Builtin maplist() is not implemented yet"
+    end
+
 
     ###########################################################
     # YCP Byteblock Builtins
@@ -178,11 +184,6 @@ module YCP
       raise "Builtin lsort() is not implemented yet"
     end
 
-    # Maps an operation onto all elements of a list and thus creates a new list.
-    def self.maplist
-      raise "Builtin maplist() is not implemented yet"
-    end
-
     # merge() YCP built-in
     # Merges two lists into one
     def self.merge a1, a2
@@ -282,11 +283,6 @@ module YCP
     # Select a map element (deprecated, use MAP[KEY]:DEFAULT)
     def self.lookup
       raise "Builtin lookup() is not implemented yet"
-    end
-
-    # Maps an operation onto all elements key/value and create a list
-    def self.maplist
-      raise "Builtin maplist() is not implemented yet"
     end
 
     # Maps an operation onto all key/value pairs of a map
