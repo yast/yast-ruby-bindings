@@ -33,7 +33,7 @@ class YRuby
 public:
 
     /**
-     * Load a Ruby module - equivalent to "use" in Ruby.
+     * Load a Ruby module - equivalent to "require" in Ruby.
      *
      * Returns a YCPError on failure, YCPVoid on success.
      **/
@@ -65,19 +65,9 @@ protected:
     YRuby();
 
     /**
-     * Protected constructor. Use one of the static methods rather than
-     * instantiate an object of this class yourself.
-     **/
-
-    /**
      * Destructor.
      **/
     ~YRuby();
-
-    /**
-     * Returns the internal embedded Ruby interpreter.
-     **/
-
 
 public:
     /**
