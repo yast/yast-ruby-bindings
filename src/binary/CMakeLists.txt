@@ -4,13 +4,10 @@ set(yast_ruby_module_SRCS
   YCP.cc
   Y2RubyTypeConv.cc       # YCP.cc -> ycpvalue_2_rbvalue(), rbvalue_2_ycpvalue()
   Y2YCPTypeConv.cc       # YCP.cc -> ycpvalue_2_rbvalue(), rbvalue_2_ycpvalue()
-  RubyLogger.cc
   Y2RubyUtils.cc
-  RubyLogger.h
 )
 
 set(ruby_yast_plugin_SRCS
-  RubyLogger.cc
   Y2CCRuby.cc
   Y2RubyComponent.cc
   YRuby.cc
@@ -21,7 +18,6 @@ set(ruby_yast_plugin_SRCS
 )
 
 set(ruby_yast_plugin_HEADERS
-  RubyLogger.h
   Y2CCRuby.h
   Y2RubyComponent.h
   YRuby.h

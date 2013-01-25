@@ -40,7 +40,6 @@ as published by the Free Software Foundation; either version
 #include "ruby.h"
 
 //#include "YRuby.h"
-#include "RubyLogger.h"
 #include "Y2YCPTypeConv.h"
 #include "Y2RubyTypeConv.h"
 #include "YRuby.h"
