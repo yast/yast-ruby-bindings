@@ -22,8 +22,6 @@ as published by the Free Software Foundation; either version
 #include <y2/Y2ComponentCreator.h>
 
 #include <ycp-ui/YUIComponent.h>
-#include <wfm/Y2WFMComponent.h>
-#include <wfm/WFM.h>
 
 #include <y2/Y2ComponentBroker.h>
 #include <y2/Y2Namespace.h>
@@ -43,15 +41,6 @@ as published by the Free Software Foundation; either version
 #include "Y2YCPTypeConv.h"
 #include "Y2RubyTypeConv.h"
 #include "YRuby.h"
-
-// make the compiler happy when
-// calling rb_define_method()
-typedef VALUE (ruby_method)(...);
-// more useful macros
-#define RB_FINALIZER(func) ((void (*)(...))func)
-
-#define GetY2Object(obj, po) \
-    Data_Get_Struct(obj, Y2Namespace, po)
 
 /*
  * Ruby module anchors
@@ -110,7 +99,7 @@ ui_init( int argc, VALUE *argv, VALUE self )
   }
   else if (argc != 0)
   {
-    y2error ("zero or one arguments required (ui name, default %s", ui_name);
+    y2internal ("zero or one arguments required (ui name, default %s", ui_name);
     return Qnil;
   }
 
@@ -146,19 +135,6 @@ ui_init( int argc, VALUE *argv, VALUE self )
 }
 
 
-/*--------------------------------------------
- *
- * Document-module: YCP
- *
- * The YCP module gives access to primitives of the YCP language.
- *
- * Its here for completeness, you're mostly better off using Ruby library functions.
- *
- *--------------------------------------------
- */
-
-
-
 /*
  * Helper
  *
@@ -178,7 +154,7 @@ lookup_namespace_component(const char *name)
     y2internal("no component can provide namespace '%s'\n", name);
     rb_raise( rb_eRuntimeError, "no YaST component can provide namespace '%s'", name);
   }
-  y2internal("component name %s\n", c->name().c_str());
+  y2debug("component name %s\n", c->name().c_str());
   return;
 }
 
@@ -199,10 +175,8 @@ import_namespace( const char *name)
     rb_raise( rb_eNameError, "component cannot import namespace '%s'", name );
     return Qnil;
   }
-  else
-  {
-    y2internal("namespace created from %s\n", ns->filename().c_str());
-  }
+
+  y2debug("namespace created from %s\n", ns->filename().c_str());
   return Qtrue;
 }
 
@@ -247,17 +221,15 @@ ycp_module_each_symbol(VALUE self, VALUE namespace_name)
     rb_raise( rb_eRuntimeError, "error getting namespace '%s'", name );
     return Qnil;
   }
-  else
-  {
-    y2internal("got namespace from %s\n", ns->filename().c_str());
-  }
+
+  y2debug("got namespace from %s\n", ns->filename().c_str());
 
   for (unsigned int i=0; i < ns->symbolCount(); ++i)
   {
     SymbolEntryPtr s = ns->symbolEntry(i);
-    VALUE arr = rb_ary_new();
-    rb_ary_push(arr, rb_str_new2(s->name()));
-    rb_ary_push(arr, ID2SYM(rb_intern(s->catString().c_str())));
+    VALUE name = rb_str_new2(s->name());
+    VALUE type = ID2SYM(rb_intern(s->catString().c_str()));
+    VALUE arr = rb_ary_new3(2,name,type);
     rb_yield(arr);
   }
   return Qnil;
@@ -277,7 +249,6 @@ ycp_module_each_symbol(VALUE self, VALUE namespace_name)
 static VALUE
 ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
 {
-  y2internal("Dynamic Proxy: [%d] params\n", argc);
   const char *namespace_name = StringValuePtr(argv[0]);
   const char *function_name;
   VALUE symbol = argv[1];
@@ -287,36 +258,24 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
   else
     function_name = StringValuePtr( symbol );
 
-  y2internal("Dynamic Proxy: [%s::%s] with [%d] params\n", namespace_name, function_name, argc);
-
-  //Data_Get_Struct( self, class Y2Namespace, ns );
-  //ns = gNameSpaces[self];
-
-  // get the name of the module
-  //VALUE namespace_name = rb_funcall(self, rb_intern("name"), 0);
+  y2debug("Dynamic Proxy: [%s::%s] with [%d] params\n", namespace_name, function_name, argc);
 
   lookup_namespace_component(namespace_name);
 
-  // import the namespace
-  //Y2Namespace *ns = c->import(namespace_name);
   Y2Namespace *ns = getNs(namespace_name);
   if (ns == NULL)
   {
     rb_raise( rb_eRuntimeError, "Component cannot import namespace '%s' for symbol '%s'", namespace_name, function_name );
     return Qnil;
   }
-  else
-  {
-    y2internal("Namespace created from %s\n", ns->filename().c_str());
-  }
 
-  y2internal("Namespace %s initialized\n", namespace_name);
+  y2debug("Namespace created from %s\n", ns->filename().c_str());
 
   TableEntry *sym_te = ns->table()->find(function_name);
 
   if (sym_te == NULL)
   {
-    y2error ("No such symbol %s::%s", namespace_name, function_name);
+    y2internal ("No such symbol %s::%s", namespace_name, function_name);
     rb_raise( rb_eNameError, "YCP symbol '%s' not found in namespace '%s'", function_name, namespace_name );
     return Qnil;
   }
@@ -324,7 +283,7 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
   if (sym_te->sentry ()->isVariable () ||
       sym_te->sentry ()->isReference ())
   {
-    y2internal ("Variable or reference %s\n", function_name);
+    y2debug ("Variable or reference %s\n", function_name);
     //get
     if (argc==2)
       return ycpvalue_2_rbvalue(sym_te->sentry()->value());
@@ -332,7 +291,7 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
     else
     {
       sym_te->sentry()->setValue(rbvalue_2_ycpvalue(argv[2]));
-      return Qnil;
+      return argv[2];
     }
   }
   else
@@ -359,7 +318,6 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
     //y2internal ("Result: %i\n", res->asList()->size());
     return ycpvalue_2_rbvalue(res);
   }
-  return Qnil;
 }
 
 
@@ -390,7 +348,7 @@ yast_y2_logger( int argc, VALUE *argv, VALUE self )
   {
     Check_Type(argv[i], T_STRING);
   }
-  y2_logger((loglevel_t)NUM2INT(argv[0]),RSTRING_PTR(argv[1]),RSTRING_PTR(argv[2]),NUM2INT(argv[3]),"",RSTRING_PTR(argv[5]));
+  y2_logger((loglevel_t)FIX2INT(argv[0]),RSTRING_PTR(argv[1]),RSTRING_PTR(argv[2]),FIX2INT(argv[3]),"",RSTRING_PTR(argv[5]));
   return Qnil;
 }
 
@@ -405,6 +363,7 @@ add_module_path( VALUE self, VALUE path )
 static VALUE
 add_include_path( VALUE self, VALUE path )
 {
+  y2milestone ("add include path %s", RSTRING_PTR(path));
   YCPPathSearch::addPath (YCPPathSearch::Include, RSTRING_PTR(path));
   return Qnil;
 }
@@ -422,43 +381,27 @@ extern "C"
   void
   Init_ycpx()
   {
-    if (!WFM::registered)
-    {
-      y2milestone("WFM not registered (so what?!)");
-    }
-
     YCPPathSearch::initialize();
-
-    /*
-     * Debug: log search pathes
-     */
-    for ( list<string>::const_iterator it = YCPPathSearch::searchListBegin (YCPPathSearch::Module);
-	  it != YCPPathSearch::searchListEnd (YCPPathSearch::Module) ; ++it )
-    {
-      y2internal("search path %s\n", (*it).c_str() );
-    }
 
     /*
      * module YCP
      */
     rb_mYCP = rb_define_module("YCP");
     rb_define_singleton_method( rb_mYCP, "import_pure", RUBY_METHOD_FUNC(ycp_module_import), 1);
+
     rb_define_singleton_method( rb_mYCP, "call_ycp_function", RUBY_METHOD_FUNC(ycp_module_call_ycp_function), -1);
 
     rb_define_singleton_method( rb_mYCP, "each_symbol", RUBY_METHOD_FUNC(ycp_module_each_symbol), 1);
     rb_define_singleton_method( rb_mYCP, "add_module_path", RUBY_METHOD_FUNC(add_module_path), 1);
     rb_define_singleton_method( rb_mYCP, "add_include_path", RUBY_METHOD_FUNC(add_include_path), 1);
 
+    rb_define_method( rb_mYCP, "logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
+    rb_define_singleton_method( rb_mYCP, "logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
+
     /*
      * module YCP::Ui
      */
     rb_mUi = rb_define_module_under(rb_mYCP, "Ui");
     rb_define_singleton_method( rb_mUi, "init", RUBY_METHOD_FUNC(ui_init), -1);
-
-    /*
-     * module YaST
-     */
-    rb_define_method( rb_mYCP, "logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
-    rb_define_singleton_method( rb_mYCP, "logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
   }
 }
