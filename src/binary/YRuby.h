@@ -28,18 +28,6 @@ as published by the Free Software Foundation; either version
 #include <ycp/YCPList.h>
 #include <ycp/Type.h>
 
-// make the compiler happy when
-// calling rb_define_method()
-typedef VALUE (ruby_method)(...);
-
-// more useful macros
-#define RB_FINALIZER(func) ((void (*)(...))func)
-
-// this macro saves us from typing
-// (ruby_method*) & method_name
-// in rb_define_method
-#define RB_METHOD(func) ((VALUE (*)(...))func)
-
 class YRuby
 {
 public:
@@ -95,8 +83,8 @@ public:
     /**
      * Generic Ruby call.
      **/
-    YCPValue callInner (string module, string function, bool method,
-			YCPList argList, constTypePtr wanted_result_type);
+    YCPValue callInner (string module, string function, YCPList argList,
+      constTypePtr wanted_result_type);
     /**
      * Ruby VALUEs do not have a reference count like YCP or Perl.
      * To protect them from being garbage-collected, they must be marked

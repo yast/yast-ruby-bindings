@@ -57,17 +57,13 @@ public:
       m_module_name (module_name),
       m_local_name (local_name),
       m_type (function_type)
-  {
-    // placeholder, formerly function name
-    m_call->add (YCPVoid ());
-  }
+  {}
 
   //! called by YEFunction::evaluate
   YCPValue evaluateCall ()
   {
     return YRuby::yRuby()->callInner ( m_module_name,
                                        m_local_name,
-                                       true,
                                        m_call,
                                        m_type->returnType() );
   }
@@ -77,7 +73,7 @@ public:
   */
   bool attachParameter (const YCPValue& arg, const int position)
   {
-    m_call->set (position+1, arg);
+    m_call->set (position, arg);
     return true;
   }
 
@@ -89,8 +85,7 @@ public:
    */
   constTypePtr wantedParameterType () const
   {
-    // -1 for the function name
-    int params_so_far = m_call->size ()-1;
+    int params_so_far = m_call->size ();
     return m_type->parameterType (params_so_far);
   }
 
@@ -118,8 +113,6 @@ public:
   bool reset ()
   {
     m_call = YCPList ();
-    // placeholder, formerly function name
-    m_call->add (YCPVoid ());
     return true;
   }
 
@@ -145,15 +138,11 @@ public:
   YCPValue setValue (YCPValue value)
   {
     YCPList l;
-    //tricky first value is void TODO check it
-    YCPVoid v;
-    l.add(v);
     l.add(value);
     string method_name = name();
     method_name += "=";
     return YRuby::yRuby()->callInner ( module_name,
       method_name,
-      true,
       l,
       type()
     );
@@ -161,14 +150,9 @@ public:
 
   YCPValue value () const
   {
-    YCPList l;
-    //tricky first value is void TODO check it
-    YCPVoid v;
-    l.add(v);
     return YRuby::yRuby()->callInner ( module_name,
       name(),
-      true,
-      l,
+      YCPList(),
       type()
     );
   }

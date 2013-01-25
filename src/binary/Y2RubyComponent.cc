@@ -65,7 +65,7 @@ Y2Namespace *Y2RubyComponent::import (const char* name)
     }
   }
   y2milestone("Found in '%s'", module.c_str());
-  module.erase (module.size () - 3 /* strlen (".pm") */);
+  module.erase (module.size () - 3 /* strlen (".rb") */);
   YCPList args;
   args->add (YCPString(/*module*/ name));
   args->add (YCPString(/*module*/ module));

@@ -35,25 +35,11 @@ as published by the Free Software Foundation; either version
 #include <ycp/y2log.h>
 #include <ycp/pathsearch.h>
 
-
-#include <ycp/YCPBoolean.h>
-#include <ycp/YCPByteblock.h>
-#include <ycp/YCPFloat.h>
-#include <ycp/YCPInteger.h>
-#include <ycp/YCPList.h>
-#include <ycp/YCPMap.h>
-#include <ycp/YCPPath.h>
-#include <ycp/YCPString.h>
-#include <ycp/YCPSymbol.h>
-#include <ycp/YCPTerm.h>
 #include <ycp/YCPVoid.h>
-#include <ycp/YCPCode.h>
-#include <ycp/YCPExternal.h>
+
 
 #include "YRuby.h"
 #include "Y2RubyUtils.h"
-
-#define DIM(ARRAY)	( sizeof( ARRAY )/sizeof( ARRAY[0] ) )
 
 #include "Y2RubyTypeConv.h"
 #include "Y2YCPTypeConv.h"
@@ -74,11 +60,12 @@ bool YRuby::_y_ruby_finalized = false;
 
 YRuby::YRuby()
 {
-  y2milestone( "Initializing ruby interpreter." );
+  y2debug( "Initializing ruby interpreter." );
 
   RUBY_INIT_STACK;
   ruby_init();
-  //trick to prelude - http://www.ruby-forum.com/topic/4408161
+
+  //trick to prelude, needed for correct Mutex class - http://www.ruby-forum.com/topic/4408161
   static char* args[] = { "ruby", "/dev/null" };
   ruby_process_options(2, args);
   ruby_script("yast");
@@ -150,12 +137,10 @@ YCPValue
 YRuby::loadModule( YCPList argList )
 {
   YRuby::yRuby();
-  if ( argList->size() != 2 || ! argList->value(0)->isString() || ! argList->value(1)->isString() )
-    return YCPError( "Ruby::loadModule() / Ruby::Use() : Bad arguments: String expected!" );
   string module_path = argList->value(1)->asString()->value();
   int error = 0;
-  VALUE result = rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) module_path.c_str(), &error);
-  if ( result == Qfalse || error)
+  rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) module_path.c_str(), &error);
+  if (error)
     return YCPError( "Ruby::loadModule() / Can't load ruby module '" + module_path + "'" );
   return YCPVoid();
 }
@@ -171,8 +156,7 @@ protected_call(VALUE args)
 /**
  * @param argList arguments start 1!, 0 is dummy
  */
-YCPValue
-YRuby::callInner (string module_name, string function, bool method,
+YCPValue YRuby::callInner (string module_name, string function,
                   YCPList argList, constTypePtr wanted_result_type)
 {
   RUBY_INIT_STACK  // bnc#708059
@@ -189,28 +173,27 @@ YRuby::callInner (string module_name, string function, bool method,
     }
   }
 
-  // first element of the list is ignored
   int size = argList.size();
 
-  // make rooms for size-1 arguments to
+  // make rooms for arguments to
   // the ruby function
   // +3 for module, function, and number of args
   // to pass to protected_call()
-  VALUE values[size-1+3];
-  int error;
-  int i=0;
-  for ( ; i < size-1; ++i )
+  VALUE values[size+3];
+  values[0] = module;
+  values[1] = rb_intern(function.c_str());
+  values[2] = size;
+  for (int i = 0 ; i < size; ++i )
   {
     // get the
     YCPValue v = argList->value(i+1);
-    y2milestone("Adding argument %d of type %s", i, v->valuetype_str());
+    y2debug("Adding argument %d of type %s", i, v->valuetype_str());
     values[i+3] = ycpvalue_2_rbvalue(v);
   }
 
-  y2milestone( "Will call function '%s' in module '%s' with '%d' arguments", function.c_str(), module_name.c_str(), size-1);
-  values[0] = module;
-  values[1] = rb_intern(function.c_str());
-  values[2] = size-1;
+  y2debug( "Will call function '%s' in module '%s' with '%d' arguments", function.c_str(), module_name.c_str(), size-1);
+
+  int error;
   VALUE result = rb_protect(protected_call, (VALUE)values, &error);
   if (error)
   {
@@ -229,8 +212,7 @@ YRuby::callInner (string module_name, string function, bool method,
   }
   else
   {
-    y2milestone( "Called function '%s' in module '%s'", function.c_str(), module_name.c_str());
+    y2debug( "Called function '%s' in module '%s'", function.c_str(), module_name.c_str());
   }
   return rbvalue_2_ycpvalue(result);
 }
-
