@@ -110,11 +110,14 @@ module YCP
     # Get the current random number generator seed - int srandom()
     def self.srandom *param
       if param.empty?
-        # srandom()
-        YCP.y2warning "Using srandom() without parameter is not secure, pass a random valua as parameter or use native srand function instead"
-        t = Time.now.to_i
-        srand t
-        t
+        # be more secure here, original YCP uses Time.now with second precision
+        # for seeding which is not secure enough, calling Ruby srand without
+        # paramater causes to use time, PID and a sequence number for seeding
+        # which is more secure
+        srand
+
+        # the original srandom() returns Time.now
+        Time.now.to_i
       else
         # srandom(int)
         p = param.first
