@@ -45,9 +45,6 @@ as published by the Free Software Foundation; either version
 #include "Y2RubyTypeConv.h"
 #include "YRuby.h"
 
-//forward declaration
-extern "C" YCPValue _call_ycp_builtin ( const string &module_name, const string &func_name, int argc, VALUE *argv );
-
 // make the compiler happy when
 // calling rb_define_method()
 typedef VALUE (ruby_method)(...);
@@ -364,102 +361,6 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
     return ycpvalue_2_rbvalue(res);
   }
   return Qnil;
-}
-
-
-/*
- * helper for call_ycp_builtin
- *
- */
-
-YCPValue
-_call_ycp_builtin ( const string &module_name, const string &func_name, int argc, VALUE *argv )
-{
-  // access directly the statically declared builtins
-  extern StaticDeclaration static_declarations;
-
-  string qualified_name_s = module_name + "::" + func_name;
-  const char *qualified_name = qualified_name_s.c_str ();
-
-  y2milestone("qualified name '%s', %d args", qualified_name, argc);
-
-  declaration_t *bi_dt = static_declarations.findDeclaration (qualified_name);
-  if (bi_dt == NULL)
-  {
-    y2error ("no such builtin '%s'", qualified_name);
-    rb_raise( rb_eRuntimeError, "no YCP builtin '%s'", qualified_name);
-    return YCPNull ();
-  }
-  y2milestone("builtin '%s' found.", module_name.c_str());
-  // construct a builtin call using the proper overloaded builtin
-  YEBuiltin *bi_call = new YEBuiltin(bi_dt);
-
-  // attach the parameters:
-
-  // we would like to know the destination type so that we could
-  // convert eg a Ruby scalar to a YCP symbol, but because the
-  // builtins may be overloaded, let's say we want Any
-  // maybe a special exceptional hack to make Path for the 1st argument?
-  // go through the actual parameters
-  int j;
-  for (j = 0; j < argc; ++j)
-  {
-    // convert the value according to the expected type:
-    constTypePtr param_tp = (j == 0)? Type::Path : Type::Any;
-
-    YCPValue param_v = rbvalue_2_ycpvalue(argv[j] /*, param_tp */);
-
-    if (param_v.isNull ())
-    {
-      // an error has already been reported, now refine it.
-      // Can't know parameter name?
-      y2error ("... when passing parameter #%u to builtin %s",
-        j, qualified_name);
-      return YCPNull ();
-    }
-    // Such YConsts without a specific type produce invalid
-    // bytecode. (Which is OK here)
-    // The actual parameter's YCode becomes owned by the function call?
-    YConst *param_c = new YConst (YCode::ycConstant, param_v);
-    // for attaching the parameter, must get the real type so that it matches
-    constTypePtr act_param_tp = Type::vt2type (param_v->valuetype ());
-    // Attach the parameter
-    // Returns NULL if OK, Type::Error if excessive argument
-    // Other errors (bad code, bad type) shouldn't happen
-    constTypePtr err_tp = bi_call->attachParameter (param_c, act_param_tp);
-    if (err_tp != NULL)
-    {
-        if (err_tp->isError ())
-        {
-          // TODO really need to know the place in Ruby code
-          // where we were called from.
-          y2error ("Excessive parameter to builtin %s", qualified_name);
-        }
-        else
-        {
-          y2internal ("attachParameter returned %s", err_tp->toString ().c_str ());
-        }
-        return YCPNull ();
-    }
-  } // for each actual parameter
-
-  // now must check if we got fewer parameters than needed
-  // or there was another error while resolving the overload
-  constTypePtr err_tp = bi_call->finalize (RubyLogger::instance ());
-  if (err_tp != NULL)
-  {
-    // apparently the error was already reported?
-    y2error ("Error type %s when finalizing builtin %s",
-    err_tp->toString ().c_str (), qualified_name);
-    return YCPNull ();
-  }
-
-  // go call it now!
-  y2debug ("Ruby is calling builtin %s", qualified_name);
-  YCPValue ret_yv = bi_call->evaluate (false /* no const subexpr elim */);
-  delete bi_call;
-
-  return ret_yv;
 }
 
 
