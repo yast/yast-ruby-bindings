@@ -393,8 +393,8 @@ extern "C"
     rb_define_singleton_method( rb_mYCP, "add_module_path", RUBY_METHOD_FUNC(add_module_path), 1);
     rb_define_singleton_method( rb_mYCP, "add_include_path", RUBY_METHOD_FUNC(add_include_path), 1);
 
-    rb_define_method( rb_mYCP, "logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
-    rb_define_singleton_method( rb_mYCP, "logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
+    rb_define_method( rb_mYCP, "y2_logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
+    rb_define_singleton_method( rb_mYCP, "y2_logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
 
     /*
      * module YCP::Ui

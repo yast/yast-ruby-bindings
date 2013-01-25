@@ -5,11 +5,9 @@
 
 module YCP
   module_function
-  def y2_logger_helper(*args)
-    level = args.shift
-
-    caller[0] =~ /(.+):(\d+):in `([^']+)'/
-    y2_logger(level, "Ruby", $1, $2.to_i, "", args[0])
+  def y2_logger_helper(level,args)
+    caller[1] =~ /(.+):(\d+):in `([^']+)'/
+    y2_logger(level, "Ruby", $1, $2.to_i, "", *args)
   end
 
   module_function
