@@ -30,7 +30,6 @@ as published by the Free Software Foundation; either version
 #include <ycp/YCPElement.h>
 #include <ycp/Type.h>
 #include <ycp/YCPVoid.h>
-//#include <YCP.h>
 #include <stdio.h>
 
 #include "YRuby.h"
@@ -39,7 +38,7 @@ as published by the Free Software Foundation; either version
 /**
  * The definition of a function that is implemented in Ruby
  */
-class Y2RubyFunctionCall : public Y2Function
+class Y2RubyFunction : public Y2Function
 {
   //! module name
   string m_module_name;
@@ -51,10 +50,10 @@ class Y2RubyFunctionCall : public Y2Function
   YCPList m_call;
 
 public:
-  Y2RubyFunctionCall (const string &module_name,
-                      const string &local_name,
-                      constFunctionTypePtr function_type
-                     ) :
+  Y2RubyFunction (const string &module_name,
+                  const string &local_name,
+                  constFunctionTypePtr function_type
+                 ) :
       m_module_name (module_name),
       m_local_name (local_name),
       m_type (function_type)
@@ -63,15 +62,12 @@ public:
     m_call->add (YCPVoid ());
   }
 
-  //! if true, the ruby function is passed the module name
-  virtual bool isMethod () = 0;
-
   //! called by YEFunction::evaluate
-  virtual YCPValue evaluateCall ()
+  YCPValue evaluateCall ()
   {
     return YRuby::yRuby()->callInner ( m_module_name,
                                        m_local_name,
-                                       isMethod (),
+                                       true,
                                        m_call,
                                        m_type->returnType() );
   }
@@ -79,7 +75,7 @@ public:
   * Attaches a parameter to a given position to the call.
   * @return false if there was a type mismatch
   */
-  virtual bool attachParameter (const YCPValue& arg, const int position)
+  bool attachParameter (const YCPValue& arg, const int position)
   {
     m_call->set (position+1, arg);
     return true;
@@ -91,7 +87,7 @@ public:
    * simple type system of Ruby to the elaborate type system of YCP)
    * @return Type::Any if number of parameters exceeded
    */
-  virtual constTypePtr wantedParameterType () const
+  constTypePtr wantedParameterType () const
   {
     // -1 for the function name
     int params_so_far = m_call->size ()-1;
@@ -102,9 +98,9 @@ public:
    * Appends a parameter to the call.
    * @return false if there was a type mismatch
    */
-  virtual bool appendParameter (const YCPValue& arg)
+  bool appendParameter (const YCPValue& arg)
   {
-    y2internal("Adding parameter to function %s::%s of type %s", m_module_name.c_str(), m_local_name.c_str(), arg->valuetype_str());
+    y2debug("Adding parameter to function %s::%s of type %s", m_module_name.c_str(), m_local_name.c_str(), arg->valuetype_str());
     m_call->add (arg);
     return true;
   }
@@ -113,13 +109,13 @@ public:
    * Signal that we're done adding parameters.
    * @return false if there was a parameter missing
    */
-  virtual bool finishParameters ()
+  bool finishParameters ()
   {
     return true;
   }
 
 
-  virtual bool reset ()
+  bool reset ()
   {
     m_call = YCPList ();
     // placeholder, formerly function name
@@ -130,39 +126,9 @@ public:
   /**
    * Something for remote namespaces
    */
-  virtual string name () const
+  string name () const
   {
     return m_local_name;
-  }
-};
-
-class Y2RubySubCall : public Y2RubyFunctionCall
-{
-public:
-  Y2RubySubCall (const string &module_name,
-                 const string &local_name,
-                 constFunctionTypePtr function_type
-                ) :
-      Y2RubyFunctionCall (module_name, local_name, function_type)
-  {}
-  virtual bool isMethod ()
-  {
-    return false;
-  }
-};
-
-class Y2RubyMethodCall : public Y2RubyFunctionCall
-{
-public:
-  Y2RubyMethodCall (const string &module_name,
-                    const string &local_name,
-                    constFunctionTypePtr function_type
-                   ) :
-      Y2RubyFunctionCall (module_name, local_name, function_type)
-  {}
-  virtual bool isMethod ()
-  {
-    return true;
   }
 };
 
@@ -186,10 +152,11 @@ public:
     string method_name = name();
     method_name += "=";
     return YRuby::yRuby()->callInner ( module_name,
-                                       method_name,
-                                       true,
-                                       l,
-                                       type());
+      method_name,
+      true,
+      l,
+      type()
+    );
   }
 
   YCPValue value () const
@@ -199,155 +166,46 @@ public:
     YCPVoid v;
     l.add(v);
     return YRuby::yRuby()->callInner ( module_name,
-                                       name(),
-                                       true,
-                                       l,
-                                       type());
+      name(),
+      true,
+      l,
+      type()
+    );
   }
 
 };
 
-class Y2Ruby;
-
-YRubyNamespace::YRubyNamespace (string name)
-    : m_name (name),
-    m_all_methods (true)
+void YRubyNamespace::constructSymbolTable(VALUE module)
 {
-  y2milestone("Creating namespace for '%s'", name.c_str());
-  VALUE module = y2ruby_nested_const_get(name);
-  if (module == Qnil)
-  {
-    y2milestone ("The Ruby module '%s' is not provided by its rb file. Try it with YCP prefix.", name.c_str());
-    //modules can live in YCP namespace, it is OK
-    name = string("YCP::")+name;
-    module = y2ruby_nested_const_get(name);
-    if (module == Qnil)
-    {
-      y2error ("The Ruby module '%s' is not provided by its rb file", name.c_str());
-      return;
-    }
-  }
-  y2milestone("The module '%s' was found", name.c_str());
-
-  long i = 0; //trace number of added method, so we can add extra one at the end
+  int offset = 0; //track number of added method, so we can add extra one at the end
   //detect if module use new approach for exporting methods or old one
   if (rb_respond_to(module, rb_intern("published_methods" )))
   {
-    VALUE methods = rb_funcall(module, rb_intern("published_methods"),0);
-    methods = rb_funcall(methods,rb_intern("values"),0);
-    for (i = 0; i < RARRAY_LEN(methods); ++i)
-    {
-      VALUE method = rb_ary_entry(methods,i);
-      VALUE method_name = rb_funcall(method, rb_intern("method_name"), 0);
-      VALUE type = rb_funcall(method,rb_intern("type"),0);
-      string signature = StringValueCStr(type);
-      constTypePtr sym_tp = Type::fromSignature(signature);
-
-      constFunctionTypePtr fun_tp = (constFunctionTypePtr) sym_tp;
-
-      // symbol entry for the function
-      SymbolEntry *fun_se = new SymbolEntry ( this,
-                                              i,// position. arbitrary numbering. must stay consistent when?
-                                              RSTRING_PTR(method_name), // passed to Ustring, no need to strdup
-                                              SymbolEntry::c_function,
-                                              sym_tp);
-      fun_se->setGlobal (true);
-      // enter it to the symbol table
-      enterSymbol (fun_se, 0);
-      y2milestone("method: '%s' added", RSTRING_PTR(method_name));
-    }
-    VALUE variables = rb_funcall(module, rb_intern("published_variables"),0);
-    variables = rb_funcall(variables,rb_intern("values"),0);
-    int j;
-    for (j = 0; j < RARRAY_LEN(variables); ++j)
-    {
-      VALUE variable = rb_ary_entry(variables,j);
-      VALUE variable_name = rb_funcall(variable, rb_intern("variable"), 0);
-      VALUE type = rb_funcall(variable,rb_intern("type"),0);
-      string signature = StringValueCStr(type);
-      constTypePtr sym_tp = Type::fromSignature(signature);
-
-      // symbol entry for the function
-      SymbolEntry *se = new VariableSymbolEntry ( name, this,
-                                              i+j,// position. arbitrary numbering. must stay consistent when?
-                                              rb_id2name(SYM2ID(variable_name)),
-                                              sym_tp);
-      se->setGlobal (true);
-      // enter it to the symbol table
-      enterSymbol (se, 0);
-      y2milestone("variable: '%s' added", rb_id2name(SYM2ID(variable_name)));
-    }
-    i += j;
+    offset = addMethodsNewWay(module);
+    offset = addVariables(module,offset);
   }
   else
   {
-    // we will perform operator- to determine the module methods
-    VALUE moduleklassmethods = rb_funcall( rb_cModule, rb_intern("methods"), 0);
-    VALUE mymodulemethods = rb_funcall( module, rb_intern("methods"), 0);
-    VALUE methods = rb_funcall( mymodulemethods, rb_intern("-"), 1, moduleklassmethods );
-
-    if (methods == Qnil)
-    {
-      y2error ("Can't see methods in module '%s'", name.c_str());
-      return;
-    }
-
-    for(i = 0; i < RARRAY_LEN(methods); i++)
-    {
-      VALUE current = rb_funcall( methods, rb_intern("at"), 1, rb_fix_new(i) );
-      if (rb_type(current) == RUBY_T_SYMBOL) {
-    current = rb_funcall( current, rb_intern("to_s"), 0);
-      }
-      y2milestone("New method: '%s'", RSTRING_PTR(current));
-
-      // figure out arity.
-      Check_Type(module,T_MODULE);
-      VALUE methodobj = rb_funcall( module, rb_intern("method"), 1, current );
-      if ( methodobj == Qnil )
-      {
-        y2error ("Cannot access method object '%s'", RSTRING_PTR(current));
-        continue;
-      }
-      string signature = "any( ";
-      VALUE rbarity = rb_funcall( methodobj, rb_intern("arity"), 0);
-      int arity = NUM2INT(rbarity);
-      for ( int k=0; k < arity; ++k )
-      {
-        signature += "any";
-        if ( k < (arity - 1) )
-            signature += ",";
-      }
-      signature += ")";
-      y2internal("going to parse signature: '%s'", signature.c_str());
-      constTypePtr sym_tp = Type::fromSignature(signature);
-
-      constFunctionTypePtr fun_tp = (constFunctionTypePtr) sym_tp;
-
-      // symbol entry for the function
-      SymbolEntry *fun_se = new SymbolEntry ( this,
-                                              i,// position. arbitrary numbering. must stay consistent when?
-                                              RSTRING_PTR(current), // passed to Ustring, no need to strdup
-                                              SymbolEntry::c_function,
-                                              sym_tp);
-      fun_se->setGlobal (true);
-      // enter it to the symbol table
-      enterSymbol (fun_se, 0);
-      y2milestone("method: '%s' added", RSTRING_PTR(current));
-    }
+    offset = addMethodsOldWay(module);
   }
-  //add to all modules method last_exception to get last exception raised inside module
-  constTypePtr sym_tp = Type::fromSignature("any()");
-  // symbol entry for the function
-  SymbolEntry *fun_se = new SymbolEntry ( this,
-                                          i,// position. arbitrary numbering.
-                                          "last_exception", // passed to Ustring, no need to strdup
-                                          SymbolEntry::c_function,
-                                          sym_tp);
-  fun_se->setGlobal (true);
-  // enter it to the symbol table
-  enterSymbol (fun_se, 0);
-  y2milestone("method: 'last_exception' added");
-  y2milestone("%s", symbolsToString().c_str());
+  addExceptionMethod(module,offset);
+  y2debug("%s", symbolsToString().c_str());
+}
+
+
+YRubyNamespace::YRubyNamespace (string name)
+    : m_name (name)
+{
+  y2debug("Creating namespace for '%s'", name.c_str());
+
+  VALUE module = getRubyModule();
+  if (module == Qnil)
+  {
+    y2internal ("The Ruby module '%s' is not provided by its rb file", name.c_str());
+    return;
+  }
+
+  constructSymbolTable(module);
 }
 
 YRubyNamespace::~YRubyNamespace ()
@@ -378,24 +236,146 @@ YCPValue YRubyNamespace::evaluate (bool cse)
   return YCPNull ();
 }
 
-// It seems that this is the standard implementation. why would we
-// ever want it to be different?
 Y2Function* YRubyNamespace::createFunctionCall (const string name, constFunctionTypePtr required_type)
 {
   y2debug ("Creating function call for %s", name.c_str ());
   TableEntry *func_te = table ()->find (name.c_str (), SymbolEntry::c_function);
-  if (func_te)
+
+  if (func_te == NULL)
   {
-    constTypePtr t = required_type ? required_type : (constFunctionTypePtr)func_te->sentry()->type ();
-    if (m_all_methods)
-    {
-      return new Y2RubyMethodCall (m_name, name, t);
-    }
-    else
-    {
-      return new Y2RubySubCall (m_name, name, t);
-    }
+    y2internal ("No such function %s", name.c_str ());
+    return NULL;
   }
-  y2error ("No such function %s", name.c_str ());
-  return NULL;
+
+  constTypePtr t = required_type ? required_type : (constFunctionTypePtr)func_te->sentry()->type ();
+  return new Y2RubyFunction (m_name, name, t);
+}
+
+VALUE YRubyNamespace::getRubyModule()
+{
+  ruby_module_name = string("YCP::") + m_name;
+  VALUE module = y2ruby_nested_const_get(ruby_module_name);
+  if (module == Qnil)
+  {
+    y2warning ("The Ruby module '%s' is not provided by its rb file. Trying it without YCP prefix.", ruby_module_name.c_str());
+    //old modules lives outside of YCP namespace
+    ruby_module_name = m_name;
+    module = y2ruby_nested_const_get(ruby_module_name);
+  }
+  return module;
+}
+
+int YRubyNamespace::addMethodsNewWay(VALUE module)
+{
+  VALUE methods = rb_funcall(module, rb_intern("published_methods"),0);
+  methods = rb_funcall(methods,rb_intern("values"),0);
+  int i;
+  for (i = 0; i < RARRAY_LEN(methods); ++i)
+  {
+    VALUE method = rb_ary_entry(methods,i);
+    VALUE method_name = rb_funcall(method, rb_intern("method_name"), 0);
+    VALUE type = rb_funcall(method,rb_intern("type"),0);
+    string signature = StringValueCStr(type);
+
+    addMethod(RSTRING_PTR(method_name), signature, i);
+  }
+  return i;
+}
+
+int YRubyNamespace::addVariables(VALUE module, int offset)
+{
+  VALUE variables = rb_funcall(module, rb_intern("published_variables"),0);
+  variables = rb_funcall(variables,rb_intern("values"),0);
+  int j;
+  for (j = 0; j < RARRAY_LEN(variables); ++j)
+  {
+    VALUE variable = rb_ary_entry(variables,j);
+    VALUE variable_name = rb_funcall(variable, rb_intern("variable"), 0);
+    VALUE type = rb_funcall(variable,rb_intern("type"),0);
+    string signature = StringValueCStr(type);
+    constTypePtr sym_tp = Type::fromSignature(signature);
+
+    // symbol entry for the function
+    SymbolEntry *se = new VariableSymbolEntry ( ruby_module_name,
+      this,
+      offset+j,// position. arbitrary numbering. must stay consistent when?
+      rb_id2name(SYM2ID(variable_name)),
+      sym_tp
+    );
+    se->setGlobal (true);
+    // enter it to the symbol table
+    enterSymbol (se, 0);
+    y2milestone("variable: '%s' added", rb_id2name(SYM2ID(variable_name)));
+  }
+  return offset+j;
+}
+
+int YRubyNamespace::addMethodsOldWay(VALUE module)
+{
+  // we will perform operator- to determine the module methods
+  VALUE moduleklassmethods = rb_funcall( rb_cModule, rb_intern("methods"), 0);
+  VALUE mymodulemethods = rb_funcall( module, rb_intern("methods"), 0);
+  VALUE methods = rb_funcall( mymodulemethods, rb_intern("-"), 1, moduleklassmethods );
+
+  if (methods == Qnil)
+  {
+    y2internal ("Can't see methods in module '%s'", ruby_module_name.c_str());
+    return 0;
+  }
+
+  int i;
+  for(i = 0; i < RARRAY_LEN(methods); i++)
+  {
+    VALUE current = rb_funcall( methods, rb_intern("at"), 1, rb_fix_new(i) );
+    if (rb_type(current) == RUBY_T_SYMBOL) {
+  current = rb_funcall( current, rb_intern("to_s"), 0);
+    }
+    y2milestone("New method: '%s'", RSTRING_PTR(current));
+
+    // figure out arity.
+    Check_Type(module,T_MODULE);
+    VALUE methodobj = rb_funcall( module, rb_intern("method"), 1, current );
+    if ( methodobj == Qnil )
+    {
+      y2error ("Cannot access method object '%s'", RSTRING_PTR(current));
+      continue;
+    }
+    string signature = "any( ";
+    VALUE rbarity = rb_funcall( methodobj, rb_intern("arity"), 0);
+    int arity = NUM2INT(rbarity);
+    for ( int k=0; k < arity; ++k )
+    {
+      signature += "any";
+      if ( k < (arity - 1) )
+          signature += ",";
+    }
+    signature += ")";
+
+    addMethod(RSTRING_PTR(current), signature, i);
+  }
+  return i;
+}
+
+int YRubyNamespace::addExceptionMethod(VALUE module, int offset)
+{
+  addMethod("last_exception", "string()", offset);
+  return offset+1;
+}
+
+void YRubyNamespace::addMethod( const char* name, const string &signature, int offset)
+{
+  constTypePtr sym_tp = Type::fromSignature(signature);
+
+  // symbol entry for the function
+  SymbolEntry *fun_se = new SymbolEntry ( this,
+    offset,// position. arbitrary numbering. must stay consistent when?
+    name,
+    SymbolEntry::c_function,
+    sym_tp
+  );
+
+  fun_se->setGlobal (true);
+  // enter it to the symbol table
+  enterSymbol (fun_se, 0);
+  y2debug("method: '%s' added", name);
 }
