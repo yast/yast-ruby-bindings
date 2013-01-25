@@ -329,8 +329,15 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
       sym_te->sentry ()->isReference ())
   {
     y2internal ("Variable or reference %s\n", function_name);
+    //get
+    if (argc==2)
+      return ycpvalue_2_rbvalue(sym_te->sentry()->value());
     // set the variable
-    //ret_yv = YCP_getset_variable (aTHX_ ns_name, sym_te->sentry (), args);
+    else
+    {
+      sym_te->sentry()->setValue(rbvalue_2_ycpvalue(argv[2]));
+      return Qnil;
+    }
   }
   else
   { // no indent yet
@@ -487,6 +494,21 @@ yast_y2_logger( int argc, VALUE *argv, VALUE self )
   return Qnil;
 }
 
+static VALUE
+add_module_path( VALUE self, VALUE path )
+{
+  y2milestone ("add module path %s", RSTRING_PTR(path));
+  YCPPathSearch::addPath (YCPPathSearch::Module, RSTRING_PTR(path));
+  return Qnil;
+}
+
+static VALUE
+add_include_path( VALUE self, VALUE path )
+{
+  YCPPathSearch::addPath (YCPPathSearch::Include, RSTRING_PTR(path));
+  return Qnil;
+}
+
 } //extern C
 
 extern "C"
@@ -524,6 +546,8 @@ extern "C"
     rb_define_singleton_method( rb_mYCP, "call_ycp_function", RUBY_METHOD_FUNC(ycp_module_call_ycp_function), -1);
 
     rb_define_singleton_method( rb_mYCP, "each_symbol", RUBY_METHOD_FUNC(ycp_module_each_symbol), 1);
+    rb_define_singleton_method( rb_mYCP, "add_module_path", RUBY_METHOD_FUNC(add_module_path), 1);
+    rb_define_singleton_method( rb_mYCP, "add_include_path", RUBY_METHOD_FUNC(add_include_path), 1);
 
     /*
      * module YCP::Ui

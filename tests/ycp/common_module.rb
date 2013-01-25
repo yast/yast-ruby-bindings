@@ -14,7 +14,7 @@ module YCP
 
     publish :method => :formated_name, :type => "string()"
     def self.formated_name
-      return exhibit+" Fancy Formated!!!"
+      return name+" Fancy Formated!!!"
     end
   end
 end

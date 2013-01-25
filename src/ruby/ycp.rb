@@ -36,15 +36,27 @@ require "ycp/term"
 module YCP
   def self.import(mname)
     self.import_pure(mname)
+    return if const_defined? mname
     m = Module.new
     self.each_symbol(mname) do |sname,stype|
-      if (stype == :function) and !sname.empty?
+      next if sname.empty?
+      if (stype == :function)
         m.module_eval <<-"END"
           def self.#{sname}(*args)
             return YCP::call_ycp_function("#{mname}", :#{sname}, *args)
           end
         END
-      end # if function
+      end
+      if stype == :variable
+        m.module_eval <<-"END"
+          def self.#{sname}
+            return YCP::call_ycp_function("#{mname}", :#{sname})
+          end
+          def self.#{sname}= (value)
+            return YCP::call_ycp_function("#{mname}", :#{sname}, value)
+          end
+        END
+      end
     end
     self.const_set(mname, m)
   end

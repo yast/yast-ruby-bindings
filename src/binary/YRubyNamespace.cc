@@ -166,6 +166,49 @@ public:
   }
 };
 
+//class that allow us to simulate variable and in fact call ruby accessors
+class VariableSymbolEntry : public SymbolEntry
+{
+private:
+  const string &module_name;
+public:
+  //not so nice constructor that allow us to hook to symbol entry variable reading
+  VariableSymbolEntry(const string &r_module_name, const Y2Namespace* name_space, unsigned int position, const char *name, constTypePtr type) :
+   SymbolEntry(name_space, position, name, SymbolEntry::c_variable, type),module_name(r_module_name)    {}
+
+  YCPValue setValue (YCPValue value)
+  {
+    YCPList l;
+    //tricky first value is void TODO check it
+    YCPVoid v;
+    l.add(v);
+    l.add(value);
+    string method_name = name();
+    method_name += "=";
+    return YRuby::yRuby()->callInner ( module_name,
+                                       method_name,
+                                       true,
+                                       l,
+                                       type());
+  }
+
+  YCPValue value () const
+  {
+    YCPList l;
+    //tricky first value is void TODO check it
+    YCPVoid v;
+    l.add(v);
+    return YRuby::yRuby()->callInner ( module_name,
+                                       name(),
+                                       true,
+                                       l,
+                                       type());
+  }
+
+};
+
+class Y2Ruby;
+
 YRubyNamespace::YRubyNamespace (string name)
     : m_name (name),
     m_all_methods (true)
@@ -176,11 +219,11 @@ YRubyNamespace::YRubyNamespace (string name)
   {
     y2milestone ("The Ruby module '%s' is not provided by its rb file. Try it with YCP prefix.", name.c_str());
     //modules can live in YCP namespace, it is OK
-    string alternative_name = string("YCP::")+name;
-    module = y2ruby_nested_const_get(alternative_name);
+    name = string("YCP::")+name;
+    module = y2ruby_nested_const_get(name);
     if (module == Qnil)
     {
-      y2error ("The Ruby module '%s' is not provided by its rb file", alternative_name.c_str());
+      y2error ("The Ruby module '%s' is not provided by its rb file", name.c_str());
       return;
     }
   }
@@ -212,8 +255,29 @@ YRubyNamespace::YRubyNamespace (string name)
       // enter it to the symbol table
       enterSymbol (fun_se, 0);
       y2milestone("method: '%s' added", RSTRING_PTR(method_name));
-
     }
+    VALUE variables = rb_funcall(module, rb_intern("published_variables"),0);
+    variables = rb_funcall(variables,rb_intern("values"),0);
+    int j;
+    for (j = 0; j < RARRAY_LEN(variables); ++j)
+    {
+      VALUE variable = rb_ary_entry(variables,j);
+      VALUE variable_name = rb_funcall(variable, rb_intern("variable"), 0);
+      VALUE type = rb_funcall(variable,rb_intern("type"),0);
+      string signature = StringValueCStr(type);
+      constTypePtr sym_tp = Type::fromSignature(signature);
+
+      // symbol entry for the function
+      SymbolEntry *se = new VariableSymbolEntry ( name, this,
+                                              i+j,// position. arbitrary numbering. must stay consistent when?
+                                              rb_id2name(SYM2ID(variable_name)),
+                                              sym_tp);
+      se->setGlobal (true);
+      // enter it to the symbol table
+      enterSymbol (se, 0);
+      y2milestone("variable: '%s' added", rb_id2name(SYM2ID(variable_name)));
+    }
+    i += j;
   }
   else
   {
