@@ -60,10 +60,14 @@ as published by the Free Software Foundation; either version
 void inject_last_exception_method(VALUE& module,const string& message, const string& module_name)
 {
   //doing injection from C++ is quite complex, but we have eval, so we can do it in ruby :)
+
+  string m(message);
+  replace(m.begin(), m.end(), '\'', '"');
+
   string code("module ");
   code += module_name;
   code += "\ndef self.last_exception\n'";
-  code += message;
+  code += m;
   code += "'\nend\nend";
   rb_funcall(module, rb_intern("eval"), 1, rb_str_new2(code.c_str()));
 }
@@ -77,6 +81,10 @@ YRuby::YRuby()
   
   RUBY_INIT_STACK;
   ruby_init();
+  // call ruby_process_options to invoke prelude.rb which defines Mutex#synchronize
+  // see http://www.ruby-forum.com/topic/4408161
+  static char* args[] = { "ruby", "/dev/null" };
+  ruby_process_options(2, args);
   ruby_script("yast");
   ruby_init_loadpath();
 
