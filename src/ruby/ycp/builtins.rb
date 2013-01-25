@@ -302,8 +302,9 @@ module YCP
     ###########################################################
 
     # Check if map has a certain key
-    def self.haskey
-      raise "Builtin haskey() is not implemented yet"
+    def self.haskey map, key
+      return nil if map.nil? || key.nil?
+      map.has_key? key
     end
 
     # Select a map element (deprecated, use MAP[KEY]:DEFAULT)

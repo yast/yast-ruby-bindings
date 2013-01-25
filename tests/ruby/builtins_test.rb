@@ -278,4 +278,14 @@ class BuiltinsPathTest < YCP::TestCase
     assert_equal nil, YCP::Builtins.search("1234", "9")
   end
 
+  def test_haskey
+    assert_equal nil, YCP::Builtins.haskey(nil, nil)
+    assert_equal nil, YCP::Builtins.haskey({}, nil)
+    assert_equal nil, YCP::Builtins.haskey(nil, "")
+
+    assert_equal false, YCP::Builtins.haskey({}, "")
+    assert_equal true, YCP::Builtins.haskey({"a" => 1}, "a")
+    assert_equal false, YCP::Builtins.haskey({"a" => 1}, "b")
+  end
+
 end
