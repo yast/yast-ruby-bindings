@@ -166,6 +166,7 @@ rbvalue_2_ycpvalue( VALUE value )
     return YCPBoolean(false);
     break;
   case T_FIXNUM:
+  case T_BIGNUM:
     return YCPInteger(NUM2LONG(value));
     break;
   case T_FLOAT:
