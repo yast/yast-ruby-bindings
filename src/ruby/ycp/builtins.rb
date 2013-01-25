@@ -111,6 +111,7 @@ module YCP
     def self.srandom *param
       if param.empty?
         # srandom()
+        YCP.y2warning "Using srandom() without parameter is not secure, pass a random valua as parameter or use native srand function instead"
         t = Time.now.to_i
         srand t
         t
