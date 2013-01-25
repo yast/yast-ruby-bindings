@@ -3,13 +3,17 @@
     import "CommonModule";
 
     string res = CommonModule::method_a(5,6);
-    y2milestone ("Should be 11 => %1", res);
+    y2milestone ("Response 1: %1", res);
 
     CommonModule::name = "Cool module";
 
     string test = CommonModule::formated_name();
+    y2milestone ("Response 2: %1", test);
+//for manual testing
+/*
     UI::OpenDialog(
       `opt(`defaultsize),
       `Label(test));
     UI::UserInput();
+*/
 }

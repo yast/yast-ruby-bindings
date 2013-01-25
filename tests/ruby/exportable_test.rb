@@ -17,7 +17,7 @@ end
 class ExportableTest < YCP::TestCase
   def test_publish_methods
     assert_equal [:test], Test.published_methods.keys
-    assert_equal :test, Test.published_methods.values.first.method
+    assert_equal "test", Test.published_methods.values.first.method_name
     assert_equal "string(integer,term)", Test.published_methods[:test].type
   end
 
