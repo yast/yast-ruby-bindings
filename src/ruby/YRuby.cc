@@ -60,10 +60,14 @@ as published by the Free Software Foundation; either version
 void inject_last_exception_method(VALUE& module,const string& message, const string& module_name)
 {
   //doing injection from C++ is quite complex, but we have eval, so we can do it in ruby :)
+
+  string m(message);
+  replace(m.begin(), m.end(), '\'', '"');
+
   string code("module ");
   code += module_name;
   code += "\ndef self.last_exception\n'";
-  code += message;
+  code += m;
   code += "'\nend\nend";
   rb_funcall(module, rb_intern("eval"), 1, rb_str_new2(code.c_str()));
 }
