@@ -309,8 +309,8 @@ module YCP
     end
 
     # Select a map element (deprecated, use MAP[KEY]:DEFAULT)
-    def self.lookup
-      raise "Builtin lookup() is not implemented yet"
+    def self.lookup map, key, default
+      map.has_key?(key) ? map[key] : default
     end
 
     # Maps an operation onto all key/value pairs of a map

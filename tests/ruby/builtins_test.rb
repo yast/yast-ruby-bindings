@@ -288,4 +288,10 @@ class BuiltinsPathTest < YCP::TestCase
     assert_equal false, YCP::Builtins.haskey({"a" => 1}, "b")
   end
 
+  def test_lookup
+    assert_equal nil, YCP::Builtins.lookup({}, nil, nil)
+    assert_equal nil, YCP::Builtins.lookup({}, "", nil)
+    assert_equal 1, YCP::Builtins.lookup({"a" => 1}, "a", 2)
+    assert_equal 2, YCP::Builtins.lookup({"a" => 1}, "b", 2)
+  end
 end
