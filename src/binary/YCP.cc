@@ -97,7 +97,7 @@ ui_init( int argc, VALUE *argv, VALUE self )
   }
   else if (argc != 0)
   {
-    y2internal ("zero or one arguments required (ui name, default %s", ui_name);
+    rb_raise(rb_eArgError,"zero or one arguments required");
     return Qnil;
   }
 
@@ -109,25 +109,26 @@ ui_init( int argc, VALUE *argv, VALUE self )
     c = Y2ComponentBroker::createServer (ui_name);
     if (c == 0)
     {
-      y2error ("can't create component %s", ui_name);
+      rb_raise(rb_eRuntimeError,"can't create component");
       return Qnil;
     }
 
     if (YUIComponent::uiComponent () == 0)
     {
-      y2error ("component %s is not a UI", ui_name);
+      rb_raise(rb_eRuntimeError,"component is not UI");
       return Qnil;
     }
     else
     {
       // got it - initialize, remember
+      //FIXME add support for various server options passed via CLI here
       c->setServerOptions (0, NULL);
       owned_uic = c;
     }
   }
   else
   {
-    y2debug ("UI component already present: %s", c->name ().c_str ());
+    rb_raise(rb_eRuntimeError,"UI component already present");
   }
   return Qnil;
 }
