@@ -211,7 +211,7 @@ ycp_module_import( VALUE self, VALUE name)
  */
 
 static VALUE
-ycp_module_each_symbol(VALUE self, VALUE namespace_name)
+ycp_module_symbols(VALUE self, VALUE namespace_name)
 {
   const char *name = StringValuePtr(namespace_name);
   Y2Namespace *ns = getNs(name);
@@ -223,15 +223,15 @@ ycp_module_each_symbol(VALUE self, VALUE namespace_name)
 
   y2debug("got namespace from %s\n", ns->filename().c_str());
 
+  VALUE res = rb_hash_new();
   for (unsigned int i=0; i < ns->symbolCount(); ++i)
   {
     SymbolEntryPtr s = ns->symbolEntry(i);
     VALUE name = rb_str_new2(s->name());
     VALUE type = ID2SYM(rb_intern(s->catString().c_str()));
-    VALUE arr = rb_ary_new3(2,name,type);
-    rb_yield(arr);
+    rb_hash_aset(res,name,type);
   }
-  return Qnil;
+  return res;
 }
 
 
@@ -390,7 +390,7 @@ extern "C"
 
     rb_define_singleton_method( rb_mYCP, "call_ycp_function", RUBY_METHOD_FUNC(ycp_module_call_ycp_function), -1);
 
-    rb_define_singleton_method( rb_mYCP, "each_symbol", RUBY_METHOD_FUNC(ycp_module_each_symbol), 1);
+    rb_define_singleton_method( rb_mYCP, "symbols", RUBY_METHOD_FUNC(ycp_module_symbols), 1);
     rb_define_singleton_method( rb_mYCP, "add_module_path", RUBY_METHOD_FUNC(add_module_path), 1);
     rb_define_singleton_method( rb_mYCP, "add_include_path", RUBY_METHOD_FUNC(add_include_path), 1);
 

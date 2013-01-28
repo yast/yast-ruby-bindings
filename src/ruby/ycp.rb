@@ -35,10 +35,10 @@ require "ycp/term"
 
 module YCP
   def self.import(mname)
-    self.import_pure(mname)
+    import_pure(mname)
     return if const_defined? mname
     m = Module.new
-    self.each_symbol(mname) do |sname,stype|
+    symbols(mname).each do |sname,stype|
       next if sname.empty?
       if (stype == :function)
         m.module_eval <<-"END"
