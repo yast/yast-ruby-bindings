@@ -55,7 +55,8 @@ ycp_path_to_rb_path( YCPPath ycppath )
 
   VALUE ycp = rb_define_module("YCP");
   VALUE cls = rb_const_get(ycp, rb_intern("Path"));
-  return rb_funcall(cls, rb_intern("new"), 1, rb_str_new2(ycppath->asString()->value().c_str()));
+  VALUE value = rb_str_new2(ycppath->asString()->value().c_str());
+  return rb_class_new_instance(1,&value,cls);
 }
 
 extern "C" VALUE
@@ -72,8 +73,8 @@ ycp_term_to_rb_term( YCPTerm ycpterm )
   if (params == Qnil)
     params = rb_ary_new2(1);
 //we need to pass array of parameters to work properly with unlimited params in ruby
-  rb_funcall(cls,rb_intern("unshift"), 1, rb_intern(ycpterm->name().c_str()));
-  return rb_funcall3(cls, rb_intern("new"),RARRAY_LEN(params), &params);
+  rb_ary_unshift(cls, rb_intern(ycpterm->name().c_str()));
+  return rb_class_new_instance(RARRAY_LEN(params), &params,cls);
 }
 
 /**

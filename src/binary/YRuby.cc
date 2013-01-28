@@ -56,7 +56,7 @@ void inject_last_exception_method(VALUE& module,const string& message, const str
   code += "\ndef self.last_exception\n'";
   code += m;
   code += "'\nend\nend";
-  rb_funcall(module, rb_intern("eval"), 1, rb_str_new2(code.c_str()));
+  rb_eval_string(code.c_str());
 }
 
 YRuby * YRuby::_yRuby = 0;
@@ -204,7 +204,7 @@ YCPValue YRuby::callInner (string module_name, string function,
     VALUE exception = rb_gv_get("$!"); /* get last exception */
     VALUE reason = rb_funcall(exception, rb_intern("message"), 0 );
     VALUE trace = rb_gv_get("$@"); /* get last exception trace */
-    VALUE backtrace = rb_funcall(trace, rb_intern("join"), 1, rb_str_new("\n\t", 2));
+    VALUE backtrace = rb_ary_join(trace, rb_str_new("\n\t", 2));
     y2error("%s.%s failed\n%s\n\t%s", module_name.c_str(), function.c_str(), StringValuePtr(reason),StringValuePtr(backtrace));
     //workaround if last_exception failed, then return always string with message
     if(function == "last_exception") //TODO constantify last_exception

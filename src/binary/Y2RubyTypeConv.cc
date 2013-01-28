@@ -76,11 +76,10 @@ static YCPMap rbhash_2_ycpmap( VALUE value )
 static YCPList rbarray_2_ycplist( VALUE value )
 {
   YCPList list;
-  int n = NUM2LONG(rb_funcall(value, rb_intern("size"), 0));
+  int n = RARRAY_LEN(value);
   for ( int i=0; i<n; ++i)
   {
-    VALUE element = rb_funcall(value, rb_intern("[]"), 1, INT2NUM(i));
-    list.add( rbvalue_2_ycpvalue(element) );
+    list.add(rbvalue_2_ycpvalue(*(RARRAY_PTR(value)+i)));
   }
   return list;
 }
@@ -185,8 +184,7 @@ rbvalue_2_ycpvalue( VALUE value )
     break;
   default:
   {
-    VALUE cname = rb_funcall(rb_funcall(value, rb_intern("class"), 0), rb_intern("to_s"), 0);
-    const char *class_name = StringValuePtr(cname);
+    const char *class_name = rb_obj_classname(value);
     if ( !strcmp(class_name, "YCP::Path"))
     {
       return rbpath_2_ycppath(value);
