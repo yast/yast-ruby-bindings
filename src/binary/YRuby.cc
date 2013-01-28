@@ -190,7 +190,7 @@ YCPValue YRuby::callInner (string module_name, string function,
   for (int i = 0 ; i < size; ++i )
   {
     // get the
-    YCPValue v = argList->value(i+1);
+    YCPValue v = argList->value(i);
     y2debug("Adding argument %d of type %s", i, v->valuetype_str());
     values[i+3] = ycpvalue_2_rbvalue(v);
   }
