@@ -3,31 +3,35 @@ require "test_helper"
 
 require 'ycp/exportable'
 
-module Test
-  include YCP::Exportable
+class MyTestClass
+  extend YCP::Exportable
   publish :variable => :variable_a, :type => "map<symbol,any>"
-  self.variable_a = { :test => "lest" }
+  def initialize
+    self.variable_a = { :test => "lest" }
+  end
 
   publish :method => :test, :type => "string(integer,term)"
-  def self.test(a,b)
+  def test(a,b)
     return "test"
   end
 end
 
+MyTest = MyTestClass.new
+
 class ExportableTest < YCP::TestCase
   def test_publish_methods
-    assert_equal [:test], Test.published_methods.keys
-    assert_equal "test", Test.published_methods.values.first.method_name
-    assert_equal "string(integer,term)", Test.published_methods[:test].type
+    assert_equal [:test], MyTest.class.published_methods.keys
+    assert_equal "test", MyTest.class.published_methods.values.first.method_name
+    assert_equal "string(integer,term)", MyTest.class.published_methods[:test].type
   end
 
   def test_publish_variables
-    assert_equal [:variable_a], Test.published_variables.keys
-    assert_equal "map<symbol,any>", Test.published_variables[:variable_a].type
+    assert_equal [:variable_a], MyTest.class.published_variables.keys
+    assert_equal "map<symbol,any>", MyTest.class.published_variables[:variable_a].type
   end
 
   def test_variable_definition
-    Test.variable_a = ({ :a => 15 })
-    assert_equal ({:a => 15}), Test.variable_a
+    MyTest.variable_a = ({ :a => 15 })
+    assert_equal ({:a => 15}), MyTest.variable_a
   end
 end

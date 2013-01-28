@@ -1,20 +1,24 @@
 require "ycp"
 
 module YCP
-  module CommonModule
-    include Exportable
+  class CommonModuleClass
+    extend Exportable
 
     publish :method => :method_a, :type => "string(integer,integer)"
-    def self.method_a first, second
+    def method_a first, second
       (first+second).to_s
     end
 
     publish :variable => :name, :type => "string"
-    self.name = "Cool name"
+    def initialize
+      @name = "Cool name"
+    end
 
     publish :method => :formated_name, :type => "string()"
-    def self.formated_name
+    def formated_name
       return name+" Fancy Formated!!!"
     end
   end
+
+  CommonModule = CommonModuleClass.new
 end

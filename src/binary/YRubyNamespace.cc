@@ -162,11 +162,12 @@ public:
 void YRubyNamespace::constructSymbolTable(VALUE module)
 {
   int offset = 0; //track number of added method, so we can add extra one at the end
+  VALUE module_class = rb_obj_class(module);
   //detect if module use new approach for exporting methods or old one
-  if (rb_respond_to(module, rb_intern("published_methods" )))
+  if (rb_respond_to(module_class, rb_intern("published_methods" )))
   {
-    offset = addMethodsNewWay(module);
-    offset = addVariables(module,offset);
+    offset = addMethodsNewWay(module_class);
+    offset = addVariables(module_class, offset);
   }
   else
   {
