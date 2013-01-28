@@ -19,9 +19,5 @@ module YCP
     def == (second)
       value == second.value
     end
-
-    def != (second)
-      !(self == second)
-    end
   end
 end
