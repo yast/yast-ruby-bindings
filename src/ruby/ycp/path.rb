@@ -7,9 +7,7 @@ module YCP
     end
 
     def self.load_from_string string
-      if (string.match(/[^a-zA-Z0-9_-]/))
-        string = '"'+string+'"'
-      end
+      string = '"'+string+'"' if string =~ /[^a-zA-Z0-9_-]/
       self.new ".#{string}"
     end
 
