@@ -1,0 +1,51 @@
+{
+  y2milestone ("nil same: %1", nil == nil);
+  y2milestone ("integers same: %1", 1 == 1);
+  y2milestone ("floats same: %1", 1.1 == 1.1);
+  y2milestone ("strings same: %1", "s" == "s");
+  y2milestone ("symbols same: %1", `s == `s);
+  y2milestone ("booleans same: %1", false == false);
+  y2milestone ("lists same: %1", [1] == [1]);
+  y2milestone ("maps same: %1", $[1:2] == $[1:2]);
+  y2milestone ("paths same: %1", .etc == .etc);
+  y2milestone ("terms same: %1", `a(`b) == `a(`b));
+
+  y2milestone ("nil differ: %1", nil != nil);
+  y2milestone ("integers differ: %1", 1 != 1);
+  y2milestone ("floats differ: %1", 1.1 != 1.1);
+  y2milestone ("strings differ: %1", "s" != "s");
+  y2milestone ("symbols differ: %1", `s != `s);
+  y2milestone ("booleans differ: %1", false != false);
+  y2milestone ("lists differ: %1", [1] != [1]);
+  y2milestone ("maps differ: %1", $[1:2] != $[1:2]);
+  y2milestone ("paths differ: %1", .etc != .etc);
+  y2milestone ("terms differ: %1", `a(`b) != `a(`b));
+
+  y2milestone ("integers not same: %1", 1 == 2);
+  y2milestone ("floats not same: %1", 1.1 == 1.2);
+  y2milestone ("strings not same: %1", "s" == "st");
+  y2milestone ("symbols not same: %1", `s == `st);
+  y2milestone ("booleans not same: %1", false == true);
+  y2milestone ("lists not same: %1", [1] == [1,2]);
+  y2milestone ("maps not same: %1", $[1:2] == $[1:2, 2:3]);
+  y2milestone ("paths not same: %1", .etc == .);
+  y2milestone ("terms not same: %1", `a(`b) == `a());
+
+  y2milestone ("integers not differ: %1", 1 != 2);
+  y2milestone ("floats not differ: %1", 1.1 != 1.2);
+  y2milestone ("strings not differ: %1", "s" != "st");
+  y2milestone ("symbols not differ: %1", `s != `st);
+  y2milestone ("booleans not differ: %1", false != true);
+  y2milestone ("lists not differ: %1", [1] != [1,2]);
+  y2milestone ("maps not differ: %1", $[1:2] != $[1:2, 2:3]);
+  y2milestone ("paths not differ: %1", .etc != .);
+  y2milestone ("terms not differ: %1", `a(`b) != `a());
+
+  y2milestone ("integer x nil compare: %1", 1 == nil);
+  y2milestone ("nil x compare compare: %1", nil == 1);
+  y2milestone ("integer x nil not_equal: %1", 1 != nil);
+  y2milestone ("nil x compare not_equal: %1", nil != 1);
+
+//  only same type can be compared, exception is nil as seen above
+//  y2milestone ("integer x string compare: %1", 1 == "1");
+}

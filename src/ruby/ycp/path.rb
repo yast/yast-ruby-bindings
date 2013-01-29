@@ -17,6 +17,7 @@ module YCP
     end
 
     def == (second)
+      return false if second.nil?
       value == second.value
     end
 
