@@ -1,0 +1,78 @@
+#! /usr/bin/ruby
+
+require 'ostruct'
+require 'optparse'
+
+PROGNAME = "r2d2base"
+VERSION = "0.1.0"
+
+def parse_options args
+  # The options specified on the command line will be collected in *options*.
+  # We set default values here.
+  options = OpenStruct.new
+  options.module_path = []
+  options.include_path = []
+
+  opts = OptionParser.new do |opts|
+    opts.banner = "Usage: #{PROGNAME} [options] client server"
+
+    opts.separator ""
+    opts.separator "Specific options:"
+
+    # Mandatory argument.
+    opts.on("-M", "--module_path PATH",
+            "Add path PATH to module searching path.") do |path|
+      path.force_encoding 'ASCII'
+      options.module_path << path
+      raise "Path #{path} does not exist." unless File.exists? path
+    end
+
+    # Mandatory argument.
+    opts.on("-I", "--include_path PATH",
+            "Add path PATH to include searching path.") do |path|
+      options.include_path << path
+      raise "Path #{path} does not exist." unless File.exists? path
+    end
+
+    opts.separator ""
+    opts.separator "Common options:"
+
+    # No argument, shows at tail.  This will print an options summary.
+    # Try it and see!
+    opts.on_tail("-h", "--help", "Show this message") do
+      puts opts
+      exit
+    end
+
+    # Another typical switch to print the version.
+    opts.on_tail("--version", "Show version") do
+      puts VERSION
+      exit
+    end
+  end
+
+  opts.parse!(args)
+  if args.size < 2
+    $stderr.puts "You need to specify client and server."
+    puts opts
+    exit 1
+  end
+  options.client = args[0]
+  options.server = args[1]
+  options
+end
+
+
+#TODO signal handling
+
+options = parse_options ARGV
+
+require "ycp"
+include YCP
+options.module_path.each { |p| YCP.add_module_path p }
+options.include_path.each { |p| YCP.add_include_path p }
+
+Ui::init options.server
+
+#TODO seach include path
+load options.client

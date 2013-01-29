@@ -55,8 +55,28 @@ ycp_path_to_rb_path( YCPPath ycppath )
 
   VALUE ycp = rb_define_module("YCP");
   VALUE cls = rb_const_get(ycp, rb_intern("Path"));
-  return rb_funcall(cls, rb_intern("new"), 1, rb_str_new2(ycppath->asString()->value().c_str()));
+  VALUE value = rb_str_new2(ycppath->asString()->value().c_str());
+  return rb_class_new_instance(1,&value,cls);
 }
+
+extern "C" VALUE
+ycp_term_to_rb_term( YCPTerm ycpterm )
+{
+  int error = 0;
+  rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) "ycp/term",&error);
+  if (error)
+    y2internal("Cannot found ycp/term module.");
+
+  VALUE ycp = rb_define_module("YCP");
+  VALUE cls = rb_const_get(ycp, rb_intern("Term"));
+  VALUE params = ycpvalue_2_rbvalue(ycpterm->args());
+  if (params == Qnil)
+    params = rb_ary_new2(1);
+//we need to pass array of parameters to work properly with unlimited params in ruby
+  rb_ary_unshift(cls, rb_intern(ycpterm->name().c_str()));
+  return rb_class_new_instance(RARRAY_LEN(params), &params,cls);
+}
+
 /**
  *
  * ycpvalue_2_rbvalue
@@ -69,7 +89,7 @@ extern "C" VALUE
 ycpvalue_2_rbvalue( YCPValue ycpval )
 {
   // TODO
-  // YT_BYTEBLOCK YT_PATH YT_SYMBOL YT_LIST YT_TERM YT_MAP YT_CODE YT_RETURN YT_BREAK YT_ENTRY YT_ERROR  YT_REFERENCE YT_EXTERNA
+  // YT_BYTEBLOCK YT_CODE YT_RETURN YT_BREAK YT_ENTRY YT_ERROR  YT_REFERENCE YT_EXTERNA
   if (ycpval->isVoid())
   {
     return Qnil;
@@ -88,7 +108,7 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
   }
   else if (ycpval->isTerm())
   {
-    return Qnil; //TODO ryast_rterm_from_yterm(ycpval->asTerm());
+    return ycp_term_to_rb_term(ycpval->asTerm());
   }
   else if (ycpval->isInteger())
   {

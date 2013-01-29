@@ -10,8 +10,8 @@ class PathTest < YCP::TestCase
   end
 
   def test_load_from_string
-    assert_equal ".etc", YCP::Path.load_from_string("etc").value
-    assert_equal '."et?c"', YCP::Path.load_from_string('et?c').value
+    assert_equal ".etc", YCP::Path.from_string("etc").value
+    assert_equal '."et?c"', YCP::Path.from_string('et?c').value
   end
 
   def test_add

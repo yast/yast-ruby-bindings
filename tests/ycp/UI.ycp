@@ -1,0 +1,4 @@
+{
+  UI::OpenDialog( `opt( `defaultsize ), `Label( "Hello, World!" ) );
+  UI::UserInput();
+}

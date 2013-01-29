@@ -9,10 +9,10 @@ class TermTest < YCP::TestCase
     assert_equal [], YCP::Term.new(:HBox).params
     assert_equal ["test"], YCP::Term.new(:HBox, "test").params
     assert_equal "test", YCP::Term.new(:HBox, "test").params.first
-    
+
     assert_equal :VBox, YCP::Term.new(:HBox, YCP::Term.new(:VBox)).params.first.value
   end
-  
+
   def test_update
     t = YCP::Term.new(:HBox, 1, 2)
     t.params[0] = 0

@@ -31,7 +31,15 @@ class YRubyNamespace : public Y2Namespace
 {
 private:
     string m_name;		//! this namespace's name, eg. XML::Writer
-    bool m_all_methods;		//! add the class name to all calls
+    string ruby_module_name;
+    VALUE getRubyModule(); //sets ruby_module name as sideeffect, so we know what is real name in ruby
+    void constructSymbolTable(VALUE module);
+    int addMethodsNewWay(VALUE module);
+    int addMethodsOldWay(VALUE module);
+    int addVariables(VALUE module,int offset);
+    int addExceptionMethod(VALUE module, int offset);
+    void addMethod(const char *name, const string &signature, int offset);
+
 public:
     /**
      * Construct an interface. The module must be already loaded
@@ -53,6 +61,4 @@ public:
     virtual YCPValue evaluate (bool cse = false);
 
     virtual Y2Function* createFunctionCall (const string name, constFunctionTypePtr requiredType);
-private:
-    VALUE _module_instance;
 };

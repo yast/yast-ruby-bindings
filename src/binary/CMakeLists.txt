@@ -2,34 +2,27 @@ add_definitions(-DY2LOG=\"Ruby\")
 
 set(yast_ruby_module_SRCS
   YCP.cc
-  Y2RubyTypeTerm.cc       # YCP.cc -> ryast_term_init()
   Y2RubyTypeConv.cc       # YCP.cc -> ycpvalue_2_rbvalue(), rbvalue_2_ycpvalue()
   Y2YCPTypeConv.cc       # YCP.cc -> ycpvalue_2_rbvalue(), rbvalue_2_ycpvalue()
-  RubyLogger.cc
   Y2RubyUtils.cc
-  RubyLogger.h
 )
 
 set(ruby_yast_plugin_SRCS
-  RubyLogger.cc
   Y2CCRuby.cc
   Y2RubyComponent.cc
   YRuby.cc
   YRubyNamespace.cc
   Y2RubyTypeConv.cc
   Y2YCPTypeConv.cc
-  Y2RubyTypeTerm.cc
   Y2RubyUtils.cc
 )
 
 set(ruby_yast_plugin_HEADERS
-  RubyLogger.h
   Y2CCRuby.h
   Y2RubyComponent.h
   YRuby.h
   YRubyNamespace.h
   Y2RubyUtils.h
-  Y2RubyTypeTerm.h
 )
 
 include_directories( ${RUBY_INCLUDE_PATH} )
@@ -59,7 +52,7 @@ set_target_properties(ycpx PROPERTIES PREFIX "")
 # not work.
 #
 #set_target_properties( ycpx PROPERTIES SKIP_BUILD_RPATH FALSE)
-#set_target_properties( ycpx PROPERTIES BUILD_WITH_INSTALL_RPATH FALSE) 
+#set_target_properties( ycpx PROPERTIES BUILD_WITH_INSTALL_RPATH FALSE)
 #set_target_properties( ycpx PROPERTIES INSTALL_RPATH_USE_LINK_PATH FALSE)
 #set_target_properties( ycpx PROPERTIES INSTALL_RPATH "${YAST_PLUGIN_DIR}")
 #

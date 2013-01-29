@@ -1,5 +1,6 @@
 add_subdirectory(ruby)
 add_subdirectory(binary)
+add_subdirectory(bin)
 
 # rdoc
 set(rdoc_dir "${CMAKE_CURRENT_BINARY_DIR}/html")

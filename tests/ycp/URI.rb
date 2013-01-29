@@ -1,7 +1,7 @@
 require 'uri'
 module URI
   # URI::parse works even without glue
-  
+
   def self.scheme(instance)
     instance.scheme
   end

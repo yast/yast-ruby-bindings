@@ -6,24 +6,18 @@ module YCP
       @value = value
     end
 
-    def self.load_from_string string
-      if (string.match(/[^a-zA-Z0-9_-]/))
-        string = '"'+string+'"'
-      end
+    def self.from_string string
+      string = '"'+string+'"' if string =~ /[^a-zA-Z0-9_-]/
       self.new ".#{string}"
     end
 
     def + another
-      another = self.class.load_from_string(another) unless another.is_a? YCP::Path
+      another = self.class.from_string(another) unless another.is_a? YCP::Path
       return Path.new(self.value+another.value)
     end
 
     def == (second)
       value == second.value
-    end
-
-    def != (second)
-      !(self == second)
     end
   end
 end
