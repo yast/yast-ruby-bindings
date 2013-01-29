@@ -48,4 +48,28 @@
 
 //  only same type can be compared, exception is nil as seen above
 //  y2milestone ("integer x string compare: %1", 1 == "1");
+
+//comparison
+  y2milestone ("integers bigger: %1", 1 < 2);
+  y2milestone ("integer nil bigger: %1", 1 < nil);
+  y2milestone ("integer nil bigger equal: %1", 1 <= nil);
+  y2milestone ("integer nil lesser: %1", 1 > nil);
+  y2milestone ("integer nil lesser equal: %1", 1 >= nil);
+  y2milestone ("nil integer bigger: %1", nil < 1);
+  y2milestone ("nil integer bigger equal: %1", nil <= 1);
+  y2milestone ("nil integer lesser: %1", nil > 1);
+  y2milestone ("nil integer lesser equal: %1", nil >= 1);
+
+  y2milestone ("string bigger: %1", "s" < "t" );
+  y2milestone ("symbol bigger: %1", `s < `t );
+  y2milestone ("boolean bigger: %1", false < true );
+  y2milestone ("list bigger: %1", [1] < [2] );
+  y2milestone ("list bigger: %1", [1,1] < [nil,1] );
+  y2milestone ("list bigger: %1", [1,1] < [1,1,1] );
+  y2milestone ("list bigger: %1", [1,1,1,1] > [1,1,1] );
+  y2milestone ("map bigger: %1", $[1:2,"s":3] >= $[2:3,"s":2] );
+//cannot mix types, only if it can be convert
+//y2milestone ("symbol string bigger: %1", `s < "t" );
+
+
 }
