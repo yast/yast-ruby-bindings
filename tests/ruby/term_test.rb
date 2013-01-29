@@ -25,4 +25,11 @@ class TermTest < YCP::TestCase
     assert_not_equal YCP::Term.new(:HBox), YCP::Term.new(:HBox, "test")
   end
 
+  def test_size
+    assert_equal 0, YCP::Term.new(:HBox).size
+    assert_equal 1, YCP::Term.new(:HBox, "test").size
+    assert_equal 1, YCP::Term.new(:HBox, "test").size
+    assert_equal 1, YCP::Term.new(:HBox, YCP::Term.new(:VBox, "test", "test")).size
+  end
+
 end
