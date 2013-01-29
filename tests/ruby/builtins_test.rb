@@ -7,7 +7,7 @@ require "ycp/builtins"
 require "ycp/path"
 require "ycp/term"
 
-class BuiltinsPathTest < YCP::TestCase
+class BuiltinsTest < YCP::TestCase
   def test_add_list
     a = [1,2]
     assert_equal [1,2,3], YCP::Builtins.add(a,3)
