@@ -1,3 +1,5 @@
+require 'ycp/builtins'
+
 module YCP
   class Term
     # term symbol
