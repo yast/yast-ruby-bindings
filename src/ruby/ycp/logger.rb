@@ -1,7 +1,4 @@
-#--------------------------------------
-#
-# YaST::logger
-#
+require "ycpx"
 
 module YCP
   module_function
