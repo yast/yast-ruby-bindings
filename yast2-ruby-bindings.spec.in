@@ -14,7 +14,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Source0:        yast2-ruby-bindings-%{version}.tar.bz2
 Prefix:         /usr
 
-BuildRequires:	swig cmake gcc-c++ yast2-core-devel
+BuildRequires:	cmake gcc-c++ yast2-core-devel
 BuildRequires:  yast2-devtools >= 2.16.3
 # libzypp-devel is missing .la requires
 BuildRequires:	ruby-devel

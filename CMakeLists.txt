@@ -14,23 +14,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O3 -Wall -Woverloaded-virtual")
 set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -g -O3 -Wall")
 
 #
-# Where is SWIG ?
-#
-
-find_package(SWIG)
-if(NOT SWIG_FOUND)
-  find_program(SWIG_EXECUTABLE
-    NAMES swig-1.3 swig
-    PATHS ${SWIG_DIR} ${SWIG_DIR}/.. ${SWIG_DIR}/../../bin /usr/bin /usr/local/bin ${CMAKE_INSTALL_PREFIX}/bin)
-endif()
-
-if(NOT SWIG_EXECUTABLE)
-  message(FATAL_ERROR "SWIG not found.")
-else()
-  message(STATUS "SWIG found at ${SWIG_EXECUTABLE}")
-endif()
-
-#
 # Where is YaST ?
 #
 
