@@ -130,6 +130,19 @@ class OpsTest < YCP::TestCase
     assert_equal false, Ops.less_or_equal([2],[1,1])
   end
 
+  def test_comparison_term
+    assert_equal true, Ops.less_than(YCP::Term.new(:a),YCP::Term.new(:b))
+    assert_equal true, Ops.less_than(YCP::Term.new(:a,1,2),YCP::Term.new(:a,1,3))
+    assert_equal true, Ops.less_than(YCP::Term.new(:a,1,2),YCP::Term.new(:b,1,1))
+    assert_equal false, Ops.less_than(YCP::Term.new(:b),YCP::Term.new(:a))
+  end
+
+  def test_comparison_term
+    assert_equal true, Ops.less_than(YCP::Path.new('.'),YCP::Path.new('.etc'))
+    assert_equal true, Ops.less_than(YCP::Path.new('.etca'),YCP::Path.new('.etcb'))
+    assert_equal true, Ops.less_than(YCP::Path.new('.etc.a'),YCP::Path.new('.etca'))
+  end
+
   def test_comparison_nil
     assert_equal nil, Ops.less_than(1,nil)
     assert_equal nil, Ops.less_or_equal(1,nil)
@@ -139,5 +152,48 @@ class OpsTest < YCP::TestCase
     assert_equal nil, Ops.less_or_equal(nil,1)
     assert_equal nil, Ops.greater_than(nil,2)
     assert_equal nil, Ops.greater_or_equal(nil,3)
+  end
+
+  def test_comparison_mixture
+    assert_equal true, Ops.less_than(1,YCP::Term.new(:b))
+    assert_equal true, Ops.less_than("s",YCP::Term.new(:a,1,3))
+    assert_equal true, Ops.less_than(:a,YCP::Term.new(:b,1,1))
+    assert_equal false, Ops.less_than({ :a => "b"},YCP::Term.new(:b))
+    assert_equal true, Ops.less_than({"a" => 1, 1 => 2},{"a" => 1, "b" => 2})
+  end
+
+  def test_index_map
+    map = { "a" => { "b" => "c" }}
+    assert_equal "c", Ops.index(map,["a","b"],"n")
+    assert_equal "n", Ops.index(map,["a","c"],"n")
+    assert_equal "n", Ops.index(map,["c","b"],"n")
+  end
+
+  def test_index_list
+    list = [["a","b"]]
+    assert_equal "b", Ops.index(list,[0,1],"n")
+    assert_equal "n", Ops.index(list,[0,2],"n")
+    assert_equal "n", Ops.index(list,[1,1],"n")
+  end
+
+  def test_index_term
+    term = YCP::Term.new(:a,"a","b")
+    assert_equal "b", Ops.index(term,[1],"n")
+    assert_equal "n", Ops.index(term,[2],"n")
+  end
+
+  def test_index_mixture
+    map_list =  { "a" => ["b","c"]}
+    assert_equal "c", Ops.index(map_list,["a",1],"n")
+    assert_equal "n", Ops.index(map_list,["a",2],"n")
+    map_term =  { "a" => YCP::Term.new(:a,"b","c")}
+    assert_equal "c", Ops.index(map_term,["a",1],"n")
+    assert_equal "n", Ops.index(map_term,["a",2],"n")
+  end
+
+  def test_index_corner_cases
+    list = ["a"]
+    assert_equal "n", Ops.index(list,["a"],"n")
+    assert_equal "n", Ops.index(list,[0,0],"n")
   end
 end

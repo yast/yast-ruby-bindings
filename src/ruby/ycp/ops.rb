@@ -1,10 +1,48 @@
+require "ycp/path"
+require "ycp/term"
+require "ycp/logger"
+
 module Ops
+  def self.index (object, indexes, default)
+    res = object
+    indexes.each do |i|
+      case res
+      when Array, YCP::Term
+        if i.is_a? Fixnum
+          if (0..res.size-1).include? i
+            res = res[i]
+          else
+            YCP.y2warning "Index #{i} is out of array size"
+            return default
+          end
+        else
+          YCP.y2warning "Passed #{i.inspect} as index key for array."
+          return default
+        end
+      when Hash
+        if res.has_key? i
+          res = res[i]
+        else
+          return default
+        end
+      else
+        YCP.y2warning "Builtin index called on wrong type #{res.class}"
+        return default
+      end
+    end
+    return res
+  end
+
   def self.equal first, second
+    first = comparable_object(first)
+
     return first == second
   end
 
   def self.not_equal first, second
-    return !equal(first, second)
+    first = comparable_object(first)
+
+    return first != second
   end
 
   def self.less_than first, second
@@ -40,43 +78,40 @@ module Ops
   end
 
   def self.comparable_object object
-    # we have guarantie that we get same types 
-    # so we create object that can compare same type
-    case object
-    when TrueClass, FalseClass
-      return BooleanComparator.new object
-    when NilClass
-      return NilComparable.new
-    when Array
-      return ListComparator.new object
-    when Hash
-      #hash is really bogus piece, as it compare on quite undefined key hash value
-      raise "Not yet supported"
-    else
-      return object
-    end
+    return GenericComparable.new(object)
   end
 
-  class NilComparable
-    def <=>(second)
-      return 0 if second.nil?
-      return -1
-    end
-  end
-
-  class BooleanComparator
+  #speciality of this comparable is that it can compare various classes together like ycp, order is based on ycp class order
+  class GenericComparable
     include Comparable
+    
     def initialize value
       @value = value
     end
+    #ordered classes from low priority to high
+    # Only tricky part is Fixnum/Bignum, which is in fact same, so it has special handling in code
+    CLASS_ORDER = [ NilClass, FalseClass, TrueClass, Fixnum, Bignum, Float, 
+      String, YCP::Path, Symbol, Array, YCP::Term, Hash ]
+    def <=> (second)
+      if @value.class == second.class
+        case @value
+        when Array
+          return ListComparator.new(@value) <=> second
+        when NilClass
+          return 0 #comparison of two nils is equality
+        when Hash
+          return HashComparator.new(@value) <=> second
+        else
+          @value <=> second
+        end
+      else
+        if ((@value.class == Fixnum && second.class == Bignum) ||
+            @value.class == Bignum && second.class == Fixnum)
+          return @value <=> second
+        end
 
-    def <=>(second)
-      if @value == second
-        return 0
+        CLASS_ORDER.index(@value.class) <=> CLASS_ORDER.index(second.class)
       end
-
-      #rule is that true always rules over false
-      return @value ? 1 : -1
     end
   end
 
@@ -105,4 +140,28 @@ module Ops
     end
   end
 
+  class HashComparator
+    include Comparable
+    def initialize value
+      @value = value
+    end
+
+    def <=>(second)
+      comparator = Proc.new do |k1,k2|
+        Ops.comparable_object(k1) <=> k2
+      end
+      keys = @value.keys.sort(&comparator)
+      other_keys = second.keys.sort(&comparator)
+
+      0.upto(keys.size-1) do |i|
+        res = Ops.comparable_object(keys[i]) <=> other_keys[i]
+        return res if res != 0
+
+        res = Ops.comparable_object(@value[keys[i]]) <=> second[keys[i]]
+        return res if res != 0
+      end
+
+      return @value.size <=> second.size
+    end
+  end
 end
