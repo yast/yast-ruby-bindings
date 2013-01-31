@@ -219,4 +219,19 @@ class OpsTest < YCP::TestCase
       assert_equal result, Ops.add(first,second)
     end
   end
+
+#test case format is [value1,value2,result]
+  SUBSTRACT_TESTCASES = [
+    [nil,1,nil],
+    [1,nil,nil],
+    [nil,nil,nil],
+    [1,2,-1],
+    [1.1,1.1,0.0],
+  ]
+
+  def test_substract
+    SUBSTRACT_TESTCASES.each do |first,second,result|
+      assert_equal result, Ops.substract(first,second)
+    end
+  end
 end

@@ -104,4 +104,6 @@
   y2milestone ("string add %1", "s"+15);
   y2milestone ("string add %1", "s"+`c);
   y2milestone ("string add %1", "s"+.etc);
+
+  y2milestone ("float substract: %1", 1.2-2.3);
 }

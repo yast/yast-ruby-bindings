@@ -52,6 +52,12 @@ module Ops
     end
   end
 
+  def self.substract first, second
+    return nil if first.nil? || second.nil?
+
+    return first - second
+  end
+
   def self.equal first, second
     first = comparable_object(first)
 
