@@ -33,22 +33,22 @@ module Ops
     return res
   end
 
-  def self.add value1, value2
-    return nil if value1.nil? || value2.nil?
+  def self.add first, second
+    return nil if first.nil? || second.nil?
 
-    case value1
+    case first
     when Array
-      if value2.is_a? Array
-        return value1 + value2
+      if second.is_a? Array
+        return first + second
       else
-        return value1.dup.push(value2)
+        return first.dup.push(second)
       end
     when Hash
-      return value1.merge value2
+      return first.merge second
     when String
-      return value1 + value2.to_s
+      return first + second.to_s
     else
-      return value1 + value2
+      return first + second
     end
   end
 
