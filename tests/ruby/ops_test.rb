@@ -278,4 +278,49 @@ class OpsTest < YCP::TestCase
       assert_equal result, Ops.modulo(first,second)
     end
   end
+
+#test case format is [value1,value2,result]
+  BITWISE_AND_TESTCASES = [
+    [nil,1,nil],
+    [1,nil,nil],
+    [nil,nil,nil],
+    [5,3,1],
+    [5,4,4],
+  ]
+
+  def test_bitwise_and
+    BITWISE_AND_TESTCASES.each do |first,second,result|
+      assert_equal result, Ops.bitwise_and(first,second)
+    end
+  end
+
+#test case format is [value1,value2,result]
+  BITWISE_OR_TESTCASES = [
+    [nil,1,nil],
+    [1,nil,nil],
+    [nil,nil,nil],
+    [5,3,7],
+    [5,4,5],
+  ]
+
+  def test_bitwise_or
+    BITWISE_OR_TESTCASES.each do |first,second,result|
+      assert_equal result, Ops.bitwise_or(first,second)
+    end
+  end
+
+#test case format is [value1,value2,result]
+  BITWISE_XOR_TESTCASES = [
+    [nil,1,nil],
+    [1,nil,nil],
+    [nil,nil,nil],
+    [5,3,6],
+    [5,4,1],
+  ]
+
+  def test_bitwise_xor
+    BITWISE_XOR_TESTCASES.each do |first,second,result|
+      assert_equal result, Ops.bitwise_xor(first,second)
+    end
+  end
 end

@@ -76,6 +76,23 @@ module Ops
     return first % second
   end
 
+  def self.bitwise_and first, second
+    return nil if first.nil? || second.nil?
+
+    return first & second
+  end
+
+  def self.bitwise_or first, second
+    return nil if first.nil? || second.nil?
+
+    return first | second
+  end
+
+  def self.bitwise_xor first, second
+    return nil if first.nil? || second.nil?
+
+    return first ^ second
+  end
 
   def self.equal first, second
     first = comparable_object(first)
