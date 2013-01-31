@@ -384,4 +384,45 @@ class OpsTest < YCP::TestCase
     end
   end
 
+#test case format is [value,result]
+  UNARY_MINUS_TESTCASES = [
+    [nil,nil],
+    [1,-1],
+    [5.5,-5.5],
+  ]
+
+  def test_unary_minus
+    UNARY_MINUS_TESTCASES.each do |value,result|
+      assert_equal result, Ops.unary_minus(value)
+    end
+  end
+
+#test case format is [value,result]
+  LOGICAL_NOT_TESTCASES = [
+    [nil,nil],
+    [true,false],
+    [false,true],
+  ]
+
+  def test_logical_not
+    LOGICAL_NOT_TESTCASES.each do |value,result|
+      assert_equal result, Ops.logical_not(value)
+    end
+  end
+
+#test case format is [value,result]
+  BITWISE_NOT_TESTCASES = [
+    [nil,nil],
+    [5,-6],
+    [8589934592,-8589934593],
+    [-558589934592,558589934591]
+  ]
+
+  def test_bitwise_not
+    BITWISE_NOT_TESTCASES.each do |value,result|
+      assert_equal result, Ops.bitwise_not(value)
+    end
+  end
+
+
 end

@@ -120,6 +120,25 @@ module Ops
     return first || second
   end
 
+  def self.unary_minus value
+    return nil if value.nil?
+
+    return -value
+  end
+
+  def self.logical_not value
+    #YCP really do it!!!
+    return nil if value.nil?
+
+    return !value
+  end
+
+  def self.bitwise_not value
+    return nil if value.nil?
+
+    return ~value
+  end
+
   def self.equal first, second
     first = comparable_object(first)
 

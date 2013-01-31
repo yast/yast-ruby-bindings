@@ -109,4 +109,8 @@
 
   y2milestone ("int modulo: %1", 5%2);
 
+  y2milestone ("int negate: %1", ~5);
+  y2milestone ("int negate: %1", ~8589934592);
+  y2milestone ("int negate: %1", ~-558589934592);
+
 }
