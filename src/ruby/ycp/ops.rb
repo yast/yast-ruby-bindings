@@ -58,6 +58,25 @@ module Ops
     return first - second
   end
 
+  def self.multiply first, second
+    return nil if first.nil? || second.nil?
+
+    return first * second
+  end
+
+  def self.divide first, second
+    return nil if first.nil? || second.nil?
+
+    return first / second
+  end
+
+  def self.modulo first, second
+    return nil if first.nil? || second.nil?
+
+    return first % second
+  end
+
+
   def self.equal first, second
     first = comparable_object(first)
 

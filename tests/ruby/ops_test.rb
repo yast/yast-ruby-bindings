@@ -234,4 +234,48 @@ class OpsTest < YCP::TestCase
       assert_equal result, Ops.substract(first,second)
     end
   end
+
+#test case format is [value1,value2,result]
+  MULTIPLY_TESTCASES = [
+    [nil,1,nil],
+    [1,nil,nil],
+    [nil,nil,nil],
+    [1,2,2],
+    [1.5,2.0,3.0],
+  ]
+
+  def test_multiply
+    MULTIPLY_TESTCASES.each do |first,second,result|
+      assert_equal result, Ops.multiply(first,second)
+    end
+  end
+
+#test case format is [value1,value2,result]
+  DIVIDE_TESTCASES = [
+    [nil,1,nil],
+    [1,nil,nil],
+    [nil,nil,nil],
+    [2,1,2],
+    [3.0,1.5,2.0],
+  ]
+
+  def test_divide
+    DIVIDE_TESTCASES.each do |first,second,result|
+      assert_equal result, Ops.divide(first,second)
+    end
+  end
+
+#test case format is [value1,value2,result]
+  MODULO_TESTCASES = [
+    [nil,1,nil],
+    [1,nil,nil],
+    [nil,nil,nil],
+    [5,2,1],
+  ]
+
+  def test_modulo
+    MODULO_TESTCASES.each do |first,second,result|
+      assert_equal result, Ops.modulo(first,second)
+    end
+  end
 end
