@@ -68,8 +68,31 @@
   y2milestone ("list bigger: %1", [1,1] < [1,1,1] );
   y2milestone ("list bigger: %1", [1,1,1,1] > [1,1,1] );
   y2milestone ("map bigger: %1", $[1:2,"s":3] >= $[2:3,"s":2] );
+  y2milestone ("path bigger: %1", .ba >= ."a?" );
+  y2milestone ("path bigger: %1", ."b?" >= .ab );
 //cannot mix types, only if it can be convert
 //y2milestone ("symbol string bigger: %1", `s < "t" );
 
+  map<string,map<string,string> > m = $["a" : $["b":"c"] ];
+  y2milestone ("clear map: %1", m["a","b"]:"n" );
+  y2milestone ("clear map: %1", m["a","c"]:"n" );
 
+  list<list<string> > l = [["b","c"]];
+  y2milestone ("clear list: %1", l[0,1]:"n" );
+  y2milestone ("clear list: %1", l[0,2]:"n" );
+  y2milestone ("clear list: %1", l[1,0]:"n" );
+
+  term t = `a(`b,`c);
+  y2milestone ("clear list: %1", t[1]:`n );
+  y2milestone ("clear list: %1", t[2]:`n );
+  y2milestone ("clear list: %1", t[0]:`n );
+
+  map<string,list<string> > n = $["a":["b","c"]];
+  y2milestone ("map list: %1", n["a",0]:"n" );
+  y2milestone ("map list: %1", n["a",2]:"n" );
+
+  map<string,any> z = $["a":["b","c"], "b":`a(`b,`c)];
+  y2milestone ("map term: %1", z["a",0]:"n" );
+  y2milestone ("map term: %1", z["b",1]:`n );
+  y2milestone ("map term: %1", z["b",2]:`n );
 }
