@@ -125,7 +125,7 @@ static YCPExternal rbobject_2_ycpexternal( VALUE value )
 static YCPValue
 rbpath_2_ycppath( VALUE value )
 {
-  VALUE stringrep = rb_funcall(value, rb_intern("value"), 0);
+  VALUE stringrep = rb_funcall(value, rb_intern("to_s"), 0);
   return  YCPPath(StringValuePtr(stringrep));
 }
 static YCPValue
