@@ -106,6 +106,20 @@ module Ops
     return first >> second
   end
 
+  def self.logical_and first, second
+    first = false if first.nil?
+    second = false if second.nil?
+
+    return first && second
+  end
+
+  def self.logical_or first, second
+    first = false if first.nil?
+    second = false if second.nil?
+
+    return first || second
+  end
+
   def self.equal first, second
     first = comparable_object(first)
 

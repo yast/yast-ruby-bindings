@@ -353,4 +353,35 @@ class OpsTest < YCP::TestCase
       assert_equal result, Ops.shift_right(first,second)
     end
   end
+
+#test case format is [value1,value2,result]
+  LOGICAL_AND_TESTCASES = [
+    [nil,true,false],
+    [true,nil,false],
+    [nil,nil,false],
+    [true,false,false],
+    [true,true,true],
+  ]
+
+  def test_logical_and
+    LOGICAL_AND_TESTCASES.each do |first,second,result|
+      assert_equal result, Ops.logical_and(first,second)
+    end
+  end
+
+#test case format is [value1,value2,result]
+  LOGICAL_OR_TESTCASES = [
+    [nil,true,true],
+    [true,nil,true],
+    [nil,nil,false],
+    [true,false,true],
+    [true,true,true],
+  ]
+
+  def test_logical_or
+    LOGICAL_OR_TESTCASES.each do |first,second,result|
+      assert_equal result, Ops.logical_or(first,second)
+    end
+  end
+
 end
