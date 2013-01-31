@@ -137,7 +137,7 @@ class OpsTest < YCP::TestCase
     assert_equal false, Ops.less_than(YCP::Term.new(:b),YCP::Term.new(:a))
   end
 
-  def test_comparison_term
+  def test_comparison_path
     assert_equal true, Ops.less_than(YCP::Path.new('.'),YCP::Path.new('.etc'))
     assert_equal true, Ops.less_than(YCP::Path.new('.etca'),YCP::Path.new('.etcb'))
     assert_equal true, Ops.less_than(YCP::Path.new('.etc.a'),YCP::Path.new('.etca'))
@@ -195,5 +195,28 @@ class OpsTest < YCP::TestCase
     list = ["a"]
     assert_equal "n", Ops.index(list,["a"],"n")
     assert_equal "n", Ops.index(list,[0,0],"n")
+  end
+
+#test case format is [value1,value2,result]
+  ADD_TESTCASES = [
+    [nil,1,nil],
+    [1,nil,nil],
+    [nil,nil,nil],
+    [1,2,3],
+    [1.2,2.3,3.5],
+    [[0],0,[0,0]],
+    [[0],[0],[0,0]],
+    [[0],[[0]],[0,[0]]],
+    [{:a => :b},{:a => :c},{:a => :c}],
+    ["s","c","sc"],
+    ["s",15,"s15"],
+    ["s",:c,"sc"],
+    ["s",YCP::Path.new(".etc"),"s.etc"],
+  ]
+
+  def test_add
+    ADD_TESTCASES.each do |first,second,result|
+      assert_equal result, Ops.add(first,second)
+    end
   end
 end

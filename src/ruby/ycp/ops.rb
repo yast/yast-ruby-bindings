@@ -33,6 +33,25 @@ module Ops
     return res
   end
 
+  def self.add value1, value2
+    return nil if value1.nil? || value2.nil?
+
+    case value1
+    when Array
+      if value2.is_a? Array
+        return value1 + value2
+      else
+        return value1.dup.push(value2)
+      end
+    when Hash
+      return value1.merge value2
+    when String
+      return value1 + value2.to_s
+    else
+      return value1 + value2
+    end
+  end
+
   def self.equal first, second
     first = comparable_object(first)
 

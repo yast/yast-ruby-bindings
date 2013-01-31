@@ -95,4 +95,13 @@
   y2milestone ("map term: %1", z["a",0]:"n" );
   y2milestone ("map term: %1", z["b",1]:`n );
   y2milestone ("map term: %1", z["b",2]:`n );
+  
+  list ta = [0];
+  list ma = [[0]];
+  y2milestone ("list add: %1", ta+1);
+  y2milestone ("list add: %1", ta+ma);
+
+  y2milestone ("string add %1", "s"+15);
+  y2milestone ("string add %1", "s"+`c);
+  y2milestone ("string add %1", "s"+.etc);
 }
