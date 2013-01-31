@@ -94,6 +94,18 @@ module Ops
     return first ^ second
   end
 
+  def self.shift_left first, second
+    return nil if first.nil? || second.nil?
+
+    return first << second
+  end
+
+  def self.shift_right first, second
+    return nil if first.nil? || second.nil?
+
+    return first >> second
+  end
+
   def self.equal first, second
     first = comparable_object(first)
 

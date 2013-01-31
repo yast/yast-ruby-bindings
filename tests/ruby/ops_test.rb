@@ -323,4 +323,34 @@ class OpsTest < YCP::TestCase
       assert_equal result, Ops.bitwise_xor(first,second)
     end
   end
+
+#test case format is [value1,value2,result]
+  SHIFT_LEFT_TESTCASES = [
+    [nil,1,nil],
+    [1,nil,nil],
+    [nil,nil,nil],
+    [1,2,4],
+    [2,2,8],
+  ]
+
+  def test_shift_left
+    SHIFT_LEFT_TESTCASES.each do |first,second,result|
+      assert_equal result, Ops.shift_left(first,second)
+    end
+  end
+ 
+#test case format is [value1,value2,result]
+  SHIFT_RIGHT_TESTCASES = [
+    [nil,1,nil],
+    [1,nil,nil],
+    [nil,nil,nil],
+    [4,2,1],
+    [8,2,2],
+  ]
+
+  def test_shift_right
+    SHIFT_RIGHT_TESTCASES.each do |first,second,result|
+      assert_equal result, Ops.shift_right(first,second)
+    end
+  end
 end
