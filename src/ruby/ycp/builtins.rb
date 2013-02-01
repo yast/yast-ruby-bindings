@@ -47,14 +47,15 @@ module YCP
     # find() YCP built-in
     # - Returns position of a substring (-1 if not found)
     # - Searches for the first occurence of a certain element in a list
-    def self.find object, what
-      return nil if object.nil? || what.nil?
+    def self.find object, what=nil, &block
+      return nil if object.nil? || (what.nil? && block.nil?)
 
       case object
       when String
         ret = object.index what
         return ret.nil? ? -1 : ret
-      when Array then raise "find(<Array>) is not implemented"
+      when Array
+        object.find &block
       else
         raise "Invalid object for find() builtin"
       end

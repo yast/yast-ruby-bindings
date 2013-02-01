@@ -162,7 +162,7 @@ class BuiltinsTest < YCP::TestCase
     assert YCP::Builtins.time > 0
   end
 
-  def test_find
+  def test_find_string
     assert_equal nil, YCP::Builtins.find(nil, nil)
     assert_equal nil, YCP::Builtins.find("", nil)
 
@@ -170,6 +170,13 @@ class BuiltinsTest < YCP::TestCase
     assert_equal 2, YCP::Builtins.find("1234", "3")
     assert_equal 2, YCP::Builtins.find("1234", "3")
     assert_equal -1, YCP::Builtins.find("1234", "9")
+  end
+
+  def test_find_list
+    test_list = [2,3,4]
+    assert_equal nil, YCP::Builtins.find(nil) {|i| next true }
+    assert_equal 2, YCP::Builtins.find(test_list) {|i| next true }
+    assert_equal 3, YCP::Builtins.find(test_list) {|i| next i>2 }
   end
 
   def test_contains
