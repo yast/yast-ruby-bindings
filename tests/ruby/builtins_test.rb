@@ -294,4 +294,18 @@ class BuiltinsTest < YCP::TestCase
     assert_equal 1, YCP::Builtins.lookup({"a" => 1}, "a", 2)
     assert_equal 2, YCP::Builtins.lookup({"a" => 1}, "b", 2)
   end
+
+  def test_filter_list
+    assert_equal nil, YCP::Builtins.filter(nil)
+    assert_equal [2,3,4], YCP::Builtins.filter([2,3,4]) {|i| next true }
+    assert_equal [4], YCP::Builtins.filter([2,3,4]){ |i| next i>3 }
+    assert_equal [], YCP::Builtins.filter([2,3,4]){ |i| next i>4 }
+  end
+
+  def test_filter_map
+    test_hash = {2=>3,3=>4}
+    assert_equal Hash[2=>3,3=>4], YCP::Builtins.filter(test_hash) {|i,j| next true }
+    assert_equal Hash[3=>4], YCP::Builtins.filter(test_hash){ |i,j| next i>2 }
+    assert_equal Hash.new, YCP::Builtins.filter(test_hash){ |i,j| next i>4 }
+  end
 end

@@ -35,8 +35,13 @@ module YCP
 
     # - Filters a List
     # - Filter a Map
-    def self.filter object, block
-      raise "Builtin filter() is not implemented yet"
+    def self.filter object, &block
+      #TODO investigate break and continue with filter as traverse workflow is different for ruby
+      if object.is_a?(Array) || object.is_a?(Hash)
+        object.select &block
+      else
+        return nil
+      end
     end
 
     # find() YCP built-in
