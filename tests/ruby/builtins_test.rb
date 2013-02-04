@@ -447,4 +447,72 @@ class BuiltinsTest < YCP::TestCase
       assert_equal result, YCP::Builtins.union(first, second)
     end
   end
+
+  def test_float_abs
+    assert_equal nil, YCP::Builtins::Float.abs(nil)
+
+    assert_equal 5.4, YCP::Builtins::Float.abs(-5.4)
+  end
+
+  def test_float_ceil
+    assert_equal nil, YCP::Builtins::Float.ceil(nil)
+
+    assert_equal -5.0, YCP::Builtins::Float.ceil(-5.4)
+
+    assert_equal 6.0, YCP::Builtins::Float.ceil(5.4)
+    assert_equal Float, YCP::Builtins::Float.ceil(5.4).class
+  end
+
+  def test_float_floor
+    assert_equal nil, YCP::Builtins::Float.floor(nil)
+
+    assert_equal -6.0, YCP::Builtins::Float.floor(-5.4)
+
+    assert_equal 5.0, YCP::Builtins::Float.floor(5.4)
+    assert_equal Float, YCP::Builtins::Float.floor(5.4).class
+  end
+
+  def test_float_pow
+    assert_equal nil, YCP::Builtins::Float.pow(nil,10.0)
+
+    assert_equal 1000.0, YCP::Builtins::Float.pow(10.0,3.0)
+    assert_equal Float, YCP::Builtins::Float.pow(10.0,3.0).class
+  end
+
+  def test_float_trunc
+    assert_equal nil, YCP::Builtins::Float.trunc(nil)
+
+    assert_equal -5.0, YCP::Builtins::Float.trunc(-5.4)
+
+    assert_equal 5.0, YCP::Builtins::Float.trunc(5.6)
+    assert_equal Float, YCP::Builtins::Float.trunc(5.4).class
+  end
+
+  TOFLOAT_TESTDATA = [
+   [ 1, 1.0 ],
+   [ nil, nil],
+   [ "42", 42.0],
+   [ "89.3", 89.3 ],
+   [ "test", 0.0 ],
+   [ :test, nil ]
+  ]
+  def test_tofloat
+    TOFLOAT_TESTDATA.each do |value,result|
+      assert_equal result, YCP::Builtins.tofloat(value)
+    end
+  end
+
+  FLATTEN_TESTDATA = [
+    [nil, nil],
+    [[nil],nil],
+    [[[1,2],nil],nil],
+    [[[1,2],[3,nil]],[1,2,3,nil]],
+    [[[0,1],[2,[3,4]]],[0,1,2,[3,4]]],
+    [[[0,1],[2,3],[3,4]],[0,1,2,3,3,4]],
+  ]
+  def test_flatten
+    FLATTEN_TESTDATA.each do |value,result|
+      assert_equal result, YCP::Builtins.flatten(value)
+    end
+  end
 end

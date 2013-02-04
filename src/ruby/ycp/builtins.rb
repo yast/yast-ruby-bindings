@@ -231,39 +231,53 @@ module YCP
 
     module Float
     	# absolute value
-      def self.abs
-        raise "Builtin float::abs() is not implemented yet"
+      def self.abs value
+        return nil if value.nil?
+
+        return value.abs
       end
 
     	# round upwards to integer
-      def self.ceil
-        raise "Builtin float::ceil() is not implemented yet"
+      def self.ceil value
+        return nil if value.nil?
+
+        return value.ceil.to_f
       end
 
     	# round downwards to integer
-      def self.floor
-        raise "Builtin float::floor() is not implemented yet"
+      def self.floor value
+        return nil if value.nil?
+
+        return value.floor.to_f
       end
 
     	# power function
-      def self.pow
-        raise "Builtin float::pow() is not implemented yet"
+      def self.pow base, power
+        return nil if base.nil? || power.nil?
+
+        return base ** power
       end
 
     	# Converts a floating point number to a localized string
-      def self.tolstring
+      def self.tolstring value, precision
         raise "Builtin float::tolstring() is not implemented yet"
       end
 
     	# round to integer, towards zero
-      def self.trunc
-        raise "Builtin float::trunc() is not implemented yet"
+      def self.trunc value
+        return nil if value.nil?
+
+        return value.to_i.to_f
       end
     end
 
     # Converts a value to a floating point number.
-    def self.tofloat
-      raise "Builtin tofloat() is not implemented yet"
+    def self.tofloat value
+      return nil if value.nil?
+
+      return value.to_f
+    rescue
+      return nil
     end
 
     ###########################################################
@@ -295,8 +309,13 @@ module YCP
     end
 
     # Flattens List
-    def self.flatten
-      raise "Builtin flatten() is not implemented yet"
+    def self.flatten value
+      return nil if value.nil?
+
+      return value.reduce([]) do |acc,i|
+        return nil if i.nil?
+        acc.push *i
+      end
     end
 
     module List
