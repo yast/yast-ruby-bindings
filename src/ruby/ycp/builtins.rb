@@ -129,8 +129,25 @@ module YCP
     # - Removes element from a list
     # - Remove key/value pair from a map
     # - Remove item from term
-    def self.remove
-      raise "Builtin remove() is not implemented yet"
+    def self.remove object, element
+      return nil if object.nil?
+
+      res = object.dup
+      return res if element.nil?
+      case object
+      when Array
+        return res if element < 0
+        res.delete_at element
+      when Hash
+        res.delete element
+      when YCP::Term
+        return res if element < 1
+        res.params.delete_at element-1
+      else
+        raise "Invalid type passed to remove #{object.class}"
+      end
+
+      return res
     end
 
     # - Selects a list element (deprecated, use LIST[INDEX]:DEFAULT)

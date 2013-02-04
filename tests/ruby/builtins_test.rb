@@ -389,4 +389,36 @@ class BuiltinsTest < YCP::TestCase
     end
     assert_equal [5,nil,7], res
   end
+
+  def test_remove_list
+    list = [0,1,2,3]
+
+    assert_equal nil, YCP::Builtins.remove(nil,2)
+
+    assert_equal [0,1,3], YCP::Builtins.remove(list,2)
+
+    assert_equal [0,1,2,3], YCP::Builtins.remove(list,5)
+    assert_equal [0,1,2,3], YCP::Builtins.remove(list,-1)
+  end
+
+  def test_remove_map
+    list = {0 => 1, 2 => 3}
+
+    assert_equal nil, YCP::Builtins.remove(nil,2)
+
+    assert_equal Hash[0 => 1], YCP::Builtins.remove(list,2)
+    assert_equal Hash[ 0 => 1, 2 => 3], list
+
+    assert_equal Hash[ 0 => 1, 2 => 3], YCP::Builtins.remove(list,5)
+  end
+
+  def test_remove_term
+    term = YCP::Term.new :t, :a, :b
+
+    assert_equal YCP::Term.new(:t,:a), YCP::Builtins.remove(term,2)
+    assert_equal YCP::Term.new(:t,:a,:b), term
+
+    assert_equal YCP::Term.new(:t,:a,:b), YCP::Builtins.remove(term,5)
+    assert_equal YCP::Term.new(:t,:a,:b), YCP::Builtins.remove(term,-1)
+  end
 end
