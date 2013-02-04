@@ -32,6 +32,13 @@ class BuiltinsTest < YCP::TestCase
     assert_equal YCP::Path.new(".etc"),p1
   end
 
+  def test_add_term
+    p1 = YCP::Term.new(:a,:b)
+    expected_res = YCP::Term.new(:a,:b,:c)
+    assert_equal expected_res, YCP::Builtins.add(p1,:c)
+    assert_equal  YCP::Term.new(:a,:b),p1
+  end
+
   def test_substring
     str = "12345"
 

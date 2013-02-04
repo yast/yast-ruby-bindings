@@ -20,8 +20,12 @@ module YCP
       case object
       when Array then return object + params
       when Hash then  return object.merge(Hash[*params])
-        #TODO when YCP::Term:
       when YCP::Path then return object + params.first
+      when YCP::Term then
+        res = object.dup
+        res.params << params.first
+        return res
+      when NilClass then return nil
       else
         raise "Invalid object for add builtin"
       end
