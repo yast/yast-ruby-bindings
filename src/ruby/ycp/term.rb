@@ -15,21 +15,16 @@ module YCP
       @params = params
     end
 
-    def == second
-      return false if second.nil?
-      value == second.value && params == second.params
-    end
-
-    def != second
-      !(self == second)
-    end
-
     def [] index
       params[index]
     end
 
     def size
       params.size
+    end
+
+    def dup
+      YCP::Term.new value, *params.dup
     end
 
     def to_s
