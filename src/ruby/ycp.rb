@@ -21,15 +21,13 @@
 # Load the native part (.so)
 require 'ycpx'
 
-#--------------------------------------
-#
-# YCP
-#
-
 # load inside moduls
+require "ycp/break"
 require "ycp/builtins"
+require "ycp/convert"
 require "ycp/exportable"
 require "ycp/logger"
+require "ycp/ops"
 require "ycp/path"
 require "ycp/term"
 

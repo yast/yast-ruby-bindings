@@ -1,5 +1,6 @@
 require "ycp/path"
 require "ycp/helper"
+require "ycp/break"
 
 module YCP
   module Builtins
@@ -66,12 +67,20 @@ module YCP
     def self.foreach object, &block
       res = nil
       if object.is_a? Array
-        object.each do |i|
-          res = block.call(i)
+        begin
+          object.each do |i|
+            res = block.call(i)
+          end
+        rescue YCP::Break
+          res = nil
         end
       elsif object.is_a? Hash
-        object.each_pair do |k,v|
-          res = block.call(k,v)
+        begin
+          object.each_pair do |k,v|
+            res = block.call(k,v)
+          end
+        rescue YCP::Break
+          res = nil
         end
       else
         YCP.y2warning ("foreach builtin called on wrong type #{object.class}")
@@ -89,8 +98,32 @@ module YCP
 
     # - Maps an operation onto all elements key/value and create a list
     # - Maps an operation onto all elements of a list and thus creates a new list.
-    def self.maplist
-      raise "Builtin maplist() is not implemented yet"
+    def self.maplist object, &block
+      case object
+      when Array
+        res = []
+        begin
+          object.each do |i|
+            res << block.call(i)
+          end
+        rescue YCP::Break
+          #break skips out of each loop, but allow to keep previous results
+        end
+        return res
+      when Hash
+        res = []
+        begin
+          object.each do |i|
+            res << block.call(i)
+          end
+        rescue YCP::Break
+          #break skips out of each loop, but allow to keep previous results
+        end
+        return res
+      else
+        YCP.y2warning ("Called builtin maplist on wrong type #{object.class}")
+        return nil
+      end
     end
 
     # - Removes element from a list

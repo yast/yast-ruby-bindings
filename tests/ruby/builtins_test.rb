@@ -6,6 +6,7 @@ require "test_helper"
 require "ycp/builtins"
 require "ycp/path"
 require "ycp/term"
+require "ycp/break"
 
 class BuiltinsTest < YCP::TestCase
   def test_add_list
@@ -317,6 +318,7 @@ class BuiltinsTest < YCP::TestCase
   end
 
   def test_each_list
+    assert_equal nil, YCP::Builtins.foreach(nil){|i| next 5}
     list = [2,3,4]
     cycle_detect = 0
     res = YCP::Builtins.foreach(list) do |l|
@@ -328,7 +330,7 @@ class BuiltinsTest < YCP::TestCase
     cycle_detect = 0
     res = YCP::Builtins.foreach(list) do |l|
       cycle_detect += 1
-      break if l == 3
+      raise YCP::Break if l == 3
     end
     assert_equal nil, res
     assert_equal 2, cycle_detect
@@ -353,7 +355,7 @@ class BuiltinsTest < YCP::TestCase
     cycle_detect = 0
     res = YCP::Builtins.foreach(map) do |k,v|
       cycle_detect += 1
-      break if k == 2
+      raise YCP::Break if k == 2
     end
     assert_equal nil, res
     assert_equal 1, cycle_detect
@@ -364,5 +366,27 @@ class BuiltinsTest < YCP::TestCase
     end
     assert_equal 7, res
     assert_equal 2, cycle_detect
+  end
+
+  def test_maplist_list
+    assert_equal nil, YCP::Builtins.maplist(nil){|i| next 5}
+
+    list = [2,3,4]
+    res = YCP::Builtins.maplist(list) do |l|
+      next l
+    end
+    assert_equal [2,3,4], res
+
+    res = YCP::Builtins.maplist(list) do |l|
+      raise YCP::Break if l == 3
+      l
+    end
+    assert_equal [2], res
+
+    res = YCP::Builtins.maplist(list) do |l|
+      next if l == 3
+      next l+3
+    end
+    assert_equal [5,nil,7], res
   end
 end
