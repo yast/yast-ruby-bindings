@@ -315,4 +315,54 @@ class BuiltinsTest < YCP::TestCase
     assert_equal Hash[3=>4], YCP::Builtins.filter(test_hash){ |i,j| next i>2 }
     assert_equal Hash.new, YCP::Builtins.filter(test_hash){ |i,j| next i>4 }
   end
+
+  def test_each_list
+    list = [2,3,4]
+    cycle_detect = 0
+    res = YCP::Builtins.foreach(list) do |l|
+      cycle_detect += 1
+      next l
+    end
+    assert_equal 4, res
+    assert_equal 3, cycle_detect
+    cycle_detect = 0
+    res = YCP::Builtins.foreach(list) do |l|
+      cycle_detect += 1
+      break if l == 3
+    end
+    assert_equal nil, res
+    assert_equal 2, cycle_detect
+    cycle_detect = 0
+    res = YCP::Builtins.foreach(list) do |l|
+      cycle_detect += 1
+      next l+3
+    end
+    assert_equal 7, res
+    assert_equal 3, cycle_detect
+  end
+
+  def test_each_map
+    map = {2=>3,3=>4}
+    cycle_detect = 0
+    res = YCP::Builtins.foreach(map) do |k,v|
+      cycle_detect += 1
+      next k
+    end
+    assert_equal 3, res
+    assert_equal 2, cycle_detect
+    cycle_detect = 0
+    res = YCP::Builtins.foreach(map) do |k,v|
+      cycle_detect += 1
+      break if k == 2
+    end
+    assert_equal nil, res
+    assert_equal 1, cycle_detect
+    cycle_detect = 0
+    res = YCP::Builtins.foreach(map) do |k,v|
+      cycle_detect += 1
+      next v+3
+    end
+    assert_equal 7, res
+    assert_equal 2, cycle_detect
+  end
 end

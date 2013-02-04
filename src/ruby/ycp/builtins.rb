@@ -63,8 +63,20 @@ module YCP
 
     # - Process the content of a map
     # - Processes the content of a list
-    def self.foreach object, block
-      raise "Builtin foreach() is not implemented yet"
+    def self.foreach object, &block
+      res = nil
+      if object.is_a? Array
+        object.each do |i|
+          res = block.call(i)
+        end
+      elsif object.is_a? Hash
+        object.each_pair do |k,v|
+          res = block.call(k,v)
+        end
+      else
+        YCP.y2warning ("foreach builtin called on wrong type #{object.class}")
+      end
+      return res
     end
 
     # - Returns whether the map m is empty.
