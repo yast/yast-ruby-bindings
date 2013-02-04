@@ -271,7 +271,6 @@ class BuiltinsTest < YCP::TestCase
   end
 
   def test_srandom
-    assert_equal nil, YCP::Builtins.srandom(nil)
     assert YCP::Builtins.srandom() > 0
     assert_equal nil, YCP::Builtins.srandom(10)
   end
@@ -427,5 +426,25 @@ class BuiltinsTest < YCP::TestCase
 
     assert_equal YCP::Term.new(:t,:a,:b), YCP::Builtins.remove(term,5)
     assert_equal YCP::Term.new(:t,:a,:b), YCP::Builtins.remove(term,-1)
+  end
+
+  def test_select
+    list = [0,1,2]
+    assert_equal 1,YCP::Builtins.select(list,1,-1)
+  end
+
+  UNION_TESTDATA = [
+    [nil,nil,nil],
+    [nil,[3,4],nil],
+    [[1,2],nil,nil],
+    [[1,2],[3,4],[1,2,3,4]],
+    [[1,2,3,1],[3,4],[1,2,3,4]],
+    [[1,2,nil],[3,nil,4],[1,2,nil,3,4]],
+    [{1=>2,2=>3},{2=>10,4=>5},{1=>2,2=>10,4=>5}],
+  ]
+  def test_union_list
+    UNION_TESTDATA.each do |first,second,result|
+      assert_equal result, YCP::Builtins.union(first, second)
+    end
   end
 end

@@ -156,8 +156,8 @@ module YCP
 
     # - Selects a list element (deprecated, use LIST[INDEX]:DEFAULT)
     # - Select item from term
-    def self.select
-      raise "Builtin select() is not implemented yet"
+    def self.select object, element, default
+      YCP::Ops.index(object, [element], default)
     end
 
     # size() YCP built-in
@@ -171,8 +171,9 @@ module YCP
       return nil if object.nil?
 
       case object
-      when String, Array, Hash, YCP::Term, YCP::Path then return object.size
-      # TODO: byteblock, path
+      when String, Array, Hash, YCP::Term, YCP::Path
+        return object.size
+      # TODO: byteblock
       else
         raise "Invalid object for size() builtin"
       end
@@ -180,8 +181,8 @@ module YCP
 
     # Initialize random number generator - srandom(<int>)
     # Get the current random number generator seed - int srandom()
-    def self.srandom *param
-      if param.empty?
+    def self.srandom param=nil
+      if param.nil?
         # be more secure here, original YCP uses Time.now with second precision
         # for seeding which is not secure enough, calling Ruby srand without
         # paramater causes to use time, PID and a sequence number for seeding
@@ -191,18 +192,27 @@ module YCP
         # the original srandom() returns Time.now
         Time.now.to_i
       else
-        # srandom(int)
-        p = param.first
-
-        srand p unless p.nil?
-        nil
+        srand param
+        return nil
       end
     end
 
     # - Unions of lists
     # - Union of 2 maps
-    def self.union
-      raise "Builtin union() is not implemented yet"
+    def self.union first, second
+      return nil if first.nil? || second.nil?
+
+      case first
+      when Array
+        return (first+second).reduce([]) do |acc,i|
+          acc << i unless acc.include? i
+          acc
+        end
+      when Hash
+        return first.merge(second)
+      else
+        raise "Wrong type #{first.class} to union builtin"
+      end
     end
 
 
