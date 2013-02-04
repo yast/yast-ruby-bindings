@@ -515,4 +515,39 @@ class BuiltinsTest < YCP::TestCase
       assert_equal result, YCP::Builtins.flatten(value)
     end
   end
+
+  def test_list_reduce_1param
+    list = [0,1,2,3,2,1,-5]
+    res = YCP::Builtins::List.reduce(list) do |x,y|
+      next x>y ? x : y
+    end
+
+    assert_equal 3, res
+
+    res = YCP::Builtins::List.reduce(list) do |x,y|
+      next x + y
+    end
+    assert_equal 4, res
+
+    assert_equal nil, YCP::Builtins::List.reduce([]) { |x,y| next x }
+    assert_equal nil, YCP::Builtins::List.reduce(nil) { |x,y| next x }
+  end
+
+  def test_list_reduce_2params
+    list = [0,1,2,3,2,1,-5]
+    res = YCP::Builtins::List.reduce(15,list) do |x,y|
+      next x>y ? x : y
+    end
+
+    assert_equal 15, res
+
+    res = YCP::Builtins::List.reduce(15,list) do |x,y|
+      next x + y
+    end
+
+    assert_equal 19, res
+
+    assert_equal 5, YCP::Builtins::List.reduce(5,[]) { |x,y| next x }
+    assert_equal nil, YCP::Builtins::List.reduce(nil,nil) { |x,y| next x }
+  end
 end

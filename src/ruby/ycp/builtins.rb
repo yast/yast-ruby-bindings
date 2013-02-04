@@ -320,14 +320,16 @@ module YCP
 
     module List
       # Reduces a list to a single value.
-      def self.reduce
-        raise "Builtin list::reduce() is not implemented yet"
+      def self.reduce *params, &block
+        return nil if params.first.nil?
+        list = params.first
+        if params.size == 2
+          return nil if params[1].nil?
+          list = [list] + params[1]
+        end
+        return list.reduce &block
       end
 
-      # Reduces a list to a single value.
-      def self.reduce
-        raise "Builtin list::reduce() is not implemented yet"
-      end
 
       # Creates new list with swaped elemetns at offset i1 and i2.
       def self.swap
