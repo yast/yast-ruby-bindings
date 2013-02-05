@@ -452,8 +452,19 @@ module YCP
     end
 
     # Maps an operation onto all key/value pairs of a map
-    def self.mapmap
-      raise "Builtin mapmap() is not implemented yet"
+    def self.mapmap map, &block
+      return nil if map.nil?
+
+      res = Hash.new
+      begin
+        map.each_pair do |k,v|
+          res.merge! block.call(k,v)
+        end
+      rescue YCP::Break
+        #break stops adding to hash
+      end
+
+      return res
     end
 
     # Converts a value to a map.
@@ -471,8 +482,8 @@ module YCP
     end
 
     # Change or add an environment variable
-    def self.getenv
-      raise "Builtin getenv() is not implemented yet"
+    def self.getenv value
+      return ENV[value]
     end
 
     # Checks whether a value is of a certain type
@@ -481,13 +492,18 @@ module YCP
     end
 
     # Random number generator.
-    def self.random
-      raise "Builtin random() is not implemented yet"
+    def self.random max
+      return nil if max.nil?
+
+      return max < 0 ? -rand(max) : rand(max)
     end
 
     # Change or add an environment variable
     def self.setenv env, value, overwrite = true
-      raise "Builtin setenv() is not implemented yet"
+      return true if ENV.include?(env)
+
+      ENV[env] = value
+      return true
     end
 
     # Format a String
@@ -552,8 +568,16 @@ module YCP
     ###########################################################
 
     # Converts a value to a path.
-    def self.topath
-      raise "Builtin topath() is not implemented yet"
+    def self.topath object
+      case object
+      when YCP::Path
+        return object
+      when String
+        object = "."+object unless object.start_with?(".")
+        return YCP::Path.new object
+      else
+        return nil
+      end
     end
 
     ###########################################################

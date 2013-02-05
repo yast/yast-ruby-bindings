@@ -625,4 +625,37 @@ class BuiltinsTest < YCP::TestCase
       assert_equal list_prev, list
     end 
   end
+
+  def test_mapmap
+    assert_equal nil, YCP::Builtins.listmap(nil) {|k,v| next {v => k}}
+
+    assert_equal Hash[1=>2,3=>4], YCP::Builtins.mapmap({2=>1,4=>3}) {|k,v| next {v => k}}
+
+    res = YCP::Builtins.mapmap({2=>1,4=>3}) do |k,v|
+      raise YCP::Break if k == 4
+      next {v => k}
+    end
+
+    assert_equal Hash[1=>2],res
+  end
+
+  def test_random
+    assert_equal nil,YCP::Builtins.random(nil)
+
+    # there is quite nice chance with this repetition to test even border or range
+    100.times do
+      assert (0..9).include? YCP::Builtins.random(10)
+    end
+  end
+
+  def test_topath
+    assert_equal nil, YCP::Builtins.topath(nil)
+
+    assert_equal YCP::Path.new(".etc"), YCP::Builtins.topath(YCP::Path.new(".etc"))
+
+    assert_equal YCP::Path.new(".etc"), YCP::Builtins.topath(".etc")
+
+    assert_equal YCP::Path.new(".etc"), YCP::Builtins.topath("etc")
+  end
+
 end
