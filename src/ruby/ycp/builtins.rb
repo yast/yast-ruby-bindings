@@ -786,18 +786,35 @@ module YCP
     ###########################################################
 
     # Returns the arguments of a term.
-    def self.argsof
-      raise "Builtin argsof() is not implemented yet"
+    def self.argsof term
+      return nil if term.nil?
+
+      return term.params
     end
 
     # Returns the symbol of the term TERM.
     def self.symbolof
-      raise "Builtin symbolof() is not implemented yet"
+      return nil if term.nil?
+
+      return term.value
     end
 
     # Converts a value to a term.
-    def self.toterm symbol, list
-      raise "Builtin toterm() is not implemented yet"
+    def self.toterm symbol, list=DEF_LENGHT
+      return nil if symbol.nil? || list.nil?
+
+      case symbol
+      when String
+        return YCP::Term.new(symbol.to_sym)
+      when Symbol
+        if list==DEF_LENGHT
+          return YCP::Term.new(symbol)
+        else
+          return YCP::Term.new(symbol,*list)
+        end
+      when YCP::Term
+        return symbol
+      end
     end
 
   end
