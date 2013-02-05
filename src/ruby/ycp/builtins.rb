@@ -332,8 +332,20 @@ module YCP
 
 
       # Creates new list with swaped elemetns at offset i1 and i2.
-      def self.swap
-        raise "Builtin list::swap() is not implemented yet"
+      def self.swap list, offset1, offset2
+        return nil if list.nil? || offset1.nil? || offset2.nil?
+
+        return list if offset1 < 0 || offset2 >= list.size || (offset1 > offset2)
+
+        res = []
+        if offset1 > 0
+          res.concat list[0..offset1-1]
+        end
+        res.concat list[offset1..offset2].reverse!
+        if offset2 < list.size-1
+          res.concat list[offset2+1..-1]
+        end
+        return res
       end
     end
 
