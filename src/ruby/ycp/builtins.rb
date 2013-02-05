@@ -388,11 +388,10 @@ module YCP
 
     # sort() YCP built-in
     # Sorts a List according to the YCP builtin predicate
-    # TODO FIXME: Sort list using an expression
     def self.sort array
       return nil if array.nil?
 
-      array.sort
+      array.sort {|x,y| YCP::Ops.comparable_object(x) <=> y }
     end
 
     # splitstring() YCP built-in
