@@ -354,9 +354,14 @@ module YCP
       return nil if list.nil?
 
       res = Hash.new
-      list.each do |i|
-        res.merge! block.call(i)
+      begin
+        list.each do |i|
+          res.merge! block.call(i)
+        end
+      rescue YCP::Break
+        #break stops adding to hash
       end
+
       return res
     end
 
@@ -420,15 +425,15 @@ module YCP
     end
 
     # Converts a value to a list (deprecated, use (list)VAR).
-    def self.tolist
-      raise "Builtin tolist() is not implemented yet"
+    def self.tolist object
+      return object.is_a?(Array) ? object : nil
     end
 
     # toset() YCP built-in
     # Sorts list and removes duplicates
     def self.toset array
       return nil if array.nil?
-      array.uniq.sort
+      array.uniq.sort { |x,y| YCP::Ops.comparable_object(x) <=> y }
     end
 
     ###########################################################
@@ -452,8 +457,8 @@ module YCP
     end
 
     # Converts a value to a map.
-    def self.tomap
-      raise "Builtin tomap() is not implemented yet"
+    def self.tomap object
+      return object.is_a?(Hash) ? object : nil
     end
 
     ###########################################################
