@@ -578,4 +578,18 @@ class BuiltinsTest < YCP::TestCase
     assert_equal Hash[1=>1,2=>2], YCP::Builtins.listmap([1,2]) {|i| next {i => i}}
 
   end
+
+  PREPEND_TESTDATA = [
+    [nil,5,nil],
+    [[0,1],5,[5,0,1]],
+    [[1,2],nil,[nil,1,2]],
+  ]
+  def test_prepend
+    PREPEND_TESTDATA.each do |list,element,result|
+      list_prev = list.nil? ? nil : list.dup 
+      assert_equal result, YCP::Builtins.prepend(list, element)
+      #check that list is not modified
+      assert_equal list_prev, list
+    end 
+  end
 end

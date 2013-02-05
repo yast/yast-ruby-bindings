@@ -373,8 +373,10 @@ module YCP
     end
 
     # Prepends a list with a new element
-    def self.prepend
-      raise "Builtin prepend() is not implemented yet"
+    def self.prepend list, element
+      return nil if list.nil?
+
+      return [element].push *list
     end
 
     # setcontains() YCP built-in
