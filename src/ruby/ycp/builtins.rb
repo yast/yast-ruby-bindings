@@ -404,11 +404,19 @@ module YCP
       string.split /[#{Regexp.escape sep}]/, -1 * 2**20
     end
 
+    # we must mark somehow default value for length
+    DEF_LENGHT = "default"
     # Extracts a sublist
     # - sublist(<list>, <offset>)
     # - sublist(<list>, <offset>, <length>)
-    def self.sublist
-      raise "Builtin sublist() is not implemented yet"
+    def self.sublist list, offset, length=DEF_LENGHT
+      return nil if list.nil? || offset.nil? || length.nil?
+
+      length = list.size - offset if length==DEF_LENGHT
+      return nil if offset < 0 || offset >= list.size
+      return nil if length < 0 || offset+length > list.size
+
+      return list.dup[offset..offset+length-1]
     end
 
     # Converts a value to a list (deprecated, use (list)VAR).

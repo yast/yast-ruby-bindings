@@ -592,4 +592,37 @@ class BuiltinsTest < YCP::TestCase
       assert_equal list_prev, list
     end 
   end
+
+  SUBLIST_TEST_DATA_WITH_LEN = [
+    [nil,1,1,nil],
+    [[0,1],nil,nil,nil],
+    [[0,1],2,1,nil],
+    [[0,1],1,2,nil],
+    [[0,1],1,1,[1]],
+    [[0,1],1,0,[]],
+  ]
+  def test_sublist_with_len
+    SUBLIST_TEST_DATA_WITH_LEN.each do |list,offset,length,result|
+      list_prev = list.nil? ? nil : list.dup 
+      assert_equal result, YCP::Builtins.sublist(list, offset, length)
+      #check that list is not modified
+      assert_equal list_prev, list
+    end 
+  end
+
+  SUBLIST_TEST_DATA_WITHOUT_LEN = [
+    [nil,1,nil],
+    [[0,1],nil,nil],
+    [[0,1],2,nil],
+    [[0,1],0,[0,1]],
+    [[0,1],1,[1]],
+  ]
+  def test_sublist_without_len
+    SUBLIST_TEST_DATA_WITHOUT_LEN.each do |list,offset,result|
+      list_prev = list.nil? ? nil : list.dup 
+      assert_equal result, YCP::Builtins.sublist(list, offset)
+      #check that list is not modified
+      assert_equal list_prev, list
+    end 
+  end
 end
