@@ -350,8 +350,14 @@ module YCP
     end
 
     # Maps an operation onto all elements of a list and thus creates a map.
-    def self.listmap
-      raise "Builtin listmap() is not implemented yet"
+    def self.listmap list, &block
+      return nil if list.nil?
+
+      res = Hash.new
+      list.each do |i|
+        res.merge! block.call(i)
+      end
+      return res
     end
 
     # Sort A List respecting locale

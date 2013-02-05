@@ -571,4 +571,11 @@ class BuiltinsTest < YCP::TestCase
       assert_equal list_prev, list
     end
   end
+
+  def test_listmap
+    assert_equal nil, YCP::Builtins.listmap(nil) {|i| next {i => i}}
+
+    assert_equal Hash[1=>1,2=>2], YCP::Builtins.listmap([1,2]) {|i| next {i => i}}
+
+  end
 end
