@@ -217,8 +217,9 @@ class BuiltinsTest < YCP::TestCase
     assert_equal ["A", "Z"], YCP::Builtins.sort(["Z", "A"])
     assert_equal [1, 2, 3], YCP::Builtins.sort([3, 2, 1])
 
-    # TODO FIXME: fails, do we need to fix it???
-    # assert_equal [1, 2, 5, 10, 20, 200, "10", "15"], YCP::Builtins.sort(["10", 1, 2, 10, 20, "15", 200, 5])
+    assert_equal [1, 2, 5, 10, 20, 200, "10", "15"], YCP::Builtins.sort(["10", 1, 2, 10, 20, "15", 200, 5])
+
+    assert_equal [20,10,1], YCP::Builtins.sort([10,1,20]){ |x,y| x<y }
   end
 
   def test_toset

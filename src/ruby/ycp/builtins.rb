@@ -393,10 +393,14 @@ module YCP
 
     # sort() YCP built-in
     # Sorts a List according to the YCP builtin predicate
-    def self.sort array
+    def self.sort array, &block
       return nil if array.nil?
 
-      array.sort {|x,y| YCP::Ops.comparable_object(x) <=> y }
+      if block_given?
+        array.sort { |x,y| block.call(x,y) ? 1 : -1 }
+      else  
+        array.sort {|x,y| YCP::Ops.comparable_object(x) <=> y }
+      end
     end
 
     # splitstring() YCP built-in
