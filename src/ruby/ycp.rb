@@ -29,6 +29,7 @@ require "ycp/exportable"
 require "ycp/logger"
 require "ycp/ops"
 require "ycp/path"
+require "ycp/scr"
 require "ycp/term"
 
 module YCP

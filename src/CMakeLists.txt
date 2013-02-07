@@ -15,3 +15,4 @@ ADD_CUSTOM_COMMAND (
 )
 add_custom_target(rdoc ALL DEPENDS "${rdoc_dir}")
 add_dependencies(rdoc ycpx)
+add_dependencies(rdoc scrx)
