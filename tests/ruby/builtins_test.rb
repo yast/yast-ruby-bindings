@@ -659,4 +659,21 @@ class BuiltinsTest < YCP::TestCase
     assert_equal YCP::Path.new(".etc"), YCP::Builtins.topath("etc")
   end
 
+  def test_sformat
+    assert_equal nil, YCP::Builtins.sformat(nil)
+
+    assert_equal "test", YCP::Builtins.sformat("test")
+
+    assert_equal "test %1", YCP::Builtins.sformat("test %1")
+
+    assert_equal "test lest", YCP::Builtins.sformat("test %1","lest")
+
+    assert_equal "test lest", YCP::Builtins.sformat("test %1",:lest)
+
+    assert_equal "test", YCP::Builtins.sformat("test%a","lest")
+
+    assert_equal "test%", YCP::Builtins.sformat("test%%","lest")
+
+    assert_equal "test321", YCP::Builtins.sformat("test%3%2%1",1,2,3)
+  end
 end

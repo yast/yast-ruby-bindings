@@ -511,8 +511,30 @@ module YCP
     end
 
     # Format a String
-    def self.sformat
-      raise "Builtin sformat() is not implemented yet"
+    def self.sformat format, *args
+      if format.nil? || !format.is_a?(String)
+        return nil
+      end
+
+      return format if args.empty?
+
+      return format.gsub(/%./) do |match|
+        case match
+        when "%%"
+          "%"
+        when /%([1-9])/
+          pos = $1.to_i - 1
+          if (pos < args.size)
+            args[pos]
+          else
+            YCP.y2warning "Illegal argument number #{match}. Maximum is %#{args.size-1}."
+            ""
+          end
+        else
+          YCP.y2warning "Illegal argument number #{match}."
+          ""
+        end
+      end
     end
 
     # Sleeps a number of milliseconds.
@@ -529,32 +551,32 @@ module YCP
 
     # Log a message to the y2log.
     def self.y2debug *args
-      YCP.y2debug *args
+      YCP.y2debug sformat(*args)
     end
 
     # Log an error to the y2log.
     def self.y2error *args
-      YCP.y2error *args
+      YCP.y2error sformat(*args)
     end
 
     # Log an internal message to the y2log.
     def self.y2internal *args
-      YCP.y2internal *args
+      YCP.y2internal sformat(*args)
     end
 
     # Log a milestone to the y2log.
     def self.y2milestone*args
-      YCP.y2milestone *args
+      YCP.y2milestone sformat(*args)
     end
 
     # Log a security message to the y2log.
     def self.y2security *args
-      YCP.y2security *args
+      YCP.y2security sformat(*args)
     end
 
     # Log a warning to the y2log.
     def self.y2warning *args
-      YCP.y2warning *args
+      YCP.y2warning sformat(*args)
     end
 
     # Log an user-level system message to the y2changes
