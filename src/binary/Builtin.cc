@@ -5,49 +5,26 @@
 
 #include "scr/SCR.h"
 #include "scr/ScriptingAgent.h"
+#include "wfm/WFM.h"
 
 #include "ruby.h"
 
 #include "Y2YCPTypeConv.h"
 #include "Y2RubyTypeConv.h"
+#include "RubyLogger.h"
 
 static VALUE rb_mSCR;
+static VALUE rb_mWFM;
 static VALUE rb_mYCP;
 static SCR scr;
 static ScriptingAgent scra;
-
-class RubyLogger : public Logger
-{
-  static RubyLogger* m_rubylogger;
-public:
-  void error(string message)
-  {
-    y2_logger (LOG_ERROR,"Ruby",YaST::ee.filename().c_str(), YaST::ee.linenumber(),"",message.c_str());
-  }
-
-  void warning(string message)
-  {
-    y2_logger (LOG_WARNING,"Ruby",YaST::ee.filename().c_str(), YaST::ee.linenumber(),"",message.c_str());
-  }
-
-  static RubyLogger* instance()
-  {
-    if (!m_rubylogger)
-      m_rubylogger = new RubyLogger();
-    return m_rubylogger;
-  }
-};
-
-RubyLogger* RubyLogger::m_rubylogger = NULL;
+static WFM wfm;
 
 extern "C" {
-  static VALUE
-  scr_call_builtin( int argc, VALUE *argv, VALUE self )
+
+  static VALUE call_builtin(const string &qualified_name, int argc, VALUE *argv)
   {
-    if (argc<2)
-      rb_raise(rb_eArgError, "At least two arguments must be passed");
     extern StaticDeclaration static_declarations;
-    std::string qualified_name = std::string("SCR::") + RSTRING_PTR(argv[0]);
 
     declaration_t *bi_dt = static_declarations.findDeclaration(qualified_name.c_str());
     if (bi_dt==NULL)
@@ -75,6 +52,25 @@ extern "C" {
 
     return ycpvalue_2_rbvalue(bi_call.evaluate(false));
   }
+
+  static VALUE
+  scr_call_builtin( int argc, VALUE *argv, VALUE self )
+  {
+    if (argc<1)
+      rb_raise(rb_eArgError, "At least one argument must be passed");
+    std::string qualified_name = std::string("SCR::") + RSTRING_PTR(argv[0]);
+    return call_builtin(qualified_name,argc,argv);
+  }
+
+  static VALUE
+  wfm_call_builtin( int argc, VALUE *argv, VALUE self )
+  {
+    if (argc<1)
+      rb_raise(rb_eArgError, "At least one argument must be passed");
+    std::string qualified_name = std::string("WFM::") + RSTRING_PTR(argv[0]);
+    return call_builtin(qualified_name,argc,argv);
+  }
+
 }
 
 extern "C"
@@ -86,7 +82,7 @@ extern "C"
    */
 
   void
-  Init_scrx()
+  Init_builtinx()
   {
     /*
      * module YCP
@@ -94,5 +90,7 @@ extern "C"
     rb_mYCP = rb_define_module("YCP");
     rb_mSCR = rb_define_module_under(rb_mYCP, "SCR");
     rb_define_singleton_method( rb_mSCR, "call_builtin", RUBY_METHOD_FUNC(scr_call_builtin), -1);
+    rb_mWFM = rb_define_module_under(rb_mYCP, "WFM");
+    rb_define_singleton_method( rb_mWFM, "call_builtin", RUBY_METHOD_FUNC(wfm_call_builtin), -1);
   }
 }

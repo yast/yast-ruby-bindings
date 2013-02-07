@@ -31,6 +31,7 @@ require "ycp/ops"
 require "ycp/path"
 require "ycp/scr"
 require "ycp/term"
+require "ycp/wfm"
 
 module YCP
   def self.import(mname)

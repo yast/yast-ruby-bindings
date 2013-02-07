@@ -1,4 +1,4 @@
-require "ycp/scrx"
+require "ycp/builtinx"
 
 module YCP
   module SCR

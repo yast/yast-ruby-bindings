@@ -7,10 +7,11 @@ set(yast_ruby_module_SRCS
   Y2RubyUtils.cc
 )
 
-set(scr_ruby_module_SRCS
-  SCR.cc
+set(builtin_ruby_module_SRCS
+  Builtin.cc
   Y2RubyTypeConv.cc       # YCP.cc -> ycpvalue_2_rbvalue(), rbvalue_2_ycpvalue()
   Y2YCPTypeConv.cc       # YCP.cc -> ycpvalue_2_rbvalue(), rbvalue_2_ycpvalue()
+  RubyLogger.cc
 )
 
 set(ruby_yast_plugin_SRCS
@@ -47,10 +48,10 @@ add_definitions(${CC_FLAGS} -Wno-deprecated)
 
 
 add_library(ycpx SHARED ${yast_ruby_module_SRCS})
-add_library(scrx SHARED ${scr_ruby_module_SRCS})
+add_library(builtinx SHARED ${builtin_ruby_module_SRCS})
 # libycpx.so -> ycpx.so
 set_target_properties(ycpx PROPERTIES PREFIX "")
-set_target_properties(scrx PROPERTIES PREFIX "")
+set_target_properties(builtinx PROPERTIES PREFIX "")
 
 #
 # Use rpath to find YaST plugin libs (wfm has static constructors :-( )
@@ -79,12 +80,13 @@ target_link_libraries( ycpx ${YAST_YCP_LIBRARY} )
 target_link_libraries( ycpx ${YAST_PLUGIN_UI_LIBRARY} )
 target_link_libraries( ycpx ${RUBY_LIBRARY} )
 
-target_link_libraries( scrx ${YAST_LIBRARY} )
-target_link_libraries( scrx ${YAST_YCP_LIBRARY} )
-target_link_libraries( scrx ${YAST_PLUGIN_SCR_LIBRARY} )
+target_link_libraries( builtinx ${YAST_LIBRARY} )
+target_link_libraries( builtinx ${YAST_YCP_LIBRARY} )
+target_link_libraries( builtinx ${YAST_PLUGIN_SCR_LIBRARY} )
+target_link_libraries( builtinx ${YAST_PLUGIN_WFM_LIBRARY} )
 
 install(TARGETS ycpx LIBRARY DESTINATION ${RUBY_VENDORARCH_DIR} )
-install(TARGETS scrx LIBRARY DESTINATION ${RUBY_VENDORARCH_DIR}/ycp )
+install(TARGETS builtinx LIBRARY DESTINATION ${RUBY_VENDORARCH_DIR}/ycp )
 
 #
 # YCP -> Ruby
