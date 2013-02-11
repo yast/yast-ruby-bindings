@@ -10,7 +10,7 @@ class MyTestClass
     self.variable_a = { :test => "lest" }
   end
 
-  publish :method => :test, :type => "string(integer,term)"
+  publish :function => :test, :type => "string(integer,term)"
   def test(a,b)
     return "test"
   end
@@ -20,9 +20,9 @@ MyTest = MyTestClass.new
 
 class ExportableTest < YCP::TestCase
   def test_publish_methods
-    assert_equal [:test], MyTest.class.published_methods.keys
-    assert_equal "test", MyTest.class.published_methods.values.first.method_name
-    assert_equal "string(integer,term)", MyTest.class.published_methods[:test].type
+    assert_equal [:test], MyTest.class.published_functions.keys
+    assert_equal :test, MyTest.class.published_functions.values.first.function
+    assert_equal "string(integer,term)", MyTest.class.published_functions[:test].type
   end
 
   def test_publish_variables

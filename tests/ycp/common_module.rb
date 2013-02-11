@@ -4,7 +4,7 @@ module YCP
   class CommonModuleClass
     extend Exportable
 
-    publish :method => :method_a, :type => "string(integer,integer)"
+    publish :function => :method_a, :type => "string(integer,integer)"
     def method_a first, second
       (first+second).to_s
     end
@@ -14,7 +14,7 @@ module YCP
       @name = "Cool name"
     end
 
-    publish :method => :formated_name, :type => "string()"
+    publish :function => :formated_name, :type => "string()"
     def formated_name
       return name+" Fancy Formated!!!"
     end

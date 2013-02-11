@@ -164,7 +164,7 @@ void YRubyNamespace::constructSymbolTable(VALUE module)
   int offset = 0; //track number of added method, so we can add extra one at the end
   VALUE module_class = rb_obj_class(module);
   //detect if module use new approach for exporting methods or old one
-  if (rb_respond_to(module_class, rb_intern("published_methods" )))
+  if (rb_respond_to(module_class, rb_intern("published_functions" )))
   {
     offset = addMethodsNewWay(module_class);
     offset = addVariables(module_class, offset);
@@ -252,17 +252,17 @@ VALUE YRubyNamespace::getRubyModule()
 
 int YRubyNamespace::addMethodsNewWay(VALUE module)
 {
-  VALUE methods = rb_funcall(module, rb_intern("published_methods"),0);
+  VALUE methods = rb_funcall(module, rb_intern("published_functions"),0);
   methods = rb_funcall(methods,rb_intern("values"),0);
   int i;
   for (i = 0; i < RARRAY_LEN(methods); ++i)
   {
     VALUE method = rb_ary_entry(methods,i);
-    VALUE method_name = rb_funcall(method, rb_intern("method_name"), 0);
+    VALUE method_name = rb_funcall(method, rb_intern("function"), 0);
     VALUE type = rb_funcall(method,rb_intern("type"),0);
     string signature = StringValueCStr(type);
 
-    addMethod(RSTRING_PTR(method_name), signature, i);
+    addMethod(rb_id2name(SYM2ID(method_name)), signature, i);
   }
   return i;
 }

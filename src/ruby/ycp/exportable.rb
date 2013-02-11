@@ -2,8 +2,8 @@ require "ostruct"
 
 module YCP
   module Exportable
-    def published_methods
-      @__published_methods ||= {}
+    def published_functions
+      @__published_functions ||= {}
     end
 
     def published_variables
@@ -12,9 +12,8 @@ module YCP
 
     def publish options
       raise "Missing signature" unless options[:type]
-      if options[:method]
-        options[:method_name] = options[:method].to_s #tricky part to not be overcloaked by internal method
-        published_methods[options[:method]] = OpenStruct.new options
+      if options[:function]
+        published_functions[options[:function]] = OpenStruct.new options
       elsif options[:variable]
         published_variables[options[:variable]] = OpenStruct.new options
         attr_accessor :"#{options[:variable]}"
