@@ -101,7 +101,6 @@ void YRuby::gc_free(void *object)
   refcount_map_t * vrby = (refcount_map_t *) object;
 
   y2milestone("free: map size is %u", vrby->size());
-  y2internal("should happen quite last or we are in trouble FIXME");
 }
 
 YRuby::~YRuby()
@@ -205,7 +204,7 @@ YCPValue YRuby::callInner (string module_name, string function,
     VALUE reason = rb_funcall(exception, rb_intern("message"), 0 );
     VALUE trace = rb_gv_get("$@"); /* get last exception trace */
     VALUE backtrace = rb_ary_join(trace, rb_str_new("\n\t", 2));
-    y2error("%s.%s failed\n%s\n\t%s", module_name.c_str(), function.c_str(), StringValuePtr(reason),StringValuePtr(backtrace));
+    y2error("%s.%s failed:%s\n\t%s", module_name.c_str(), function.c_str(), StringValuePtr(reason),StringValuePtr(backtrace));
     //workaround if last_exception failed, then return always string with message
     if(function == "last_exception") //TODO constantify last_exception
     {
