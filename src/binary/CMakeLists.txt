@@ -16,7 +16,9 @@ set(builtin_ruby_module_SRCS
 
 set(ruby_yast_plugin_SRCS
   Y2CCRuby.cc
+  Y2CCRubyClient.cc
   Y2RubyComponent.cc
+  Y2RubyClientComponent.cc
   YRuby.cc
   YRubyNamespace.cc
   Y2RubyTypeConv.cc
@@ -26,7 +28,9 @@ set(ruby_yast_plugin_SRCS
 
 set(ruby_yast_plugin_HEADERS
   Y2CCRuby.h
+  Y2CCRubyClient.h
   Y2RubyComponent.h
+  Y2RubyClientComponent.h
   YRuby.h
   YRubyNamespace.h
   Y2RubyUtils.h

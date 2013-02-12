@@ -219,3 +219,19 @@ YCPValue YRuby::callInner (string module_name, string function,
   }
   return rbvalue_2_ycpvalue(result);
 }
+
+YCPValue YRuby::callClient(const string& path)
+{
+  int error;
+  rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) "ycp", &error);
+  if (error)
+  {
+    y2error ("cannot require ycp");
+    return YCPVoid();
+  }
+
+  VALUE wfm_module = y2ruby_nested_const_get("YCP::WFM");
+  VALUE result = rb_funcall(wfm_module, rb_intern("run_client"), 1, rb_str_new2(path.c_str()));
+  return rbvalue_2_ycpvalue(result);
+}
+

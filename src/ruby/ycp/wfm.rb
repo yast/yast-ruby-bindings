@@ -61,5 +61,10 @@ module YCP
     def self.call *args
       call_builtin("call", *args)
     end
+
+    def self.run_client client
+      code = File.read client
+      return eval(code)
+    end
   end
 end

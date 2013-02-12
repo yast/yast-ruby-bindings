@@ -16,4 +16,8 @@
       `Label(test));
     UI::UserInput();
 */
+    /* for testing clients
+    any i = WFM::call ("ruby_client");
+    y2milestone(" WFM result %1",i);
+    */
 }

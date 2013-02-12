@@ -85,6 +85,11 @@ public:
      */
     typedef std::map<VALUE, int> refcount_map_t;
 
+    /**
+     * Generic call to clients written in ruby
+     */
+    YCPValue callClient (const string& path);
+
 private:
     static void gc_mark(void *object);
     static void gc_free(void *object);
