@@ -5,7 +5,8 @@ require 'ycp/exportable'
 
 class MyTestClass
   extend YCP::Exportable
-  publish :variable => :variable_a, :type => "map<symbol,any>"
+  publish :variable => :complex, :type => "map< string, map<list, map> >"
+  publish :variable => :variable_a, :type => "map"
   def initialize
     self.variable_a = { :test => "lest" }
   end
@@ -26,12 +27,17 @@ class ExportableTest < YCP::TestCase
   end
 
   def test_publish_variables
-    assert_equal [:variable_a], MyTest.class.published_variables.keys
-    assert_equal "map<symbol,any>", MyTest.class.published_variables[:variable_a].type
+    assert MyTest.class.published_variables[:variable_a]
+    assert_equal "map<any,any>", MyTest.class.published_variables[:variable_a].type
   end
 
   def test_variable_definition
     MyTest.variable_a = ({ :a => 15 })
     assert_equal ({:a => 15}), MyTest.variable_a
+  end
+
+  def test_type_full_specification
+    assert_equal "map<string,map<list<any>,map<any,any>>>", MyTest.class.published_variables[:complex].type
+
   end
 end

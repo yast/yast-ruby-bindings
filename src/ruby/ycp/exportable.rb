@@ -12,6 +12,11 @@ module YCP
 
     def publish options
       raise "Missing signature" unless options[:type]
+      # convert type to full specification
+      type = options[:type].delete " \t"
+      type = type.gsub(/map([^<]|$)/,'map<any,any>\\1')
+      type = type.gsub(/list([^<]|$)/,'list<any>\\1')
+      options[:type] = type
       if options[:function]
         published_functions[options[:function]] = OpenStruct.new options
       elsif options[:variable]
