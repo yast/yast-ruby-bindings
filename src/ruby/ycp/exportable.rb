@@ -26,5 +26,14 @@ module YCP
         raise "Missing publish kind"
       end
     end
+
+    module ExceptionReporter
+      def last_exception
+        @__last_exception
+      end
+    end
+    def self.extended(mod)
+      mod.send(:include,ExceptionReporter)
+    end
   end
 end

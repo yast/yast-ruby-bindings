@@ -44,19 +44,9 @@ as published by the Free Software Foundation; either version
 #include "Y2RubyTypeConv.h"
 #include "Y2YCPTypeConv.h"
 
-void inject_last_exception_method(VALUE& module,const string& message, const string& module_name)
+void set_last_exception(VALUE& module,const string& message)
 {
-  //doing injection from C++ is quite complex, but we have eval, so we can do it in ruby :)
-
-  string m(message);
-  replace(m.begin(), m.end(), '\'', '"');
-
-  string code("module ");
-  code += module_name;
-  code += "\ndef self.last_exception\n'";
-  code += m;
-  code += "'\nend\nend";
-  rb_eval_string(code.c_str());
+  rb_ivar_set(module,rb_intern("@__last_exception"),rb_str_new2(message.c_str()));
 }
 
 YRuby * YRuby::_yRuby = 0;
@@ -210,7 +200,7 @@ YCPValue YRuby::callInner (string module_name, string function,
     {
       return YCPString(StringValuePtr(reason));
     }
-    inject_last_exception_method(module,StringValuePtr(reason),module_name);
+    set_last_exception(module,StringValuePtr(reason));
     return YCPVoid();
   }
   else
