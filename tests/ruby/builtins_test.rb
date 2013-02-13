@@ -129,6 +129,11 @@ class BuiltinsTest < YCP::TestCase
     # from YCP documentation
     assert_equal "s_aaab_e", YCP::Builtins.regexpsub("aaabbb", "(.*ab)", "s_\\1_e")
     assert_equal nil, YCP::Builtins.regexpsub("aaabbb", "(.*ba)", "s_\\1_e")
+
+    #from sysconfig remove whitespaces
+    assert_equal "lest test\tsrst", YCP::Builtins.regexpsub(" lest test\tsrst\t", "^[ \t]*(([^ \t]*[ \t]*[^ \t]+)*)[ \t]*$", "\\1")
+    assert_equal "", YCP::Builtins.regexpsub("", "^[ \t]*(([^ \t]*[ \t]*[^ \t]+)*)[ \t]*$", "\\1")
+    assert_equal "", YCP::Builtins.regexpsub("  \t  ", "^[ \t]*(([^ \t]*[ \t]*[^ \t]+)*)[ \t]*$", "\\1")
   end
 
   def test_regexptokenize

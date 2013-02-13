@@ -724,7 +724,7 @@ module YCP
         # replace the \num places
         ret = output.dup
         match.captures.each_with_index do |str, i|
-          ret.gsub! "\\#{i + 1}", str
+          ret.gsub! "\\#{i + 1}", (str||"")
         end
 
         return ret
