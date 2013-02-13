@@ -55,7 +55,7 @@ module YCP
       end
     end
 
-    def self.substract first, second
+    def self.subtract first, second
       return nil if first.nil? || second.nil?
 
       return first - second

@@ -221,7 +221,7 @@ class YCP::OpsTest < YCP::TestCase
   end
 
 #test case format is [value1,value2,result]
-  SUBSTRACT_TESTCASES = [
+  SUBTRACT_TESTCASES = [
     [nil,1,nil],
     [1,nil,nil],
     [nil,nil,nil],
@@ -229,9 +229,9 @@ class YCP::OpsTest < YCP::TestCase
     [1.1,1.1,0.0],
   ]
 
-  def test_substract
-    SUBSTRACT_TESTCASES.each do |first,second,result|
-      assert_equal result, YCP::Ops.substract(first,second)
+  def test_subtract
+    SUBTRACT_TESTCASES.each do |first,second,result|
+      assert_equal result, YCP::Ops.subtract(first,second)
     end
   end
 
