@@ -203,8 +203,8 @@ YCPValue YRuby::callInner (string module_name, string function,
     VALUE exception = rb_gv_get("$!"); /* get last exception */
     VALUE reason = rb_funcall(exception, rb_intern("message"), 0 );
     VALUE trace = rb_gv_get("$@"); /* get last exception trace */
-    VALUE backtrace = rb_ary_join(trace, rb_str_new("\n\t", 2));
-    y2error("%s.%s failed:%s\n\t%s", module_name.c_str(), function.c_str(), StringValuePtr(reason),StringValuePtr(backtrace));
+    VALUE backtrace = RARRAY_LEN(trace)>0 ? rb_ary_entry(trace, 0) : rb_str_new2("Unknown");
+    y2error("%s.%s failed:%s at %s", module_name.c_str(), function.c_str(), StringValuePtr(reason),StringValuePtr(backtrace));
     //workaround if last_exception failed, then return always string with message
     if(function == "last_exception") //TODO constantify last_exception
     {
