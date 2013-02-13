@@ -676,4 +676,19 @@ class BuiltinsTest < YCP::TestCase
 
     assert_equal "test321", YCP::Builtins.sformat("test%3%2%1",1,2,3)
   end
+
+
+  FINDFIRSTOF_TESTDATA = [
+    [nil,"ab",nil],
+    ["ab",nil,nil],
+    ["aaaaa","z",nil],
+    ["abcdefg","cxdv",2],
+    ["\s\t\n","\s",0],
+    ["\s\t\n","\n",2]
+  ]
+  def test_findfirstof
+    FINDFIRSTOF_TESTDATA.each do |string,chars,result|
+      assert_equal result, YCP::Builtins.findfirstof(string,chars)
+    end
+  end
 end

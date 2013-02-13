@@ -661,8 +661,10 @@ module YCP
     end
 
     # Finds position of the first matching characters in string
-    def self.findfirstof
-      raise "Builtin findfirstof() is not implemented yet"
+    def self.findfirstof string, chars
+      return nil if string.nil? || chars.nil?
+
+      return string.index /[#{Regexp.escape chars}]/
     end
 
     # Searches the last element of string that doesn't match
