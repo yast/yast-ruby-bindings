@@ -313,8 +313,6 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
 
     YCPValue res = call->evaluateCall ();
     delete call;
-    y2internal ("call succeded\n");
-    //y2internal ("Result: %i\n", res->asList()->size());
     return ycpvalue_2_rbvalue(res);
   }
 }
