@@ -10,7 +10,7 @@ module YCP
       res = object
       indexes.each do |i|
         case res
-        when Array, YCP::Term
+        when ::Array, YCP::Term
           if i.is_a? Fixnum
             if (0..res.size-1).include? i
               res = res[i]
@@ -22,7 +22,7 @@ module YCP
             YCP.y2warning "Passed #{i.inspect} as index key for array."
             return default
           end
-        when Hash
+        when ::Hash
           if res.has_key? i
             res = res[i]
           else
@@ -36,19 +36,57 @@ module YCP
       return res
     end
 
+    def self.assign (object, indexes, value)
+      return if indexes.nil? || object.nil?
+      last = indexes.pop
+      res = object
+      indexes.each do |i|
+        case res
+        when ::Array, YCP::Term
+          if i.is_a? Fixnum
+            if (0..res.size-1).include? i
+              res = res[i]
+            else
+              YCP.y2warning "Index #{i} is out of array size"
+              return
+            end
+          else
+            YCP.y2warning "Passed #{i.inspect} as index key for array."
+            return
+          end
+        when ::Hash
+          if res.has_key? i
+            res = res[i]
+          else
+            return
+          end
+        else
+          YCP.y2warning "Builtin assign called on wrong type #{res.class}"
+          return
+        end
+      end
+      case res
+      when ::Array, YCP::Term, ::Hash
+        res[last] = value
+      else
+        YCP.y2warning "Builtin assign called on wrong type #{res.class}"
+      end
+    end
+
+
     def self.add first, second
       return nil if first.nil? || second.nil?
 
       case first
-      when Array
-        if second.is_a? Array
+      when ::Array
+        if second.is_a? ::Array
           return first + second
         else
           return first.dup.push(second)
         end
-      when Hash
+      when ::Hash
         return first.merge second
-      when String
+      when ::String
         return first + second.to_s
       else
         return first + second
@@ -215,7 +253,7 @@ module YCP
       end
     end
 
-    class HashComparator
+    class ::HashComparator
       include Comparable
       def initialize value
         @value = value
@@ -249,17 +287,17 @@ module YCP
       end
       #ordered classes from low priority to high
       # Only tricky part is Fixnum/Bignum, which is in fact same, so it has special handling in code
-      CLASS_ORDER = [ NilClass, FalseClass, TrueClass, Fixnum, Bignum, Float, 
-        String, YCP::Path, Symbol, Array, YCP::Term, Hash ]
+      CLASS_ORDER = [ ::NilClass, ::FalseClass, ::TrueClass, ::Fixnum, ::Bignum, ::Float, 
+        ::String, YCP::Path, ::Symbol, ::Array, YCP::Term, ::Hash ]
       def <=> (second)
         if @value.class == second.class
           case @value
-          when Array
+          when ::Array
             return ListComparator.new(@value) <=> second
-          when NilClass
+          when ::NilClass
             return 0 #comparison of two nils is equality
-          when Hash
-            return HashComparator.new(@value) <=> second
+          when ::Hash
+            return ::HashComparator.new(@value) <=> second
           else
             @value <=> second
           end

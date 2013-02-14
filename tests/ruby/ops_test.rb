@@ -197,6 +197,34 @@ class YCP::OpsTest < YCP::TestCase
     assert_equal "n", YCP::Ops.index(list,[0,0],"n")
   end
 
+  def test_assign
+    l = nil
+    YCP::Ops.assign(l,[1,2],5)
+    assert_equal nil,l 
+    
+    l = [1,2]
+    YCP::Ops.assign(l,nil,5)
+    assert_equal [1,2],l 
+
+    YCP::Ops.assign(l,[2],3)
+    assert_equal [1,2,3],l
+
+    l = [1,2]
+    YCP::Ops.assign(l,[1],[])
+    assert_equal [1,[]],l 
+
+    YCP::Ops.assign(l,[1,1],5)
+    assert_equal [1,[nil,5]], l
+
+    l = {5=>2,4=>[]}
+    YCP::Ops.assign(l, [4,1],5)
+    assert_equal Hash[5=>2,4=>[nil,5]], l
+
+    l = {5=>2,4=>[]}
+    YCP::Ops.assign(l, [5,2],5)
+    assert_equal Hash[5=>2,4=>[]], l
+  end
+
 #test case format is [value1,value2,result]
   ADD_TESTCASES = [
     [nil,1,nil],

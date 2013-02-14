@@ -18,8 +18,8 @@ module YCP
     # For new code it is recommended to use directly methods on objects
     def self.add object, *params
       case object
-      when Array then return object + params
-      when Hash then  return object.merge(Hash[*params])
+      when ::Array then return object + params
+      when ::Hash then  return object.merge(::Hash[*params])
       when YCP::Path then return object + params.first
       when YCP::Term then
         res = object.dup
@@ -42,7 +42,7 @@ module YCP
     # - Filter a Map
     def self.filter object, &block
       #TODO investigate break and continue with filter as traverse workflow is different for ruby
-      if object.is_a?(Array) || object.is_a?(Hash)
+      if object.is_a?(::Array) || object.is_a?(::Hash)
         object.select &block
       else
         return nil
@@ -56,10 +56,10 @@ module YCP
       return nil if object.nil? || (what.nil? && block.nil?)
 
       case object
-      when String
+      when ::String
         ret = object.index what
         return ret.nil? ? -1 : ret
-      when Array
+      when ::Array
         object.find &block
       else
         raise "Invalid object for find() builtin"
@@ -70,7 +70,7 @@ module YCP
     # - Processes the content of a list
     def self.foreach object, &block
       res = nil
-      if object.is_a? Array
+      if object.is_a? ::Array
         begin
           object.each do |i|
             res = block.call(i)
@@ -78,7 +78,7 @@ module YCP
         rescue YCP::Break
           res = nil
         end
-      elsif object.is_a? Hash
+      elsif object.is_a? ::Hash
         begin
           object.each_pair do |k,v|
             res = block.call(k,v)
@@ -104,7 +104,7 @@ module YCP
     # - Maps an operation onto all elements of a list and thus creates a new list.
     def self.maplist object, &block
       case object
-      when Array
+      when ::Array
         res = []
         begin
           object.each do |i|
@@ -114,7 +114,7 @@ module YCP
           #break skips out of each loop, but allow to keep previous results
         end
         return res
-      when Hash
+      when ::Hash
         res = []
         begin
           object.each do |i|
@@ -139,10 +139,10 @@ module YCP
       res = object.dup
       return res if element.nil?
       case object
-      when Array
+      when ::Array
         return res if element < 0
         res.delete_at element
-      when Hash
+      when ::Hash
         res.delete element
       when YCP::Term
         return res if element < 1
@@ -171,7 +171,7 @@ module YCP
       return nil if object.nil?
 
       case object
-      when String, Array, Hash, YCP::Term, YCP::Path
+      when ::String, ::Array, ::Hash, YCP::Term, YCP::Path
         return object.size
       # TODO: byteblock
       else
@@ -203,12 +203,12 @@ module YCP
       return nil if first.nil? || second.nil?
 
       case first
-      when Array
+      when ::Array
         return (first+second).reduce([]) do |acc,i|
           acc << i unless acc.include? i
           acc
         end
-      when Hash
+      when ::Hash
         return first.merge(second)
       else
         raise "Wrong type #{first.class} to union builtin"
@@ -290,7 +290,7 @@ module YCP
 
       case object
       # use full qualified ::Float to avoid clash with YCP::Builtins::Float
-      when String, ::Float, Fixnum, Bignum
+      when ::String, ::Float, Fixnum, Bignum
         object.to_i
       else
         nil
@@ -353,7 +353,7 @@ module YCP
     def self.listmap list, &block
       return nil if list.nil?
 
-      res = Hash.new
+      res = ::Hash.new
       begin
         list.each do |i|
           res.merge! block.call(i)
@@ -430,7 +430,7 @@ module YCP
 
     # Converts a value to a list (deprecated, use (list)VAR).
     def self.tolist object
-      return object.is_a?(Array) ? object : nil
+      return object.is_a?(::Array) ? object : nil
     end
 
     # toset() YCP built-in
@@ -459,7 +459,7 @@ module YCP
     def self.mapmap map, &block
       return nil if map.nil?
 
-      res = Hash.new
+      res = ::Hash.new
       begin
         map.each_pair do |k,v|
           res.merge! block.call(k,v)
@@ -473,7 +473,7 @@ module YCP
 
     # Converts a value to a map.
     def self.tomap object
-      return object.is_a?(Hash) ? object : nil
+      return object.is_a?(::Hash) ? object : nil
     end
 
     ###########################################################
@@ -510,9 +510,9 @@ module YCP
       return true
     end
 
-    # Format a String
+    # Format a ::String
     def self.sformat format, *args
-      if format.nil? || !format.is_a?(String)
+      if format.nil? || !format.is_a?(::String)
         return nil
       end
 
@@ -598,7 +598,7 @@ module YCP
       case object
       when YCP::Path
         return object
-      when String
+      when ::String
         object = "."+object unless object.start_with?(".")
         return YCP::Path.new object
       else
@@ -607,7 +607,7 @@ module YCP
     end
 
     ###########################################################
-    # YCP String Builtins
+    # YCP ::String Builtins
     ###########################################################
 
     # Encrypts a string
@@ -650,7 +650,7 @@ module YCP
       raise "Builtin dpgettext() is not implemented yet"
     end
 
-    # Filters characters out of a String
+    # Filters characters out of a ::String
     def self.filterchars
       raise "Builtin filterchars() is not implemented yet"
     end
@@ -797,7 +797,7 @@ module YCP
     # Converts a value to a string.
     def self.tostring val
       return "<NULL>" if val.nil?
-      return "`#{val}" if val.is_a? Symbol
+      return "`#{val}" if val.is_a? ::Symbol
 
       val.to_s
     end
@@ -832,9 +832,9 @@ module YCP
       return nil if symbol.nil? || list.nil?
 
       case symbol
-      when String
+      when ::String
         return YCP::Term.new(symbol.to_sym)
-      when Symbol
+      when ::Symbol
         if list==DEF_LENGHT
           return YCP::Term.new(symbol)
         else
