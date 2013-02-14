@@ -10,7 +10,7 @@ class PathTest < YCP::TestCase
   end
 
   def test_load_from_string
-    assert_equal ".etc", YCP::Path.from_string("etc").to_s
+    assert_equal ".\"etc\"", YCP::Path.from_string("etc").to_s
     assert_equal '."et?c"', YCP::Path.from_string('et?c').to_s
   end
 
@@ -19,7 +19,7 @@ class PathTest < YCP::TestCase
     etc = YCP::Path.new '.etc'
     sysconfig = YCP::Path.new '.sysconfig'
     assert_equal ".etc.sysconfig", (etc + sysconfig).to_s
-    assert_equal ".etc.sysconfig", (etc + 'sysconfig').to_s
+    assert_equal '.etc."sysconfig"', (etc + 'sysconfig').to_s
     assert_equal '.', (root+root).to_s
     assert_equal '.etc', (root+etc).to_s
     assert_equal '.etc', (etc+root).to_s

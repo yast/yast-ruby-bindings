@@ -8,11 +8,8 @@ module YCP
       load_components value
     end
 
-    COMPLEX_CHAR_REGEX = /[^a-zA-Z0-9_-]/
-    SIMPLE_CHAR_REGEX = /[a-zA-Z0-9_-]/
     def self.from_string string
-      string = '"'+string+'"' if string =~ COMPLEX_CHAR_REGEX
-      self.new ".#{string}"
+      self.new ".\"#{string}\""
     end
 
     def + another
@@ -43,6 +40,8 @@ module YCP
     end
 
   private
+    COMPLEX_CHAR_REGEX = /[^a-zA-Z0-9_-]/
+    SIMPLE_CHAR_REGEX = /[a-zA-Z0-9_-]/
     # Rewritten ycp parser
     def load_components (value)
       state = :initial
