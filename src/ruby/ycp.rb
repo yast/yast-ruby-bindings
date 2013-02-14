@@ -39,7 +39,7 @@ require "ycp/wfm"
 module YCP
   def self.import(mname)
     import_pure(mname)
-    return if const_defined? mname
+    return if YCP.constants.include? mname.to_sym
     m = Module.new
     symbols(mname).each do |sname,stype|
       next if sname.empty?
@@ -62,6 +62,16 @@ module YCP
       end
     end
     self.const_set(mname, m)
+  end
+
+#makes copy of object unless object is immutable. In such case return object itself
+  def self.copy object
+    case object
+    when Numeric,TrueClass,FalseClass,NilClass,Symbol #immutable
+      object
+    else
+      object.dup
+    end
   end
 end
 
