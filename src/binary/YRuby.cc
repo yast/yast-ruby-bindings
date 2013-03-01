@@ -69,6 +69,7 @@ YRuby::YRuby()
 
   VALUE ycp_references = Data_Wrap_Struct(rb_cObject, gc_mark, gc_free, & value_references_from_ycp);
   rb_global_variable(&ycp_references);
+//  rb_gc_disable();
 }
 
 void YRuby::gc_mark(void *object)
@@ -132,7 +133,7 @@ YRuby::loadModule( YCPList argList )
   YRuby::yRuby();
   string module_path = argList->value(1)->asString()->value();
   int error = 0;
-  rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) module_path.c_str(), &error);
+  rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) strdup(module_path.c_str()), &error);
   if (error)
     return YCPError( "Ruby::loadModule() / Can't load ruby module '" + module_path + "'" );
   return YCPVoid();
@@ -152,7 +153,7 @@ protected_call(VALUE args)
 YCPValue YRuby::callInner (string module_name, string function,
                   YCPList argList, constTypePtr wanted_result_type)
 {
-  RUBY_INIT_STACK  // bnc#708059
+  //RUBY_INIT_STACK  // bnc#708059
   VALUE module = y2ruby_nested_const_get(module_name);
   if (module == Qnil)
   {

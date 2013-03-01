@@ -150,11 +150,13 @@ public:
 
   YCPValue value () const
   {
-    return YRuby::yRuby()->callInner ( module_name,
+    YCPValue result = YRuby::yRuby()->callInner ( module_name,
       name(),
       YCPList(),
       type()
     );
+    y2milestone("Called value on %s::%s and return %s",module_name.c_str(), name(), result->toString().c_str());
+    return result;
   }
 
 };

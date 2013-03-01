@@ -63,9 +63,13 @@ extern "C" VALUE
 ycp_term_to_rb_term( YCPTerm ycpterm )
 {
   int error = 0;
-  rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) "ycp/term",&error);
+//  rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) "ycp/term",&error);
+  rb_require("ycp/term");
   if (error)
+  {
     y2internal("Cannot found ycp/term module.");
+    return Qnil;
+  }
 
   VALUE ycp = rb_define_module("YCP");
   VALUE cls = rb_const_get(ycp, rb_intern("Term"));
@@ -73,8 +77,8 @@ ycp_term_to_rb_term( YCPTerm ycpterm )
   if (params == Qnil)
     params = rb_ary_new2(1);
 //we need to pass array of parameters to work properly with unlimited params in ruby
-  rb_ary_unshift(cls, rb_intern(ycpterm->name().c_str()));
-  return rb_class_new_instance(RARRAY_LEN(params), &params,cls);
+  rb_ary_unshift(params, ID2SYM(rb_intern(ycpterm->name().c_str())));
+  return rb_class_new_instance(RARRAY_LEN(params), RARRAY_PTR(params),cls);
 }
 
 /**
@@ -136,8 +140,8 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
   else if (ycpval->isList())
   {
     VALUE rblist;
-    rblist = rb_ary_new();
     YCPList list = ycpval->asList();
+    rblist = rb_ary_new2(list.size());
     //y2internal("list size %d\n",list.size());
     for (int i=0; i < list.size(); i++)
     {
@@ -148,7 +152,7 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
   else if (ycpval->isSymbol())
   {
     YCPSymbol symbol = ycpval->asSymbol();
-    return rb_intern(symbol->symbol_cstr());
+    return ID2SYM(rb_intern(symbol->symbol_cstr()));
   }
   else if (ycpval->isExternal())
   {

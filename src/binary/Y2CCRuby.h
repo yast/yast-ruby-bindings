@@ -41,8 +41,7 @@ public:
     /**
      * Creates a Ruby component creator
      */
-    Y2CCRuby() : Y2ComponentCreator( Y2ComponentBroker::BUILTIN ),
-	cruby (0) {};
+    Y2CCRuby();
 
     ~Y2CCRuby () {
 	if (cruby)

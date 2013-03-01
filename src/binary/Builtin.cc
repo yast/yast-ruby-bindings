@@ -12,18 +12,17 @@
 #include "Y2YCPTypeConv.h"
 #include "Y2RubyTypeConv.h"
 #include "RubyLogger.h"
+#include "YRuby.h"
 
 static VALUE rb_mSCR;
 static VALUE rb_mWFM;
 static VALUE rb_mYCP;
-static SCR scr;
-static ScriptingAgent scra;
-static WFM wfm;
 
 extern "C" {
 
   static VALUE call_builtin(const string &qualified_name, int argc, VALUE *argv)
   {
+    YRuby::yRuby();
     extern StaticDeclaration static_declarations;
 
     declaration_t *bi_dt = static_declarations.findDeclaration(qualified_name.c_str());
@@ -50,7 +49,8 @@ extern "C" {
     if (err_tp != NULL)
       rb_raise(rb_eRuntimeError,"Error when finalizing builtin call: %s",err_tp->toString().c_str());
 
-    return ycpvalue_2_rbvalue(bi_call.evaluate(false));
+    VALUE result = ycpvalue_2_rbvalue(bi_call.evaluate(false));
+    return result;
   }
 
   static VALUE

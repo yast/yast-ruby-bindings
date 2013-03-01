@@ -24,12 +24,29 @@ as published by the Free Software Foundation; either version
 #define y2log_component "Y2Ruby"
 #include <ycp/y2log.h>
 
+#include "scr/SCR.h"
+#include "scr/ScriptingAgent.h"
+#include "wfm/WFM.h"
+
+#include "YRuby.h"
+
+// ensure that WFM is loaded before we load ruby environment
+//static WFM wfm;
+//static ScriptingAgent sa;
+//static SCR scr;
+
 // This is very important: We create one global variable of
 // Y2CCRuby. Its constructor will register it automatically to
 // the Y2ComponentBroker, so that will be able to find it.
 // This all happens before main() is called!
 
 Y2CCRuby g_y2ccruby;
+
+Y2CCRuby::Y2CCRuby() : Y2ComponentCreator( Y2ComponentBroker::BUILTIN ),
+	cruby (0)
+{
+  YRuby::yRuby();
+}
 
 Y2Component *Y2CCRuby::provideNamespace (const char *name)
 {
