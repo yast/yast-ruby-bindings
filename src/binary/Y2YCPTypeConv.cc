@@ -92,9 +92,10 @@ ycp_term_to_rb_term( YCPTerm ycpterm )
 extern "C" VALUE
 ycpvalue_2_rbvalue( YCPValue ycpval )
 {
+
   // TODO
   // YT_BYTEBLOCK YT_CODE YT_RETURN YT_BREAK YT_ENTRY YT_ERROR  YT_REFERENCE YT_EXTERNA
-  if (ycpval->isVoid())
+  if (ycpval.isNull() || ycpval->isVoid())
   {
     return Qnil;
   }
