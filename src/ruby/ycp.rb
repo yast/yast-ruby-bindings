@@ -21,14 +21,12 @@
 # Load the native part (.so)
 require 'ycpx'
 
-#for translations
-require "fast_gettext"
-
 # load inside moduls
 require "ycp/break"
 require "ycp/builtins"
 require "ycp/convert"
 require "ycp/exportable"
+require "ycp/i18n"
 require "ycp/logger"
 require "ycp/ops"
 require "ycp/path"
