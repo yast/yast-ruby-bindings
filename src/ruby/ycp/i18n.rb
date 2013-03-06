@@ -4,7 +4,7 @@ module YCP
   module I18n
 
     module ClassMethods
-      def text_domain domain
+      def textdomain domain
         #TODO load alternative in development recent translation
         FastGettext.add_text_domain(domain, :path => "/usr/share/locale")
         FastGettext.text_domain = domain

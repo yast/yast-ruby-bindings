@@ -4,6 +4,7 @@ set(yast_ruby_module_SRCS
   YCP.cc
   Y2RubyTypeConv.cc       # YCP.cc -> ycpvalue_2_rbvalue(), rbvalue_2_ycpvalue()
   Y2YCPTypeConv.cc       # YCP.cc -> ycpvalue_2_rbvalue(), rbvalue_2_ycpvalue()
+  Y2RubyReference.cc
   Y2RubyUtils.cc
 )
 
@@ -11,6 +12,7 @@ set(builtin_ruby_module_SRCS
   Builtin.cc
   Y2RubyTypeConv.cc       # YCP.cc -> ycpvalue_2_rbvalue(), rbvalue_2_ycpvalue()
   Y2YCPTypeConv.cc       # YCP.cc -> ycpvalue_2_rbvalue(), rbvalue_2_ycpvalue()
+  Y2RubyReference.cc
   RubyLogger.cc
 )
 
@@ -23,6 +25,7 @@ set(ruby_yast_plugin_SRCS
   YRubyNamespace.cc
   Y2RubyTypeConv.cc
   Y2YCPTypeConv.cc
+  Y2RubyReference.cc
   Y2RubyUtils.cc
 )
 

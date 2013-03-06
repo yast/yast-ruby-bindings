@@ -23,6 +23,7 @@ as published by the Free Software Foundation; either version
 
 #include <ycp/YCPValue.h>
 #include <ycp/YCPBoolean.h>
+#include <ycp/YCPCode.h>
 #include <ycp/YCPList.h>
 #include <ycp/YCPMap.h>
 #include <ycp/YCPString.h>
@@ -41,6 +42,7 @@ as published by the Free Software Foundation; either version
 #include "YRuby.h"
 
 #include "Y2RubyTypeConv.h"
+#include "Y2RubyReference.h"
 
 #define IS_A(obj,klass) ((rb_obj_is_kind_of((obj),(klass))==Qtrue)?1:0)
 
@@ -85,6 +87,23 @@ static YCPList rbarray_2_ycplist( VALUE value )
 }
 
 
+/*
+ * rbreference_2_ycpreference
+ *
+ * Internal helper for passing references
+ *
+ */
+
+static YCPValue rbreference_2_ycpreference( VALUE value )
+{
+  VALUE signature = rb_funcall(value,rb_intern("signature"),0);
+  constTypePtr sym_tp = Type::fromSignature(RSTRING_PTR(signature));
+//FIXME memory leak
+  const Y2Namespace *ns = new ClientNamespace(value);
+  SymbolEntry *s_entry = new SymbolEntry(ns, 0, "ruby_reference", SymbolEntry::c_function, sym_tp);
+  return YCPReference(s_entry);
+}
+
 #define YCP_EXTERNAL_MAGIC "Ruby object"
 
 static void ycpexternal_finalizer(void * value_v, string /*magic*/)
@@ -128,6 +147,7 @@ rbpath_2_ycppath( VALUE value )
   VALUE stringrep = rb_funcall(value, rb_intern("to_s"), 0);
   return  YCPPath(StringValuePtr(stringrep));
 }
+
 static YCPValue
 rbterm_2_ycpterm( VALUE value )
 {
@@ -192,6 +212,10 @@ rbvalue_2_ycpvalue( VALUE value )
     else if ( !strcmp(class_name, "YCP::Term"))
     {
       return rbterm_2_ycpterm(value);
+    }
+    else if ( !strcmp(class_name, "YCP::Reference"))
+    {
+      return rbreference_2_ycpreference(value);
     }
     else
     {

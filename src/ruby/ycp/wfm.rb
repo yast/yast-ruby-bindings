@@ -1,5 +1,8 @@
 require "ycp/builtinx"
+require "ycp/builtins"
 
+#we need it as clients is called in global contenxt
+GLOBAL_WFM_CONTEXT = Proc.new {}
 module YCP
   module WFM
     def self.Args
@@ -63,8 +66,14 @@ module YCP
     end
 
     def self.run_client client
+      Builtins.y2milestone "Call client %1", client
       code = File.read client
-      return eval(code)
+      begin
+        return eval(code ,GLOBAL_WFM_CONTEXT.binding)
+      rescue Exception => e
+        Builtins.y2error "Client call failed with %1 and backtrace %2", e.message, e.backtrace
+        return nil
+      end
     end
   end
 end
