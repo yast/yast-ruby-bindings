@@ -36,6 +36,7 @@ as published by the Free Software Foundation; either version
 #include <ycp/YCPVoid.h>
 #include <ycp/YCPExternal.h>
 #include <ycp/Import.h>
+#include <ycp/YCode.h>
 
 #include <cassert>
 
@@ -67,6 +68,37 @@ static YCPMap rbhash_2_ycpmap( VALUE value )
   return map;
 }
 
+class YCPRubyProc : public YCode
+{
+private:
+  VALUE proc;
+public:
+  YCPRubyProc(VALUE val):proc(val)
+  {}
+
+  virtual YCode::ykind kind() const
+  { return YCode::yeExpression; }
+
+  //not needed
+  virtual std::ostream & toStream (std::ostream & str) const
+  { return str; }
+
+  //not needed
+  virtual std::ostream & toXml (std::ostream & str, int indent ) const
+  { return str; }
+
+  //only interesting stuff
+  virtual YCPValue evaluate (bool cse = false)
+  {
+    return rbvalue_2_ycpvalue(rb_proc_call(proc,rb_ary_new2(0)));
+  }
+};
+
+static YCPValue rbproc_2_ycpcode( VALUE value )
+{
+  YCPCode c(new YCPRubyProc(value));
+  return c;
+}
 
 /*
  * rbarray_2_ycplist
@@ -216,6 +248,10 @@ rbvalue_2_ycpvalue( VALUE value )
     else if ( !strcmp(class_name, "YCP::Reference"))
     {
       return rbreference_2_ycpreference(value);
+    }
+    else if ( !strcmp(class_name, "Proc"))
+    {
+      return rbproc_2_ycpcode(value);
     }
     else
     {
