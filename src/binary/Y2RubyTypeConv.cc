@@ -219,6 +219,7 @@ rbvalue_2_ycpvalue( VALUE value )
     }
     else
     {
+      rb_raise(rb_eRuntimeError, "Invalid value %s passed to component system", RSTRING_PTR(rb_inspect(value)));
       return rbobject_2_ycpexternal(value);
     }
   }
