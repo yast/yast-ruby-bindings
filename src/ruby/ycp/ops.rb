@@ -6,6 +6,21 @@ class YCP::Term;end
 
 module YCP
   module Ops
+    #TODO investigate if convert also get more complex typesfor map and list
+    TYPES_MAP = {
+      'any' => ::Object,
+      'nil' => ::NilClass,
+      'boolean' => [::TrueClass,::FalseClass],
+      'string' => ::String,
+      'symbol' => ::Symbol,
+      'integer' => [::Fixnum,::Bignum],
+      'float' => ::Float,
+      'list' => ::Array,
+      'map' => ::Hash,
+      'term' => YCP::Term,
+      'path' => YCP::Path
+    }
+
     def self.index (object, indexes, default)
       res = object
       indexes.each do |i|
@@ -222,6 +237,13 @@ module YCP
       first = comparable_object(first)
 
       return first >= second
+    end
+
+    def self.is (object, type)
+      classes = TYPES_MAP[type]
+      raise "Invalid type to detect in is '#{type}'" unless classes
+      classes = [classes] unless classes.is_a? ::Array
+      return classes.any? { |cl| object.is_a? cl }
     end
 
     def self.comparable_object object

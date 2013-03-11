@@ -1,22 +1,10 @@
+require "ycp/ops"
 require "ycp/path"
 require "ycp/term"
 require "ycp/logger"
 
 module YCP
   module Convert
-
-    #TODO investigate if convert also get more complex typesfor map and list
-    TYPES_MAP = {
-      'any' => Object,
-      'boolean' => [TrueClass,FalseClass],
-      'string' => String,
-      'integer' => [Fixnum,Bignum],
-      'float' => Float,
-      'list' => Array,
-      'map' => Hash,
-      'term' => YCP::Term,
-      'path' => YCP::Path
-    }
 
     def self.convert(object, options)
       from = options[:from]
@@ -44,7 +32,7 @@ module YCP
     end
 
     def self.allowed_type(object, to)
-      types = TYPES_MAP[to]
+      types = Ops::TYPES_MAP[to]
       raise "Unknown type '#{to}' for conversion" if types.nil?
 
       types = [types] unless types.is_a? Array

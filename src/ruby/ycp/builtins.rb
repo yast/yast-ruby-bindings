@@ -490,11 +490,6 @@ module YCP
       return ENV[value]
     end
 
-    # Checks whether a value is of a certain type
-    def self.is
-      raise "Builtin is() is not implemented yet"
-    end
-
     # Random number generator.
     def self.random max
       return nil if max.nil?
