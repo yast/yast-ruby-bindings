@@ -36,6 +36,17 @@ require "ycp/term"
 require "ycp/wfm"
 
 module YCP
+
+  def self.term(*args)
+    return Term.new *args
+  end
+  def self.reference(*args)
+    return Reference.new *args
+  end
+  def self.path(*args)
+    return Path.new *args
+  end
+
   def self.import(mname)
     import_pure(mname)
     return if YCP.constants.include? mname.to_sym
