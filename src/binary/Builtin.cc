@@ -18,6 +18,10 @@ static VALUE rb_mSCR;
 static VALUE rb_mWFM;
 static VALUE rb_mYCP;
 
+static SCR scr;
+static WFM wfm;
+static ScriptingAgent sa;
+
 extern "C" {
 
   static VALUE call_builtin(const string &qualified_name, int argc, VALUE *argv)
