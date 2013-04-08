@@ -51,9 +51,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 cd ..
 
 %check
-cd build
+cd build/tests/ruby
 make test ARGS=-V
-cd ..
+cd -
 
 @CLEAN@
 
