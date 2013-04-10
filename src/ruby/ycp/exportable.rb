@@ -2,6 +2,14 @@ require "ostruct"
 
 module YCP
   module Exportable
+
+    class ExportData < OpenStruct
+      def private?
+        table = marshal_dump
+        return !!table[:private]
+      end
+    end
+
     def published_functions
       @__published_functions ||= {}
     end
@@ -18,10 +26,12 @@ module YCP
       type = type.gsub(/list([^<]|$)/,'list<any>\\1')
       options[:type] = type
       if options[:function]
-        published_functions[options[:function]] = OpenStruct.new options
+        published_functions[options[:function]] = ExportData.new options
       elsif options[:variable]
-        published_variables[options[:variable]] = OpenStruct.new options
-        attr_accessor :"#{options[:variable]}"
+        published_variables[options[:variable]] = ExportData.new options
+        if !options[:private] || ENV["Y2ALLGLOBAL"]
+          attr_accessor :"#{options[:variable]}"
+        end
       else
         raise "Missing publish kind"
       end

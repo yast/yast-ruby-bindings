@@ -256,27 +256,31 @@ int YRubyNamespace::addMethodsNewWay(VALUE module)
 {
   VALUE methods = rb_funcall(module, rb_intern("published_functions"),0);
   methods = rb_funcall(methods,rb_intern("values"),0);
-  int i;
-  for (i = 0; i < RARRAY_LEN(methods); ++i)
+  int j = 0;
+  for (int i = 0; i < RARRAY_LEN(methods); ++i)
   {
     VALUE method = rb_ary_entry(methods,i);
+    if (getenv("Y2ALLGLOBAL") == NULL && RTEST(rb_funcall(method, rb_intern("private?"), 0)))
+      continue;
     VALUE method_name = rb_funcall(method, rb_intern("function"), 0);
     VALUE type = rb_funcall(method,rb_intern("type"),0);
     string signature = StringValueCStr(type);
 
-    addMethod(rb_id2name(SYM2ID(method_name)), signature, i);
+    addMethod(rb_id2name(SYM2ID(method_name)), signature, j++);
   }
-  return i;
+  return j;
 }
 
 int YRubyNamespace::addVariables(VALUE module, int offset)
 {
   VALUE variables = rb_funcall(module, rb_intern("published_variables"),0);
   variables = rb_funcall(variables,rb_intern("values"),0);
-  int j;
-  for (j = 0; j < RARRAY_LEN(variables); ++j)
+  int j=0;
+  for (int i = 0; i < RARRAY_LEN(variables); ++i)
   {
     VALUE variable = rb_ary_entry(variables,j);
+    if (getenv("Y2ALLGLOBAL") == NULL && RTEST(rb_funcall(variable, rb_intern("private?"), 0)))
+      continue;
     VALUE variable_name = rb_funcall(variable, rb_intern("variable"), 0);
     VALUE type = rb_funcall(variable,rb_intern("type"),0);
     string signature = StringValueCStr(type);
@@ -285,7 +289,7 @@ int YRubyNamespace::addVariables(VALUE module, int offset)
     // symbol entry for the function
     SymbolEntry *se = new VariableSymbolEntry ( ruby_module_name,
       this,
-      offset+j,// position. arbitrary numbering. must stay consistent when?
+      offset+(j++),// position. arbitrary numbering. must stay consistent when?
       rb_id2name(SYM2ID(variable_name)),
       sym_tp
     );
