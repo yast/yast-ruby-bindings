@@ -626,8 +626,14 @@ module YCP
     end
 
     # Removes all characters from a string
-    def self.deletechars
-      raise "Builtin deletechars() is not implemented yet"
+    def self.deletechars string, chars
+      return nil if !string || !chars
+
+      # handle special characters that is handled by delete but not by ycp
+      chars = "-" + chars.delete("-") if chars.include? "-"
+      chars = chars.delete("^") + "^" if chars.include? "^"
+
+      string.delete chars
     end
 
     # Translates the text using the given text domain
