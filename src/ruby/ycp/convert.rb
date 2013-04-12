@@ -32,6 +32,8 @@ module YCP
     end
 
     def self.allowed_type(object, to)
+      to.gsub!(/<.*>/, "")
+      to.gsub!(/\s+/, "")
       types = Ops::TYPES_MAP[to]
       raise "Unknown type '#{to}' for conversion" if types.nil?
 
