@@ -65,6 +65,10 @@ module YCP
       call_builtin("call", *args)
     end
 
+    def self.CallFunction *args
+      call_builtin("CallFunction", *args)
+    end
+
     def self.run_client client
       Builtins.y2milestone "Call client %1", client
       code = File.read client
