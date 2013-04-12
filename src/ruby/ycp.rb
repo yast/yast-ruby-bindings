@@ -37,13 +37,13 @@ require "ycp/wfm"
 
 module YCP
 
-  def self.term(*args)
+  def term(*args)
     return Term.new *args
   end
-  def self.reference(*args)
+  def reference(*args)
     return Reference.new *args
   end
-  def self.path(*args)
+  def path(*args)
     return Path.new *args
   end
 

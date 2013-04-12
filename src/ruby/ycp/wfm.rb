@@ -69,7 +69,7 @@ module YCP
       Builtins.y2milestone "Call client %1", client
       code = File.read client
       begin
-        return eval(code, GLOBAL_WFM_CONTEXT.binding)
+        return eval(code, GLOBAL_WFM_CONTEXT.binding, client)
       rescue Exception => e
         Builtins.y2error("Client call failed with %1 and backtrace %2",
           e.message,
