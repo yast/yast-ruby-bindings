@@ -47,6 +47,16 @@ module YCP
     return Path.new *args
   end
 
+#makes copy of object unless object is immutable. In such case return object itself
+  def copy_arg object
+    case object
+    when Numeric,TrueClass,FalseClass,NilClass,Symbol #immutable
+      object
+    else
+      object.dup
+    end
+  end
+
   def self.import(mname)
     import_pure(mname)
     return if YCP.constants.include? mname.to_sym
@@ -74,15 +84,6 @@ module YCP
     self.const_set(mname, m)
   end
 
-#makes copy of object unless object is immutable. In such case return object itself
-  def self.copy object
-    case object
-    when Numeric,TrueClass,FalseClass,NilClass,Symbol #immutable
-      object
-    else
-      object.dup
-    end
-  end
 end
 
 #--------------------------------------
