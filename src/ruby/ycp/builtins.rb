@@ -546,32 +546,32 @@ module YCP
 
     # Log a message to the y2log.
     def self.y2debug *args
-      YCP.y2debug sformat(*args)
+      YCP.y2debug *args
     end
 
     # Log an error to the y2log.
     def self.y2error *args
-      YCP.y2error sformat(*args)
+      YCP.y2error *args
     end
 
     # Log an internal message to the y2log.
     def self.y2internal *args
-      YCP.y2internal sformat(*args)
+      YCP.y2internal *args
     end
 
     # Log a milestone to the y2log.
     def self.y2milestone*args
-      YCP.y2milestone sformat(*args)
+      YCP.y2milestone *args
     end
 
     # Log a security message to the y2log.
     def self.y2security *args
-      YCP.y2security sformat(*args)
+      YCP.y2security *args
     end
 
     # Log a warning to the y2log.
     def self.y2warning *args
-      YCP.y2warning sformat(*args)
+      YCP.y2warning *args
     end
 
     # Log an user-level system message to the y2changes

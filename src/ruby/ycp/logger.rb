@@ -1,10 +1,17 @@
 require "ycpx"
+require "ycp/builtins"
 
 module YCP
   module_function
   def y2_logger_helper(level,args)
+    caller_frame = 1
+    if args.first.is_a? Fixnum
+      caller_frame = caller_frame + args.shift
+    end
+
+    res = Builtins.sformat(*args)
     caller[1] =~ /(.+):(\d+):in `([^']+)'/
-    y2_logger(level, "Ruby", $1, $2.to_i, "", *args)
+    y2_logger(level, "Ruby", $1, $2.to_i, "", res)
   end
 
   module_function
