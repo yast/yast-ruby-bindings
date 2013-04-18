@@ -22,6 +22,7 @@ as published by the Free Software Foundation; either version
 #include <ycp/y2log.h>
 
 #include <ycp/YCPValue.h>
+#include <ycp/YCPCode.h>
 #include <ycp/YCPBoolean.h>
 #include <ycp/YCPList.h>
 #include <ycp/YCPMap.h>
@@ -80,6 +81,24 @@ ycp_term_to_rb_term( YCPTerm ycpterm )
   rb_ary_unshift(params, ID2SYM(rb_intern(ycpterm->name().c_str())));
   return rb_class_new_instance(RARRAY_LEN(params), RARRAY_PTR(params),cls);
 }
+
+extern "C" VALUE
+ycp_ref_to_rb_ref( YCPReference ycpref )
+{
+  int error = 0;
+//  rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) "ycp/term",&error);
+  rb_require("ycpx");
+  if (error)
+  {
+    y2internal("Cannot found ycp/term module.");
+    return Qnil;
+  }
+
+  VALUE ycp = rb_define_module("YCP");
+  VALUE cls = rb_const_get(ycp, rb_intern("YReference"));
+  return Data_Wrap_Struct(cls, 0, NULL, (void*)&*ycpref->entry());
+}
+
 
 /**
  *
@@ -154,6 +173,10 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
   {
     YCPSymbol symbol = ycpval->asSymbol();
     return ID2SYM(rb_intern(symbol->symbol_cstr()));
+  }
+  else if (ycpval->isReference())
+  {
+    return ycp_ref_to_rb_ref(ycpval->asReference());
   }
   else if (ycpval->isExternal())
   {

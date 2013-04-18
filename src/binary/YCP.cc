@@ -32,6 +32,7 @@ as published by the Free Software Foundation; either version
 #include <ycp/y2log.h>
 #include <ycp/YExpression.h>
 #include <ycp/YCPValue.h>
+#include <ycp/YCPCode.h>
 #include <ycp/Import.h>
 #include <ycp/y2log.h>
 
@@ -46,6 +47,7 @@ as published by the Free Software Foundation; either version
  */
 static VALUE rb_mUi;
 static VALUE rb_mYCP;
+static VALUE rb_cYReference;
 
 
 static Y2Component *owned_uic = 0;
@@ -303,10 +305,12 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
       rb_raise( rb_eRuntimeError, "can't create call to %s::%s", namespace_name, function_name);
     }
 
+    y2debug("Call %s", function_name);
     // add the parameters
     for (int i=2; i < argc; i++)
     {
       YCPValue v = rbvalue_2_ycpvalue(argv[i]);
+      y2debug("Append parameter %s", v->toString().c_str());
       call->appendParameter (v);
     }
     call->finishParameters ();
@@ -365,6 +369,45 @@ add_include_path( VALUE self, VALUE path )
   return Qnil;
 }
 
+static VALUE ref_init(VALUE self)
+{
+  return self;
+}
+
+static VALUE ref_new(VALUE clas, VALUE ref)
+{
+  // TODO add delete of struct
+  VALUE tdata = Data_Wrap_Struct(clas, 0, NULL, (void*)ref);
+  rb_obj_call_init(tdata, 0, NULL);
+  return tdata;
+}
+
+static VALUE ref_call( int argc, VALUE *argv, VALUE self )
+{
+  SymbolEntry *se;
+  Data_Get_Struct(self, SymbolEntry, se);
+  if (se->isFunction())
+  {
+    Y2Function* call = ((Y2Namespace*)(se->nameSpace()))->createFunctionCall(se->name(), se->type());
+    // add the parameters
+    for (int i=0; i < argc; i++)
+    {
+      YCPValue v = rbvalue_2_ycpvalue(argv[i]);
+      call->appendParameter (v);
+    }
+    call->finishParameters ();
+
+    YCPValue res = call->evaluateCall ();
+    delete call;
+    return ycpvalue_2_rbvalue(res);
+  }
+  else
+  {
+    rb_raise(rb_eRuntimeError, "Unknown ref type %s", se->toString().c_str());
+  }
+  return Qnil;
+}
+
 } //extern C
 
 extern "C"
@@ -394,6 +437,12 @@ extern "C"
 
     rb_define_method( rb_mYCP, "y2_logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
     rb_define_singleton_method( rb_mYCP, "y2_logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
+
+    // Y2 references
+    rb_cYReference = rb_define_class_under(rb_mYCP, "YReference", rb_cObject);
+    rb_define_singleton_method(rb_cYReference, "new", RUBY_METHOD_FUNC(ref_new), 1);
+    rb_define_method(rb_cYReference, "initialize", RUBY_METHOD_FUNC(ref_init), 0);
+    rb_define_method(rb_cYReference, "call", RUBY_METHOD_FUNC(ref_call), -1);
 
     /*
      * module YCP::Ui

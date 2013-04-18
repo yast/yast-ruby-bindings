@@ -546,32 +546,46 @@ module YCP
 
     # Log a message to the y2log.
     def self.y2debug *args
+      shift_frame_number args
       YCP.y2debug *args
     end
 
     # Log an error to the y2log.
     def self.y2error *args
+      shift_frame_number args
       YCP.y2error *args
     end
 
     # Log an internal message to the y2log.
     def self.y2internal *args
+      shift_frame_number args
       YCP.y2internal *args
     end
 
     # Log a milestone to the y2log.
     def self.y2milestone*args
+      shift_frame_number args
       YCP.y2milestone *args
     end
 
     # Log a security message to the y2log.
     def self.y2security *args
+      shift_frame_number args
       YCP.y2security *args
     end
 
     # Log a warning to the y2log.
     def self.y2warning *args
+      shift_frame_number args
       YCP.y2warning *args
+    end
+
+    def self.shift_frame_number args
+      if args.first.is_a? Fixnum
+        args[0] = args.first + 1
+      else 
+        args.unshift 1
+      end
     end
 
     # Log an user-level system message to the y2changes

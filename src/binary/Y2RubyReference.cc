@@ -11,6 +11,6 @@ YCPValue ClientFunction::evaluateCall()
     params[i] = ycpvalue_2_rbvalue(m_call.value(i));
   }
   YCPValue res = rbvalue_2_ycpvalue(rb_funcall3(object, rb_intern("call"),m_call.size(), params));
-  delete params;
+  delete[] params;
   return res;
 }

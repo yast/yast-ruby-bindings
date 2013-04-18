@@ -136,6 +136,14 @@ static YCPValue rbreference_2_ycpreference( VALUE value )
   return YCPReference(s_entry);
 }
 
+static YCPValue rbyreference_2_ycpreference( VALUE value )
+{
+  SymbolEntry *se;
+  Data_Get_Struct(value, SymbolEntry, se);
+  return YCPReference(se);
+}
+
+
 #define YCP_EXTERNAL_MAGIC "Ruby object"
 
 static void ycpexternal_finalizer(void * value_v, string /*magic*/)
@@ -248,6 +256,10 @@ rbvalue_2_ycpvalue( VALUE value )
     else if ( !strcmp(class_name, "YCP::Reference"))
     {
       return rbreference_2_ycpreference(value);
+    }
+    else if ( !strcmp(class_name, "YCP::YReference"))
+    {
+      return rbyreference_2_ycpreference(value);
     }
     else if ( !strcmp(class_name, "Proc"))
     {

@@ -10,6 +10,12 @@ module YCP
       from = options[:from]
       to = options[:to]
 
+      #ignore whitespaces and specialization in types
+      to.gsub!(/<.*>/, "")
+      to.gsub!(/\s+/, "")
+      from.gsub!(/<.*>/, "")
+      from.gsub!(/\s+/, "")
+
       raise "missing parameter :from" unless from
       raise "missing parameter :to" unless to
 
@@ -26,14 +32,12 @@ module YCP
         YCP.y2warning "Conversion from integer to float lead to loose precision."
         return object.to_i
       else
-        YCP.y2warning "Cannot convert #{object.class} to '#{to}'"
+        YCP.y2warning "Cannot convert #{object.class} from '#{from}' to '#{to}'"
         return nil
       end
     end
 
     def self.allowed_type(object, to)
-      to.gsub!(/<.*>/, "")
-      to.gsub!(/\s+/, "")
       types = Ops::TYPES_MAP[to]
       raise "Unknown type '#{to}' for conversion" if types.nil?
 
