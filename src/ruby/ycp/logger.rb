@@ -10,7 +10,7 @@ module YCP
     end
 
     res = Builtins.sformat(*args)
-    caller[1] =~ /(.+):(\d+):in `([^']+)'/
+    caller[caller_frame] =~ /(.+):(\d+):in `([^']+)'/
     y2_logger(level, "Ruby", $1, $2.to_i, "", res)
   end
 

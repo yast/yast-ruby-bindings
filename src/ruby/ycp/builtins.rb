@@ -481,8 +481,12 @@ module YCP
     ###########################################################
 
     # Evaluate a YCP value.
-    def self.eval
-      raise "Builtin eval() is not implemented yet"
+    def self.eval object
+      if object.respond_to? :call
+        return object.call
+      else
+        return object
+      end
     end
 
     # Change or add an environment variable
@@ -589,13 +593,15 @@ module YCP
     end
 
     # Log an user-level system message to the y2changes
-    def self.y2useritem
-      raise "Builtin y2useritem() is not implemented yet"
+    def self.y2useritem *args
+      # TODO implement it
+      return nil
     end
 
     # Log an user-level addional message to the y2changes
-    def self.y2usernote
-      raise "Builtin y2usernote() is not implemented yet"
+    def self.y2usernote *args
+      # TODO implement it
+      return nil
     end
 
     ###########################################################
