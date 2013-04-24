@@ -677,8 +677,10 @@ module YCP
     end
 
     # Searches string for the first non matching chars
-    def self.findfirstnotof
-      raise "Builtin findfirstnotof() is not implemented yet"
+    def self.findfirstnotof string, chars
+      return nil if string.nil? || chars.nil?
+
+      return string.index /^[#{Regexp.escape chars}]/
     end
 
     # Finds position of the first matching characters in string
@@ -689,13 +691,17 @@ module YCP
     end
 
     # Searches the last element of string that doesn't match
-    def self.findlastnotof
-      raise "Builtin findlastnotof() is not implemented yet"
+    def self.findlastnotof string, chars
+      return nil if string.nil? || chars.nil?
+
+      return string.rindex /^[#{Regexp.escape chars}]/
     end
 
     # Searches string for the last match
-    def self.findlastof
-      raise "Builtin findlastof() is not implemented yet"
+    def self.findlastof string, chars
+      return nil if string.nil? || chars.nil?
+
+      return string.rindex /[#{Regexp.escape chars}]/
     end
 
     # issubstring() YCP built-in

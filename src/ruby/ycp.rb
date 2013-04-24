@@ -26,6 +26,7 @@ require "ycp/break"
 require "ycp/builtins"
 require "ycp/convert"
 require "ycp/exportable"
+require "ycp/external"
 require "ycp/i18n"
 require "ycp/logger"
 require "ycp/ops"
@@ -52,6 +53,8 @@ module YCP
     case object
     when Numeric,TrueClass,FalseClass,NilClass,Symbol #immutable
       object
+    when YCP::Reference, YCP::External, YCP::YReference #contains only reference somewhere
+      object
     else
       object.dup
     end
@@ -59,7 +62,21 @@ module YCP
 
   def self.import(mname)
     import_pure(mname)
-    return if YCP.constants.include? mname.to_sym
+    modules = mname.split("::")
+
+    base = self
+    # Handle multilevel modules like YaPI::Network
+    modules[0..-2].each do |module_|
+      tmp_m = if base.const_defined?(module_)
+          base.const_get(module_)
+        else
+          base.const_set(module_, Module.new)
+        end
+      base = tmp_m
+    end
+
+    return if base.constants.include?(modules.last.to_sym)
+
     m = Module.new
     symbols(mname).each do |sname,stype|
       next if sname.empty?
@@ -81,7 +98,8 @@ module YCP
         END
       end
     end
-    self.const_set(mname, m)
+
+    base.const_set(modules.last, m)
   end
 
 end

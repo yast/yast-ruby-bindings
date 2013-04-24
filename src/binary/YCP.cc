@@ -311,7 +311,19 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
     {
       YCPValue v = rbvalue_2_ycpvalue(argv[i]);
       y2debug("Append parameter %s", v->toString().c_str());
-      call->appendParameter (v);
+      if (call->wantedParameterType()->isReference() && !v->isReference())
+      {
+        //FIXME DO not work for integers or booleans e.g.
+        // FIXME just fake entry to make it at least partially work
+        y2error("Use ycp reference as parameter for non reference type");
+        SymbolEntryPtr se = new SymbolEntry(0, 0, "ref", SymbolEntry::c_variable, Type::vt2type(v->valuetype()));
+        se->setValue(v);
+        call->appendParameter(YCPReference(se));
+      }
+      else
+      {
+        call->appendParameter (v);
+      }
     }
     call->finishParameters ();
 

@@ -99,6 +99,27 @@ ycp_ref_to_rb_ref( YCPReference ycpref )
   return Data_Wrap_Struct(cls, 0, NULL, (void*)&*ycpref->entry());
 }
 
+extern "C" VALUE
+ycp_ext_to_rb_ext( YCPExternal ext )
+{
+  y2debug("Convert ext %s", ext->toString().c_str());
+  int error = 0;
+  rb_require("ycp");
+  if (error)
+  {
+    y2internal("Cannot found ycp module.");
+    return Qnil;
+  }
+
+  VALUE ycp = rb_define_module("YCP");
+  VALUE cls = rb_const_get(ycp, rb_intern("External"));
+  // FIXME marking and deallocation
+  VALUE tdata = Data_Wrap_Struct(cls, 0, NULL, new YCPExternal(ext));
+  VALUE argv[] = {rb_str_new2(ext->magic().c_str())};
+  rb_obj_call_init(tdata, 1, argv);
+  return tdata;
+  
+}
 
 /**
  *
@@ -183,8 +204,9 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
     YCPExternal ex = ycpval->asExternal();
     if (ex->magic() == string(YCP_EXTERNAL_MAGIC)) {
       return (VALUE)(ex->payload()); // FIXME reference counting
+    } else {
+      return ycp_ext_to_rb_ext(ex);
     }
-    y2error("Unexpected magic '%s'.", (ex->magic()).c_str());
   }
   rb_raise( rb_eTypeError, "Conversion of YCP type %s not supported", ycpval->toString().c_str() );
   return Qnil;

@@ -143,6 +143,12 @@ static YCPValue rbyreference_2_ycpreference( VALUE value )
   return YCPReference(se);
 }
 
+static YCPValue rbexternal_2_ycpexternal( VALUE value )
+{
+  YCPExternal *payload;
+  Data_Get_Struct(value, YCPExternal, payload);
+  return *payload;
+}
 
 #define YCP_EXTERNAL_MAGIC "Ruby object"
 
@@ -264,6 +270,10 @@ rbvalue_2_ycpvalue( VALUE value )
     else if ( !strcmp(class_name, "Proc"))
     {
       return rbproc_2_ycpcode(value);
+    }
+    else if ( !strcmp(class_name, "YCP::External"))
+    {
+      return rbexternal_2_ycpexternal(value);
     }
     else
     {

@@ -44,7 +44,7 @@ module YCP
             return default
           end
         else
-          YCP.y2warning "Builtin index called on wrong type #{res.class}"
+          YCP.y2warning "Builtin index called on wrong type #{res.class} from #{caller.inspect}"
           return default
         end
       end

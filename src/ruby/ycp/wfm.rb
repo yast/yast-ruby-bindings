@@ -5,8 +5,8 @@ require "ycp/builtins"
 GLOBAL_WFM_CONTEXT = Proc.new {}
 module YCP
   module WFM
-    def self.Args
-      call_builtin("Args")
+    def self.Args *args
+      call_builtin("Args", *args)
     end
 
     def self.ClientExists *args
