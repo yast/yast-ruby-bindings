@@ -141,6 +141,7 @@ public:
     l.add(value);
     string method_name = name();
     method_name += "=";
+    y2debug("Called set value on %s::%s with %s",module_name.c_str(), name(), value->toString().c_str());
     return YRuby::yRuby()->callInner ( module_name,
       method_name,
       l,
@@ -155,7 +156,7 @@ public:
       YCPList(),
       type()
     );
-    y2milestone("Called value on %s::%s and return %s",module_name.c_str(), name(), result->toString().c_str());
+    y2debug("Called value on %s::%s and return %s",module_name.c_str(), name(), result->toString().c_str());
     return result;
   }
 
