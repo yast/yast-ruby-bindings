@@ -539,7 +539,7 @@ module YCP
     # Sleeps a number of milliseconds.
     def self.sleep milisecs
       # ruby sleep() accepts seconds (float)
-      sleep milisecs / 1000.0
+      Kernel.sleep milisecs / 1000.0
     end
 
     # time() YCP built-in
@@ -672,8 +672,10 @@ module YCP
     end
 
     # Filters characters out of a ::String
-    def self.filterchars
-      raise "Builtin filterchars() is not implemented yet"
+    def self.filterchars string, chars
+      return nil if string.nil? || chars.nil?
+
+      return string.gsub(/[^#{Regexp.escape chars}]/, "")
     end
 
     # Searches string for the first non matching chars

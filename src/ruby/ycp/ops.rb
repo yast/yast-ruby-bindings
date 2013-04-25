@@ -18,27 +18,28 @@ module YCP
       'list' => ::Array,
       'map' => ::Hash,
       'term' => YCP::Term,
-      'path' => YCP::Path
+      'path' => YCP::Path,
+      'locale' => ::String
     }
 
-    def self.index (object, indexes, default)
-      res = object
-      indexes.each do |i|
-        case res
-        when ::Array, YCP::Term
-          if i.is_a? Fixnum
-            if (0..res.size-1).include? i
-              res = res[i]
+      def self.index (object, indexes, default)
+        res = object
+        indexes.each do |i|
+          case res
+          when ::Array, YCP::Term
+            if i.is_a? Fixnum
+              if (0..res.size-1).include? i
+                res = res[i]
+              else
+                YCP.y2warning "Index #{i} is out of array size"
+                return default
+              end
             else
-              YCP.y2warning "Index #{i} is out of array size"
+              YCP.y2warning "Passed #{i.inspect} as index key for array."
               return default
             end
-          else
-            YCP.y2warning "Passed #{i.inspect} as index key for array."
-            return default
-          end
-        when ::Hash
-          if res.has_key? i
+          when ::Hash
+            if res.has_key? i
             res = res[i]
           else
             return default

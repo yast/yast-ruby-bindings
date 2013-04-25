@@ -15,7 +15,12 @@ private:
   YCPList m_call;
 public:
   ClientFunction(VALUE m_object) : object(m_object)
-  {}
+  {
+  }
+
+  ~ClientFunction()
+  {
+  }
 
   YCPValue evaluateCall ();
 
@@ -69,14 +74,22 @@ public:
 class ClientNamespace : public Y2Namespace
 {
 private:
-   ClientFunction f; 
+   VALUE object;
 public:
-  ClientNamespace(VALUE m_object) : f(m_object)
-  {}
+  ClientNamespace(VALUE m_object) : object(m_object)
+  {
+    // register object, so noone will destroy it under out hands
+    rb_gc_register_address(&object);
+  }
+
+  ~ClientNamespace()
+  {
+    rb_gc_unregister_address(&object);
+  }
 
   Y2Function* createFunctionCall(const string name, constFunctionTypePtr type)
   {
-    return &f;
+    return new ClientFunction(object);
   }
 
   virtual const string filename() const

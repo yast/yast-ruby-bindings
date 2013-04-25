@@ -130,7 +130,7 @@ static YCPValue rbreference_2_ycpreference( VALUE value )
 {
   VALUE signature = rb_funcall(value,rb_intern("signature"),0);
   constTypePtr sym_tp = Type::fromSignature(RSTRING_PTR(signature));
-//FIXME memory leak
+//FIXME memory leak , probably link it with reference, but then copy is broken :(
   const Y2Namespace *ns = new ClientNamespace(value);
   SymbolEntry *s_entry = new SymbolEntry(ns, 0, "ruby_reference", SymbolEntry::c_function, sym_tp);
   return YCPReference(s_entry);
