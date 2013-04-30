@@ -135,7 +135,14 @@ YRuby::loadModule( YCPList argList )
   int error = 0;
   rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) strdup(module_path.c_str()), &error);
   if (error)
+  {
+    VALUE exception = rb_gv_get("$!"); /* get last exception */
+    VALUE reason = rb_funcall(exception, rb_intern("message"), 0 );
+    VALUE trace = rb_gv_get("$@"); /* get last exception trace */
+    VALUE backtrace = RARRAY_LEN(trace)>0 ? rb_ary_entry(trace, 0) : rb_str_new2("Unknown");
+    y2error("Module %s load failed:%s at %s", module_path.c_str(), StringValuePtr(reason),StringValuePtr(backtrace));
     return YCPError( "Ruby::loadModule() / Can't load ruby module '" + module_path + "'" );
+  }
   return YCPVoid();
 }
 
@@ -162,7 +169,11 @@ YCPValue YRuby::callInner (string module_name, string function,
     module = y2ruby_nested_const_get(alternative_name);
     if (module == Qnil)
     {
-      y2error ("The Ruby module '%s' is not provided by its rb file", alternative_name.c_str());
+      VALUE exception = rb_gv_get("$!"); /* get last exception */
+      VALUE reason = rb_funcall(exception, rb_intern("message"), 0 );
+      VALUE trace = rb_gv_get("$@"); /* get last exception trace */
+      VALUE backtrace = RARRAY_LEN(trace)>0 ? rb_ary_entry(trace, 0) : rb_str_new2("Unknown");
+      y2error("%s load failed:%s at %s", module_name.c_str(), StringValuePtr(reason),StringValuePtr(backtrace));
       return YCPVoid();
     }
   }
@@ -217,7 +228,11 @@ YCPValue YRuby::callClient(const string& path)
   rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) "ycp", &error);
   if (error)
   {
-    y2error ("cannot require ycp");
+    VALUE exception = rb_gv_get("$!"); /* get last exception */
+    VALUE reason = rb_funcall(exception, rb_intern("message"), 0 );
+    VALUE trace = rb_gv_get("$@"); /* get last exception trace */
+    VALUE backtrace = RARRAY_LEN(trace)>0 ? rb_ary_entry(trace, 0) : rb_str_new2("Unknown");
+    y2error("cannot require ycp:%s at %s", StringValuePtr(reason),StringValuePtr(backtrace));
     return YCPVoid();
   }
 

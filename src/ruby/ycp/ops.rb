@@ -3,6 +3,8 @@ require "ycp/logger"
 
 #predefine term to avoid circular dependency
 class YCP::Term;end
+class YCP::Reference;end
+class YCP::YReference;end
 
 module YCP
   module Ops
@@ -19,7 +21,8 @@ module YCP
       'map' => ::Hash,
       'term' => YCP::Term,
       'path' => YCP::Path,
-      'locale' => ::String
+      'locale' => ::String,
+      'function' => [YCP::Reference, YCP::YReference]
     }
 
       def self.index (object, indexes, default)
@@ -241,6 +244,9 @@ module YCP
     end
 
     def self.is (object, type)
+      type = "function" if type =~ /\(.*\)/ #reference to function
+      type.gsub!(/<.*>/, "")
+      type.gsub!(/\s+/, "")
       classes = TYPES_MAP[type]
       raise "Invalid type to detect in is '#{type}'" unless classes
       classes = [classes] unless classes.is_a? ::Array

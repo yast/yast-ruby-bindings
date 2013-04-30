@@ -16,6 +16,9 @@ module YCP
       from.gsub!(/<.*>/, "")
       from.gsub!(/\s+/, "")
 
+      # reference to function
+      to = "function" if to =~ /\(.*\)/
+
       raise "missing parameter :from" unless from
       raise "missing parameter :to" unless to
 

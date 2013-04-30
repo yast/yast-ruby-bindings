@@ -67,7 +67,7 @@ module YCP
     base = self
     # Handle multilevel modules like YaPI::Network
     modules[0..-2].each do |module_|
-      tmp_m = if base.const_defined?(module_)
+      tmp_m = if base.constants.include?(module_.to_sym)
           base.const_get(module_)
         else
           base.const_set(module_, Module.new)

@@ -1,6 +1,8 @@
 require "ycp/path"
 require "ycp/helper"
 require "ycp/break"
+require "ycp/i18n"
+require "fast_gettext"
 
 module YCP
   module Builtins
@@ -25,7 +27,7 @@ module YCP
         res = object.dup
         res.params << params.first
         return res
-      when NilClass then return nil
+      when ::NilClass then return nil
       else
         raise "Invalid object for add builtin"
       end
@@ -190,7 +192,7 @@ module YCP
         srand
 
         # the original srandom() returns Time.now
-        Time.now.to_i
+        ::Time.now.to_i
       else
         srand param
         return nil
@@ -290,7 +292,7 @@ module YCP
 
       case object
       # use full qualified ::Float to avoid clash with YCP::Builtins::Float
-      when ::String, ::Float, Fixnum, Bignum
+      when ::String, ::Float, ::Fixnum, ::Bignum
         object.to_i
       else
         nil
@@ -539,13 +541,13 @@ module YCP
     # Sleeps a number of milliseconds.
     def self.sleep milisecs
       # ruby sleep() accepts seconds (float)
-      Kernel.sleep milisecs / 1000.0
+      ::Kernel.sleep milisecs / 1000.0
     end
 
     # time() YCP built-in
     # Return the number of seconds since 1.1.1970.
     def self.time
-      Time.now.to_i
+      ::Time.now.to_i
     end
 
     # Log a message to the y2log.
@@ -585,7 +587,7 @@ module YCP
     end
 
     def self.shift_frame_number args
-      if args.first.is_a? Fixnum
+      if args.first.is_a? ::Fixnum
         args[0] = args.first + 1
       else 
         args.unshift 1
@@ -656,19 +658,34 @@ module YCP
       string.delete chars
     end
 
+    extend FastGettext::Translation
+    include YCP::I18n
     # Translates the text using the given text domain
-    def self.dgettext
-      raise "Builtin dgettext() is not implemented yet"
+    def self.dgettext (domain, text)
+      old_text_domain = FastGettext.text_domain
+      textdomain domain
+      return _(text)
+    ensure
+      FastGettext.text_domain = old_text_domain
     end
 
     # Translates the text using a locale-aware plural form handling
-    def self.dngettext
-      raise "Builtin dngettext() is not implemented yet"
+    def self.dngettext (domain, singular, plural, num)
+      old_text_domain = FastGettext.text_domain
+      textdomain domain
+      return n_(singular, plural, num)
+    ensure
+      FastGettext.text_domain = old_text_domain
     end
 
     # Translates the text using the given text domain and path
-    def self.dpgettext
-      raise "Builtin dpgettext() is not implemented yet"
+    def self.dpgettext (domain, dirname, text)
+      old_text_domain = FastGettext.text_domain
+      FastGettext.add_text_domain(domain, :path => dirname)
+      FastGettext.text_domain = domain
+      return _(text)
+    ensure
+      FastGettext.text_domain = old_text_domain
     end
 
     # Filters characters out of a ::String
@@ -772,7 +789,7 @@ module YCP
         if match = string.match(ruby_regexp)
           return match.captures
         end
-      rescue RegexpError
+      rescue ::RegexpError
         # handle invalid regexps
         return nil
       end
@@ -850,7 +867,7 @@ module YCP
     end
 
     # Returns the symbol of the term TERM.
-    def self.symbolof
+    def self.symbolof term
       return nil if term.nil?
 
       return term.value

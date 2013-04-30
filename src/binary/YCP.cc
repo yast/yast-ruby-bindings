@@ -297,7 +297,7 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
   }
   else
   { // no indent yet
-    Y2Function* call = ns->createFunctionCall(function_name, 0 /*Type::fromSignature("list<string>()")*/);
+    Y2Function* call = ns->createFunctionCall(function_name, 0 /*Type::fromSignature(signature)*/);
 
     if (call == NULL)
     {
