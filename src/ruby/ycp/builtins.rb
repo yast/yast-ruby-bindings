@@ -526,7 +526,7 @@ module YCP
         when /%([1-9])/
           pos = $1.to_i - 1
           if (pos < args.size)
-            args[pos]
+            args[pos].inspect
           else
             YCP.y2warning "Illegal argument number #{match}. Maximum is %#{args.size-1}."
             ""
