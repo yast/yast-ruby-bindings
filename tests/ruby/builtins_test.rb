@@ -712,4 +712,13 @@ class BuiltinsTest < YCP::TestCase
     assert_equal "0,5", YCP::Builtins::Float.tolstring(0.52,1)
     ENV["LANG"] = old_lang
   end
+
+  def test_crypt
+    # crypt is salted so cannot reproduce, just test if run and returns something useful
+    ["", "md5", "blowfish", "sha256", "sha512"].each do |suffix|
+      res = YCP::Builtins.send(:"crypt#{suffix}", "test")
+      assert res;
+      assert (res.size>10), "res too small #{res} for crypt#{suffix}"
+    end
+  end
 end

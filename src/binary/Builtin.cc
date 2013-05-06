@@ -1,7 +1,21 @@
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
+
+#ifndef _OW_SOURCE
+#define _OW_SOURCE
+#endif
+
 #include <string>
 #include <sstream>
 #include <iconv.h>
 #include <errno.h>
+extern "C" {
+  #include <crypt.h>
+}
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 #include "ycp/y2log.h"
 #include "ycp/ExecutionEnvironment.h"
@@ -85,10 +99,10 @@ extern "C" {
   {
     iconv_t cd = iconv_open ("UTF-8", "WCHAR_T");
 
-	  if (cd == (iconv_t)(-1))
+          if (cd == (iconv_t)(-1))
     {
       y2error ("iconv_open: %m");
-	    return false;
+            return false;
     }
 
     char* in_ptr = (char*)(in.data ());
@@ -105,8 +119,8 @@ extern "C" {
     {
       char *tmp_ptr = buffer;
       size_t tmp_size = buffer_size;
-	    size_t r = iconv (cd, &in_ptr, &in_len, &tmp_ptr, &tmp_size);
-    	size_t n = tmp_ptr - buffer;
+            size_t r = iconv (cd, &in_ptr, &in_len, &tmp_ptr, &tmp_size);
+            size_t n = tmp_ptr - buffer;
 
       out.append (buffer, n);
 
@@ -155,6 +169,174 @@ extern "C" {
     return rb_str_new2(utf_res.c_str());
   }
 
+  // crypt part taken from y2crypt from yast core
+  // TODO refactor to use sharedddd functionality
+  // TODO move to own module, it is stupid to have it as builtin
+  enum crypt_ybuiltin_t { CRYPT, MD5, BLOWFISH, SHA256, SHA512 };
+
+  static int
+  read_loop (int fd, char* buffer, int count)
+  {
+    int offset, block;
+
+    offset = 0;
+    while (count > 0)
+    {
+      block = read (fd, &buffer[offset], count);
+
+      if (block < 0)
+      {
+        if (errno == EINTR)
+          continue;
+        return block;
+      }
+
+      if (!block)
+        return offset;
+
+      offset += block;
+      count -= block;
+    }
+
+    return offset;
+  }
+
+
+  static char*
+  make_crypt_salt (const char* crypt_prefix, int crypt_rounds)
+  {
+#define CRYPT_GENSALT_OUTPUT_SIZE (7 + 22 + 1)
+
+#ifndef RANDOM_DEVICE
+#define RANDOM_DEVICE "/dev/urandom"
+#endif
+
+    int fd = open (RANDOM_DEVICE, O_RDONLY);
+    if (fd < 0)
+    {
+      y2error ("Can't open %s for reading: %s\n", RANDOM_DEVICE,
+        strerror (errno));
+      return 0;
+    }
+
+    char entropy[16];
+    if (read_loop (fd, entropy, sizeof(entropy)) != sizeof(entropy))
+    {
+      close (fd);
+      y2error ("Unable to obtain entropy from %s\n", RANDOM_DEVICE);
+      return 0;
+    }
+
+    close (fd);
+
+    char output[CRYPT_GENSALT_OUTPUT_SIZE];
+    char* retval = crypt_gensalt_rn (crypt_prefix, crypt_rounds, entropy,
+      sizeof(entropy), output, sizeof(output));
+
+    memset (entropy, 0, sizeof (entropy));
+
+    if (!retval)
+    {
+      y2error ("Unable to generate a salt, check your crypt settings.\n");
+      return 0;
+    }
+
+    return strdup (retval);
+  }
+
+
+  char *
+  crypt_pass (const char* unencrypted, crypt_ybuiltin_t use_crypt)
+  {
+    char* salt;
+
+    switch (use_crypt)
+    {
+      case CRYPT:
+        salt = make_crypt_salt ("", 0);
+        break;
+
+      case MD5:
+        salt = make_crypt_salt ("$1$", 0);
+        break;
+
+      case BLOWFISH:
+        salt = make_crypt_salt ("$2y$", 0);
+        break;
+
+      case SHA256:
+        salt = make_crypt_salt ("$5$", 0);
+        break;
+
+      case SHA512:
+        salt = make_crypt_salt ("$6$", 0);
+        break;
+
+      default:
+        y2error ("Don't know crypt type %d", use_crypt);
+        return 0;
+    }
+    if (!salt)
+    {
+      y2error ("Cannot create salt for sha512 crypt");
+      return 0;
+    }
+
+    struct crypt_data output;
+    memset (&output, 0, sizeof (output));
+
+    char *newencrypted = crypt_r (unencrypted, salt, &output);
+    free (salt);
+
+    if (!newencrypted
+    /* catch retval magic by ow-crypt/libxcrypt */
+    || !strcmp(newencrypted, "*0") || !strcmp(newencrypted, "*1"))
+    {
+        y2error ("crypt_r () returns 0 pointer");
+        return 0;
+    }
+    y2milestone ("encrypted %s", newencrypted);
+
+    //data lives on stack so dup it
+    return strdup(newencrypted); 
+  }
+
+  VALUE crypt_internal(crypt_ybuiltin_t type, VALUE unencrypted)
+  {
+    const char* source = StringValuePtr(unencrypted);
+    char * res = crypt_pass(source, type);
+    if (!res)
+      return Qnil;
+    VALUE ret = rb_str_new2(res);
+    delete res;
+    return ret;
+  }
+
+  VALUE crypt_crypt(VALUE mod, VALUE input)
+  {
+    return crypt_internal(CRYPT, input);
+  }
+
+  VALUE crypt_md5(VALUE mod, VALUE input)
+  {
+    return crypt_internal(MD5, input);
+  }
+
+  VALUE crypt_blowfish(VALUE mod, VALUE input)
+  {
+    return crypt_internal(BLOWFISH, input);
+  }
+
+  VALUE crypt_sha256(VALUE mod, VALUE input)
+  {
+    return crypt_internal(SHA256, input);
+  }
+
+  VALUE crypt_sha512(VALUE mod, VALUE input)
+  {
+    return crypt_internal(SHA512, input);
+  }
+
 }
 
 extern "C"
@@ -179,5 +361,10 @@ extern "C"
     rb_mBuiltins = rb_define_module_under(rb_mYCP, "Builtins");
     rb_mFloat = rb_define_module_under(rb_mBuiltins, "Float");
     rb_define_singleton_method( rb_mFloat, "tolstring", RUBY_METHOD_FUNC(float_to_lstring), 2);
+    rb_define_singleton_method( rb_mBuiltins, "crypt", RUBY_METHOD_FUNC(crypt_crypt), 1);
+    rb_define_singleton_method( rb_mBuiltins, "cryptmd5", RUBY_METHOD_FUNC(crypt_md5), 1);
+    rb_define_singleton_method( rb_mBuiltins, "cryptblowfish", RUBY_METHOD_FUNC(crypt_blowfish), 1);
+    rb_define_singleton_method( rb_mBuiltins, "cryptsha256", RUBY_METHOD_FUNC(crypt_sha256), 1);
+    rb_define_singleton_method( rb_mBuiltins, "cryptsha512", RUBY_METHOD_FUNC(crypt_sha512), 1);
   }
 }

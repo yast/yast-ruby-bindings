@@ -628,27 +628,8 @@ module YCP
 
     ###########################################################
     # YCP ::String Builtins
+    # crypt* builtins implemented in C part
     ###########################################################
-
-    # Encrypts a string
-    def self.crypt
-      raise "Builtin crypt() is not implemented yet"
-    end
-
-    # Encrypts a string using bigcrypt
-    def self.cryptbigcrypt
-      raise "Builtin cryptbigcrypt() is not implemented yet"
-    end
-
-    # Encrypts a string with blowfish
-    def self.cryptblowfish
-      raise "Builtin cryptblowfish() is not implemented yet"
-    end
-
-    # Encrypts a string using md5
-    def self.cryptmd5
-      raise "Builtin cryptmd5() is not implemented yet"
-    end
 
     # Removes all characters from a string
     def self.deletechars string, chars
