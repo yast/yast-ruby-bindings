@@ -837,8 +837,30 @@ module YCP
     # Converts an integer to a hexadecimal string.
     # - tohexstring(<int>)
     # - tohexstring(<int>, <int>width)
-    def self.tohexstring
-      raise "Builtin tohexstring() is not implemented yet"
+    def self.tohexstring int, width = 0
+      return nil if int.nil? || width.nil?
+
+      if int >= 0
+        sprintf("0x%0#{width}x", int)
+      else
+        # compatibility for negative numbers
+        # Ruby: -3 => '0x..fd'
+        # YCP:  -3 => '0xfffffffffffffffd' (64bit integer)
+
+        # this has '..fff' prefix
+        ret = sprintf("%018x", int)
+
+        # pad with zeroes or spaces if needed
+        if width > 16
+          ret.insert(2, "0" * (width - 16))
+        elsif width < -16
+          ret << (" " * (-width - 16))
+        end
+
+        # replace the ".." prefix by "0x"
+        ret[0..1] = "0x"
+        ret
+      end
     end
 
     # tolower() YCP built-in

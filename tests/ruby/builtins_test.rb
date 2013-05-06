@@ -152,6 +152,32 @@ class BuiltinsTest < YCP::TestCase
     assert_equal nil, YCP::Builtins.regexptokenize("aaabbb", "(.*ba).*(");
   end
 
+  def test_tohexstring
+    assert_equal nil, YCP::Builtins.tohexstring(nil)
+    assert_equal nil, YCP::Builtins.tohexstring(nil, nil)
+    assert_equal "0x0", YCP::Builtins.tohexstring(0)
+    assert_equal "0xa", YCP::Builtins.tohexstring(10)
+    assert_equal "0xff", YCP::Builtins.tohexstring(255)
+    assert_equal "0x3640e", YCP::Builtins.tohexstring(222222)
+
+    assert_equal "0x1f", YCP::Builtins.tohexstring(31, 0)
+    assert_equal "0x1f", YCP::Builtins.tohexstring(31, 1)
+    assert_equal "0x001f", YCP::Builtins.tohexstring(31, 4)
+    assert_equal "0x00001f", YCP::Builtins.tohexstring(31, 6)
+
+    assert_equal "0x1f", YCP::Builtins.tohexstring(31, -1)
+    assert_equal "0x1f ", YCP::Builtins.tohexstring(31, -3)
+
+    assert_equal "0xfffffffffffffffd", YCP::Builtins.tohexstring(-3)
+    assert_equal "0xfffffffffffffffd", YCP::Builtins.tohexstring(-3, 5)
+    assert_equal "0x00fffffffffffffffd", YCP::Builtins.tohexstring(-3, 18)
+    assert_equal "0x000000fffffffffffffffd", YCP::Builtins.tohexstring(-3, 22)
+
+    assert_equal "0xfffffffffffffffd", YCP::Builtins.tohexstring(-3, -16)
+    assert_equal "0xfffffffffffffffd ", YCP::Builtins.tohexstring(-3, -17)
+    assert_equal "0xfffffffffffffffd      ", YCP::Builtins.tohexstring(-3, -22)
+  end
+
   def test_tolower
     assert_equal nil, YCP::Builtins.tolower(nil)
     assert_equal "", YCP::Builtins.tolower("")
