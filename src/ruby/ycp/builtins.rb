@@ -521,8 +521,16 @@ module YCP
     end
 
     # Returns a pair with position and length of the first match.
-    def self.regexppos
-      raise "Builtin regexppos() is not implemented yet"
+    def self.regexppos string, regexp
+      return nil if string.nil? || regexp.nil?
+
+      # TODO FIXME: handle invalid regexps
+      ruby_regexp = YCP::Helper.ruby_regexp regexp
+      if match = string.match(ruby_regexp)
+        return [match.begin(0), match[0].size]
+      end
+
+      return []
     end
 
     # regexpsub() YCP built-in
