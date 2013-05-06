@@ -155,6 +155,13 @@ class BuiltinsPathTest < YCP::TestCase
     assert_equal "ABCáäöč", YCP::Builtins.toupper("abcáäöč")
   end
 
+  def test_toascii
+    assert_equal nil, YCP::Builtins.toascii(nil)
+    assert_equal "", YCP::Builtins.toascii("")
+    assert_equal "abc123XYZ", YCP::Builtins.toascii("abc123XYZ")
+    assert_equal "abc123XYZ", YCP::Builtins.toascii("áabcě123čXYZŽž")
+  end
+
   def test_size
     assert_equal nil, YCP::Builtins.size(nil)
     assert_equal 0, YCP::Builtins.size([])
