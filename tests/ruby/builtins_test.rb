@@ -123,6 +123,15 @@ class BuiltinsTest < YCP::TestCase
     assert_equal true, YCP::Builtins.regexpmatch("abc", "c$")
   end
 
+  def test_regexppos
+    assert_equal nil, YCP::Builtins.regexppos(nil, nil)
+    assert_equal [0, 0], YCP::Builtins.regexppos("", "")
+
+    # from YCP documentation
+    assert_equal [4, 3], YCP::Builtins.regexppos("abcd012efgh345", "[0-9]+")
+    assert_equal [], YCP::Builtins.regexppos("aaabbb", "[0-9]+")
+  end
+
   def test_regexpsub
     assert_equal nil, YCP::Builtins.regexpsub(nil, nil, nil)
 
