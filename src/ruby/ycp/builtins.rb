@@ -3,6 +3,7 @@ require "ycp/helper"
 require "ycp/break"
 require "ycp/i18n"
 require "fast_gettext"
+require "ycp/builtinx"
 
 module YCP
   module Builtins
@@ -232,6 +233,8 @@ module YCP
     ###########################################################
 
     module Float
+      #to_lstring is inplemented in C part
+
     	# absolute value
       def self.abs value
         return nil if value.nil?
@@ -258,11 +261,6 @@ module YCP
         return nil if base.nil? || power.nil?
 
         return base ** power
-      end
-
-    	# Converts a floating point number to a localized string
-      def self.tolstring value, precision
-        raise "Builtin float::tolstring() is not implemented yet"
       end
 
     	# round to integer, towards zero
@@ -526,7 +524,12 @@ module YCP
         when /%([1-9])/
           pos = $1.to_i - 1
           if (pos < args.size)
-            args[pos].inspect
+            case args[pos]
+            when String then args[pos]
+            when Symbol then "`#{args[pos]}"
+            else
+              args[pos].inspect
+            end
           else
             YCP.y2warning "Illegal argument number #{match}. Maximum is %#{args.size-1}."
             ""
