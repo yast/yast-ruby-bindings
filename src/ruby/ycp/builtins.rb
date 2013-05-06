@@ -828,8 +828,13 @@ module YCP
     end
 
     # Returns time string
-    def self.timestring
-      raise "Builtin timestring() is not implemented yet"
+    def self.timestring format, time, utc
+      return nil if format.nil? || time.nil? || utc.nil?
+
+      t = Time.at time
+      t = t.utc if utc
+
+      t.strftime format
     end
 
     # Returns characters below 0x7F included in STRING
