@@ -3,6 +3,7 @@ require "ycp/helper"
 require "ycp/break"
 require "ycp/i18n"
 require "fast_gettext"
+require "ycp/builtinx"
 
 module YCP
   module Builtins
@@ -232,6 +233,8 @@ module YCP
     ###########################################################
 
     module Float
+      #to_lstring is inplemented in C part
+
     	# absolute value
       def self.abs value
         return nil if value.nil?
@@ -258,11 +261,6 @@ module YCP
         return nil if base.nil? || power.nil?
 
         return base ** power
-      end
-
-    	# Converts a floating point number to a localized string
-      def self.tolstring value, precision
-        raise "Builtin float::tolstring() is not implemented yet"
       end
 
     	# round to integer, towards zero
@@ -526,7 +524,12 @@ module YCP
         when /%([1-9])/
           pos = $1.to_i - 1
           if (pos < args.size)
-            args[pos]
+            case args[pos]
+            when String then args[pos]
+            when Symbol then "`#{args[pos]}"
+            else
+              args[pos].inspect
+            end
           else
             YCP.y2warning "Illegal argument number #{match}. Maximum is %#{args.size-1}."
             ""
@@ -625,27 +628,8 @@ module YCP
 
     ###########################################################
     # YCP ::String Builtins
+    # crypt* builtins implemented in C part
     ###########################################################
-
-    # Encrypts a string
-    def self.crypt
-      raise "Builtin crypt() is not implemented yet"
-    end
-
-    # Encrypts a string using bigcrypt
-    def self.cryptbigcrypt
-      raise "Builtin cryptbigcrypt() is not implemented yet"
-    end
-
-    # Encrypts a string with blowfish
-    def self.cryptblowfish
-      raise "Builtin cryptblowfish() is not implemented yet"
-    end
-
-    # Encrypts a string using md5
-    def self.cryptmd5
-      raise "Builtin cryptmd5() is not implemented yet"
-    end
 
     # Removes all characters from a string
     def self.deletechars string, chars
@@ -825,13 +809,22 @@ module YCP
     end
 
     # Returns time string
-    def self.timestring
-      raise "Builtin timestring() is not implemented yet"
+    def self.timestring format, time, utc
+      return nil if format.nil? || time.nil? || utc.nil?
+
+      t = Time.at time
+      t = t.utc if utc
+
+      t.strftime format
     end
 
     # Returns characters below 0x7F included in STRING
-    def self.toascii
-      raise "Builtin toascii() is not implemented yet"
+    def self.toascii string
+      return nil if string.nil?
+
+      ret = ""
+      string.each_char { |c| ret << c if c.ord < 0x7f }
+      ret
     end
 
     # Converts an integer to a hexadecimal string.

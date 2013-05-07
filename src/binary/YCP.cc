@@ -306,29 +306,32 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
     }
 
     y2debug("Call %s", function_name);
+    std::map<int,SymbolEntryPtr> refs;
     // add the parameters
     for (int i=2; i < argc; i++)
     {
       YCPValue v = rbvalue_2_ycpvalue(argv[i]);
       y2debug("Append parameter %s", v->toString().c_str());
-      if (call->wantedParameterType()->isReference() && !v->isReference())
+
+      const char *class_name = rb_obj_classname(argv[i]);
+      //handle args passed by references
+      if (!strcmp(class_name, "YCP::ArgRef"))
       {
-        //FIXME DO not work for integers or booleans e.g.
-        // FIXME just fake entry to make it at least partially work
-        y2error("Use ycp reference as parameter for non reference type");
-        SymbolEntryPtr se = new SymbolEntry(0, 0, "ref", SymbolEntry::c_variable, Type::vt2type(v->valuetype()));
-        se->setValue(v);
-        call->appendParameter(YCPReference(se));
+        refs[i] = v->asReference()->entry();
       }
-      else
-      {
-        call->appendParameter (v);
-      }
+      call->appendParameter (v);
     }
     call->finishParameters ();
 
     YCPValue res = call->evaluateCall ();
     delete call;
+    for (std::map<int,SymbolEntryPtr>::iterator i = refs.begin(); i != refs.end(); ++i)
+    {
+      //set back reference
+      rb_funcall(argv[i->first], rb_intern("value="), 1, ycpvalue_2_rbvalue(i->second->value()));
+      //clean up created symbol entry
+      delete (SymbolEntry*)&(*(i->second));
+    }
     return ycpvalue_2_rbvalue(res);
   }
 }

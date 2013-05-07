@@ -178,6 +178,14 @@ class BuiltinsTest < YCP::TestCase
     assert_equal "0xfffffffffffffffd      ", YCP::Builtins.tohexstring(-3, -22)
   end
 
+  def test_timestring
+    assert_equal nil, YCP::Builtins.timestring(nil, nil, nil)
+
+    assert_equal "Mon May  6 13:29:56 2013", YCP::Builtins.timestring("%c", 1367839796, false)
+    assert_equal "Mon May  6 11:29:56 2013", YCP::Builtins.timestring("%c", 1367839796, true)
+    assert_equal "20130506", YCP::Builtins.timestring("%Y%m%d", 1367839796, false)
+  end
+
   def test_tolower
     assert_equal nil, YCP::Builtins.tolower(nil)
     assert_equal "", YCP::Builtins.tolower("")
@@ -192,6 +200,13 @@ class BuiltinsTest < YCP::TestCase
     assert_equal "ABC", YCP::Builtins.toupper("ABC")
     assert_equal "ABC", YCP::Builtins.toupper("abc")
     assert_equal "ABCáäöč", YCP::Builtins.toupper("abcáäöč")
+  end
+
+  def test_toascii
+    assert_equal nil, YCP::Builtins.toascii(nil)
+    assert_equal "", YCP::Builtins.toascii("")
+    assert_equal "abc123XYZ", YCP::Builtins.toascii("abc123XYZ")
+    assert_equal "abc123XYZ", YCP::Builtins.toascii("áabcě123čXYZŽž")
   end
 
   def test_size
@@ -708,7 +723,7 @@ class BuiltinsTest < YCP::TestCase
 
     assert_equal "test lest", YCP::Builtins.sformat("test %1","lest")
 
-    assert_equal "test lest", YCP::Builtins.sformat("test %1",:lest)
+    assert_equal "test `lest", YCP::Builtins.sformat("test %1",:lest)
 
     assert_equal "test", YCP::Builtins.sformat("test%a","lest")
 
@@ -729,6 +744,22 @@ class BuiltinsTest < YCP::TestCase
   def test_findfirstof
     FINDFIRSTOF_TESTDATA.each do |string,chars,result|
       assert_equal result, YCP::Builtins.findfirstof(string,chars)
+    end
+  end
+
+  def test_float_tolstring
+    old_lang = ENV["LANG"]
+    ENV["LANG"] = "cs_CZ.utf-8"
+    assert_equal "0,5", YCP::Builtins::Float.tolstring(0.52,1)
+    ENV["LANG"] = old_lang
+  end
+
+  def test_crypt
+    # crypt is salted so cannot reproduce, just test if run and returns something useful
+    ["", "md5", "blowfish", "sha256", "sha512"].each do |suffix|
+      res = YCP::Builtins.send(:"crypt#{suffix}", "test")
+      assert res;
+      assert (res.size>10), "res too small #{res} for crypt#{suffix}"
     end
   end
 end

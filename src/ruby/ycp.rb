@@ -22,16 +22,17 @@
 require 'ycpx'
 
 # load inside moduls
+require "ycp/arg_ref"
 require "ycp/break"
 require "ycp/builtins"
 require "ycp/convert"
 require "ycp/exportable"
 require "ycp/external"
+require "ycp/fun_ref"
 require "ycp/i18n"
 require "ycp/logger"
 require "ycp/ops"
 require "ycp/path"
-require "ycp/reference"
 require "ycp/scr"
 require "ycp/term"
 require "ycp/wfm"
@@ -41,9 +42,15 @@ module YCP
   def term(*args)
     return Term.new *args
   end
-  def reference(*args)
-    return Reference.new *args
+
+  def fun_ref(*args)
+    return FunRef.new *args
   end
+
+  def arg_ref(*args)
+    return ArgRef.new *args
+  end
+
   def path(*args)
     return Path.new *args
   end
