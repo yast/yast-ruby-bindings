@@ -259,7 +259,7 @@ rbvalue_2_ycpvalue( VALUE value )
     {
       return rbterm_2_ycpterm(value);
     }
-    else if ( !strcmp(class_name, "YCP::Reference"))
+    else if ( !strcmp(class_name, "YCP::FunRef"))
     {
       return rbreference_2_ycpreference(value);
     }

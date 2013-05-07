@@ -1,5 +1,5 @@
 module YCP
-  class Reference
+  class FunRef
     attr_reader :signature
 
     def initialize met, signature
