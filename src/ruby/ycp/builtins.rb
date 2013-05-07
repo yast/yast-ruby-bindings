@@ -819,8 +819,12 @@ module YCP
     end
 
     # Returns characters below 0x7F included in STRING
-    def self.toascii
-      raise "Builtin toascii() is not implemented yet"
+    def self.toascii string
+      return nil if string.nil?
+
+      ret = ""
+      string.each_char { |c| ret << c if c.ord < 0x7f }
+      ret
     end
 
     # Converts an integer to a hexadecimal string.
