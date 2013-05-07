@@ -30,7 +30,7 @@ module YCP
         return res
       when ::NilClass then return nil
       else
-        raise "Invalid object for add builtin"
+        raise "Invalid object '#{object.inspect}' for add builtin"
       end
     end
 
@@ -322,11 +322,12 @@ module YCP
       # Reduces a list to a single value.
       def self.reduce *params, &block
         return nil if params.first.nil?
-        list = params.first
-        if params.size == 2
-          return nil if params[1].nil?
-          list = [list] + params[1]
-        end
+        list = if params.size == 2 #so first is default and second is list
+            return nil if params[1].nil?
+            [params.first] + params[1]
+          else
+            params.first
+          end
         return list.reduce &block
       end
 
@@ -896,6 +897,7 @@ module YCP
       return term.value
     end
 
+
     # Converts a value to a term.
     def self.toterm symbol, list=DEF_LENGHT
       return nil if symbol.nil? || list.nil?
@@ -914,5 +916,10 @@ module YCP
       end
     end
 
+    def self.tosymbol value
+      return nil if value.nil?
+
+      return value.to_sym
+    end
   end
 end

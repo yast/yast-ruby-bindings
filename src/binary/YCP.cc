@@ -329,8 +329,6 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
     {
       //set back reference
       rb_funcall(argv[i->first], rb_intern("value="), 1, ycpvalue_2_rbvalue(i->second->value()));
-      //clean up created symbol entry
-      delete (SymbolEntry*)&(*(i->second));
     }
     return ycpvalue_2_rbvalue(res);
   }

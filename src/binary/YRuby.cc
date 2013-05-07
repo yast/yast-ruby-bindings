@@ -97,7 +97,7 @@ void YRuby::gc_free(void *object)
 YRuby::~YRuby()
 {
     y2milestone( "Shutting down ruby interpreter." );
-    ruby_finalize();
+    //ruby_finalize(); Do not finalize to allow clear work inside ruby
     _y_ruby_finalized = true;
 }
 

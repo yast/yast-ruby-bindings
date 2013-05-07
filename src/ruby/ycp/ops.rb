@@ -3,7 +3,7 @@ require "ycp/logger"
 
 #predefine term to avoid circular dependency
 class YCP::Term;end
-class YCP::Reference;end
+class YCP::FunRef;end
 class YCP::YReference;end
 
 module YCP
@@ -22,7 +22,7 @@ module YCP
       'term' => YCP::Term,
       'path' => YCP::Path,
       'locale' => ::String,
-      'function' => [YCP::Reference, YCP::YReference]
+      'function' => [YCP::FunRef, YCP::YReference]
     }
 
       def self.index (object, indexes, default)

@@ -60,7 +60,7 @@ module YCP
     case object
     when Numeric,TrueClass,FalseClass,NilClass,Symbol #immutable
       object
-    when YCP::Reference, YCP::External, YCP::YReference #contains only reference somewhere
+    when YCP::FunRef, YCP::ArgRef, YCP::External, YCP::YReference #contains only reference somewhere
       object
     else
       object.dup
