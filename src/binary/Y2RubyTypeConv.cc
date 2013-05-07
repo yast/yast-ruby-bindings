@@ -136,6 +136,15 @@ static YCPValue rbreference_2_ycpreference( VALUE value )
   return YCPReference(s_entry);
 }
 
+static YCPValue rbargreference_2_ycpreference( VALUE value )
+{
+  VALUE val = rb_funcall(value,rb_intern("value"),0);
+  YCPValue v = rbvalue_2_ycpvalue(val);
+  SymbolEntryPtr se = new SymbolEntry(0, 0, "ref", SymbolEntry::c_variable, Type::vt2type(v->valuetype()));
+  se->setValue(v);
+  return YCPReference(se);
+}
+
 static YCPValue rbyreference_2_ycpreference( VALUE value )
 {
   SymbolEntry *se;
@@ -258,6 +267,10 @@ rbvalue_2_ycpvalue( VALUE value )
     else if ( !strcmp(class_name, "YCP::Term"))
     {
       return rbterm_2_ycpterm(value);
+    }
+    else if ( !strcmp(class_name, "YCP::ArgRef"))
+    {
+      return rbargreference_2_ycpreference(value);
     }
     else if ( !strcmp(class_name, "YCP::FunRef"))
     {

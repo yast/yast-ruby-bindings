@@ -18,10 +18,20 @@ Y2Component *Y2CCRubyClient::provideNamespace (const char *name)
 
 Y2Component *Y2CCRubyClient::create ( const char * name) const
 {
-  string client_path = YCPPathSearch::find (YCPPathSearch::Client, string (name) + ".rb");
-  //client is not in ruby
+  y2debug("look for client with name %s", name);
+  string sname(name);
+  string client_path = YCPPathSearch::find (YCPPathSearch::Client, sname + ".rb");
+  //client not found in form clients/<name>.rb
   if (client_path.empty())
-    return NULL;
+  {
+    // for paths it needs at least one slash BNC#330965#c10
+    if(!strchr (name, '/'))
+      return NULL;
+
+    client_path = Y2PathSearch::completeFilename (sname);
+    if (client_path.empty())
+      return NULL;
+  }
 
   Y2RubyClientComponent* rc = Y2RubyClientComponent::instance();
   rc->setClient(client_path);
