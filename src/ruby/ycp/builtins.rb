@@ -1,7 +1,6 @@
 require "set"
 
 require "ycp/path"
-require "ycp/helper"
 require "ycp/break"
 require "ycp/i18n"
 require "fast_gettext"
@@ -728,68 +727,6 @@ module YCP
       return nil if string.nil? || sep.nil?
 
       string.join sep
-    end
-
-    # regexpmatch() YCP built-in
-    # Searches a string for a POSIX Extended Regular Expression match.
-    def self.regexpmatch string, regexp
-      return nil if string.nil? || regexp.nil?
-
-      # TODO FIXME: handle invalid regexps
-      ruby_regexp = YCP::Helper.ruby_regexp regexp
-      !string.match(ruby_regexp).nil?
-    end
-
-    # Returns a pair with position and length of the first match.
-    def self.regexppos string, regexp
-      return nil if string.nil? || regexp.nil?
-
-      # TODO FIXME: handle invalid regexps
-      ruby_regexp = YCP::Helper.ruby_regexp regexp
-      if match = string.match(ruby_regexp)
-        return [match.begin(0), match[0].size]
-      end
-
-      return []
-    end
-
-    # regexpsub() YCP built-in
-    # Regex Substitution
-    def self.regexpsub string, regexp, output
-      return nil if string.nil? || regexp.nil? || output.nil?
-
-      ruby_regexp = YCP::Helper.ruby_regexp regexp
-      # TODO FIXME: handle invalid regexps
-      if match = string.match(ruby_regexp)
-
-        # replace the \num places
-        ret = output.dup
-        match.captures.each_with_index do |str, i|
-          ret.gsub! "\\#{i + 1}", (str||"")
-        end
-
-        return ret
-      end
-
-      nil
-    end
-
-    # regexptokenize() YCP built-in
-    # Regex tokenize
-    def self.regexptokenize string, regexp
-      return nil if string.nil? || regexp.nil?
-
-      begin
-        ruby_regexp = YCP::Helper.ruby_regexp regexp
-        if match = string.match(ruby_regexp)
-          return match.captures
-        end
-      rescue ::RegexpError
-        # handle invalid regexps
-        return nil
-      end
-
-      []
     end
 
     # Returns position of a substring (nil if not found)

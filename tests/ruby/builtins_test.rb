@@ -121,6 +121,7 @@ class BuiltinsTest < YCP::TestCase
 
     assert_equal true, YCP::Builtins.regexpmatch("abc", "^a")
     assert_equal true, YCP::Builtins.regexpmatch("abc", "c$")
+    assert_equal true, YCP::Builtins.regexpmatch("abc", "^[^][%]bc$")
   end
 
   def test_regexppos

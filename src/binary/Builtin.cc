@@ -16,6 +16,7 @@ extern "C" {
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <regex.h>
 
 #include "ycp/y2log.h"
 #include "ycp/ExecutionEnvironment.h"
@@ -337,6 +338,272 @@ extern "C" {
     return crypt_internal(SHA512, input);
   }
 
+#define ERR_MAX 80		// for regexp
+#define SUB_MAX 10		// for regexp
+  //regexp builtins as ycp and ruby regexps are slightly different
+  /// (regexp builtins)
+  typedef struct REG_RET
+  {
+      string result_str;		// for regexpsub
+      string match_str[SUB_MAX];	// index 0 not used!!
+      int match_nb;		// 0 - 9
+      string error_str;		// from regerror
+      bool error;
+      bool solved;
+  } Reg_Ret;
+
+
+  /*
+   * Universal regular expression solver.
+   * It is used by all regexp* ycp builtins.
+   * Replacement is done if result is not ""
+   */
+  Reg_Ret solve_regular_expression (const char *input, const char *pattern,
+            const char *result)
+  {
+      int status;
+      char error[ERR_MAX + 1];
+
+      regex_t compiled;
+      regmatch_t matchptr[SUB_MAX + 1];
+
+      Reg_Ret reg_ret;
+      reg_ret.match_nb = 0;
+      reg_ret.error = true;
+      reg_ret.error_str = "";
+
+      status = regcomp (&compiled, pattern, REG_EXTENDED);
+      if (status)
+      {
+    regerror (status, &compiled, error, ERR_MAX);
+    reg_ret.error_str = string (error);
+    return reg_ret;
+      }
+
+      if (compiled.re_nsub > SUB_MAX)
+      {
+    snprintf (error, ERR_MAX, "too many subexpresions: %zu", compiled.re_nsub);
+    reg_ret.error_str = string (error);
+    regfree (&compiled);
+    return reg_ret;
+      }
+
+      status = regexec (&compiled, input, compiled.re_nsub + 1, matchptr, 0);
+      reg_ret.solved = !status;
+      reg_ret.error = false;
+
+      if (status)
+      {
+    regfree (&compiled);
+    return reg_ret;
+      }
+
+      string input_str (input);
+
+      for (unsigned int i=0; (i <= compiled.re_nsub) && (i <= SUB_MAX); i++) {
+          reg_ret.match_str[i] = matchptr[i].rm_so >= 0 ? input_str.substr(matchptr[i].rm_so, matchptr[i].rm_eo - matchptr[i].rm_so) : "";
+          reg_ret.match_nb = i;
+      }
+
+
+      string result_str;
+      const char * done = result;	// text before 'done' has been dealt with
+      const char * bspos = result;
+
+
+      while (1) {
+        bspos = strchr (bspos, '\\');
+        if (bspos == NULL) // not found
+    break;
+
+        // STATE: \ seen
+        ++bspos;
+
+        if (*bspos >= '1' && *bspos <= '9') {
+    // copy non-backslash text
+    result_str.append (done, bspos - 1 - done);
+    // copy replacement string
+    result_str += reg_ret.match_str[*bspos - '0'];
+    done = bspos = bspos + 1;
+        }
+      }
+      // copy the rest
+      result_str += done;
+        
+      reg_ret.result_str = result_str;
+      regfree (&compiled);
+      return reg_ret;
+  }
+
+  static VALUE regexpmatch(VALUE o, VALUE i, VALUE p)
+  {
+    if (NIL_P(i) || NIL_P(p))
+      return Qnil;
+
+    const char *input = StringValuePtr(i);
+    const char *pattern = StringValuePtr(p);
+
+    Reg_Ret result = solve_regular_expression (input, pattern, "");
+    if (result.error)
+    {
+      ycp2error ("Error in regexpmatch %s %s: %s", input, pattern, result.error_str.c_str ());
+      return Qnil;
+    }
+
+    return result.solved ? Qtrue : Qfalse;
+  }
+
+  static VALUE
+  regexppos(VALUE o, VALUE i, VALUE p)
+  {
+      /**
+       * @builtin regexppos 
+       * @short  Returns a pair with position and length of the first match.
+       * @param string INPUT
+       * @param string PATTERN
+       * @return list
+       *
+       * @description
+       * If no match is found it returns an empty list.
+       *
+       * @see  regex(7).
+       *
+       * @usage regexppos ("abcd012efgh345", "[0-9]+") -> [4, 3]
+       * @usage ("aaabbb", "[0-9]+") -> []
+       */
+    if (NIL_P(i) || NIL_P(p))
+      return Qnil;
+
+    const char *input = StringValuePtr(i);
+    const char *pattern = StringValuePtr(p);
+
+
+    Reg_Ret result = solve_regular_expression (input, pattern, "");
+
+    if (result.error)
+    {
+      ycp2error ("Error in regexpmatch %s %s: %s", input, pattern, result.error_str.c_str ());
+      return Qnil;
+    }
+
+    VALUE list = rb_ary_new2(2);
+    if (result.solved) {
+        std::string i(input);
+        rb_ary_push (list, INT2NUM(i.find (result.match_str[0])));
+        rb_ary_push (list, INT2NUM(result.match_str[0].length ()));
+    }
+
+    return list;
+  }
+
+
+  static VALUE
+  regexpsub (VALUE o, VALUE i, VALUE p, VALUE m)
+  {
+      /**
+       * @builtin regexpsub
+       * @short Regex Substitution
+       * @param string INPUT
+       * @param string PATTERN
+       * @param string OUTPUT
+       * @return string
+       *
+       * @description
+       * Searches a string for a POSIX Extended Regular Expression match
+       * and returns <i>OUTPUT</i> with the matched subexpressions
+       * substituted or <b>nil</b> if no match was found.
+       *
+       * @see regex(7)
+       *
+       * @usage regexpsub ("aaabbb", "(.*ab)", "s_\\1_e") -> "s_aaab_e"
+       * @usage regexpsub ("aaabbb", "(.*ba)", "s_\\1_e") -> nil
+       */
+
+    if (NIL_P(i) || NIL_P(p))
+      return Qnil;
+
+    const char *input = StringValuePtr(i);
+    const char *pattern = StringValuePtr(p);
+    const char *match = StringValuePtr(m);
+
+    Reg_Ret result = solve_regular_expression (input, pattern, match);
+
+    if (result.error)
+    {
+      ycp2error ("Error in regexpmatch %s %s: %s", input, pattern, result.error_str.c_str ());
+      return Qnil;
+    }
+
+    if (result.solved)
+      return rb_str_new2 (result.result_str.c_str ());
+
+    return Qnil;
+  }
+
+
+  static VALUE
+  regexptokenize (VALUE o, VALUE i, VALUE p)
+  {
+      /**
+       * @builtin regexptokenize
+       * @short Regex tokenize
+       * @param string INPUT
+       * @param string PATTERN
+       * @return list
+       *
+       * @see regex(7).
+       * @description
+       * Searches a string for a POSIX Extended Regular Expression match
+       * and returns a list of the matched subexpressions
+       *
+       * If the pattern does not match, the list is empty.
+       * Otherwise the list contains then matchted subexpressions for each pair
+       * of parenthesize in pattern.
+       *
+       * If the pattern is invalid, 'nil' is returned.
+       *
+       * @usage
+       * Examples: 
+       * // e ==  [ "aaabbB" ]
+       * list e = regexptokenize ("aaabbBb", "(.*[A-Z]).*");
+       *
+       * // h == [ "aaab", "bb" ]
+       * list h = regexptokenize ("aaabbb", "(.*ab)(.*)");
+       *
+       * // h == []
+       * list h = regexptokenize ("aaabbb", "(.*ba).*");
+       *
+       * // h == nil
+       * list h = regexptokenize ("aaabbb", "(.*ba).*(");
+       */
+      // ")
+    if (NIL_P(i) || NIL_P(p))
+      return Qnil;
+
+    const char *input = StringValuePtr(i);
+    const char *pattern = StringValuePtr(p);
+
+
+    Reg_Ret result = solve_regular_expression (input, pattern, "");
+
+    if (result.error)
+    {
+      ycp2error ("Error in regexpmatch %s %s: %s", input, pattern, result.error_str.c_str ());
+      return Qnil;
+    }
+
+    VALUE list = rb_ary_new();
+    if (result.solved) {
+      for (int i = 1; i <= result.match_nb; i++)
+      {
+          rb_ary_push(list, rb_str_new2 (result.match_str[i].c_str()));
+      }
+    }
+
+    return list;
+  }
+
+
 }
 
 extern "C"
@@ -366,5 +633,9 @@ extern "C"
     rb_define_singleton_method( rb_mBuiltins, "cryptblowfish", RUBY_METHOD_FUNC(crypt_blowfish), 1);
     rb_define_singleton_method( rb_mBuiltins, "cryptsha256", RUBY_METHOD_FUNC(crypt_sha256), 1);
     rb_define_singleton_method( rb_mBuiltins, "cryptsha512", RUBY_METHOD_FUNC(crypt_sha512), 1);
+    rb_define_singleton_method( rb_mBuiltins, "regexpmatch", RUBY_METHOD_FUNC(regexpmatch), 2);
+    rb_define_singleton_method( rb_mBuiltins, "regexppos", RUBY_METHOD_FUNC(regexppos), 2);
+    rb_define_singleton_method( rb_mBuiltins, "regexpsub", RUBY_METHOD_FUNC(regexpsub), 3);
+    rb_define_singleton_method( rb_mBuiltins, "regexptokenize", RUBY_METHOD_FUNC(regexptokenize), 2);
   }
 }
