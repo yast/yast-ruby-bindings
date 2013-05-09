@@ -43,14 +43,17 @@ module YCP
             end
           when ::Hash
             if res.has_key? i
-            res = res[i]
+              res = res[i]
+            else
+              return default
+            end
+          when ::NilClass
+            YCP.y2warning 1, "Builtin index called on nil."
+            return default
           else
+            YCP.y2warning "Builtin index called on wrong type #{res.class} from #{caller.inspect}"
             return default
           end
-        else
-          YCP.y2warning "Builtin index called on wrong type #{res.class} from #{caller.inspect}"
-          return default
-        end
       end
       return res
     end
