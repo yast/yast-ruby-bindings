@@ -25,6 +25,7 @@ as published by the Free Software Foundation; either version
 
 #include "Y2RubyClientComponent.h"
 #include "YRuby.h"
+#include "wfm/Y2WFMComponent.h"
 using std::string;
 
 Y2RubyClientComponent* Y2RubyClientComponent::_instance = NULL;
@@ -50,5 +51,9 @@ Y2RubyClientComponent* Y2RubyClientComponent::instance()
 YCPValue Y2RubyClientComponent::doActualWork(const YCPList& arglist,
     Y2Component *displayserver)
 {
-  return YRuby::yRuby()->callClient(client);
+  y2milestone( "Call client with args %s", arglist->toString().c_str());
+  YCPList old_args = Y2WFMComponent::instance()->SetArgs(arglist);
+  YCPValue res = YRuby::yRuby()->callClient(client);
+  Y2WFMComponent::instance()->SetArgs(old_args);
+  return res;
 }
