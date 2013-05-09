@@ -1,3 +1,5 @@
+require "set"
+
 require "ycp/path"
 require "ycp/helper"
 require "ycp/break"
@@ -865,9 +867,11 @@ module YCP
     end
 
     # Converts a value to a string.
-    def self.tostring val
+    def self.tostring val, width=nil
+      raise "negative width" if width && width < 0
       return "<NULL>" if val.nil?
       return "`#{val}" if val.is_a? ::Symbol
+      return "%.#{width}" % val if width
 
       val.to_s
     end
@@ -920,6 +924,32 @@ module YCP
       return nil if value.nil?
 
       return value.to_sym
+    end
+
+    module Multiset
+      def self.includes set1, set2
+        set1.to_set.superset? set2.to_set
+      end
+
+      def self.difference set1, set2
+        (set1.to_set - set2.to_set).to_a
+      end
+
+      def self.symetric_difference set1, set2
+        (set1.to_set ^ set2.to_set).to_a
+      end
+
+      def self.intersection set1, set2
+        (set1.to_set & set2.to_set).to_a
+      end
+
+      def self.union set1, set2
+        (set1.to_set | set2.to_set).to_a
+      end
+
+      def self.merge set1, set2
+        (set1.to_set + set2.to_set).to_a
+      end
     end
   end
 end
