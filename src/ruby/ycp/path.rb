@@ -50,10 +50,10 @@ module YCP
       value.each_char do |c|
         case state
         when :initial
-          raise "Invalid path" if c != '.'
+          raise "Invalid path '#{value}'" if c != '.'
           state = :dot
         when :dot
-          raise "Invalid path" if c == '.'
+          raise "Invalid path '#{value}'" if c == '.'
           if c == '"'
             state = :complex
           else
@@ -67,7 +67,7 @@ module YCP
             buffer = ""
             next
           end
-          raise "Invalid path" if c !~ SIMPLE_CHAR_REGEX
+          raise "Invalid path '#{value}'" if c !~ SIMPLE_CHAR_REGEX
           buffer << c
         when :complex
           if skip_next
