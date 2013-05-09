@@ -181,7 +181,9 @@ class BuiltinsTest < YCP::TestCase
   def test_timestring
     assert_equal nil, YCP::Builtins.timestring(nil, nil, nil)
 
-    assert_equal "Mon May  6 13:29:56 2013", YCP::Builtins.timestring("%c", 1367839796, false)
+    # disabled: system dependent (depends on the current system time zone),
+    # fails if the current offset is not UTC+2:00
+    # assert_equal "Mon May  6 13:29:56 2013", YCP::Builtins.timestring("%c", 1367839796, false)
     assert_equal "Mon May  6 11:29:56 2013", YCP::Builtins.timestring("%c", 1367839796, true)
     assert_equal "20130506", YCP::Builtins.timestring("%Y%m%d", 1367839796, false)
   end
