@@ -750,6 +750,48 @@ class BuiltinsTest < YCP::TestCase
     end
   end
 
+  FINDFIRSTNOTOF_TESTDATA = [
+    [nil,"ab",nil],
+    ["ab",nil,nil],
+    ["aaaaa","z",0],
+    ["abcdefg","cxdv",0],
+    ["\s\t\n","\s",1],
+    ["\n\n\t","\n",2]
+  ]
+  def test_findfirstnotof
+    FINDFIRSTNOTOF_TESTDATA.each do |string,chars,result|
+      assert_equal result, YCP::Builtins.findfirstnotof(string,chars)
+    end
+  end
+
+  FINDLASTOF_TESTDATA = [
+    [nil,"ab",nil],
+    ["ab",nil,nil],
+    ["aaaaa","z",nil],
+    ["abcdefg","cxdv",3],
+    ["\s\t\n","\s",0],
+    ["\s\t\n","\n",2]
+  ]
+  def test_findlastof
+    FINDLASTOF_TESTDATA.each do |string,chars,result|
+      assert_equal result, YCP::Builtins.findlastof(string,chars)
+    end
+  end
+
+  FINDLASTNOTOF_TESTDATA = [
+    [nil,"ab",nil],
+    ["ab",nil,nil],
+    ["aaaaa","z",4],
+    ["abcdefg","cxdv",6],
+    ["\s\t\s","\s",1],
+    ["\t\n\n","\n",0]
+  ]
+  def test_findlastnotof
+    FINDLASTNOTOF_TESTDATA.each do |string,chars,result|
+      assert_equal result, YCP::Builtins.findlastnotof(string,chars)
+    end
+  end
+
   def test_float_tolstring
     old_lang = ENV["LANG"]
     ENV["LANG"] = "cs_CZ.utf-8"

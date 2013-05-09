@@ -622,7 +622,7 @@ module YCP
         return object
       when ::String
         object = "."+object unless object.start_with?(".")
-        return YCP::Path.new object
+        return YCP::Path.new(object)
       else
         return nil
       end
@@ -685,7 +685,7 @@ module YCP
     def self.findfirstnotof string, chars
       return nil if string.nil? || chars.nil?
 
-      return string.index /^[#{Regexp.escape chars}]/
+      return string.index /[^#{Regexp.escape chars}]/
     end
 
     # Finds position of the first matching characters in string
@@ -699,7 +699,7 @@ module YCP
     def self.findlastnotof string, chars
       return nil if string.nil? || chars.nil?
 
-      return string.rindex /^[#{Regexp.escape chars}]/
+      return string.rindex /[^#{Regexp.escape chars}]/
     end
 
     # Searches string for the last match
