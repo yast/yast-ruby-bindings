@@ -34,7 +34,7 @@ module YCP
               if (0..res.size-1).include? i
                 res = res[i]
               else
-                YCP.y2warning "Index #{i} is out of array size"
+                YCP.y2milestone "Index #{i} is out of array size"
                 return default
               end
             else
