@@ -527,8 +527,8 @@ module YCP
           pos = $1.to_i - 1
           if (pos < args.size)
             case args[pos]
-            when String then args[pos]
-            when Symbol then "`#{args[pos]}"
+            when ::String then args[pos]
+            when ::Symbol then "`#{args[pos]}"
             else
               args[pos].inspect
             end
