@@ -68,10 +68,9 @@ module YCP
   end
 
   def self.import(mname)
-    import_pure(mname)
     modules = mname.split("::")
 
-    base = self
+    base = YCP
     # Handle multilevel modules like YaPI::Network
     modules[0..-2].each do |module_|
       tmp_m = if base.constants.include?(module_.to_sym)
@@ -82,6 +81,12 @@ module YCP
       base = tmp_m
     end
 
+    # do not reimport if already imported
+    return if base.constants.include?(modules.last.to_sym)
+
+    import_pure(mname)
+
+    # do not create wrapper if module is in ruby and define itself object
     return if base.constants.include?(modules.last.to_sym)
 
     m = Module.new

@@ -292,20 +292,27 @@ class BuiltinsTest < YCP::TestCase
     # assert_equal [false, true, 1, 2, 3, 5], YCP::Builtins.toset([1, 5, 3, 2, 3, true, false, true])
   end
 
-  def test_tostring
-    assert_equal "<NULL>", YCP::Builtins.tostring(nil)
-    assert_equal "", YCP::Builtins.tostring("")
-    assert_equal "str", YCP::Builtins.tostring("str")
-    assert_equal "[]", YCP::Builtins.tostring([])
-    assert_equal "[1, 2]", YCP::Builtins.tostring([1, 2])
-    assert_equal "3.1415", YCP::Builtins.tostring(3.1415)
-    assert_equal "42", YCP::Builtins.tostring(42)
-    assert_equal "`sym", YCP::Builtins.tostring(:sym)
-    assert_equal "`term ()", YCP::Builtins.tostring(YCP::Term.new(:term))
-    assert_equal "`term (`term (`t))", YCP::Builtins.tostring(YCP::Term.new(:term, YCP::Term.new(:term, :t)))
 
-    # TODO FIXME: Hash does not work, do we need to fix it?
-    # assert_equal "$[]", YCP::Builtins.tostring({})
+  TOSTRING_TEST_DATA = [
+    [ nil, "nil"],
+    [ true, "true"],
+    [ false, "false"],
+    [ "test", "test" ],
+    [ :test, "`test"],
+    [ 1, "1" ],
+    [ 1.453, "1.453" ],
+    [ ["test",:lest], '["test", `lest]'],
+    [ YCP::Path.new(".etc.syconfig.\"-arg\""), ".etc.syconfig.\"-arg\""],
+    [ YCP::Term.new(:id,["test",:lest]), "`id ([\"test\", `lest])"],
+    [ { :test => "data" }, "$[`test:\"data\"]"]
+  ]
+
+
+
+  def test_tostring
+    TOSTRING_TEST_DATA.each do |input,result|
+      assert_equal result, YCP::Builtins.tostring(input)
+    end
   end
 
   def test_change
@@ -716,23 +723,17 @@ class BuiltinsTest < YCP::TestCase
 
     assert_equal YCP::Path.new(".etc"), YCP::Builtins.topath("etc")
   end
-
   def test_sformat
     assert_equal nil, YCP::Builtins.sformat(nil)
-
     assert_equal "test", YCP::Builtins.sformat("test")
-
     assert_equal "test %1", YCP::Builtins.sformat("test %1")
+    assert_equal "test", YCP::Builtins.sformat("test%a","lest")
+    assert_equal "test%", YCP::Builtins.sformat("test%%","lest")
+    assert_equal "test321", YCP::Builtins.sformat("test%3%2%1",1,2,3)
 
     assert_equal "test lest", YCP::Builtins.sformat("test %1","lest")
 
     assert_equal "test `lest", YCP::Builtins.sformat("test %1",:lest)
-
-    assert_equal "test", YCP::Builtins.sformat("test%a","lest")
-
-    assert_equal "test%", YCP::Builtins.sformat("test%%","lest")
-
-    assert_equal "test321", YCP::Builtins.sformat("test%3%2%1",1,2,3)
   end
 
 

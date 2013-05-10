@@ -31,7 +31,7 @@ module YCP
       if params.empty?
         "`#{value} ()"
       else
-        "`#{value} (#{params.map{|p| YCP::Builtins.tostring p}.join ', '})"
+        "`#{value} (#{params.map{|p| YCP::Builtins.inside_tostring p}.join ', '})"
       end
     end
 

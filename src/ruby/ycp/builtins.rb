@@ -511,6 +511,10 @@ module YCP
       return true
     end
 
+    def self.sformat_arg arg, initial=true
+
+    end
+
     # Format a ::String
     def self.sformat format, *args
       if format.nil? || !format.is_a?(::String)
@@ -526,12 +530,7 @@ module YCP
         when /%([1-9])/
           pos = $1.to_i - 1
           if (pos < args.size)
-            case args[pos]
-            when ::String then args[pos]
-            when ::Symbol then "`#{args[pos]}"
-            else
-              args[pos].inspect
-            end
+            tostring args[pos]
           else
             YCP.y2warning "Illegal argument number #{match}. Maximum is %#{args.size-1}."
             ""
@@ -806,11 +805,30 @@ module YCP
     # Converts a value to a string.
     def self.tostring val, width=nil
       raise "negative width" if width && width < 0
-      return "<NULL>" if val.nil?
-      return "`#{val}" if val.is_a? ::Symbol
       return "%.#{width}" % val if width
 
-      val.to_s
+      case val
+      # string behavior depends if it is used inside something of alone
+      when ::String then val
+      when ::Symbol then "`#{val}"
+      when ::NilClass then "nil"
+      when ::TrueClass then "true"
+      when ::FalseClass then "false"
+      when ::Fixnum, ::Bignum, ::Float, YCP::Term, YCP::Path then val.to_s
+      when ::Array then "[#{val.map{|a|inside_tostring(a)}.join(", ")}]"
+      when ::Hash then "$[#{val.map{|k,v|"#{inside_tostring(k)}:#{inside_tostring(v)}"}.join(", ")}]"
+      else
+        raise "unknown type for tostring #{val.inspect}"
+      end
+    end
+
+    # string is handled diffent if string is inside other structure
+    def self.inside_tostring val
+      if val.is_a? ::String
+        return val.inspect
+      else
+        tostring val
+      end
     end
 
     # toupper() YCP built-in
