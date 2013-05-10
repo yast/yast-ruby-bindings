@@ -208,7 +208,15 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
       return ycp_ext_to_rb_ext(ex);
     }
   }
-  rb_raise( rb_eTypeError, "Conversion of YCP type %s not supported", ycpval->toString().c_str() );
+  else if (ycpval->isCode())
+  {
+    y2debug("Evaluating YCP code: %s", ycpval->toString().c_str());
+    YCPValue val = ycpval->asCode()->evaluate();
+    y2debug("Evaluated code returned: %s", val->toString().c_str() );
+
+    return ycpvalue_2_rbvalue(val);
+  }
+  rb_raise( rb_eTypeError, "Conversion of YCP type '%s': %s not supported", Type::vt2type(ycpval->valuetype())->toString().c_str(), ycpval->toString().c_str() );
   return Qnil;
 }
 
