@@ -63,11 +63,19 @@ module YCP
         when :simple
           if c == '.'
             state = :dot
+            if buffer.start_with?("-") || buffer.end_with?("-")
+              YCP.y2error "Cannot have dash before or after dot '#{value}'"
+              @components.clear
+              return
+            end
+            if buffer =~ COMPLEX_CHAR_REGEX # we can get unescaped complex path from topath builtin
+              buffer.gsub!(/"/,"\\\"")
+              buffer = "\"#{buffer}\""
+            end
             @components << buffer
             buffer = ""
             next
           end
-          raise "Invalid path '#{value}'" if c !~ SIMPLE_CHAR_REGEX
           buffer << c
         when :complex
           if skip_next
