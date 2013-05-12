@@ -19,6 +19,10 @@ module YCP
       params[index]
     end
 
+    def []= index, value
+      params[index] = value
+    end
+
     def size
       params.size
     end
