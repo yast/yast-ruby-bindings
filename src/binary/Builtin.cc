@@ -603,6 +603,16 @@ extern "C" {
     return list;
   }
 
+  // a wrapper around glibc strcoll() function,
+  // needed for sorting using the current locale
+  static VALUE
+  strcoll_wrapper(VALUE self, VALUE str1, VALUE str2)
+  {
+    Check_Type(str1, T_STRING);
+    Check_Type(str2, T_STRING);
+
+    return INT2FIX(strcoll(RSTRING_PTR(str1), RSTRING_PTR(str2)));
+  }
 
 }
 
@@ -621,6 +631,7 @@ extern "C"
      * module YCP
      */
     rb_mYCP = rb_define_module("YCP");
+    rb_define_singleton_method( rb_mYCP, "strcoll", RUBY_METHOD_FUNC(strcoll_wrapper), 2);
     rb_mSCR = rb_define_module_under(rb_mYCP, "SCR");
     rb_define_singleton_method( rb_mSCR, "call_builtin", RUBY_METHOD_FUNC(scr_call_builtin), -1);
     rb_mWFM = rb_define_module_under(rb_mYCP, "WFM");
