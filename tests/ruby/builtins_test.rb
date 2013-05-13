@@ -808,4 +808,11 @@ class BuiltinsTest < YCP::TestCase
       assert (res.size>10), "res too small #{res} for crypt#{suffix}"
     end
   end
+
+  def test_lsort
+    assert_equal ["a", "b", "c"], YCP::Builtins.lsort(["c", "b", "a"])
+    assert_equal [1, 2, 3], YCP::Builtins.lsort([3, 2, 1])
+    assert_equal [1, 2, 3, "a", "b"], YCP::Builtins.lsort([3, "a", 2, "b", 1])
+  end
+
 end

@@ -368,8 +368,13 @@ module YCP
     end
 
     # Sort A List respecting locale
-    def self.lsort
-      raise "Builtin lsort() is not implemented yet"
+    def self.lsort list
+      return nil if list.nil?
+
+      # TODO FIXME: not 100% YCP compatible for non string values
+      # YCP: lsort(["a", 50, "z", true]) -> [true, 50, "a", "z"]
+      # this code:                       -> [50, "a", true, "z"]
+      list.sort { |s1, s2| YCP.strcoll s1.to_s, s2.to_s }
     end
 
     # merge() YCP built-in
