@@ -822,6 +822,17 @@ module YCP
       when ::Fixnum, ::Bignum, ::Float, YCP::Term, YCP::Path then val.to_s
       when ::Array then "[#{val.map{|a|inside_tostring(a)}.join(", ")}]"
       when ::Hash then "$[#{val.map{|k,v|"#{inside_tostring(k)}:#{inside_tostring(v)}"}.join(", ")}]"
+      when YCP::FunRef
+        # TODO FIXME: YCP puts also the parameter names,
+        # here the signature contains only data type without parameter name:
+        #   YCP:     <YCPRef:boolean foo (string str, string str2)>
+        #   Ruby:    <YCPRef:boolean foo (string, string)>
+        #
+        # There is also extra "any" in lists/maps:
+        #   YCP:     <YCPRef:list <map> bar (list <map> a)>
+        #   Ruby:    <YCPRef:list <map<any,any>> bar (list <map<any,any>>)>
+        val.signature.match /(.*)\((.*)\)/
+        "<YCPRef:#{$1}#{val.remote_method.name} (#{$2})>"
       else
         raise "unknown type for tostring #{val.inspect}"
       end
