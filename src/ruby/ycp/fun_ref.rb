@@ -1,6 +1,6 @@
 module YCP
   class FunRef
-    attr_reader :signature
+    attr_reader :signature, :remote_method
 
     def initialize met, signature
       @remote_method = met
