@@ -819,7 +819,7 @@ module YCP
       when ::NilClass then "nil"
       when ::TrueClass then "true"
       when ::FalseClass then "false"
-      when ::Fixnum, ::Bignum, ::Float, YCP::Term, YCP::Path then val.to_s
+      when ::Fixnum, ::Bignum, ::Float, YCP::Term, YCP::Path, YCP::External then val.to_s
       when ::Array then "[#{val.map{|a|inside_tostring(a)}.join(", ")}]"
       when ::Hash then "$[#{val.map{|k,v|"#{inside_tostring(k)}:#{inside_tostring(v)}"}.join(", ")}]"
       when YCP::FunRef

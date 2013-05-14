@@ -5,5 +5,9 @@ module YCP
     def initialize (magic)
       @magic = magic
     end
+
+    def to_s
+      "External payload #{magic}"
+    end
   end
 end
