@@ -173,7 +173,7 @@ YCPValue YRuby::callInner (string module_name, string function,
       VALUE reason = rb_funcall(exception, rb_intern("message"), 0 );
       VALUE trace = rb_gv_get("$@"); /* get last exception trace */
       VALUE backtrace = RARRAY_LEN(trace)>0 ? rb_ary_entry(trace, 0) : rb_str_new2("Unknown");
-      y2error("%s load failed:%s at %s", module_name.c_str(), StringValuePtr(reason),StringValuePtr(backtrace));
+      y2error("%s load failed:%s at %s", alternative_name.c_str(), StringValuePtr(reason),StringValuePtr(backtrace));
       return YCPVoid();
     }
   }
