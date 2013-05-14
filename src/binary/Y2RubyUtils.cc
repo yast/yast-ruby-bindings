@@ -14,12 +14,12 @@ static VALUE const_get_wrapper(VALUE input)
 
 VALUE y2ruby_nested_const_get(const std::string &name)
 {
-  VALUE module = rb_mKernel;
   // to save every component of Foo::Bar::Ehh
   vector<string> name_levels;
   stringutil::split( name, name_levels, "::", false);
+  VALUE module = rb_define_module(name_levels[0].c_str());
 
-  for ( unsigned i = 0; i < name_levels.size(); ++i ) {
+  for ( unsigned i = 1; i < name_levels.size(); ++i ) {
       int error = 0;
       // tricky part as rb_protect takes only one param, so get to it more of them
       VALUE data[2];
