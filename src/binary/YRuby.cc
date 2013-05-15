@@ -164,11 +164,12 @@ YCPValue YRuby::callInner (string module_name, string function,
   VALUE module = y2ruby_nested_const_get(module_name);
   if (module == Qnil)
   {
-    y2milestone ("The Ruby module '%s' is not provided by its rb file. Try YCP prefix.", module_name.c_str());
+    y2debug ("The Ruby module '%s' is not provided by its rb file. Try YCP prefix.", module_name.c_str());
     string alternative_name = string("YCP::")+module_name;
     module = y2ruby_nested_const_get(alternative_name);
     if (module == Qnil)
     {
+      y2error ("The Ruby module '%s' is not loaded.", alternative_name.c_str());
       VALUE exception = rb_gv_get("$!"); /* get last exception */
       VALUE reason = rb_funcall(exception, rb_intern("message"), 0 );
       VALUE trace = rb_gv_get("$@"); /* get last exception trace */

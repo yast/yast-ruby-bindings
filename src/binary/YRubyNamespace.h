@@ -60,5 +60,8 @@ public:
     // constructor is handled separately
     virtual YCPValue evaluate (bool cse = false);
 
+    // ruby is initialized during require
+    virtual void initialize () {}
+
     virtual Y2Function* createFunctionCall (const string name, constFunctionTypePtr requiredType);
 };
