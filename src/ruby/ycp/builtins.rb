@@ -2,6 +2,7 @@ require "set"
 
 require "ycp/path"
 require "ycp/break"
+require "ycp/external"
 require "ycp/i18n"
 require "fast_gettext"
 require "ycp/builtinx"
@@ -374,7 +375,7 @@ module YCP
       # TODO FIXME: not 100% YCP compatible for non string values
       # YCP: lsort(["a", 50, "z", true]) -> [true, 50, "a", "z"]
       # this code:                       -> [50, "a", true, "z"]
-      list.sort { |s1, s2| YCP.strcoll s1.to_s, s2.to_s }
+      list.sort { |s1, s2| Ops.comparable_object(s1, true) <=> s2 }
     end
 
     # merge() YCP built-in
@@ -816,6 +817,7 @@ module YCP
       # string behavior depends if it is used inside something of alone
       when ::String then val
       when ::Symbol then "`#{val}"
+      when ::Proc then "\"inner method\""
       when ::NilClass then "nil"
       when ::TrueClass then "true"
       when ::FalseClass then "false"

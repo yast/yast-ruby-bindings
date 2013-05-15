@@ -813,6 +813,7 @@ class BuiltinsTest < YCP::TestCase
     assert_equal ["a", "b", "c"], YCP::Builtins.lsort(["c", "b", "a"])
     assert_equal [1, 2, 3], YCP::Builtins.lsort([3, 2, 1])
     assert_equal [1, 2, 3, "a", "b"], YCP::Builtins.lsort([3, "a", 2, "b", 1])
+    assert_equal [true, 50, "a", "z"], YCP::Builtins.lsort(["a", 50, "z", true])
   end
 
 end

@@ -256,14 +256,15 @@ module YCP
       return classes.any? { |cl| object.is_a? cl }
     end
 
-    def self.comparable_object object
-      return GenericComparable.new(object)
+    def self.comparable_object object, localized = false
+      return GenericComparable.new(object, localized)
     end
 
     class ListComparator
       include Comparable
-      def initialize value
+      def initialize value, localized = false
         @value = value
+        @localized = localized
       end
 
       def <=>(second)
@@ -277,7 +278,7 @@ module YCP
           end
 
           # we need to use out builtin, but also we need to 
-          res = Ops.comparable_object(fval) <=> sval
+          res = Ops.comparable_object(fval, @localized) <=> sval
           return res if res != 0
         end
         # no decision yet
@@ -287,22 +288,23 @@ module YCP
 
     class ::HashComparator
       include Comparable
-      def initialize value
+      def initialize value, localized = false
         @value = value
+        @localized = localized
       end
 
       def <=>(second)
         comparator = Proc.new do |k1,k2|
-          Ops.comparable_object(k1) <=> k2
+          Ops.comparable_object(k1, @localized) <=> k2
         end
         keys = @value.keys.sort(&comparator)
         other_keys = second.keys.sort(&comparator)
 
         0.upto(keys.size-1) do |i|
-          res = Ops.comparable_object(keys[i]) <=> other_keys[i]
+          res = Ops.comparable_object(keys[i], @localized) <=> other_keys[i]
           return res if res != 0
 
-          res = Ops.comparable_object(@value[keys[i]]) <=> second[keys[i]]
+          res = Ops.comparable_object(@value[keys[i]], localized) <=> second[keys[i]]
           return res if res != 0
         end
 
@@ -314,8 +316,9 @@ module YCP
     class GenericComparable
       include Comparable
       
-      def initialize value
+      def initialize value, localized = false
         @value = value
+        @localized = localized
       end
       #ordered classes from low priority to high
       # Only tricky part is Fixnum/Bignum, which is in fact same, so it has special handling in code
@@ -325,11 +328,17 @@ module YCP
         if @value.class == second.class
           case @value
           when ::Array
-            return ListComparator.new(@value) <=> second
+            return ListComparator.new(@value, @localized) <=> second
           when ::NilClass
             return 0 #comparison of two nils is equality
           when ::Hash
-            return ::HashComparator.new(@value) <=> second
+            return ::HashComparator.new(@value, @localized) <=> second
+          when ::String
+            if @localized
+              return YCP.strcoll(@value,second)
+            else
+              return @value <=> second
+            end
           else
             @value <=> second
           end
