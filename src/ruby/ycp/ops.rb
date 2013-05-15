@@ -304,7 +304,7 @@ module YCP
           res = Ops.comparable_object(keys[i], @localized) <=> other_keys[i]
           return res if res != 0
 
-          res = Ops.comparable_object(@value[keys[i]], localized) <=> second[keys[i]]
+          res = Ops.comparable_object(@value[keys[i]], @localized) <=> second[keys[i]]
           return res if res != 0
         end
 
