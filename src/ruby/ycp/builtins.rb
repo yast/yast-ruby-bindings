@@ -810,14 +810,17 @@ module YCP
 
     # Converts a value to a string.
     def self.tostring val, width=nil
-      raise "negative width" if width && width < 0
-      return "%.#{width}" % val if width
+      if width
+        raise "negative width" if width < 0
+
+        return "%.#{width}" % val
+      end
 
       case val
       # string behavior depends if it is used inside something of alone
       when ::String then val
       when ::Symbol then "`#{val}"
-      when ::Proc then "\"inner method\""
+      when ::Proc then "\"Annonymous method\""
       when ::NilClass then "nil"
       when ::TrueClass then "true"
       when ::FalseClass then "false"
@@ -836,7 +839,8 @@ module YCP
         val.signature.match /(.*)\((.*)\)/
         "<YCPRef:#{$1}#{val.remote_method.name} (#{$2})>"
       else
-        raise "unknown type for tostring #{val.inspect}"
+        y2warning "unknown type for tostring #{val.inspect}"
+        return val.inspect
       end
     end
 
