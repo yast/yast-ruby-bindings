@@ -9,34 +9,24 @@ require "ycp/term"
 require "ycp/break"
 
 class BuiltinsTest < YCP::TestCase
-  def test_add_list
-    a = [1,2]
-    assert_equal [1,2,3], YCP::Builtins.add(a,3)
-    assert_equal [1,2], a
-  end
 
-  def test_add_map
-    h = { :a => 1, :b => 2 }
-    res = YCP::Builtins.add(h,:c,3)
-    assert_equal ({:a => 1, :b => 2, :c => 3}),res
-    assert_equal ({:a => 1, :b => 2}), h
-  end
-
-  def test_add_path
-    p1 = YCP::Path.new(".etc")
-    p2 = YCP::Path.new(".sysconfig")
-    p3 = "sysconfig"
-    expected_res = YCP::Path.new(".etc.sysconfig")
-    assert_equal expected_res, YCP::Builtins.add(p1,p2)
-    assert_equal expected_res, YCP::Builtins.add(p1,p3)
-    assert_equal YCP::Path.new(".etc"),p1
-  end
-
-  def test_add_term
-    p1 = YCP::Term.new(:a,:b)
-    expected_res = YCP::Term.new(:a,:b,:c)
-    assert_equal expected_res, YCP::Builtins.add(p1,:c)
-    assert_equal  YCP::Term.new(:a,:b),p1
+  ADD_TEST_DATA = [
+    [ nil, 5, nil],
+    [ [1,2], 3, [1,2,3]],
+    [ { :a => 1, :b => 2 },[:c,3],{ :a => 1, :b => 2, :c => 3}],
+    [ YCP::Path.new(".etc"),
+      YCP::Path.new(".sysconfig"),
+      YCP::Path.new(".etc.sysconfig") ],
+    [ YCP::Path.new(".etc"), "sysconfig", YCP::Path.new(".etc.sysconfig")],
+    [ YCP::Term.new(:a, :b), :c, YCP::Term.new(:a, :b, :c)],
+  ]
+  def test_add
+    ADD_TEST_DATA.each do |object, element, result|
+      duplicate_object = object.nil? ? nil : object.dup
+      res = YCP::Builtins.add(duplicate_object, *element)
+      assert_equal result, res
+      assert_equal object, duplicate_object
+    end
   end
 
   def test_substring
@@ -313,6 +303,10 @@ class BuiltinsTest < YCP::TestCase
     TOSTRING_TEST_DATA.each do |input,result|
       assert_equal result, YCP::Builtins.tostring(input)
     end
+  end
+
+  def test_tostring_with_precision
+    assert_equal "1.5", YCP::Builtins.tostring(1.453, 1)
   end
 
   def test_change
