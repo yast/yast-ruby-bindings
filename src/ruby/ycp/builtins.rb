@@ -511,14 +511,10 @@ module YCP
 
     # Change or add an environment variable
     def self.setenv env, value, overwrite = true
-      return true if ENV.include?(env)
+      return true if ENV.include?(env) && !overwrite
 
       ENV[env] = value
       return true
-    end
-
-    def self.sformat_arg arg, initial=true
-
     end
 
     # Format a ::String
@@ -642,11 +638,7 @@ module YCP
     def self.deletechars string, chars
       return nil if !string || !chars
 
-      # handle special characters that is handled by delete but not by ycp
-      chars = "-" + chars.delete("-") if chars.include? "-"
-      chars = chars.delete("^") + "^" if chars.include? "^"
-
-      string.delete chars
+      return string.gsub(/[#{Regexp.escape chars}]/, "")
     end
 
     extend FastGettext::Translation
@@ -722,8 +714,10 @@ module YCP
     end
 
     # Extracts a substring in UTF-8 encoded string
-    def self.lsubstring
-      raise "Builtin lsubstring() is not implemented yet"
+    def self.lsubstring string, offset, length = -1
+      #ruby2.0 use by default UTF-8.
+      # TODO verify that something doesn't depend on non UTF8 encoding
+      substring string, offset, length
     end
 
     # mergestring() YCP built-in
@@ -813,7 +807,7 @@ module YCP
       if width
         raise "negative width" if width < 0
 
-        return "%.#{width}" % val
+        return "%.#{width}f" % val
       end
 
       case val
@@ -905,27 +899,107 @@ module YCP
 
     module Multiset
       def self.includes set1, set2
-        set1.to_set.superset? set2.to_set
+        #cannot use to_set because there is difference if there is element multipletime
+        repetition = {}
+        set2.all? do |e|
+          repetition[e] ||= 0
+          repetition[e] += 1
+          set1.count(e) >= repetition[e]
+        end
       end
 
       def self.difference set1, set2
         (set1.to_set - set2.to_set).to_a
       end
 
-      def self.symetric_difference set1, set2
-        (set1.to_set ^ set2.to_set).to_a
+      def self.symmetric_difference set1, set2
+        ss1 = set1.sort
+        ss2 = set2.sort
+        res = []
+        while !(ss1.empty? || ss2.empty?) do
+          i1 = ss1.last
+          i2 = ss2.last
+          case i1 <=> i2
+          when -1
+            res << i2
+            ss2.pop
+          when 1
+            res << i1
+            ss1.pop
+          when 0
+            ss1.pop
+            ss2.pop
+          else
+            raise "unknown value from comparison #{i1 <=> u2}"
+          end
+        end
+        unless ss1.empty?
+          res = res + ss1.reverse
+        end
+        unless ss2.empty?
+          res = res + ss2.reverse
+        end
+        return res.reverse
       end
 
       def self.intersection set1, set2
-        (set1.to_set & set2.to_set).to_a
+        ss1 = set1.sort
+        ss2 = set2.sort
+        res = []
+        while !(ss1.empty? || ss2.empty?) do
+          i1 = ss1.last
+          i2 = ss2.last
+          case i1 <=> i2
+          when -1
+            ss2.pop
+          when 1
+            ss1.pop
+          when 0
+            res << i1
+            ss1.pop
+            ss2.pop
+          else
+            raise "unknown value from comparison #{i1 <=> u2}"
+          end
+        end
+        return res.reverse
       end
 
       def self.union set1, set2
-        (set1.to_set | set2.to_set).to_a
+        ss1 = set1.sort
+        ss2 = set2.sort
+        res = []
+        while !(ss1.empty? || ss2.empty?) do
+          i1 = ss1.last
+          i2 = ss2.last
+          case i1 <=> i2
+          when -1
+            res << i2
+            ss2.pop
+          when 1
+            res << i1
+            ss1.pop
+          when 0
+            res << i1
+            ss1.pop
+            ss2.pop
+          else
+            raise "unknown value from comparison #{i1 <=> u2}"
+          end
+        end
+
+        unless ss1.empty?
+          res = res + ss1.reverse
+        end
+        unless ss2.empty?
+          res = res + ss2.reverse
+        end
+
+        return res.reverse
       end
 
       def self.merge set1, set2
-        (set1.to_set + set2.to_set).to_a
+        set1 + set2
       end
     end
   end

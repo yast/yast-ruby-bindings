@@ -278,8 +278,7 @@ class BuiltinsTest < YCP::TestCase
     assert_equal ["A", "Z"], YCP::Builtins.toset(["Z", "A"])
     assert_equal [1, 2, 3], YCP::Builtins.toset([3, 2, 2, 1, 2, 1, 3, 1, 3, 3])
 
-    # TODO FIXME: fails, do we need to fix it???
-    # assert_equal [false, true, 1, 2, 3, 5], YCP::Builtins.toset([1, 5, 3, 2, 3, true, false, true])
+    assert_equal [false, true, 1, 2, 3, 5], YCP::Builtins.toset([1, 5, 3, 2, 3, true, false, true])
   end
 
 
@@ -296,8 +295,6 @@ class BuiltinsTest < YCP::TestCase
     [ YCP::Term.new(:id,["test",:lest]), "`id ([\"test\", `lest])"],
     [ { :test => "data" }, "$[`test:\"data\"]"]
   ]
-
-
 
   def test_tostring
     TOSTRING_TEST_DATA.each do |input,result|
@@ -810,4 +807,97 @@ class BuiltinsTest < YCP::TestCase
     assert_equal [true, 50, "a", "z"], YCP::Builtins.lsort(["a", 50, "z", true])
   end
 
+  EVAL_TEST_DATA = [
+    [nil, nil],
+    [5, 5],
+    [ Proc.new() { "15" }, "15"],
+  ]
+
+  def test_eval
+    EVAL_TEST_DATA.each do |input, result|
+      assert_equal result, YCP::Builtins.eval(input)
+    end
+  end
+
+  DELETECHARS_TEST_DATA = [
+    [ nil, nil, nil ],
+    [ "test", nil, nil ],
+    [ nil, "a", nil ],
+    [ "a", "abcdefgh", ""],
+    [ "abc", "cde", "ab"],
+    [ "abc", "a-c", "b"],
+    [ "abc", "^ab", "c"]
+  ]
+
+  def test_deletechars
+    DELETECHARS_TEST_DATA.each do |input1, input2, result|
+      assert_equal result, YCP::Builtins.deletechars(input1, input2)
+    end
+  end
+
+  FILTERCHARS_TEST_DATA = [
+    [ nil, nil, nil ],
+    [ "test", nil, nil ],
+    [ nil, "a", nil ],
+    [ "a", "abcdefgh", "a"],
+    [ "abc", "cde", "c"],
+    [ "abc", "a-c", "ac"],
+    [ "abc", "^ab", "ab"]
+  ]
+
+  def test_filterchars
+    FILTERCHARS_TEST_DATA.each do |input1, input2, result|
+      assert_equal result, YCP::Builtins.filterchars(input1, input2)
+    end
+  end
+
+  TOTERM_TEST_DATA = [
+    [ "test", YCP::Term.new(:test) ],
+    [ :test, YCP::Term.new(:test) ],
+    [ [:test, [:lest, :srst]], YCP::Term.new(:test, :lest, :srst) ],
+    [ YCP::Term.new(:test), YCP::Term.new(:test) ],
+  ]
+
+  def test_toterm
+    TOTERM_TEST_DATA.each do |input, res|
+      assert_equal res, YCP::Builtins.toterm(*input)
+    end
+  end
+
+  def test_multiset_union
+    assert_equal [1,2,3], YCP::Builtins::Multiset.union([1,2],[2,3])
+  end
+
+  def test_multiset_includes
+    assert_equal false, YCP::Builtins::Multiset.includes([1,2],[2,3])
+    assert_equal false, YCP::Builtins::Multiset.includes([1,2],[2,2])
+    assert_equal true, YCP::Builtins::Multiset.includes([1,2],[2])
+  end
+
+  def test_multiset_difference
+    assert_equal [1], YCP::Builtins::Multiset.difference([1,2],[2,3])
+  end
+
+  def test_multiset_symmetric_difference
+    assert_equal [1,3], YCP::Builtins::Multiset.symmetric_difference([1,2],[2,3])
+    assert_equal [1,2], YCP::Builtins::Multiset.symmetric_difference([1,2],[2,2])
+    assert_equal [1,1,2,2], YCP::Builtins::Multiset.symmetric_difference([1,1,2],[2,2,2])
+  end
+
+  def test_multiset_intersection
+    assert_equal [2], YCP::Builtins::Multiset.intersection([1,2],[2,3])
+    assert_equal [2,2], YCP::Builtins::Multiset.intersection([1,2,2],[2,2,3])
+  end
+
+  def test_multiset_union
+    assert_equal [1,2,3], YCP::Builtins::Multiset.union([1,2],[2,3])
+    assert_equal [1,2,2,3], YCP::Builtins::Multiset.union([1,2,2],[2,2,3])
+  end
+
+  def test_multiset_merge
+    assert_equal [1,2,2,3], YCP::Builtins::Multiset.merge([1,2],[2,3])
+    assert_equal [1,2,2,2,2,3], YCP::Builtins::Multiset.merge([1,2,2],[2,2,3])
+    assert_equal [2,1,2,2,3,2], YCP::Builtins::Multiset.merge([2,1,2],[2,3,2])
+    
+  end
 end
