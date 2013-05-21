@@ -25,6 +25,7 @@ as published by the Free Software Foundation; either version
 #include <iosfwd>
 #include <sstream>
 #include <iomanip>
+#include <locale.h>
 
 // Ruby stuff
 #include <ruby.h>
@@ -55,6 +56,10 @@ bool YRuby::_y_ruby_finalized = false;
 YRuby::YRuby()
 {
   y2debug( "Initializing ruby interpreter." );
+
+  // initialize locale according to the language setting
+  // so the ruby interpreter can set the external string encoding properly
+  setlocale (LC_ALL, "");
 
   RUBY_INIT_STACK;
   ruby_init();
