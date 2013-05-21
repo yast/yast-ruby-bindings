@@ -145,7 +145,8 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
   }
   else if (ycpval->isString())
   {
-    return rb_str_new2(ycpval->asString()->value().c_str());
+    // use "external" encoding (set by locale, usually UTF-8)
+    return rb_external_str_new(ycpval->asString()->value().c_str(), ycpval->asString()->value().size());
   }
   else if (ycpval->isPath())
   {
