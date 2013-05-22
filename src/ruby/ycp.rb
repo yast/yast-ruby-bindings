@@ -69,7 +69,6 @@ module YCP
 
   def self.import(mname)
     modules = mname.split("::")
-    modules = modules[1..-1] if modules.first == "System" #Handle special System namespace
 
     base = YCP
     # Handle multilevel modules like YaPI::Network
