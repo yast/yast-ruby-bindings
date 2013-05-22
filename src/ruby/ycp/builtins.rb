@@ -85,8 +85,9 @@ module YCP
         end
       elsif object.is_a? ::Hash
         begin
-          object.each_pair do |k,v|
-            res = block.call(k,v)
+          #sort keys so it behaves same as in YCP
+          sort(object.keys).each do |k|
+            res = block.call(k,object[k])
           end
         rescue YCP::Break
           res = nil
@@ -122,8 +123,8 @@ module YCP
       when ::Hash
         res = []
         begin
-          object.each do |i|
-            res << block.call(i)
+          sort(object.keys).each do |k|
+            res << block.call(k,object[k])
           end
         rescue YCP::Break
           #break skips out of each loop, but allow to keep previous results
@@ -469,8 +470,8 @@ module YCP
 
       res = ::Hash.new
       begin
-        map.each_pair do |k,v|
-          res.merge! block.call(k,v)
+        sort(map.keys).each do |k|
+          res.merge! block.call(k,map[k])
         end
       rescue YCP::Break
         #break stops adding to hash
@@ -820,7 +821,7 @@ module YCP
       when ::FalseClass then "false"
       when ::Fixnum, ::Bignum, ::Float, YCP::Term, YCP::Path, YCP::External then val.to_s
       when ::Array then "[#{val.map{|a|inside_tostring(a)}.join(", ")}]"
-      when ::Hash then "$[#{val.map{|k,v|"#{inside_tostring(k)}:#{inside_tostring(v)}"}.join(", ")}]"
+      when ::Hash then "$[#{sort(val.keys).map{|k|"#{inside_tostring(k)}:#{inside_tostring(val[k])}"}.join(", ")}]"
       when YCP::FunRef
         # TODO FIXME: YCP puts also the parameter names,
         # here the signature contains only data type without parameter name:
