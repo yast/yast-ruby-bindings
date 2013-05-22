@@ -6,6 +6,16 @@ require "ycp/logger"
 module YCP
   module Convert
 
+    #generate shortcuts
+    [ "boolean", "string", "symbol", "integer", "float", "list", "map", 
+      "term", "path", "locale" ].each do |type|
+      eval <<END
+        def self.to#{type}(object)
+          convert object, :from => "any", :to => "#{type}"
+        end
+END
+    end
+
     def self.convert(object, options)
       from = options[:from]
       to = options[:to]

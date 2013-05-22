@@ -27,4 +27,8 @@ class OpsTest < YCP::TestCase
       assert_equal result, YCP::Convert.convert(object, :from => from, :to => to), "Cannot convert from #{object.inspect} '#{from}' to '#{to}'"
     end
   end
+
+  def test_shortcuts
+    assert_equal "t", YCP::Convert.tostring("t")
+  end
 end
