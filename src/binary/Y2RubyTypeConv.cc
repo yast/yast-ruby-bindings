@@ -241,7 +241,7 @@ rbvalue_2_ycpvalue( VALUE value )
     break;
   case T_FIXNUM:
   case T_BIGNUM:
-    return YCPInteger(NUM2LONG(value));
+    return YCPInteger(NUM2LL(value));
     break;
   case T_FLOAT:
     return YCPFloat(NUM2DBL(value));

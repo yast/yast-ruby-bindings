@@ -158,7 +158,7 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
   }
   else if (ycpval->isInteger())
   {
-    return INT2NUM( ycpval->asInteger()->value() );
+    return LL2NUM( ycpval->asInteger()->value() );
   }
   else if (ycpval->isFloat())
   {
