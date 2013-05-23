@@ -13,7 +13,7 @@ module YCP
     end
 
     def clone
-      Path.from_string(to_s())
+      Path.new(to_s())
     end
 
     def + another

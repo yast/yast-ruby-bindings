@@ -35,4 +35,10 @@ class PathTest < YCP::TestCase
     assert_equal true, YCP::Path.new('.ba') >= YCP::Path.new('."a?"')
     assert_equal true, YCP::Path.new('."b?"') >= YCP::Path.new('.ab')
   end
+
+  def test_clone
+    etc = YCP::Path.new '.etc.sysconfig.DUMP'
+    assert_equal '.etc.sysconfig.DUMP', etc.clone.to_s
+
+  end
 end
