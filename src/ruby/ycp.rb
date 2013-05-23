@@ -57,14 +57,7 @@ module YCP
 
 #makes copy of object unless object is immutable. In such case return object itself
   def copy_arg object
-    case object
-    when Numeric,TrueClass,FalseClass,NilClass,Symbol #immutable
-      object
-    when YCP::FunRef, YCP::ArgRef, YCP::External, YCP::YReference #contains only reference somewhere
-      object
-    else
-      object.dup
-    end
+    Builtins.deep_copy(object)
   end
 
   def self.import(mname)

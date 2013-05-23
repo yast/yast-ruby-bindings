@@ -12,6 +12,10 @@ module YCP
       self.new ".\"#{string}\""
     end
 
+    def clone
+      Path.from_string(to_s())
+    end
+
     def + another
       another = self.class.from_string(another) unless another.is_a? YCP::Path
       return another.dup if components.empty?

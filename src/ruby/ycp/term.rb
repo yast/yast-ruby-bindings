@@ -27,8 +27,8 @@ module YCP
       params.size
     end
 
-    def dup
-      YCP::Term.new value, *params.dup
+    def clone
+      YCP::Term.new value, *Builtins.deep_copy(params)
     end
 
     def to_s

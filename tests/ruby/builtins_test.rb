@@ -898,6 +898,13 @@ class BuiltinsTest < YCP::TestCase
     assert_equal [1,2,2,3], YCP::Builtins::Multiset.merge([1,2],[2,3])
     assert_equal [1,2,2,2,2,3], YCP::Builtins::Multiset.merge([1,2,2],[2,2,3])
     assert_equal [2,1,2,2,3,2], YCP::Builtins::Multiset.merge([2,1,2],[2,3,2])
-    
+  end
+
+  def test_deep_copy
+    a = [[1,2],[2,3]]
+    b = YCP::Builtins.deep_copy a
+    b[0][0] = 10
+    assert_equal 1, a[0][0]
+    assert_equal 10, b[0][0]
   end
 end

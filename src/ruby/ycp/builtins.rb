@@ -8,7 +8,31 @@ require "fast_gettext"
 require "ycp/builtinx"
 
 module YCP
+  class ArgRef; end
+  class FunRef; end
+
   module Builtins
+    #makes copy of object unless object is immutable. In such case return object itself
+    def self.deep_copy object
+      case object
+      when Numeric,TrueClass,FalseClass,NilClass,Symbol #immutable
+        object
+      when YCP::FunRef, YCP::ArgRef, YCP::External, YCP::YReference #contains only reference somewhere
+        object
+      when ::Hash
+        object.reduce({}) do |acc,kv|
+          acc[deep_copy(kv[0])] = deep_copy(kv[1])
+          acc
+        end
+      when ::Array
+         object.reduce([]) do |acc,v|
+          acc << deep_copy(v)
+        end
+      else
+        object.clone #deep copy
+      end
+    end
+
 
     ###########################################################
     # Overloaded Builtins
@@ -27,7 +51,7 @@ module YCP
       when ::Hash then  return object.merge(::Hash[*params])
       when YCP::Path then return object + params.first
       when YCP::Term then
-        res = object.dup
+        res = deep_copy(object)
         res.params << params.first
         return res
       when ::NilClass then return nil
@@ -142,7 +166,7 @@ module YCP
     def self.remove object, element
       return nil if object.nil?
 
-      res = object.dup
+      res = deep_copy(object)
       return res if element.nil?
       case object
       when ::Array
@@ -434,7 +458,7 @@ module YCP
       return nil if offset < 0 || offset >= list.size
       return nil if length < 0 || offset+length > list.size
 
-      return list.dup[offset..offset+length-1]
+      return deep_copy(list)[offset..offset+length-1]
     end
 
     # Converts a value to a list (deprecated, use (list)VAR).
@@ -494,7 +518,7 @@ module YCP
       if object.respond_to? :call
         return object.call
       else
-        return object
+        return deep_copy(object)
       end
     end
 
