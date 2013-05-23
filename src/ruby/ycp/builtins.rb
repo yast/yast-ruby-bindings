@@ -406,7 +406,7 @@ module YCP
       return nil if array.nil?
 
       if block_given?
-        array.sort { |x,y| block.call(x,y) ? 1 : -1 }
+        array.sort { |x,y| block.call(x,y) ? -1 : 1 }
       else  
         array.sort {|x,y| YCP::Ops.comparable_object(x) <=> y }
       end
