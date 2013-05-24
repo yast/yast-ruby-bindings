@@ -7,6 +7,7 @@ module YCP
 
       #TODO load alternative in development recent translation
       LOCALE_DIR = "/usr/share/YaST2/locale"
+      DEFAULT_LOCALE = "en_US"
 
       def textdomain domain
         # TODO FIXME:
@@ -54,7 +55,7 @@ module YCP
       def available_locales
         # the first item is used as the fallback
         # when the requested locale is not available
-        locales = [ "en_US" ]
+        locales = [ DEFAULT_LOCALE ]
 
         Dir["#{LOCALE_DIR}/*"].each do |f|
           locale_name = File.basename f
@@ -68,6 +69,8 @@ module YCP
         # get the current value from YaST (remove the trailing encoding
         # like ".UTF-8" if present)
         lang = WFM.GetLanguage.gsub(/\..*$/, "")
+
+        return DEFAULT_LOCALE if lang.empty?
 
         # remove the country suffix if that locale is not available
         # e.g. there are "pt_BR" and "de" translations (there is generic "pt" but no "de_DE")
