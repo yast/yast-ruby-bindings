@@ -26,7 +26,7 @@ class PathTest < YCP::TestCase
   end
 
   def test_equals
-    assert_equal YCP::Path.new(".\"\xff\""), YCP::Path.new(".\"\xFF\"")
+    assert_equal YCP::Path.new(".\"\x1a\""), YCP::Path.new(".\"\x1A\"")
     assert_equal YCP::Path.new(".\"\x41\""), YCP::Path.new(".\"A\"")
     assert_not_equal YCP::Path.new(".\"\""), YCP::Path.new('.')
   end
