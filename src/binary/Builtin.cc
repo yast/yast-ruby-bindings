@@ -49,13 +49,15 @@ extern "C" {
   {
     YRuby::yRuby();
     extern StaticDeclaration static_declarations;
+    YaST::ee.setFilename(RSTRING_PTR(argv[0]));
+    YaST::ee.setLinenumber(FIX2INT(argv[1]));
 
     declaration_t *bi_dt = static_declarations.findDeclaration(qualified_name.c_str());
     if (bi_dt==NULL)
       rb_raise(rb_eNameError, "No such builtin '%s'", qualified_name.c_str());
 
     YEBuiltin bi_call(bi_dt);
-    for (int i = 1; i<argc; ++i)
+    for (int i = 3; i<argc; ++i)
     {
       YCPValue param_v = rbvalue_2_ycpvalue(argv[i]);
       YConstPtr param_c = new YConst(YCode::ycConstant, param_v);
@@ -81,18 +83,18 @@ extern "C" {
   static VALUE
   scr_call_builtin( int argc, VALUE *argv, VALUE self )
   {
-    if (argc<1)
+    if (argc<3)
       rb_raise(rb_eArgError, "At least one argument must be passed");
-    std::string qualified_name = std::string("SCR::") + RSTRING_PTR(argv[0]);
+    std::string qualified_name = std::string("SCR::") + RSTRING_PTR(argv[2]);
     return call_builtin(qualified_name,argc,argv);
   }
 
   static VALUE
   wfm_call_builtin( int argc, VALUE *argv, VALUE self )
   {
-    if (argc<1)
+    if (argc<3)
       rb_raise(rb_eArgError, "At least one argument must be passed");
-    std::string qualified_name = std::string("WFM::") + RSTRING_PTR(argv[0]);
+    std::string qualified_name = std::string("WFM::") + RSTRING_PTR(argv[2]);
     return call_builtin(qualified_name,argc,argv);
   }
 

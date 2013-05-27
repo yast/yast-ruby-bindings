@@ -6,67 +6,74 @@ GLOBAL_WFM_CONTEXT = Proc.new {}
 module YCP
   module WFM
     def self.Args *args
-      call_builtin("Args", *args)
+      call_builtin_wrapper("Args", *args)
     end
 
     def self.ClientExists *args
-      call_builtin("ClientExists", *args)
+      call_builtin_wrapper("ClientExists", *args)
     end
 
     def self.Execute *args
-      call_builtin("Execute", *args)
+      call_builtin_wrapper("Execute", *args)
     end
 
     def self.GetEncoding *args
-      call_builtin("GetEncoding", *args)
+      call_builtin_wrapper("GetEncoding", *args)
     end
 
     def self.GetEnvironmentEncoding *args
-      call_builtin("GetEnvironmentEncoding", *args)
+      call_builtin_wrapper("GetEnvironmentEncoding", *args)
     end
 
     def self.GetLanguage *args
-      call_builtin("GetLanguage", *args)
+      call_builtin_wrapper("GetLanguage", *args)
     end
 
     def self.Read *args
-      call_builtin("Read", *args)
+      call_builtin_wrapper("Read", *args)
     end
 
     def self.SCRClose *args
-      call_builtin("SCRClose", *args)
+      call_builtin_wrapper("SCRClose", *args)
     end
 
     def self.SCRGetDefault *args
-      call_builtin("SCRGetDefault", *args)
+      call_builtin_wrapper("SCRGetDefault", *args)
     end
 
     def self.SCRGetName *args
-      call_builtin("SCRGetName", *args)
+      call_builtin_wrapper("SCRGetName", *args)
     end
 
     def self.SCROpen *args
-      call_builtin("SCROpen", *args)
+      call_builtin_wrapper("SCROpen", *args)
     end
 
     def self.SCRSetDefault *args
-      call_builtin("SCRSetDefault", *args)
+      call_builtin_wrapper("SCRSetDefault", *args)
     end
 
     def self.SetLanguage *args
-      call_builtin("SetLanguage", *args)
+      call_builtin_wrapper("SetLanguage", *args)
     end
 
     def self.Write *args
-      call_builtin("Write", *args)
+      call_builtin_wrapper("Write", *args)
     end
 
     def self.call *args
-      call_builtin("call", *args)
+      call_builtin_wrapper("call", *args)
     end
 
     def self.CallFunction *args
-      call_builtin("CallFunction", *args)
+      call_builtin_wrapper("CallFunction", *args)
+    end
+
+    def self.call_builtin_wrapper *args
+      from = caller[2]
+      filename = from[/^[^:]+/]
+      lineno = from[/:\d+/][1..-1].to_i
+      call_builtin(filename,lineno,*args)
     end
 
     def self.run_client client
