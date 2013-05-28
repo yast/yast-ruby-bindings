@@ -41,6 +41,8 @@ as published by the Free Software Foundation; either version
 
 #include "YRuby.h"
 
+#include <ruby/encoding.h>
+
 #include "Y2YCPTypeConv.h"
 
 //must match same magic id as in vica versa conversion
@@ -132,6 +134,8 @@ ycp_ext_to_rb_ext( YCPExternal ext )
 extern "C" VALUE
 ycpvalue_2_rbvalue( YCPValue ycpval )
 {
+  // cache the UTF-8 encoding object
+  static rb_encoding *utf8;
 
   // TODO
   // YT_BYTEBLOCK YT_CODE YT_RETURN YT_BREAK YT_ENTRY YT_ERROR  YT_REFERENCE YT_EXTERNA
@@ -145,8 +149,13 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
   }
   else if (ycpval->isString())
   {
-    // use "external" encoding (set by locale, usually UTF-8)
-    return rb_external_str_new(ycpval->asString()->value().c_str(), ycpval->asString()->value().size());
+    if (!utf8)
+    {
+      utf8 = rb_enc_find("UTF-8");
+    }
+
+    // always use UTF-8 encoding
+    return rb_enc_str_new(ycpval->asString()->value().c_str(), ycpval->asString()->value().size(), utf8);
   }
   else if (ycpval->isPath())
   {
