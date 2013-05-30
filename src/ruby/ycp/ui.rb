@@ -13,8 +13,8 @@ module YCP
     :Password, :PkgSpecial, :ProgressBar, :PushButton, :RadioButton,
     :RadioButtonGroup, :ReplacePoint, :RichText, :Right, :SelectionBox, :Slider, :Table,
     :TextEntry, :Time, :Top, :Tree, :VBox, :VCenter, :VMultiProgressMeter, :VSpacing,
-    :VSquash, :VStretch, :VWeight, :Wizard,
-    :id, :opt ]
+    :VSquash, :VStretch, :VWeight, :Wizard
+    ]
 
    # for each symbol define a util function that will create a term
     UI_TERMS.each do | term_name |
