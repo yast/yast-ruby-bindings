@@ -1,3 +1,4 @@
+require "ycp/ycp"
 require "ycp/path"
 require "ycp/logger"
 
@@ -27,6 +28,7 @@ module YCP
 
       def self.index (object, indexes, default)
         res = object
+        default = YCP.deep_copy(default)
         indexes.each do |i|
           case res
           when ::Array, YCP::Term
@@ -55,7 +57,7 @@ module YCP
             return default
           end
       end
-      return res
+      return YCP.deep_copy(res)
     end
 
     def self.assign (object, indexes, value)
@@ -89,7 +91,7 @@ module YCP
       end
       case res
       when ::Array, YCP::Term, ::Hash
-        res[last] = value
+        res[last] = YCP.deep_copy(value)
       else
         YCP.y2warning "Builtin assign called on wrong type #{res.class}"
       end
@@ -102,12 +104,12 @@ module YCP
       case first
       when ::Array
         if second.is_a? ::Array
-          return first + second
+          return YCP.deep_copy(first + second)
         else
-          return first.dup.push(second)
+          return YCP.deep_copy(first).push(YCP.deep_copy(second))
         end
       when ::Hash
-        return first.merge second
+        return YCP.deep_copy(first).merge YCP.deep_copy(second)
       when ::String
         return first + second.to_s
       else

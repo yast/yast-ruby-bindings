@@ -21,6 +21,9 @@
 # Load the native part (.so)
 require 'ycpx'
 
+#load global YCP module
+require 'ycp/ycp'
+
 # load inside moduls
 require "ycp/arg_ref"
 require "ycp/break"
@@ -36,78 +39,6 @@ require "ycp/path"
 require "ycp/scr"
 require "ycp/term"
 require "ycp/wfm"
-
-module YCP
-
-  def term(*args)
-    return Term.new *args
-  end
-
-  def fun_ref(*args)
-    return FunRef.new *args
-  end
-
-  def arg_ref(*args)
-    return ArgRef.new *args
-  end
-
-  def path(*args)
-    return Path.new *args
-  end
-
-#makes copy of object unless object is immutable. In such case return object itself
-  def copy_arg object
-    Builtins.deep_copy(object)
-  end
-
-  def self.import(mname)
-    modules = mname.split("::")
-
-    base = YCP
-    # Handle multilevel modules like YaPI::Network
-    modules[0..-2].each do |module_|
-      tmp_m = if base.constants.include?(module_.to_sym)
-          base.const_get(module_)
-        else
-          base.const_set(module_, Module.new)
-        end
-      base = tmp_m
-    end
-
-    # do not reimport if already imported
-    return if base.constants.include?(modules.last.to_sym)
-
-    import_pure(mname)
-
-    # do not create wrapper if module is in ruby and define itself object
-    return if base.constants.include?(modules.last.to_sym)
-
-    m = Module.new
-    symbols(mname).each do |sname,stype|
-      next if sname.empty?
-      if (stype == :function)
-        m.module_eval <<-"END"
-          def self.#{sname}(*args)
-            return YCP::call_ycp_function("#{mname}", :#{sname}, *args)
-          end
-        END
-      end
-      if stype == :variable
-        m.module_eval <<-"END"
-          def self.#{sname}
-            return YCP::call_ycp_function("#{mname}", :#{sname})
-          end
-          def self.#{sname}= (value)
-            return YCP::call_ycp_function("#{mname}", :#{sname}, value)
-          end
-        END
-      end
-    end
-
-    base.const_set(modules.last, m)
-  end
-
-end
 
 #--------------------------------------
 #

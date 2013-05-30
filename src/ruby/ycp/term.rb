@@ -1,3 +1,4 @@
+require 'ycp/ycp'
 require 'ycp/builtins'
 require 'ycp/ops'
 
@@ -28,7 +29,7 @@ module YCP
     end
 
     def clone
-      YCP::Term.new value, *Builtins.deep_copy(params)
+      YCP::Term.new value, *YCP.deep_copy(params)
     end
 
     def to_s

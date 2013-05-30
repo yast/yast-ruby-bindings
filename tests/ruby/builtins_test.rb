@@ -29,6 +29,13 @@ class BuiltinsTest < YCP::TestCase
     end
   end
 
+  def test_add_deep_copy
+    a = [["a"]]
+    b = YCP::Builtins.add(a, "b")
+    b[0][0] = "c"
+    assert_equal [["a"]], a
+  end
+
   def test_substring
     str = "12345"
 
@@ -902,7 +909,7 @@ class BuiltinsTest < YCP::TestCase
 
   def test_deep_copy
     a = [[1,2],[2,3]]
-    b = YCP::Builtins.deep_copy a
+    b = YCP.deep_copy a
     b[0][0] = 10
     assert_equal 1, a[0][0]
     assert_equal 10, b[0][0]

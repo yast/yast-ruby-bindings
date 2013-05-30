@@ -1,5 +1,6 @@
 require "set"
 
+require "ycp/ycp"
 require "ycp/path"
 require "ycp/break"
 require "ycp/external"
@@ -12,27 +13,6 @@ module YCP
   class FunRef; end
 
   module Builtins
-    #makes copy of object unless object is immutable. In such case return object itself
-    def self.deep_copy object
-      case object
-      when Numeric,TrueClass,FalseClass,NilClass,Symbol #immutable
-        object
-      when YCP::FunRef, YCP::ArgRef, YCP::External, YCP::YReference #contains only reference somewhere
-        object
-      when ::Hash
-        object.reduce({}) do |acc,kv|
-          acc[deep_copy(kv[0])] = deep_copy(kv[1])
-          acc
-        end
-      when ::Array
-         object.reduce([]) do |acc,v|
-          acc << deep_copy(v)
-        end
-      else
-        object.clone #deep copy
-      end
-    end
-
 
     ###########################################################
     # Overloaded Builtins
@@ -47,12 +27,12 @@ module YCP
     # For new code it is recommended to use directly methods on objects
     def self.add object, *params
       case object
-      when ::Array then return object + params
-      when ::Hash then  return object.merge(::Hash[*params])
-      when YCP::Path then return object + params.first
+      when ::Array then return YCP::deep_copy(object).concat(YCP::deep_copy(params))
+      when ::Hash then  return YCP::deep_copy(object).merge(YCP::deep_copy(::Hash[*params]))
+      when YCP::Path then return YCP::deep_copy(object) + YCP::deep_copy(params.first)
       when YCP::Term then
-        res = deep_copy(object)
-        res.params << params.first
+        res = YCP::deep_copy(object)
+        res.params << YCP::deep_copy(params.first)
         return res
       when ::NilClass then return nil
       else
@@ -72,7 +52,7 @@ module YCP
     def self.filter object, &block
       #TODO investigate break and continue with filter as traverse workflow is different for ruby
       if object.is_a?(::Array) || object.is_a?(::Hash)
-        object.select &block
+        YCP::deep_copy(object).select &block
       else
         return nil
       end
@@ -87,9 +67,9 @@ module YCP
       case object
       when ::String
         ret = object.index what
-        return ret.nil? ? -1 : ret
+        return ret.nil? ? -1 : YCP::deep_copy(ret)
       when ::Array
-        object.find &block
+        YCP::deep_copy(object.find(&block))
       else
         raise "Invalid object for find() builtin"
       end
@@ -99,6 +79,7 @@ module YCP
     # - Processes the content of a list
     def self.foreach object, &block
       res = nil
+      object = YCP::deep_copy(object)
       if object.is_a? ::Array
         begin
           object.each do |i|
@@ -138,7 +119,7 @@ module YCP
         res = []
         begin
           object.each do |i|
-            res << block.call(i)
+            res << block.call(YCP::deep_copy(i))
           end
         rescue YCP::Break
           #break skips out of each loop, but allow to keep previous results
@@ -148,7 +129,7 @@ module YCP
         res = []
         begin
           sort(object.keys).each do |k|
-            res << block.call(k,object[k])
+            res << block.call(YCP::deep_copy(k),YCP::deep_copy(object[k]))
           end
         rescue YCP::Break
           #break skips out of each loop, but allow to keep previous results
@@ -166,7 +147,7 @@ module YCP
     def self.remove object, element
       return nil if object.nil?
 
-      res = deep_copy(object)
+      res = YCP::deep_copy(object)
       return res if element.nil?
       case object
       when ::Array
@@ -234,7 +215,7 @@ module YCP
 
       case first
       when ::Array
-        return (first+second).reduce([]) do |acc,i|
+        return (YCP::deep_copy(first)+YCP::deep_copy(second)).reduce([]) do |acc,i|
           acc << i unless acc.include? i
           acc
         end
@@ -341,7 +322,7 @@ module YCP
 
       return value.reduce([]) do |acc,i|
         return nil if i.nil?
-        acc.push *i
+        acc.push *YCP::deep_copy(i)
       end
     end
 
@@ -351,11 +332,11 @@ module YCP
         return nil if params.first.nil?
         list = if params.size == 2 #so first is default and second is list
             return nil if params[1].nil?
-            [params.first] + params[1]
+            [params.first].concat(YCP::deep_copy(params[1]))
           else
             params.first
           end
-        return list.reduce &block
+        return YCP::deep_copy(list).reduce &block
       end
 
 
@@ -363,7 +344,7 @@ module YCP
       def self.swap list, offset1, offset2
         return nil if list.nil? || offset1.nil? || offset2.nil?
 
-        return list if offset1 < 0 || offset2 >= list.size || (offset1 > offset2)
+        return YCP::deep_copy(list) if offset1 < 0 || offset2 >= list.size || (offset1 > offset2)
 
         res = []
         if offset1 > 0
@@ -373,7 +354,7 @@ module YCP
         if offset2 < list.size-1
           res.concat list[offset2+1..-1]
         end
-        return res
+        return YCP::deep_copy(res)
       end
     end
 
@@ -383,7 +364,7 @@ module YCP
 
       res = ::Hash.new
       begin
-        list.each do |i|
+        YCP::deep_copy(list).each do |i|
           res.merge! block.call(i)
         end
       rescue YCP::Break
@@ -397,24 +378,21 @@ module YCP
     def self.lsort list
       return nil if list.nil?
 
-      # TODO FIXME: not 100% YCP compatible for non string values
-      # YCP: lsort(["a", 50, "z", true]) -> [true, 50, "a", "z"]
-      # this code:                       -> [50, "a", true, "z"]
-      list.sort { |s1, s2| Ops.comparable_object(s1, true) <=> s2 }
+      YCP::deep_copy(list.sort { |s1, s2| Ops.comparable_object(s1, true) <=> s2 })
     end
 
     # merge() YCP built-in
     # Merges two lists into one
     def self.merge a1, a2
       return nil if a1.nil? || a2.nil?
-      a1 + a2
+      YCP::deep_copy(a1 + a2)
     end
 
     # Prepends a list with a new element
     def self.prepend list, element
       return nil if list.nil?
 
-      return [element].push *list
+      return [YCP::deep_copy(element)].push *YCP::deep_copy(list)
     end
 
     # setcontains() YCP built-in
@@ -429,11 +407,13 @@ module YCP
     def self.sort array, &block
       return nil if array.nil?
 
-      if block_given?
+      res = if block_given?
         array.sort { |x,y| block.call(x,y) ? -1 : 1 }
       else  
         array.sort {|x,y| YCP::Ops.comparable_object(x) <=> y }
       end
+
+      YCP::deep_copy(res)
     end
 
     # splitstring() YCP built-in
@@ -458,7 +438,7 @@ module YCP
       return nil if offset < 0 || offset >= list.size
       return nil if length < 0 || offset+length > list.size
 
-      return deep_copy(list)[offset..offset+length-1]
+      return YCP::deep_copy(list)[offset..offset+length-1]
     end
 
     # Converts a value to a list (deprecated, use (list)VAR).
@@ -470,7 +450,8 @@ module YCP
     # Sorts list and removes duplicates
     def self.toset array
       return nil if array.nil?
-      array.uniq.sort { |x,y| YCP::Ops.comparable_object(x) <=> y }
+      res = array.uniq.sort { |x,y| YCP::Ops.comparable_object(x) <=> y }
+      YCP::deep_copy(res)
     end
 
     ###########################################################
@@ -485,13 +466,14 @@ module YCP
 
     # Select a map element (deprecated, use MAP[KEY]:DEFAULT)
     def self.lookup map, key, default
-      map.has_key?(key) ? map[key] : default
+      map.has_key?(key) ? YCP::deep_copy(map[key]) : YCP::deep_copy(default)
     end
 
     # Maps an operation onto all key/value pairs of a map
     def self.mapmap map, &block
       return nil if map.nil?
 
+      map = YCP::deep_copy(map)
       res = ::Hash.new
       begin
         sort(map.keys).each do |k|
@@ -518,7 +500,7 @@ module YCP
       if object.respond_to? :call
         return object.call
       else
-        return deep_copy(object)
+        return YCP::deep_copy(object)
       end
     end
 
@@ -741,7 +723,6 @@ module YCP
     # Extracts a substring in UTF-8 encoded string
     def self.lsubstring string, offset, length = -1
       #ruby2.0 use by default UTF-8.
-      # TODO verify that something doesn't depend on non UTF8 encoding
       substring string, offset, length
     end
 
@@ -887,7 +868,7 @@ module YCP
     def self.argsof term
       return nil if term.nil?
 
-      return term.params
+      return YCP::deep_copy(term.params)
     end
 
     # Returns the symbol of the term TERM.
@@ -934,7 +915,7 @@ module YCP
       end
 
       def self.difference set1, set2
-        (set1.to_set - set2.to_set).to_a
+        YCP::deep_copy(set1.to_set - set2.to_set).to_a
       end
 
       def self.symmetric_difference set1, set2
@@ -964,7 +945,7 @@ module YCP
         unless ss2.empty?
           res = res + ss2.reverse
         end
-        return res.reverse
+        return YCP::deep_copy(res.reverse)
       end
 
       def self.intersection set1, set2
@@ -987,7 +968,7 @@ module YCP
             raise "unknown value from comparison #{i1 <=> u2}"
           end
         end
-        return res.reverse
+        return YCP::deep_copy(res.reverse)
       end
 
       def self.union set1, set2
@@ -1020,11 +1001,11 @@ module YCP
           res = res + ss2.reverse
         end
 
-        return res.reverse
+        return YCP::deep_copy(res.reverse)
       end
 
       def self.merge set1, set2
-        set1 + set2
+        YCP::deep_copy(set1 + set2)
       end
     end
   end
