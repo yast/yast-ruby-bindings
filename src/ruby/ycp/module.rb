@@ -4,7 +4,7 @@ require "ycp/exportable"
 require "ycp/ui"
 
 module YCP
-  class ClientBase
+  class Module
     include I18n
     extend Exportable
     include YCP

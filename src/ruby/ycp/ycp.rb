@@ -60,7 +60,7 @@ module YCP
       tmp_m = if base.constants.include?(module_.to_sym)
           base.const_get(module_)
         else
-          base.const_set(module_, Module.new)
+          base.const_set(module_, ::Module.new)
         end
       base = tmp_m
     end
@@ -73,7 +73,7 @@ module YCP
     # do not create wrapper if module is in ruby and define itself object
     return if base.constants.include?(modules.last.to_sym)
 
-    m = Module.new
+    m = ::Module.new
     symbols(mname).each do |sname,stype|
       next if sname.empty?
       if (stype == :function)
