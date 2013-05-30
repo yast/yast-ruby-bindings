@@ -1,7 +1,7 @@
 require "ycp/term"
 
 module YCP
-  module UI
+  module UIShortcuts
 
   # Define symbols for the UI
   UI_TERMS = [ :BarGraph, :Bottom, :CheckBox, :ColoredLabel, :ComboBox, :Date,

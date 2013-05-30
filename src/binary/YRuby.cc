@@ -166,22 +166,17 @@ YCPValue YRuby::callInner (string module_name, string function,
                   YCPList argList, constTypePtr wanted_result_type)
 {
   //RUBY_INIT_STACK  // bnc#708059
-  VALUE module = y2ruby_nested_const_get(module_name);
+  string full_name = string("YCP::")+module_name;
+  VALUE module = y2ruby_nested_const_get(full_name);
   if (module == Qnil)
   {
-    y2debug ("The Ruby module '%s' is not provided by its rb file. Try YCP prefix.", module_name.c_str());
-    string alternative_name = string("YCP::")+module_name;
-    module = y2ruby_nested_const_get(alternative_name);
-    if (module == Qnil)
-    {
-      y2error ("The Ruby module '%s' is not loaded.", alternative_name.c_str());
-      VALUE exception = rb_gv_get("$!"); /* get last exception */
-      VALUE reason = rb_funcall(exception, rb_intern("message"), 0 );
-      VALUE trace = rb_gv_get("$@"); /* get last exception trace */
-      VALUE backtrace = RARRAY_LEN(trace)>0 ? rb_ary_entry(trace, 0) : rb_str_new2("Unknown");
-      y2error("%s load failed:%s at %s", alternative_name.c_str(), StringValuePtr(reason),StringValuePtr(backtrace));
-      return YCPVoid();
-    }
+    y2error ("The Ruby module '%s' is not loaded.", full_name.c_str());
+    VALUE exception = rb_gv_get("$!"); /* get last exception */
+    VALUE reason = rb_funcall(exception, rb_intern("message"), 0 );
+    VALUE trace = rb_gv_get("$@"); /* get last exception trace */
+    VALUE backtrace = RARRAY_LEN(trace)>0 ? rb_ary_entry(trace, 0) : rb_str_new2("Unknown");
+    y2error("%s load failed:%s at %s", full_name.c_str(), StringValuePtr(reason), StringValuePtr(backtrace));
+    return YCPVoid();
   }
 
   int size = argList.size();

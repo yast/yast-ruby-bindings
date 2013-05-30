@@ -166,15 +166,15 @@ void YRubyNamespace::constructSymbolTable(VALUE module)
 {
   int offset = 0; //track number of added method, so we can add extra one at the end
   VALUE module_class = rb_obj_class(module);
-  //detect if module use new approach for exporting methods or old one
   if (rb_respond_to(module_class, rb_intern("published_functions" )))
   {
-    offset = addMethodsNewWay(module_class);
+    offset = addMethods(module_class);
     offset = addVariables(module_class, offset);
   }
   else
   {
-    offset = addMethodsOldWay(module);
+    y2error("Module '%s' doesn't export anything. DEPRECATED old way", m_name.c_str());
+    return;
   }
   addExceptionMethod(module,offset);
   y2debug("%s", symbolsToString().c_str());
@@ -243,17 +243,10 @@ VALUE YRubyNamespace::getRubyModule()
 {
   ruby_module_name = string("YCP::") + m_name;
   VALUE module = y2ruby_nested_const_get(ruby_module_name);
-  if (module == Qnil)
-  {
-    y2warning ("The Ruby module '%s' is not provided by its rb file. Trying it without YCP prefix.", ruby_module_name.c_str());
-    //old modules lives outside of YCP namespace
-    ruby_module_name = m_name;
-    module = y2ruby_nested_const_get(ruby_module_name);
-  }
   return module;
 }
 
-int YRubyNamespace::addMethodsNewWay(VALUE module)
+int YRubyNamespace::addMethods(VALUE module)
 {
   VALUE methods = rb_funcall(module, rb_intern("published_functions"),0);
   methods = rb_funcall(methods,rb_intern("values"),0);
@@ -300,52 +293,6 @@ int YRubyNamespace::addVariables(VALUE module, int offset)
     y2milestone("variable: '%s' added", rb_id2name(SYM2ID(variable_name)));
   }
   return offset+j;
-}
-
-int YRubyNamespace::addMethodsOldWay(VALUE module)
-{
-  // we will perform operator- to determine the module methods
-  VALUE moduleklassmethods = rb_funcall( rb_cModule, rb_intern("methods"), 0);
-  VALUE mymodulemethods = rb_funcall( module, rb_intern("methods"), 0);
-  VALUE methods = rb_funcall( mymodulemethods, rb_intern("-"), 1, moduleklassmethods );
-
-  if (methods == Qnil)
-  {
-    y2internal ("Can't see methods in module '%s'", ruby_module_name.c_str());
-    return 0;
-  }
-
-  int i;
-  for(i = 0; i < RARRAY_LEN(methods); i++)
-  {
-    VALUE current = rb_funcall( methods, rb_intern("at"), 1, rb_fix_new(i) );
-    if (rb_type(current) == RUBY_T_SYMBOL) {
-  current = rb_funcall( current, rb_intern("to_s"), 0);
-    }
-    y2milestone("New method: '%s'", RSTRING_PTR(current));
-
-    // figure out arity.
-    Check_Type(module,T_MODULE);
-    VALUE methodobj = rb_funcall( module, rb_intern("method"), 1, current );
-    if ( methodobj == Qnil )
-    {
-      y2error ("Cannot access method object '%s'", RSTRING_PTR(current));
-      continue;
-    }
-    string signature = "any( ";
-    VALUE rbarity = rb_funcall( methodobj, rb_intern("arity"), 0);
-    int arity = NUM2INT(rbarity);
-    for ( int k=0; k < arity; ++k )
-    {
-      signature += "any";
-      if ( k < (arity - 1) )
-          signature += ",";
-    }
-    signature += ")";
-
-    addMethod(RSTRING_PTR(current), signature, i);
-  }
-  return i;
 }
 
 int YRubyNamespace::addExceptionMethod(VALUE module, int offset)

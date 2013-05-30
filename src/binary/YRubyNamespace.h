@@ -34,8 +34,7 @@ private:
     string ruby_module_name;
     VALUE getRubyModule(); //sets ruby_module name as sideeffect, so we know what is real name in ruby
     void constructSymbolTable(VALUE module);
-    int addMethodsNewWay(VALUE module);
-    int addMethodsOldWay(VALUE module);
+    int addMethods(VALUE module);
     int addVariables(VALUE module,int offset);
     int addExceptionMethod(VALUE module, int offset);
     void addMethod(const char *name, const string &signature, int offset);
