@@ -38,40 +38,5 @@ require "ycp/ops"
 require "ycp/path"
 require "ycp/scr"
 require "ycp/term"
+require "ycp/ui"
 require "ycp/wfm"
-
-#--------------------------------------
-#
-# YCP::Ui
-#
-
-module YCP
-  module Ui
-
-  # Define symbols for the UI
-  ui_terms = [ :BarGraph, :Bottom, :CheckBox, :ColoredLabel, :ComboBox, :Date,
-    :DownloadProgress, :DumbTab, :DummySpecialWidget, :Empty, :Frame, :HBox, :HBoxvHCenter,
-    :HMultiProgressMeter, :HSpacing, :HSquash, :HStretch, :HVCenter, :HVSquash,
-    :HVStretch, :HWeight, :Heading, :IconButton, :Image, :IntField, :Label, :Left, :LogView,
-    :MarginBox, :MenuButton, :MinHeight, :MinSize, :MinWidth, :MultiLineEdit,
-    :MultiSelectionBox, :PackageSelector, :PatternSelector, :PartitionSplitter,
-    :Password, :PkgSpecial, :ProgressBar, :PushButton, :RadioButton,
-    :RadioButtonGroup, :ReplacePoint, :RichText, :Right, :SelectionBox, :Slider, :Table,
-    :TextEntry, :Time, :Top, :Tree, :VBox, :VCenter, :VMultiProgressMeter, :VSpacing,
-    :VSquash, :VStretch, :VWeight, :Wizard,
-    :id, :opt ]
-
-   # for each symbol define a util function that will create a term
-    ui_terms.each do | term_name |
-      define_method(term_name) do | *args |
-        t = YaST::Term.new(term_name.to_s)
-        args.each do |arg|
-          t.add(arg)
-        end
-        return t
-      end
-      alias_method term_name.to_s.downcase, term_name
-    end
-
-  end # end Ui module
-end
