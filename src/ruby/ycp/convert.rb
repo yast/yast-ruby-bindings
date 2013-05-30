@@ -10,7 +10,7 @@ module YCP
     [ "boolean", "string", "symbol", "integer", "float", "list", "map", 
       "term", "path", "locale" ].each do |type|
       eval <<END
-        def self.to#{type}(object)
+        def self.to_#{type}(object)
           convert object, :from => "any", :to => "#{type}"
         end
 END

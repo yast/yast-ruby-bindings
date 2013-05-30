@@ -29,6 +29,6 @@ class OpsTest < YCP::TestCase
   end
 
   def test_shortcuts
-    assert_equal "t", YCP::Convert.tostring("t")
+    assert_equal "t", YCP::Convert.to_string("t")
   end
 end
