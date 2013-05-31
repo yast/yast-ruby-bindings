@@ -24,13 +24,13 @@ class YCP::OpsTest < YCP::TestCase
   ]
   def test_equal_same
     SAME_VALUES.each do |first,second|
-      assert YCP::Ops.equal(first, second), "Value should be same, but differs \n-#{first.inspect}\n+#{second.inspect}"
+      assert first == second, "Value should be same, but differs \n-#{first.inspect}\n+#{second.inspect}"
     end
   end
 
   def test_not_equal_same
     SAME_VALUES.each do |first,second|
-      assert !YCP::Ops.not_equal(first, second), "Value is same, but marked as not equal \n-#{first.inspect}\n+#{second.inspect}"
+      assert first == second, "Value is same, but marked as not equal \n-#{first.inspect}\n+#{second.inspect}"
     end
   end
 
@@ -47,20 +47,20 @@ class YCP::OpsTest < YCP::TestCase
   ]
   def test_equal_different_value
     DIFFERENT_VALUES.each do |first,second|
-      assert !YCP::Ops.equal(first, second), "Value should differs, but mark as same \n-#{first.inspect}\n+#{second.inspect}"
+      assert first !=  second, "Value should differs, but mark as same \n-#{first.inspect}\n+#{second.inspect}"
     end
   end
 
   def test_not_equal_different_value
     DIFFERENT_VALUES.each do |first,second|
-      assert YCP::Ops.not_equal(first, second), "Value should differs, but mark as same \n-#{first.inspect}\n+#{second.inspect}"
+      assert first != second, "Value should differs, but mark as same \n-#{first.inspect}\n+#{second.inspect}"
     end
   end
 
   def test_equal_with_nil
     DIFFERENT_VALUES.each do |first,second|
-      assert !YCP::Ops.equal(first, nil), "Value should differs from nil, but marked as same \n-#{first.inspect}"
-      assert !YCP::Ops.equal(nil,second), "Nil should differ from value, but marked as same \n+#{second.inspect}"
+      assert first != nil, "Value should differs from nil, but marked as same \n-#{first.inspect}"
+      assert nil != second, "Nil should differ from value, but marked as same \n+#{second.inspect}"
     end
   end
 

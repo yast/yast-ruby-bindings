@@ -649,7 +649,7 @@ module YCP
     end
 
     extend FastGettext::Translation
-    include YCP::I18n
+    extend YCP::I18n
     # Translates the text using the given text domain
     def self.dgettext (domain, text)
       old_text_domain = FastGettext.text_domain
