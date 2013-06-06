@@ -41,9 +41,8 @@ as published by the Free Software Foundation; either version
 
 #include "YRuby.h"
 
-#include <ruby/encoding.h>
-
 #include "Y2YCPTypeConv.h"
+#include "Y2RubyUtils.h"
 
 //must match same magic id as in vica versa conversion
 #define YCP_EXTERNAL_MAGIC "Ruby object"
@@ -58,7 +57,7 @@ ycp_path_to_rb_path( YCPPath ycppath )
 
   VALUE ycp = rb_define_module("YCP");
   VALUE cls = rb_const_get(ycp, rb_intern("Path"));
-  VALUE value = rb_str_new2(ycppath->asString()->value().c_str());
+  VALUE value = rb_utf8_str_new(ycppath->asString()->value());
   return rb_class_new_instance(1,&value,cls);
 }
 
@@ -117,7 +116,7 @@ ycp_ext_to_rb_ext( YCPExternal ext )
   VALUE cls = rb_const_get(ycp, rb_intern("External"));
   // FIXME marking and deallocation
   VALUE tdata = Data_Wrap_Struct(cls, 0, NULL, new YCPExternal(ext));
-  VALUE argv[] = {rb_str_new2(ext->magic().c_str())};
+  VALUE argv[] = {rb_utf8_str_new(ext->magic())};
   rb_obj_call_init(tdata, 1, argv);
   return tdata;
   
@@ -134,9 +133,6 @@ ycp_ext_to_rb_ext( YCPExternal ext )
 extern "C" VALUE
 ycpvalue_2_rbvalue( YCPValue ycpval )
 {
-  // cache the UTF-8 encoding object
-  static rb_encoding *utf8;
-
   // TODO
   // YT_BYTEBLOCK YT_CODE YT_RETURN YT_BREAK YT_ENTRY YT_ERROR  YT_REFERENCE YT_EXTERNA
   if (ycpval.isNull() || ycpval->isVoid())
@@ -149,13 +145,8 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
   }
   else if (ycpval->isString())
   {
-    if (!utf8)
-    {
-      utf8 = rb_enc_find("UTF-8");
-    }
-
     // always use UTF-8 encoding
-    return rb_enc_str_new(ycpval->asString()->value().c_str(), ycpval->asString()->value().size(), utf8);
+    return rb_utf8_str_new(ycpval->asString()->value());
   }
   else if (ycpval->isPath())
   {

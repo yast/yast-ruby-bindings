@@ -47,7 +47,7 @@ as published by the Free Software Foundation; either version
 
 void set_last_exception(VALUE& module,const string& message)
 {
-  rb_ivar_set(module,rb_intern("@__last_exception"),rb_str_new2(message.c_str()));
+  rb_ivar_set(module,rb_intern("@__last_exception"),rb_utf8_str_new(message));
 }
 
 YRuby * YRuby::_yRuby = 0;

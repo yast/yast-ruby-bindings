@@ -141,6 +141,9 @@ class BuiltinsTest < YCP::TestCase
     assert_equal "lest test\tsrst", YCP::Builtins.regexpsub(" lest test\tsrst\t", "^[ \t]*(([^ \t]*[ \t]*[^ \t]+)*)[ \t]*$", "\\1")
     assert_equal "", YCP::Builtins.regexpsub("", "^[ \t]*(([^ \t]*[ \t]*[^ \t]+)*)[ \t]*$", "\\1")
     assert_equal "", YCP::Builtins.regexpsub("  \t  ", "^[ \t]*(([^ \t]*[ \t]*[^ \t]+)*)[ \t]*$", "\\1")
+
+    # the result must be UTF-8 string
+    assert_equal Encoding::UTF_8, YCP::Builtins.regexpsub("aaabbb", "(.*ab)", "s_\\1_e").encoding
   end
 
   def test_regexptokenize
@@ -148,6 +151,9 @@ class BuiltinsTest < YCP::TestCase
     assert_equal ["aaab", "bb"], YCP::Builtins.regexptokenize("aaabbb", "(.*ab)(.*)")
     assert_equal [], YCP::Builtins.regexptokenize("aaabbb", "(.*ba).*")
     assert_equal nil, YCP::Builtins.regexptokenize("aaabbb", "(.*ba).*(");
+
+    # the result must be UTF-8 string
+    assert_equal Encoding::UTF_8, YCP::Builtins.regexptokenize("aaabbBb", "(.*[A-Z]).*").first.encoding
   end
 
   def test_tohexstring
@@ -794,7 +800,9 @@ class BuiltinsTest < YCP::TestCase
   def test_float_tolstring
     old_lang = ENV["LANG"]
     ENV["LANG"] = "cs_CZ.utf-8"
-    assert_equal "0,5", YCP::Builtins::Float.tolstring(0.52,1)
+    ret = YCP::Builtins::Float.tolstring(0.52,1)
+    assert_equal "0,5", ret
+    assert_equal Encoding::UTF_8, ret.encoding
     ENV["LANG"] = old_lang
   end
 

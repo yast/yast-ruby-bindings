@@ -31,6 +31,7 @@ extern "C" {
 #include "Y2RubyTypeConv.h"
 #include "RubyLogger.h"
 #include "YRuby.h"
+#include "Y2RubyUtils.h"
 
 static VALUE rb_mSCR;
 static VALUE rb_mWFM;
@@ -169,7 +170,7 @@ extern "C" {
     std::string utf_res;
     if (!recode(res,utf_res))
       return Qnil;
-    return rb_str_new2(utf_res.c_str());
+    return rb_utf8_str_new(utf_res);
   }
 
   // crypt part taken from y2crypt from yast core
@@ -310,7 +311,7 @@ extern "C" {
     char * res = crypt_pass(source, type);
     if (!res)
       return Qnil;
-    VALUE ret = rb_str_new2(res);
+    VALUE ret = rb_utf8_str_new(res);
     delete res;
     return ret;
   }
@@ -537,7 +538,7 @@ extern "C" {
     }
 
     if (result.solved)
-      return rb_str_new2 (result.result_str.c_str ());
+      return rb_utf8_str_new(result.result_str);
 
     return Qnil;
   }
@@ -598,7 +599,7 @@ extern "C" {
     if (result.solved) {
       for (int i = 1; i <= result.match_nb; i++)
       {
-          rb_ary_push(list, rb_str_new2 (result.match_str[i].c_str()));
+          rb_ary_push(list, rb_utf8_str_new(result.match_str[i]));
       }
     }
 
