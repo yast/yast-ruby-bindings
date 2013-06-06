@@ -65,7 +65,7 @@ YRuby::YRuby()
   ruby_init();
   // call ruby_process_options to invoke prelude.rb which defines Mutex#synchronize
   // see http://www.ruby-forum.com/topic/4408161
-  static char* args[] = { "ruby", "/dev/null" };
+  static char* args[] = { (char *)"ruby", (char *)"/dev/null" };
   ruby_process_options(2, args);
   ruby_script("yast");
   ruby_init_loadpath();
@@ -81,7 +81,7 @@ void YRuby::gc_mark(void *object)
 {
   refcount_map_t * vrby = (refcount_map_t *) object;
 
-  y2milestone("mark: map size is %u", vrby->size());
+  y2milestone("mark: map size is %zu", vrby->size());
   refcount_map_t::iterator
     b = vrby->begin(),
     e = vrby->end(),
@@ -96,7 +96,7 @@ void YRuby::gc_free(void *object)
 {
   refcount_map_t * vrby = (refcount_map_t *) object;
 
-  y2milestone("free: map size is %u", vrby->size());
+  y2milestone("free: map size is %zu", vrby->size());
 }
 
 YRuby::~YRuby()
