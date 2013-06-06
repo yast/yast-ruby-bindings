@@ -283,6 +283,7 @@ class YCP::OpsTest < YCP::TestCase
     [nil,1,nil],
     [1,nil,nil],
     [nil,nil,nil],
+    [2,0,nil], #yes fantastic ycp allows division by zero
     [2,1,2],
     [3.0,1.5,2.0],
   ]

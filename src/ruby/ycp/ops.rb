@@ -130,7 +130,7 @@ module YCP
     end
 
     def self.divide first, second
-      return nil if first.nil? || second.nil?
+      return nil if first.nil? || second.nil? || second == 0
 
       return first / second
     end
