@@ -1,10 +1,16 @@
 #include <vector>
 #include <string>
 
+#include <ruby.h>
+#include <ruby/encoding.h>
+
 #include "y2util/stringutil.h"
 #include "Y2RubyUtils.h"
 
 using namespace std;
+
+// cache the UTF-8 encoding object
+static rb_encoding *utf8;
 
 static VALUE const_get_wrapper(VALUE input)
 {
@@ -32,3 +38,18 @@ VALUE y2ruby_nested_const_get(const std::string &name)
   }
   return module;
 }
+
+VALUE rb_utf8_str_new(const std::string &str) {
+  if (!utf8)
+    utf8 = rb_enc_find("UTF-8");
+
+  return rb_enc_str_new(str.c_str(), str.size(), utf8);
+}
+
+VALUE rb_utf8_str_new(const char *str) {
+  if (!utf8)
+    utf8 = rb_enc_find("UTF-8");
+
+  return rb_enc_str_new(str, strlen(str), utf8);
+}
+
