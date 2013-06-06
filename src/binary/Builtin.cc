@@ -299,7 +299,7 @@ extern "C" {
         y2error ("crypt_r () returns 0 pointer");
         return 0;
     }
-    y2milestone ("encrypted %s", newencrypted);
+    y2debug ("encrypted %s", newencrypted);
 
     //data lives on stack so dup it
     return strdup(newencrypted); 

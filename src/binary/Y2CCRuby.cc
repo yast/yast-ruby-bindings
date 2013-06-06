@@ -71,13 +71,13 @@ Y2Component *Y2CCRuby::provideNamespace (const char *name)
 
     if (!module.empty ())
     {
-      y2milestone("Find module result: '%s'", module.c_str());
+      y2debug("Find module result: '%s'", module.c_str());
       if (!cruby)
       {
-        y2milestone("new ruby component");
+        y2debug("new ruby component");
         cruby = new Y2RubyComponent();
       }
-      y2milestone("returning existing ruby component");
+      y2debug("returning existing ruby component");
       return cruby;
     }
 

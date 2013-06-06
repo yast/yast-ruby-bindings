@@ -290,7 +290,7 @@ int YRubyNamespace::addVariables(VALUE module, int offset)
     se->setGlobal (true);
     // enter it to the symbol table
     enterSymbol (se, 0);
-    y2milestone("variable: '%s' added", rb_id2name(SYM2ID(variable_name)));
+    y2debug("variable: '%s' added", rb_id2name(SYM2ID(variable_name)));
   }
   return offset+j;
 }

@@ -32,10 +32,6 @@ using std::map;
 
 Y2RubyComponent::Y2RubyComponent()
 {
-  // Actual creation of a Ruby interpreter is postponed until one of the
-  // YRuby static methods is used. They handle that.
-
-  y2milestone( "Creating Y2RubyComponent" );
 }
 
 
@@ -45,7 +41,7 @@ Y2RubyComponent::~Y2RubyComponent()
   {
     delete i->second;
   }
-  y2milestone( "Destroying Y2RubyComponent" );
+  y2debug( "Destroying Y2RubyComponent" );
   YRuby::destroy();
 }
 

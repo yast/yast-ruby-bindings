@@ -343,7 +343,7 @@ yast_y2_logger( int argc, VALUE *argv, VALUE self )
 static VALUE
 add_module_path( VALUE self, VALUE path )
 {
-  y2milestone ("add module path %s", RSTRING_PTR(path));
+  y2debug ("add module path %s", RSTRING_PTR(path));
   YCPPathSearch::addPath (YCPPathSearch::Module, RSTRING_PTR(path));
   return Qnil;
 }
@@ -351,7 +351,7 @@ add_module_path( VALUE self, VALUE path )
 static VALUE
 add_include_path( VALUE self, VALUE path )
 {
-  y2milestone ("add include path %s", RSTRING_PTR(path));
+  y2debug ("add include path %s", RSTRING_PTR(path));
   YCPPathSearch::addPath (YCPPathSearch::Include, RSTRING_PTR(path));
   return Qnil;
 }

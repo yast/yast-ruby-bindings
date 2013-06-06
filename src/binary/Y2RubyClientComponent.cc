@@ -36,7 +36,7 @@ Y2RubyClientComponent::Y2RubyClientComponent()
 
 Y2RubyClientComponent::~Y2RubyClientComponent()
 {
-  y2milestone( "Destroying Y2RubyClientComponent" );
+  y2debug( "Destroying Y2RubyClientComponent" );
 }
 
 Y2RubyClientComponent* Y2RubyClientComponent::instance()
@@ -51,7 +51,7 @@ Y2RubyClientComponent* Y2RubyClientComponent::instance()
 YCPValue Y2RubyClientComponent::doActualWork(const YCPList& arglist,
     Y2Component *displayserver)
 {
-  y2milestone( "Call client with args %s", arglist->toString().c_str());
+  y2debug( "Call client with args %s", arglist->toString().c_str());
   YCPList old_args = Y2WFMComponent::instance()->SetArgs(arglist);
   YCPValue res = YRuby::yRuby()->callClient(client);
   Y2WFMComponent::instance()->SetArgs(old_args);

@@ -81,13 +81,13 @@ void YRuby::gc_mark(void *object)
 {
   refcount_map_t * vrby = (refcount_map_t *) object;
 
-  y2milestone("mark: map size is %zu", vrby->size());
+  y2debug("mark: map size is %zu", vrby->size());
   refcount_map_t::iterator
     b = vrby->begin(),
     e = vrby->end(),
     it;
   for (it = b; it != e; ++it) {
-    y2milestone("marking: value %ld refcount %d", it->first, it->second);
+    y2debug("marking: value %ld refcount %d", it->first, it->second);
     rb_gc_mark(it->first);
   }
 }
@@ -96,7 +96,7 @@ void YRuby::gc_free(void *object)
 {
   refcount_map_t * vrby = (refcount_map_t *) object;
 
-  y2milestone("free: map size is %zu", vrby->size());
+  y2debug("free: map size is %zu", vrby->size());
 }
 
 YRuby::~YRuby()
