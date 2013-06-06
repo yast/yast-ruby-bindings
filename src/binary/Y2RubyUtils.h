@@ -31,4 +31,11 @@ as published by the Free Software Foundation; either version
  */
 VALUE y2ruby_nested_const_get(const std::string &name);
 
+/**
+ * Create Ruby String object from a C++ string
+ * The resulting string has UTF-8 encoding
+ */
+VALUE rb_utf8_str_new(const std::string &str);
+VALUE rb_utf8_str_new(const char *str);
+
 #endif

@@ -40,6 +40,7 @@ as published by the Free Software Foundation; either version
 
 #include "Y2YCPTypeConv.h"
 #include "Y2RubyTypeConv.h"
+#include "Y2RubyUtils.h"
 
 /*
  * Ruby module anchors
@@ -229,7 +230,7 @@ ycp_module_symbols(VALUE self, VALUE namespace_name)
   for (unsigned int i=0; i < ns->symbolCount(); ++i)
   {
     SymbolEntryPtr s = ns->symbolEntry(i);
-    VALUE name = rb_str_new2(s->name());
+    VALUE name = rb_utf8_str_new(s->name());
     VALUE type = ID2SYM(rb_intern(s->catString().c_str()));
     rb_hash_aset(res,name,type);
   }
