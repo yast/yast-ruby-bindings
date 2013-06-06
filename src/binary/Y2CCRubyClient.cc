@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include "Y2CCRubyClient.h"
 #include <ycp/pathsearch.h>
 #define y2log_component "Y2RubyClient"
@@ -31,7 +32,14 @@ Y2Component *Y2CCRubyClient::create ( const char * name) const
     client_path = Y2PathSearch::completeFilename (sname);
     if (client_path.empty())
       return NULL;
+
+    if (strlen(name) > 3 && strcmp(name + strlen(name) - 3, ".rb")) //not ruby file
+      return NULL;
   }
+
+  y2debug("test existence of file %s", client_path.c_str());
+  if (access(client_path.c_str(), R_OK) == -1) //no file or no read permission
+    return NULL;
 
   Y2RubyClientComponent* rc = Y2RubyClientComponent::instance();
   rc->setClient(client_path);
