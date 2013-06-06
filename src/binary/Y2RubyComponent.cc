@@ -27,6 +27,7 @@ as published by the Free Software Foundation; either version
 #include "YRuby.h"
 #include "YRubyNamespace.h"
 using std::string;
+using std::map;
 
 
 Y2RubyComponent::Y2RubyComponent()
@@ -40,6 +41,10 @@ Y2RubyComponent::Y2RubyComponent()
 
 Y2RubyComponent::~Y2RubyComponent()
 {
+  for( map<string,Y2Namespace*>::iterator i = namespaces.begin(); i != namespaces.end(); ++i)
+  {
+    delete i->second;
+  }
   y2milestone( "Destroying Y2RubyComponent" );
   YRuby::destroy();
 }
@@ -51,6 +56,11 @@ void Y2RubyComponent::result( const YCPValue & )
 
 Y2Namespace *Y2RubyComponent::import (const char* name)
 {
+
+  map<string,Y2Namespace*>::iterator cached_namespace = namespaces.find(name);
+  if (cached_namespace != namespaces.end())
+    return cached_namespace->second;
+
   y2debug("Creating namespace for import '%s'", name);
   // must be the same in Y2CCRuby and Y2RubyComponent
   string module = YCPPathSearch::find (YCPPathSearch::Module, string (name) + ".rb");

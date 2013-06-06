@@ -24,6 +24,7 @@ as published by the Free Software Foundation; either version
 
 #include "Y2.h"
 #include <string.h>
+#include "map"
 
 
 /**
@@ -31,6 +32,9 @@ as published by the Free Software Foundation; either version
  */
 class Y2RubyComponent : public Y2Component
 {
+private:
+    std::map<std::string, Y2Namespace*> namespaces;
+
 public:
     /**
      * Constructor.
