@@ -138,7 +138,7 @@ YRuby::loadModule( YCPList argList )
   YRuby::yRuby();
   string module_path = argList->value(1)->asString()->value();
   int error = 0;
-  rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) strdup(module_path.c_str()), &error);
+  rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) module_path.c_str(), &error);
   if (error)
   {
     VALUE exception = rb_gv_get("$!"); /* get last exception */

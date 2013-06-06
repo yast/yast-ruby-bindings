@@ -306,7 +306,7 @@ void YRubyNamespace::addMethod( const char* name, const string &signature, int o
   constTypePtr sym_tp = Type::fromSignature(signature);
 
   // symbol entry for the function
-  SymbolEntry *fun_se = new SymbolEntry ( this,
+  SymbolEntryPtr fun_se = new SymbolEntry ( this,
     offset,// position. arbitrary numbering. must stay consistent when?
     name,
     SymbolEntry::c_function,

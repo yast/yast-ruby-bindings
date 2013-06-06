@@ -138,30 +138,6 @@ ui_init( int argc, VALUE *argv, VALUE self )
 
 
 /*
- * Helper
- *
- * lookup_namespace_component()
- *
- * looks a component for a namespace
- * throws RuntimeError is namespace cannot be found
- *
- */
-
-static void
-lookup_namespace_component(const char *name)
-{
-  Y2Component *c = Y2ComponentBroker::getNamespaceComponent(name);
-  if (c == NULL)
-  {
-    y2internal("no component can provide namespace '%s'\n", name);
-    rb_raise( rb_eRuntimeError, "no YaST component can provide namespace '%s'", name);
-  }
-  y2debug("component name %s\n", c->name().c_str());
-  return;
-}
-
-
-/*
  * import_namespace
  *
  * tries to import a namespace
@@ -197,7 +173,6 @@ static VALUE
 ycp_module_import( VALUE self, VALUE name)
 {
   const char *s = StringValuePtr(name);
-  lookup_namespace_component(s); /* throws if not found */
   return import_namespace(s);
 }
 
@@ -261,8 +236,6 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
     function_name = StringValuePtr( symbol );
 
   y2debug("Dynamic Proxy: [%s::%s] with [%d] params\n", namespace_name, function_name, argc);
-
-  lookup_namespace_component(namespace_name);
 
   Y2Namespace *ns = getNs(namespace_name);
   if (ns == NULL)

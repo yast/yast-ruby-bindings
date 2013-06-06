@@ -82,7 +82,9 @@ Y2Namespace *Y2RubyComponent::import (const char* name)
   YRuby::loadModule (args);
   y2debug("Module '%s' loaded", name);
   // introspect, create data structures for the interpreter
-  return new YRubyNamespace (name);
+  Y2Namespace * res = new YRubyNamespace (name);
+  namespaces[name] = res;
+  return res;
 }
 
 const string Y2RubyComponent::CamelCase2DelimSepated( const char* name)
