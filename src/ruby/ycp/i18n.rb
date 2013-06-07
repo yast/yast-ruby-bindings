@@ -8,47 +8,44 @@ module YCP
     DEFAULT_LOCALE = "en_US"
 
     def textdomain domain
-      # TODO FIXME:
-      # A single combined text domain is used for all translations
-      # to solve the problem with switching domain across different files
-      #
       # FastGettext does not track which file/class uses which text domain,
-      # it has just single global text domain (the current one)
-      #
-      # This simple code does not work properly:
-      #        FastGettext.add_text_domain(domain, :path => LOCALE_DIR)
-      #        FastGettext.text_domain = domain
+      # it has just single global text domain (the current one),
+      # remember the requested text domain here
+      @my_textdomain = domain
 
       # initialize available locales at first use or when the current language is changed
       if FastGettext.available_locales.nil? || current_language != FastGettext.locale
+        available = available_locales
+        if FastGettext.available_locales != available
+          # reload the translations, a new language is available
+          FastGettext.translation_repositories.keys.each {|dom| FastGettext.add_text_domain(domain, :path => LOCALE_DIR)}
+          FastGettext.available_locales = available
+        end
 
-        # see https://github.com/grosser/fast_gettext#chains about the FastGettext chains
-        FastGettext.add_text_domain "combined", :type => :chain, :chain => combined_repositories
-        FastGettext.default_text_domain = "combined"
-
-        FastGettext.available_locales = available_locales
         FastGettext.set_locale current_language
       end
+
+      # add the text domain (only if missing to avoid re-reading translations)
+      FastGettext.add_text_domain(domain, :path => LOCALE_DIR) unless FastGettext::translation_repositories[domain]
+    end
+
+    def _(str)
+      old_text_domain = FastGettext.text_domain
+      FastGettext.text_domain = @my_textdomain
+      FastGettext::Translation::_ str
+    ensure
+      FastGettext.text_domain = old_text_domain
+    end
+
+    def n_(singular, plural, num)
+      old_text_domain = FastGettext.text_domain
+      FastGettext.text_domain = @my_textdomain
+      FastGettext::Translation::n_(singular, plural, num)
+    ensure
+      FastGettext.text_domain = old_text_domain
     end
 
     private
-
-    # get translation repositories for all available text domains
-    def combined_repositories
-      text_domains = []
-      repos = []
-
-      Dir[File.join(LOCALE_DIR, "*/LC_MESSAGES/*.mo")].each do |mofile|
-        text_domain = File.basename(mofile, ".mo")
-
-        if !text_domains.include? text_domains
-          repos << FastGettext::TranslationRepository.build(text_domain, :path => LOCALE_DIR)
-          text_domains << text_domain
-        end
-      end
-
-      repos
-    end
 
     def available_locales
       # the first item is used as the fallback
@@ -77,8 +74,5 @@ module YCP
       lang
     end
 
-    def self.included mod
-      mod.send :include, FastGettext::Translation
-    end
   end
 end

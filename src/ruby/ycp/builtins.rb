@@ -648,7 +648,6 @@ module YCP
       return string.gsub(/[#{Regexp.escape chars}]/, "")
     end
 
-    extend FastGettext::Translation
     extend YCP::I18n
     # Translates the text using the given text domain
     def self.dgettext (domain, text)
@@ -657,6 +656,7 @@ module YCP
       return _(text)
     ensure
       FastGettext.text_domain = old_text_domain
+      textdomain old_text_domain
     end
 
     # Translates the text using a locale-aware plural form handling
@@ -666,6 +666,7 @@ module YCP
       return n_(singular, plural, num)
     ensure
       FastGettext.text_domain = old_text_domain
+      textdomain old_text_domain
     end
 
     # Translates the text using the given text domain and path
@@ -673,7 +674,7 @@ module YCP
       old_text_domain = FastGettext.text_domain
       FastGettext.add_text_domain(domain, :path => dirname)
       FastGettext.text_domain = domain
-      return _(text)
+      return FastGettext::Translation::_(text)
     ensure
       FastGettext.text_domain = old_text_domain
     end
