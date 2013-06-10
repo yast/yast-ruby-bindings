@@ -22,6 +22,7 @@ as published by the Free Software Foundation; either version
 #define y2log_component "Y2RubyClient"
 #include <ycp/y2log.h>
 #include <ycp/pathsearch.h>
+#include <ycp/YCPSymbol.h>
 
 #include "Y2RubyClientComponent.h"
 #include "YRuby.h"
@@ -51,8 +52,25 @@ Y2RubyClientComponent* Y2RubyClientComponent::instance()
 YCPValue Y2RubyClientComponent::doActualWork(const YCPList& arglist,
     Y2Component *displayserver)
 {
-  y2debug( "Call client with args %s", arglist->toString().c_str());
-  YCPList old_args = Y2WFMComponent::instance()->SetArgs(arglist);
+  YCPList client_arglist = arglist;
+
+  // YCP debugger hack: look only at the last entry, if it's debugger or not
+  // and remove it, see Y2WFMComponent::doActualWork() in
+  // https://github.com/yast/yast-core/blob/master/wfm/src/Y2WFMComponent.cc#L143
+  if (!client_arglist->isEmpty())
+  {
+      YCPValue last = client_arglist->value(client_arglist->size() - 1);
+      if (last->isSymbol () && last->asSymbol()->symbol() == "debugger")
+      {
+          y2milestone("Removing `debugger symbol from the argument list");
+
+          // remove the flag from the arguments
+          client_arglist->remove(arglist->size() - 1);
+      }
+  }
+
+  y2debug( "Call client with args %s", client_arglist->toString().c_str());
+  YCPList old_args = Y2WFMComponent::instance()->SetArgs(client_arglist);
   YCPValue res = YRuby::yRuby()->callClient(client);
   Y2WFMComponent::instance()->SetArgs(old_args);
   return res;
