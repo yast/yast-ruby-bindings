@@ -50,7 +50,7 @@ module YCP
               return default
             end
           when ::NilClass
-            YCP.y2warning 1, "Builtin index called on nil."
+            YCP.y2milestone 1, "Builtin index called on nil."
             return default
           else
             YCP.y2warning "Builtin index called on wrong type #{res.class} from #{caller.inspect}"
