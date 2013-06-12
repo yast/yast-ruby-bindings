@@ -347,9 +347,24 @@ class BuiltinsTest < YCP::TestCase
 
   def test_tointeger()
     assert_equal nil, YCP::Builtins.tointeger(nil)
+    assert_equal nil, YCP::Builtins.tointeger("")
+    assert_equal nil, YCP::Builtins.tointeger("foo")
     assert_equal 120, YCP::Builtins.tointeger(120)
     assert_equal 120, YCP::Builtins.tointeger("120")
+    assert_equal 120, YCP::Builtins.tointeger("  120asdf")
     assert_equal 120, YCP::Builtins.tointeger(120.0)
+    assert_equal 32, YCP::Builtins.tointeger("0x20")
+    assert_equal 0, YCP::Builtins.tointeger(" 0x20")
+    assert_equal 32, YCP::Builtins.tointeger("0x20Z")
+    assert_equal 8, YCP::Builtins.tointeger("010")
+    assert_equal -10, YCP::Builtins.tointeger("-10")
+
+    # weird YCP cases
+    assert_equal 0, YCP::Builtins.tointeger("-0x20")
+    assert_equal 0, YCP::Builtins.tointeger(" 0x20")
+    assert_equal 20, YCP::Builtins.tointeger(" 020")
+    assert_equal -20, YCP::Builtins.tointeger("-020")
+    assert_equal -20, YCP::Builtins.tointeger("-0020")
   end
 
   def test_search
