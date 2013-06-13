@@ -1,4 +1,5 @@
 require "set"
+require "scanf"
 
 require "ycp/ycp"
 require "ycp/path"
@@ -297,8 +298,16 @@ module YCP
       return nil if object.nil?
 
       case object
+      when ::String
+        # ideally this should be enought: object.scanf("%i").first
+        # but to be 100% YCP compatible we need to do this,
+        # see https://github.com/yast/yast-core/blob/master/libycp/src/YCPInteger.cc#L39
+        if object[0] == "0"
+          return object.scanf((object[1] == "x") ? "%x" : "%o").first
+        end
+        object.scanf("%d").first
       # use full qualified ::Float to avoid clash with YCP::Builtins::Float
-      when ::String, ::Float, ::Fixnum, ::Bignum
+      when ::Float, ::Fixnum, ::Bignum
         object.to_i
       else
         nil
