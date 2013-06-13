@@ -51,6 +51,40 @@ module YCP
   end
   alias_method :copy_arg, :deep_copy
 
+  def self.include(target, path)
+    path_without_suffix = path.sub("\.rb$","")
+    module_name = path_without_suffix.
+      gsub(/^./)     { |s| s.upcase }.
+      gsub(/\/./)    { |s| "::" + s[1].upcase }.
+      gsub(/[-_.]./) { |s| s[1].upcase } +
+      "Include"
+
+    name_parts = module_name.split("::")
+
+    parent = YCP
+    loaded = name_parts.all? do |name_part|
+      next false unless parent.constants.include? name_part.to_sym
+      parent = parent.const_get name_part
+    end
+
+    unless loaded
+      path = find_include_file path
+      require path
+    end
+
+    mod = name_parts.reduce(YCP) do |parent, module_name|
+      YCP.const_get module_name
+    end
+
+    return if target.class.include? mod
+
+    target.class.send(:include, mod)
+
+    method_name = "initialize_" + path_without_suffix.gsub(/[.-\/]/, "_")
+
+    target.send method_name.to_sym, target
+  end
+
   def self.import(mname)
     modules = mname.split("::")
 
