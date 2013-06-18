@@ -1,4 +1,16 @@
 -------------------------------------------------------------------
+Tue Jun 18 08:08:51 UTC 2013 - jreidinger@suse.com
+
+- Complete rewrite of ruby bindings to allow migration of ycp code
+  to ruby. Few features worth mentioning:
+  - ruby clients
+  - ruby include files
+  - ruby modules with export of specified type
+  - support of global variables
+  - support of ycp builtins
+- 1.0.0
+
+-------------------------------------------------------------------
 Wed Jun 27 08:02:14 UTC 2012 - jreidinger@suse.com
 
 - adapt to changes in yast2-core

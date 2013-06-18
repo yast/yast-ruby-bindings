@@ -19,12 +19,12 @@ BuildRequires:  yast2-devtools >= 2.16.3
 # libzypp-devel is missing .la requires
 BuildRequires:	ruby-devel
 BuildRequires:	rubygem-fast_gettext
-Requires:	rubygem-fast_gettext
-Requires:	yast2-core >= 2.23.4
-BuildRequires:  yast2-core-devel >= 2.23.4
-Requires:       yast2-ycp-ui-bindings       >= 2.16.37
-BuildRequires:  yast2-ycp-ui-bindings-devel >= 2.16.37
-Requires:	ruby
+Requires:	      rubygem-fast_gettext
+Requires:     	yast2-core >= 2.24.0
+BuildRequires:  yast2-core-devel >= 2.24.0
+Requires:       yast2-ycp-ui-bindings       >= 2.21.9
+BuildRequires:  yast2-ycp-ui-bindings-devel >= 2.21.9
+Requires:	      ruby
 Summary:	Ruby bindings for the YaST platform
 
 %description
