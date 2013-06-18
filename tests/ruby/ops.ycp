@@ -1,0 +1,116 @@
+{
+  y2milestone ("nil same: %1", nil == nil);
+  y2milestone ("integers same: %1", 1 == 1);
+  y2milestone ("floats same: %1", 1.1 == 1.1);
+  y2milestone ("strings same: %1", "s" == "s");
+  y2milestone ("symbols same: %1", `s == `s);
+  y2milestone ("booleans same: %1", false == false);
+  y2milestone ("lists same: %1", [1] == [1]);
+  y2milestone ("maps same: %1", $[1:2] == $[1:2]);
+  y2milestone ("paths same: %1", .etc == .etc);
+  y2milestone ("terms same: %1", `a(`b) == `a(`b));
+
+  y2milestone ("nil differ: %1", nil != nil);
+  y2milestone ("integers differ: %1", 1 != 1);
+  y2milestone ("floats differ: %1", 1.1 != 1.1);
+  y2milestone ("strings differ: %1", "s" != "s");
+  y2milestone ("symbols differ: %1", `s != `s);
+  y2milestone ("booleans differ: %1", false != false);
+  y2milestone ("lists differ: %1", [1] != [1]);
+  y2milestone ("maps differ: %1", $[1:2] != $[1:2]);
+  y2milestone ("paths differ: %1", .etc != .etc);
+  y2milestone ("terms differ: %1", `a(`b) != `a(`b));
+
+  y2milestone ("integers not same: %1", 1 == 2);
+  y2milestone ("floats not same: %1", 1.1 == 1.2);
+  y2milestone ("strings not same: %1", "s" == "st");
+  y2milestone ("symbols not same: %1", `s == `st);
+  y2milestone ("booleans not same: %1", false == true);
+  y2milestone ("lists not same: %1", [1] == [1,2]);
+  y2milestone ("maps not same: %1", $[1:2] == $[1:2, 2:3]);
+  y2milestone ("paths not same: %1", .etc == .);
+  y2milestone ("terms not same: %1", `a(`b) == `a());
+
+  y2milestone ("integers not differ: %1", 1 != 2);
+  y2milestone ("floats not differ: %1", 1.1 != 1.2);
+  y2milestone ("strings not differ: %1", "s" != "st");
+  y2milestone ("symbols not differ: %1", `s != `st);
+  y2milestone ("booleans not differ: %1", false != true);
+  y2milestone ("lists not differ: %1", [1] != [1,2]);
+  y2milestone ("maps not differ: %1", $[1:2] != $[1:2, 2:3]);
+  y2milestone ("paths not differ: %1", .etc != .);
+  y2milestone ("terms not differ: %1", `a(`b) != `a());
+
+  y2milestone ("integer x nil compare: %1", 1 == nil);
+  y2milestone ("nil x compare compare: %1", nil == 1);
+  y2milestone ("integer x nil not_equal: %1", 1 != nil);
+  y2milestone ("nil x compare not_equal: %1", nil != 1);
+
+//  only same type can be compared, exception is nil as seen above
+//  y2milestone ("integer x string compare: %1", 1 == "1");
+
+//comparison
+  y2milestone ("integers bigger: %1", 1 < 2);
+  y2milestone ("integer nil bigger: %1", 1 < nil);
+  y2milestone ("integer nil bigger equal: %1", 1 <= nil);
+  y2milestone ("integer nil lesser: %1", 1 > nil);
+  y2milestone ("integer nil lesser equal: %1", 1 >= nil);
+  y2milestone ("nil integer bigger: %1", nil < 1);
+  y2milestone ("nil integer bigger equal: %1", nil <= 1);
+  y2milestone ("nil integer lesser: %1", nil > 1);
+  y2milestone ("nil integer lesser equal: %1", nil >= 1);
+
+  y2milestone ("string bigger: %1", "s" < "t" );
+  y2milestone ("symbol bigger: %1", `s < `t );
+  y2milestone ("boolean bigger: %1", false < true );
+  y2milestone ("list bigger: %1", [1] < [2] );
+  y2milestone ("list bigger: %1", [1,1] < [nil,1] );
+  y2milestone ("list bigger: %1", [1,1] < [1,1,1] );
+  y2milestone ("list bigger: %1", [1,1,1,1] > [1,1,1] );
+  y2milestone ("map bigger: %1", $[1:2,"s":3] >= $[2:3,"s":2] );
+  y2milestone ("path bigger: %1", .ba >= ."a?" );
+  y2milestone ("path bigger: %1", ."b?" >= .ab );
+//cannot mix types, only if it can be convert
+//y2milestone ("symbol string bigger: %1", `s < "t" );
+
+  map<string,map<string,string> > m = $["a" : $["b":"c"] ];
+  y2milestone ("clear map: %1", m["a","b"]:"n" );
+  y2milestone ("clear map: %1", m["a","c"]:"n" );
+
+  list<list<string> > l = [["b","c"]];
+  y2milestone ("clear list: %1", l[0,1]:"n" );
+  y2milestone ("clear list: %1", l[0,2]:"n" );
+  y2milestone ("clear list: %1", l[1,0]:"n" );
+
+  term t = `a(`b,`c);
+  y2milestone ("clear list: %1", t[1]:`n );
+  y2milestone ("clear list: %1", t[2]:`n );
+  y2milestone ("clear list: %1", t[0]:`n );
+
+  map<string,list<string> > n = $["a":["b","c"]];
+  y2milestone ("map list: %1", n["a",0]:"n" );
+  y2milestone ("map list: %1", n["a",2]:"n" );
+
+  map<string,any> z = $["a":["b","c"], "b":`a(`b,`c)];
+  y2milestone ("map term: %1", z["a",0]:"n" );
+  y2milestone ("map term: %1", z["b",1]:`n );
+  y2milestone ("map term: %1", z["b",2]:`n );
+  
+  list ta = [0];
+  list ma = [[0]];
+  y2milestone ("list add: %1", ta+1);
+  y2milestone ("list add: %1", ta+ma);
+
+  y2milestone ("string add %1", "s"+15);
+  y2milestone ("string add %1", "s"+`c);
+  y2milestone ("string add %1", "s"+.etc);
+
+  y2milestone ("float substract: %1", 1.2-2.3);
+
+  y2milestone ("int modulo: %1", 5%2);
+
+  y2milestone ("int negate: %1", ~5);
+  y2milestone ("int negate: %1", ~8589934592);
+  y2milestone ("int negate: %1", ~-558589934592);
+
+}

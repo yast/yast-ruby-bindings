@@ -1,0 +1,18 @@
+//WARNING compile after each change!
+{
+    module "ExampleTestModule";
+
+    global string example_string = "x86_64";
+
+    global map<string,integer> sparc_map() {
+        return $["one": 1, "two": 2];
+    }
+
+    global boolean is_xen() {
+        return false;
+    }
+
+    global string arch_short() {
+        return "ZX Spectrum";
+    }
+}

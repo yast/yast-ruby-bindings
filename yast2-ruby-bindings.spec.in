@@ -14,10 +14,12 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Source0:        yast2-ruby-bindings-%{version}.tar.bz2
 Prefix:         /usr
 
-BuildRequires:	swig cmake gcc-c++ yast2-core-devel
+BuildRequires:	cmake gcc-c++ yast2-core-devel
 BuildRequires:  yast2-devtools >= 2.16.3
 # libzypp-devel is missing .la requires
 BuildRequires:	ruby-devel
+BuildRequires:	rubygem-fast_gettext
+Requires:	rubygem-fast_gettext
 Requires:	yast2-core >= 2.23.4
 BuildRequires:  yast2-core-devel >= 2.23.4
 Requires:       yast2-ycp-ui-bindings       >= 2.16.37
@@ -49,9 +51,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 cd ..
 
 %check
-cd build
+cd build/tests/ruby
 make test ARGS=-V
-cd ..
+cd -
 
 @CLEAN@
 
@@ -59,4 +61,6 @@ cd ..
 %defattr (-, root, root)
 %{_libdir}/YaST2/plugin/libpy2lang_ruby.so
 %{_libdir}/ruby/vendor_ruby/%{rb_ver}/ycp.rb
+%{_libdir}/ruby/vendor_ruby/%{rb_ver}/ycp
 %{_libdir}/ruby/vendor_ruby/%{rb_ver}/%{rb_arch}/ycpx.so
+%{_libdir}/ruby/vendor_ruby/%{rb_ver}/%{rb_arch}/ycp

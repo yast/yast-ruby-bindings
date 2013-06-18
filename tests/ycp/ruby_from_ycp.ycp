@@ -1,30 +1,25 @@
 //
 {
-    import "InRuby";
-    string result = tostring(InRuby::multiply_by_eight(10));
-    y2milestone("result: %1", result);
-    result = tostring(InRuby::raising_code());
-    if (result==nil)
-    {
-      result = tostring(InRuby::last_exception());
-      y2milestone("result: %1", result);
-      if(result != "Wow exception!")
-        return false;
-    }
-    else
-    {
-      y2error("exception completely ignored result: %1",result);
-      return false;
-    }
-    map h = tomap(InRuby::get_hash());
-    y2milestone("get hash: %1",h);
-    if ( tostring(h["a"]:"") != "b" || tostring(h["b"]:"") != "c" )
-    {
-      y2error("map is not properly returned: %1",result);
-      return false;
-    }
-    import "CamelCase";
-    result = tostring(CamelCase::inc(10));
-    y2milestone("result: %1", result);
-    return true;
+    import "CommonModule";
+
+    y2milestone ("Response 0: %1", CommonModule::name);
+
+    string res = CommonModule::method_a(5,6);
+    y2milestone ("Response 1: %1", res);
+
+    CommonModule::name = "Cool module";
+
+    string test = CommonModule::formated_name();
+    y2milestone ("Response 2: %1", test);
+//for manual testing
+/*
+    UI::OpenDialog(
+      `opt(`defaultsize),
+      `Label(test));
+    UI::UserInput();
+*/
+    /* for testing clients
+    any i = WFM::call ("ruby_client");
+    y2milestone(" WFM result %1",i);
+    */
 }

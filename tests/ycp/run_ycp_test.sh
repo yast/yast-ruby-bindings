@@ -15,4 +15,5 @@ fi
 # DEBUG=valgrind
 # DEBUG="strace -s1000 -o log -e trace=file"
 : ${PREFIX=/usr}
+echo $DEBUG $PREFIX/lib/YaST2/bin/y2base -l - -M $DIR $1 UI
 $DEBUG $PREFIX/lib/YaST2/bin/y2base -l - -M $DIR $1 UI
