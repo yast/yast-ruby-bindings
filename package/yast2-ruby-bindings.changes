@@ -2,7 +2,7 @@
 Wed Jun 27 08:02:14 UTC 2012 - jreidinger@suse.com
 
 - adapt to changes in yast2-core
-- 0.3.13 
+- 0.3.13
 
 -------------------------------------------------------------------
 Tue Jun 12 13:33:01 UTC 2012 - coolo@suse.com
@@ -13,7 +13,7 @@ Tue Jun 12 13:33:01 UTC 2012 - coolo@suse.com
 -------------------------------------------------------------------
 Thu Jun  7 15:44:29 UTC 2012 - jreidinger@suse.com
 
-- port to ruby 1.9 
+- port to ruby 1.9
 
 -------------------------------------------------------------------
 Thu Apr  5 10:32:47 CEST 2012 - jsuchome@suse.cz
@@ -24,7 +24,7 @@ Thu Apr  5 10:32:47 CEST 2012 - jsuchome@suse.cz
 Thu Jan 19 12:11:56 UTC 2012 - jreidinger@suse.com
 
 - improve previous fix to allow loading also file in namespace (
-  e.g. Name::Test in name/test ) (bnc#705417) 
+  e.g. Name::Test in name/test ) (bnc#705417)
 
 -------------------------------------------------------------------
 Mon Jan 16 15:16:39 UTC 2012 - coolo@suse.com
@@ -91,7 +91,7 @@ Thu Apr  9 15:15:09 CEST 2009 - kkaempf@suse.de
 -------------------------------------------------------------------
 Tue May  6 10:00:50 CEST 2008 - aj@suse.de
 
-- Fix spec file for last change. 
+- Fix spec file for last change.
 
 -------------------------------------------------------------------
 Wed Apr 16 17:27:57 CEST 2008 - dmacvicar@suse.de
@@ -106,7 +106,7 @@ Wed Apr 16 17:27:57 CEST 2008 - dmacvicar@suse.de
 Thu Feb 21 17:56:05 CET 2008 - sh@suse.de
 
 - Added new UI packages to Requires/BuildRequires in .spec file
-- V 0.3.1 
+- V 0.3.1
 
 -------------------------------------------------------------------
 Wed Feb 20 14:10:33 CET 2008 - coolo@suse.de
@@ -129,5 +129,5 @@ Thu Aug  9 12:01:39 CEST 2007 - dmacvicar@suse.de
 -------------------------------------------------------------------
 Mon Aug  6 13:33:43 CEST 2007 - dmacvicar@suse.de
 
-- Initial release 0.1.0 
+- Initial release 0.1.0
 

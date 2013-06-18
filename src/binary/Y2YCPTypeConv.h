@@ -12,31 +12,24 @@
 
 Author: Duncan Mac-Vicar <dmacvicar@suse.de>
 
-Based on yast2-perl-bindings by
-  Martin Vidner <mvidner@suse.cz>
-  Stefan Hundhammer <sh@suse.de>
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version
+2 of the License, or (at your option) any later version.
 
-How to compile
-=================
-Use latest yast2-devtools. then use this calls:
-mkdir build
-cd build
-cmake ..
-make
+*/
 
-How to install
-=================
-Compile it and from build directory call as root
-make install
+#ifndef Y2YCPTYPECONV_H
+#define Y2YCPTYPECONV_H
 
-How to create tarball
-================
-compile and from build directory call
-make srcpackage
-Then in package subdir is sources.
+#include <ycp/YCPValue.h>
+#include <ruby.h>
 
+/**
+ * Converts a YCPValue into a Ruby Value
+ * Supports neested lists and maps using recursion.
+ */
+extern "C" VALUE
+ycpvalue_2_rbvalue( YCPValue ycpval );
 
-
-Exception handling
-=================
-When ruby code raise exception, then method return `nil` in YCP and add method last_exception, that returns message of exception. Also exception details are logged.
+#endif
