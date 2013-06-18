@@ -1,5 +1,7 @@
 require "ostruct"
 
+require "ycp/ycp"
+
 module YCP
   module Exportable
 
@@ -30,7 +32,9 @@ module YCP
       elsif options[:variable]
         published_variables[options[:variable]] = ExportData.new options
         if !options[:private] || ENV["Y2ALLGLOBAL"]
-          attr_accessor :"#{options[:variable]}"
+          attr_writer :"#{options[:variable]}"
+          # reader that do deep copy
+          class_eval "def #{options[:variable]}; YCP.deep_copy(@#{options[:variable]}); end"
         end
       else
         raise "Missing publish kind"

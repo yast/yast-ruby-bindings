@@ -176,7 +176,16 @@ ycp_module_import( VALUE self, VALUE name)
   return import_namespace(s);
 }
 
+static VALUE
+ycp_find_include_file( VALUE self, VALUE path)
+{
+  string ipath (StringValuePtr(path));
+  string include_path = YCPPathSearch::find (YCPPathSearch::Include, ipath);
+  if (include_path.empty())
+    rb_raise(rb_eRuntimeError, "Cannot find client %s", ipath.c_str());
 
+  return rb_utf8_str_new(include_path);
+}
 /*
  * ycp_module_each_symbol(namespace) -> iterator
  *
@@ -415,6 +424,7 @@ extern "C"
      */
     rb_mYCP = rb_define_module("YCP");
     rb_define_singleton_method( rb_mYCP, "import_pure", RUBY_METHOD_FUNC(ycp_module_import), 1);
+    rb_define_singleton_method( rb_mYCP, "find_include_file", RUBY_METHOD_FUNC(ycp_find_include_file), 1);
 
     rb_define_singleton_method( rb_mYCP, "call_ycp_function", RUBY_METHOD_FUNC(ycp_module_call_ycp_function), -1);
 
