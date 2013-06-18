@@ -8,6 +8,8 @@ class Yast::Path;end
 
 module Yast
 
+  BACKTRACE_REGEXP = /^(.*):(\d+):in `.*'$/
+
   def term(*args)
     return Term.new *args
   end
@@ -105,7 +107,8 @@ module Yast
       if (stype == :function)
         m.module_eval <<-"END"
           def self.#{sname}(*args)
-            return Yast::call_yast_function("#{mname}", :#{sname}, *args)
+            caller[0].match BACKTRACE_REGEXP
+            return YCP::call_ycp_function("#{mname}", :#{sname}, $1, $2.to_i, *args)
           end
         END
       end
