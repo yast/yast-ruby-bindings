@@ -1,7 +1,7 @@
 $LOAD_PATH << File.dirname(__FILE__)
 require "test_helper"
 
-require 'ycp/exportable'
+require 'ycp'
 
 class MyTestClass
   extend YCP::Exportable
