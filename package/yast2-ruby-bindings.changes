@@ -1,4 +1,14 @@
 -------------------------------------------------------------------
+Thu Jun 20 20:19:31 UTC 2013 - jreidinger@suse.com
+
+- Rename top level namespace from YCP to Yast
+- cache translations in dpgettext() builtin (lslezak) 
+  (https://github.com/yast/ycp-killer/issues/467)
+- implement block version of Ops.index
+  (https://github.com/yast/y2r/issues/20)
+- 1.1.0
+
+-------------------------------------------------------------------
 Tue Jun 18 08:08:51 UTC 2013 - jreidinger@suse.com
 
 - Complete rewrite of ruby bindings to allow migration of ycp code
