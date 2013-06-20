@@ -681,7 +681,16 @@ module YCP
     # Translates the text using the given text domain and path
     def self.dpgettext (domain, dirname, text)
       old_text_domain = FastGettext.text_domain
-      FastGettext.add_text_domain(domain, :path => dirname)
+
+      # remember the domain => file mapping, the same domain might be
+      # used from a different path, then we need to reload the translations
+      @textdomain_mapping ||= {}
+
+      # check if the domain is already loaded from the path
+      if @textdomain_mapping[domain] != dirname && !FastGettext::translation_repositories[domain]
+        FastGettext.add_text_domain(domain, :path => dirname)
+        @textdomain_mapping[domain.dup] = dirname.dup
+      end
       FastGettext.text_domain = domain
       return FastGettext::Translation::_(text)
     ensure
