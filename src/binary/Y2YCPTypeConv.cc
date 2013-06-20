@@ -51,12 +51,12 @@ extern "C" VALUE
 ycp_path_to_rb_path( YCPPath ycppath )
 {
   int error = 0;
-  rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) "ycp/path",&error);
+  rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) "yast/path",&error);
   if (error)
-    y2internal("Cannot found ycp/path module.");
+    y2internal("Cannot found yast/path module.");
 
-  VALUE ycp = rb_define_module("YCP");
-  VALUE cls = rb_const_get(ycp, rb_intern("Path"));
+  VALUE yast = rb_define_module("Yast");
+  VALUE cls = rb_const_get(yast, rb_intern("Path"));
   VALUE value = rb_utf8_str_new(ycppath->asString()->value());
   return rb_class_new_instance(1,&value,cls);
 }
@@ -66,15 +66,15 @@ ycp_term_to_rb_term( YCPTerm ycpterm )
 {
   int error = 0;
 //  rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) "ycp/term",&error);
-  rb_require("ycp/term");
+  rb_require("yast/term");
   if (error)
   {
-    y2internal("Cannot found ycp/term module.");
+    y2internal("Cannot found yast/term module.");
     return Qnil;
   }
 
-  VALUE ycp = rb_define_module("YCP");
-  VALUE cls = rb_const_get(ycp, rb_intern("Term"));
+  VALUE yast = rb_define_module("Yast");
+  VALUE cls = rb_const_get(yast, rb_intern("Term"));
   VALUE params = ycpvalue_2_rbvalue(ycpterm->args());
   if (params == Qnil)
     params = rb_ary_new2(1);
@@ -88,15 +88,15 @@ ycp_ref_to_rb_ref( YCPReference ycpref )
 {
   int error = 0;
 //  rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) "ycp/term",&error);
-  rb_require("ycpx");
+  rb_require("yastx");
   if (error)
   {
     y2internal("Cannot found ycp/term module.");
     return Qnil;
   }
 
-  VALUE ycp = rb_define_module("YCP");
-  VALUE cls = rb_const_get(ycp, rb_intern("YReference"));
+  VALUE yast = rb_define_module("Yast");
+  VALUE cls = rb_const_get(yast, rb_intern("YReference"));
   return Data_Wrap_Struct(cls, 0, NULL, (void*)&*ycpref->entry());
 }
 
@@ -105,15 +105,15 @@ ycp_ext_to_rb_ext( YCPExternal ext )
 {
   y2debug("Convert ext %s", ext->toString().c_str());
   int error = 0;
-  rb_require("ycp");
+  rb_require("yast");
   if (error)
   {
-    y2internal("Cannot found ycp module.");
+    y2internal("Cannot found yast module.");
     return Qnil;
   }
 
-  VALUE ycp = rb_define_module("YCP");
-  VALUE cls = rb_const_get(ycp, rb_intern("External"));
+  VALUE yast = rb_define_module("Yast");
+  VALUE cls = rb_const_get(yast, rb_intern("External"));
   // FIXME marking and deallocation
   VALUE tdata = Data_Wrap_Struct(cls, 0, NULL, new YCPExternal(ext));
   VALUE argv[] = {rb_utf8_str_new(ext->magic())};

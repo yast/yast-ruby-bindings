@@ -1,7 +1,7 @@
-require "ycpx"
-require "ycp/builtins"
+require "yastx"
+require "yast/builtins"
 
-module YCP
+module Yast
   module_function
   def y2_logger_helper(level,args)
     caller_frame = 1

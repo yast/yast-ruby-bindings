@@ -1,6 +1,6 @@
 require "fast_gettext"
 
-module YCP
+module Yast
   module I18n
 
     #TODO load alternative in development recent translation

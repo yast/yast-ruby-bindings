@@ -47,7 +47,7 @@ as published by the Free Software Foundation; either version
  *
  */
 static VALUE rb_mUi;
-static VALUE rb_mYCP;
+static VALUE rb_mYast;
 static VALUE rb_cYReference;
 
 
@@ -415,28 +415,28 @@ extern "C"
    */
 
   void
-  Init_ycpx()
+  Init_yastx()
   {
     YCPPathSearch::initialize();
 
     /*
      * module YCP
      */
-    rb_mYCP = rb_define_module("YCP");
-    rb_define_singleton_method( rb_mYCP, "import_pure", RUBY_METHOD_FUNC(ycp_module_import), 1);
-    rb_define_singleton_method( rb_mYCP, "find_include_file", RUBY_METHOD_FUNC(ycp_find_include_file), 1);
+    rb_mYast = rb_define_module("Yast");
+    rb_define_singleton_method( rb_mYast, "import_pure", RUBY_METHOD_FUNC(ycp_module_import), 1);
+    rb_define_singleton_method( rb_mYast, "find_include_file", RUBY_METHOD_FUNC(ycp_find_include_file), 1);
 
-    rb_define_singleton_method( rb_mYCP, "call_ycp_function", RUBY_METHOD_FUNC(ycp_module_call_ycp_function), -1);
+    rb_define_singleton_method( rb_mYast, "call_yast_function", RUBY_METHOD_FUNC(ycp_module_call_ycp_function), -1);
 
-    rb_define_singleton_method( rb_mYCP, "symbols", RUBY_METHOD_FUNC(ycp_module_symbols), 1);
-    rb_define_singleton_method( rb_mYCP, "add_module_path", RUBY_METHOD_FUNC(add_module_path), 1);
-    rb_define_singleton_method( rb_mYCP, "add_include_path", RUBY_METHOD_FUNC(add_include_path), 1);
+    rb_define_singleton_method( rb_mYast, "symbols", RUBY_METHOD_FUNC(ycp_module_symbols), 1);
+    rb_define_singleton_method( rb_mYast, "add_module_path", RUBY_METHOD_FUNC(add_module_path), 1);
+    rb_define_singleton_method( rb_mYast, "add_include_path", RUBY_METHOD_FUNC(add_include_path), 1);
 
-    rb_define_method( rb_mYCP, "y2_logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
-    rb_define_singleton_method( rb_mYCP, "y2_logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
+    rb_define_method( rb_mYast, "y2_logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
+    rb_define_singleton_method( rb_mYast, "y2_logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
 
     // Y2 references
-    rb_cYReference = rb_define_class_under(rb_mYCP, "YReference", rb_cObject);
+    rb_cYReference = rb_define_class_under(rb_mYast, "YReference", rb_cObject);
     rb_define_singleton_method(rb_cYReference, "new", RUBY_METHOD_FUNC(ref_new), 1);
     rb_define_method(rb_cYReference, "initialize", RUBY_METHOD_FUNC(ref_init), 0);
     rb_define_method(rb_cYReference, "call", RUBY_METHOD_FUNC(ref_call), -1);
@@ -444,7 +444,7 @@ extern "C"
     /*
      * module YCP::Ui
      */
-    rb_mUi = rb_define_module_under(rb_mYCP, "Ui");
+    rb_mUi = rb_define_module_under(rb_mYast, "Ui");
     rb_define_singleton_method( rb_mUi, "init", RUBY_METHOD_FUNC(ui_init), -1);
   }
 }

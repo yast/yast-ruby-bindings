@@ -35,7 +35,7 @@ extern "C" {
 
 static VALUE rb_mSCR;
 static VALUE rb_mWFM;
-static VALUE rb_mYCP;
+static VALUE rb_mYast;
 static VALUE rb_mBuiltins;
 static VALUE rb_mFloat;
 
@@ -633,13 +633,13 @@ extern "C"
     /*
      * module YCP
      */
-    rb_mYCP = rb_define_module("YCP");
-    rb_define_singleton_method( rb_mYCP, "strcoll", RUBY_METHOD_FUNC(strcoll_wrapper), 2);
-    rb_mSCR = rb_define_module_under(rb_mYCP, "SCR");
+    rb_mYast = rb_define_module("Yast");
+    rb_define_singleton_method( rb_mYast, "strcoll", RUBY_METHOD_FUNC(strcoll_wrapper), 2);
+    rb_mSCR = rb_define_module_under(rb_mYast, "SCR");
     rb_define_singleton_method( rb_mSCR, "call_builtin", RUBY_METHOD_FUNC(scr_call_builtin), -1);
-    rb_mWFM = rb_define_module_under(rb_mYCP, "WFM");
+    rb_mWFM = rb_define_module_under(rb_mYast, "WFM");
     rb_define_singleton_method( rb_mWFM, "call_builtin", RUBY_METHOD_FUNC(wfm_call_builtin), -1);
-    rb_mBuiltins = rb_define_module_under(rb_mYCP, "Builtins");
+    rb_mBuiltins = rb_define_module_under(rb_mYast, "Builtins");
     rb_mFloat = rb_define_module_under(rb_mBuiltins, "Float");
     rb_define_singleton_method( rb_mFloat, "tolstring", RUBY_METHOD_FUNC(float_to_lstring), 2);
     rb_define_singleton_method( rb_mBuiltins, "crypt", RUBY_METHOD_FUNC(crypt_crypt), 1);

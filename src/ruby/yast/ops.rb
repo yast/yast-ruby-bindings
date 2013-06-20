@@ -1,13 +1,13 @@
-require "ycp/ycp"
-require "ycp/path"
-require "ycp/logger"
+require "yast/yast"
+require "yast/path"
+require "yast/logger"
 
 #predefine term to avoid circular dependency
-class YCP::Term;end
-class YCP::FunRef;end
-class YCP::YReference;end
+class Yast::Term;end
+class Yast::FunRef;end
+class Yast::YReference;end
 
-module YCP
+module Yast
   module Ops
     #TODO investigate if convert also get more complex typesfor map and list
     TYPES_MAP = {
@@ -20,27 +20,27 @@ module YCP
       'float' => ::Float,
       'list' => ::Array,
       'map' => ::Hash,
-      'term' => YCP::Term,
-      'path' => YCP::Path,
+      'term' => Yast::Term,
+      'path' => Yast::Path,
       'locale' => ::String,
-      'function' => [YCP::FunRef, YCP::YReference]
+      'function' => [Yast::FunRef, Yast::YReference]
     }
 
       def self.index (object, indexes, default=nil)
         res = object
-        default = YCP.deep_copy(default)
+        default = Yast.deep_copy(default)
         indexes.each do |i|
           case res
-          when ::Array, YCP::Term
+          when ::Array, Yast::Term
             if i.is_a? Fixnum
               if (0..res.size-1).include? i
                 res = res[i]
               else
-                YCP.y2milestone "Index #{i} is out of array size"
+                Yast.y2milestone "Index #{i} is out of array size"
                 return block_given? ? yield : default
               end
             else
-              YCP.y2warning "Passed #{i.inspect} as index key for array."
+              Yast.y2warning "Passed #{i.inspect} as index key for array."
               return block_given? ? yield : default
             end
           when ::Hash
@@ -50,14 +50,14 @@ module YCP
               return block_given? ? yield : default
             end
           when ::NilClass
-            YCP.y2milestone 1, "Builtin index called on nil."
+            Yast.y2milestone 1, "Builtin index called on nil."
             return block_given? ? yield : default
           else
-            YCP.y2warning "Builtin index called on wrong type #{res.class} from #{caller.inspect}"
+            Yast.y2warning "Builtin index called on wrong type #{res.class} from #{caller.inspect}"
             return block_given? ? yield : default
           end
       end
-      return YCP.deep_copy(res)
+      return Yast.deep_copy(res)
     end
 
     def self.assign (object, indexes, value)
@@ -66,16 +66,16 @@ module YCP
       res = object
       indexes.each do |i|
         case res
-        when ::Array, YCP::Term
+        when ::Array, Yast::Term
           if i.is_a? Fixnum
             if (0..res.size-1).include? i
               res = res[i]
             else
-              YCP.y2warning "Index #{i} is out of array size"
+              Yast.y2warning "Index #{i} is out of array size"
               return
             end
           else
-            YCP.y2warning "Passed #{i.inspect} as index key for array."
+            Yast.y2warning "Passed #{i.inspect} as index key for array."
             return
           end
         when ::Hash
@@ -85,15 +85,15 @@ module YCP
             return
           end
         else
-          YCP.y2warning "Builtin assign called on wrong type #{res.class}"
+          Yast.y2warning "Builtin assign called on wrong type #{res.class}"
           return
         end
       end
       case res
-      when ::Array, YCP::Term, ::Hash
-        res[last] = YCP.deep_copy(value)
+      when ::Array, Yast::Term, ::Hash
+        res[last] = Yast.deep_copy(value)
       else
-        YCP.y2warning "Builtin assign called on wrong type #{res.class}"
+        Yast.y2warning "Builtin assign called on wrong type #{res.class}"
       end
     end
 
@@ -104,12 +104,12 @@ module YCP
       case first
       when ::Array
         if second.is_a? ::Array
-          return YCP.deep_copy(first + second)
+          return Yast.deep_copy(first + second)
         else
-          return YCP.deep_copy(first).push(YCP.deep_copy(second))
+          return Yast.deep_copy(first).push(Yast.deep_copy(second))
         end
       when ::Hash
-        return YCP.deep_copy(first).merge YCP.deep_copy(second)
+        return Yast.deep_copy(first).merge Yast.deep_copy(second)
       when ::String
         return first + second.to_s
       else
@@ -192,7 +192,7 @@ module YCP
     end
 
     def self.logical_not value
-      #YCP really do it!!!
+      #Yast really do it!!!
       return nil if value.nil?
 
       return !value
@@ -314,7 +314,7 @@ module YCP
       end
     end
 
-    #speciality of this comparable is that it can compare various classes together like ycp, order is based on ycp class order
+    #speciality of this comparable is that it can compare various classes together like yast, order is based on yast class order
     class GenericComparable
       include Comparable
       
@@ -325,7 +325,7 @@ module YCP
       #ordered classes from low priority to high
       # Only tricky part is Fixnum/Bignum, which is in fact same, so it has special handling in code
       CLASS_ORDER = [ ::NilClass, ::FalseClass, ::TrueClass, ::Fixnum, ::Bignum, ::Float, 
-        ::String, YCP::Path, ::Symbol, ::Array, YCP::Term, ::Hash ]
+        ::String, Yast::Path, ::Symbol, ::Array, Yast::Term, ::Hash ]
       def <=> (second)
         if @value.class == second.class
           case @value
@@ -337,7 +337,7 @@ module YCP
             return ::HashComparator.new(@value, @localized) <=> second
           when ::String
             if @localized
-              return YCP.strcoll(@value,second)
+              return Yast.strcoll(@value,second)
             else
               return @value <=> second
             end

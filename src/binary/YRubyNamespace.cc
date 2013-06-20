@@ -241,7 +241,7 @@ Y2Function* YRubyNamespace::createFunctionCall (const string name, constFunction
 
 VALUE YRubyNamespace::getRubyModule()
 {
-  ruby_module_name = string("YCP::") + m_name;
+  ruby_module_name = string("Yast::") + m_name;
   VALUE module = y2ruby_nested_const_get(ruby_module_name);
   return module;
 }

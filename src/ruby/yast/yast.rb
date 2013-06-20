@@ -1,12 +1,12 @@
-require "ycpx"
+require "yastx"
 
 #predefine term to avoid circular dependency
-class YCP::Term;end
-class YCP::FunRef;end
-class YCP::YReference;end
-class YCP::Path;end
+class Yast::Term;end
+class Yast::FunRef;end
+class Yast::YReference;end
+class Yast::Path;end
 
-module YCP
+module Yast
 
   def term(*args)
     return Term.new *args
@@ -29,7 +29,7 @@ module YCP
     case object
     when Numeric,TrueClass,FalseClass,NilClass,Symbol #immutable
       object
-    when YCP::FunRef, YCP::ArgRef, YCP::External, YCP::YReference #contains only reference somewhere
+    when Yast::FunRef, Yast::ArgRef, Yast::External, Yast::YReference #contains only reference somewhere
       object
     when ::Hash
       object.reduce({}) do |acc,kv|
@@ -47,7 +47,7 @@ module YCP
 
 #makes copy of object unless object is immutable. In such case return object itself
   def deep_copy object
-    YCP.deep_copy(object)
+    Yast.deep_copy(object)
   end
   alias_method :copy_arg, :deep_copy
 
@@ -59,14 +59,14 @@ module YCP
       gsub(/[-_.]./) { |s| s[1].upcase } +
       "Include"
 
-    loaded = YCP.constants.include? module_name.to_sym
+    loaded = Yast.constants.include? module_name.to_sym
 
     unless loaded
       path = find_include_file path
       require path
     end
 
-    mod = YCP.const_get module_name
+    mod = Yast.const_get module_name
 
     return if target.class.include? mod
 
@@ -80,7 +80,7 @@ module YCP
   def self.import(mname)
     modules = mname.split("::")
 
-    base = YCP
+    base = Yast
     # Handle multilevel modules like YaPI::Network
     modules[0..-2].each do |module_|
       tmp_m = if base.constants.include?(module_.to_sym)
@@ -105,17 +105,17 @@ module YCP
       if (stype == :function)
         m.module_eval <<-"END"
           def self.#{sname}(*args)
-            return YCP::call_ycp_function("#{mname}", :#{sname}, *args)
+            return Yast::call_yast_function("#{mname}", :#{sname}, *args)
           end
         END
       end
       if stype == :variable
         m.module_eval <<-"END"
           def self.#{sname}
-            return YCP::call_ycp_function("#{mname}", :#{sname})
+            return Yast::call_yast_function("#{mname}", :#{sname})
           end
           def self.#{sname}= (value)
-            return YCP::call_ycp_function("#{mname}", :#{sname}, value)
+            return Yast::call_yast_function("#{mname}", :#{sname}, value)
           end
         END
       end

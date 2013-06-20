@@ -1,4 +1,4 @@
-module YCP
+module Yast
   class ArgRef
     attr_accessor :value
 

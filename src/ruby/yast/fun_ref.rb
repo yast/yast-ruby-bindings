@@ -1,4 +1,4 @@
-module YCP
+module Yast
   class FunRef
     attr_reader :signature, :remote_method
 

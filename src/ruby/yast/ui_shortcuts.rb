@@ -1,6 +1,6 @@
-require "ycp/term"
+require "yast/term"
 
-module YCP
+module Yast
   module UIShortcuts
 
   # Define symbols for the UI
@@ -19,7 +19,7 @@ module YCP
    # for each symbol define a util function that will create a term
     UI_TERMS.each do | term_name |
       define_method(term_name) do | *args |
-        YCP::Term.new(term_name, *args)
+        Yast::Term.new(term_name, *args)
       end
     end
   end

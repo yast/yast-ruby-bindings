@@ -165,8 +165,7 @@ protected_call(VALUE args)
 YCPValue YRuby::callInner (string module_name, string function,
                   YCPList argList, constTypePtr wanted_result_type)
 {
-  //RUBY_INIT_STACK  // bnc#708059
-  string full_name = string("YCP::")+module_name;
+  string full_name = string("Yast::")+module_name;
   VALUE module = y2ruby_nested_const_get(full_name);
   if (module == Qnil)
   {
@@ -226,18 +225,18 @@ YCPValue YRuby::callInner (string module_name, string function,
 YCPValue YRuby::callClient(const string& path)
 {
   int error;
-  rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) "ycp", &error);
+  rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) "yast", &error);
   if (error)
   {
     VALUE exception = rb_gv_get("$!"); /* get last exception */
     VALUE reason = rb_funcall(exception, rb_intern("message"), 0 );
     VALUE trace = rb_gv_get("$@"); /* get last exception trace */
     VALUE backtrace = RARRAY_LEN(trace)>0 ? rb_ary_entry(trace, 0) : rb_str_new2("Unknown");
-    y2error("cannot require ycp:%s at %s", StringValuePtr(reason),StringValuePtr(backtrace));
+    y2error("cannot require yast:%s at %s", StringValuePtr(reason),StringValuePtr(backtrace));
     return YCPVoid();
   }
 
-  VALUE wfm_module = y2ruby_nested_const_get("YCP::WFM");
+  VALUE wfm_module = y2ruby_nested_const_get("Yast::WFM");
   VALUE result = rb_funcall(wfm_module, rb_intern("run_client"), 1, rb_str_new2(path.c_str()));
   return rbvalue_2_ycpvalue(result);
 }

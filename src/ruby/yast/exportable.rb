@@ -1,8 +1,8 @@
 require "ostruct"
 
-require "ycp/ycp"
+require "yast/yast"
 
-module YCP
+module Yast
   module Exportable
 
     class ExportData < OpenStruct
@@ -34,7 +34,7 @@ module YCP
         if !options[:private] || ENV["Y2ALLGLOBAL"]
           attr_writer :"#{options[:variable]}"
           # reader that do deep copy
-          class_eval "def #{options[:variable]}; YCP.deep_copy(@#{options[:variable]}); end"
+          class_eval "def #{options[:variable]}; Yast.deep_copy(@#{options[:variable]}); end"
         end
       else
         raise "Missing publish kind"

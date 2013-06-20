@@ -1,8 +1,8 @@
-require 'ycp/ycp'
-require 'ycp/builtins'
-require 'ycp/ops'
+require 'yast/yast'
+require 'yast/builtins'
+require 'yast/ops'
 
-module YCP
+module Yast
   class Term
     include Comparable
 
@@ -29,14 +29,14 @@ module YCP
     end
 
     def clone
-      YCP::Term.new value, *YCP.deep_copy(params)
+      Yast::Term.new value, *Yast.deep_copy(params)
     end
 
     def to_s
       if params.empty?
         "`#{value} ()"
       else
-        "`#{value} (#{params.map{|p| YCP::Builtins.inside_tostring p}.join ', '})"
+        "`#{value} (#{params.map{|p| Yast::Builtins.inside_tostring p}.join ', '})"
       end
     end
 

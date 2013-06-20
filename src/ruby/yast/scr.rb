@@ -1,6 +1,6 @@
-require "ycp/builtinx"
+require "yast/builtinx"
 
-module YCP
+module Yast
   module SCR
     def self.Read *args
       call_builtin_wrapper("Read",*args)

@@ -1,9 +1,9 @@
-require "ycp/builtinx"
-require "ycp/builtins"
+require "yast/builtinx"
+require "yast/builtins"
 
 #we need it as clients is called in global contenxt
 GLOBAL_WFM_CONTEXT = Proc.new {}
-module YCP
+module Yast
   module WFM
     def self.Args *args
       call_builtin_wrapper("Args", *args)

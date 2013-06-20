@@ -1,7 +1,7 @@
 add_definitions(-DY2LOG=\"Ruby\")
 
 set(yast_ruby_module_SRCS
-  YCP.cc
+  Yast.cc
   Y2RubyTypeConv.cc       # YCP.cc -> ycpvalue_2_rbvalue(), rbvalue_2_ycpvalue()
   Y2YCPTypeConv.cc       # YCP.cc -> ycpvalue_2_rbvalue(), rbvalue_2_ycpvalue()
   Y2RubyReference.cc
@@ -50,14 +50,14 @@ add_definitions(${CC_FLAGS} -Wno-deprecated)
 
 #
 # Ruby -> YCP/YaST
-# ycp.rb + ycpx.so
+# yast.rb + yastx.so
 #
 
 
-add_library(ycpx SHARED ${yast_ruby_module_SRCS})
+add_library(yastx SHARED ${yast_ruby_module_SRCS})
 add_library(builtinx SHARED ${builtin_ruby_module_SRCS})
-# libycpx.so -> ycpx.so
-set_target_properties(ycpx PROPERTIES PREFIX "")
+# libyastx.so -> yastx.so
+set_target_properties(yastx PROPERTIES PREFIX "")
 set_target_properties(builtinx PROPERTIES PREFIX "")
 
 #
@@ -67,25 +67,25 @@ set_target_properties(builtinx PROPERTIES PREFIX "")
 # tight control) CMake should be able to handle this. However, it somehow does
 # not work.
 #
-#set_target_properties( ycpx PROPERTIES SKIP_BUILD_RPATH FALSE)
-#set_target_properties( ycpx PROPERTIES BUILD_WITH_INSTALL_RPATH FALSE)
-#set_target_properties( ycpx PROPERTIES INSTALL_RPATH_USE_LINK_PATH FALSE)
-#set_target_properties( ycpx PROPERTIES INSTALL_RPATH "${YAST_PLUGIN_DIR}")
+#set_target_properties( yastx PROPERTIES SKIP_BUILD_RPATH FALSE)
+#set_target_properties( yastx PROPERTIES BUILD_WITH_INSTALL_RPATH FALSE)
+#set_target_properties( yastx PROPERTIES INSTALL_RPATH_USE_LINK_PATH FALSE)
+#set_target_properties( yastx PROPERTIES INSTALL_RPATH "${YAST_PLUGIN_DIR}")
 #
 # So using an explicit linker option instead:
 # (http://www.cmake.org/pipermail/cmake/2008-January/019321.html)
 #
 SET ( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-rpath,'${YAST_PLUGIN_DIR}'" )
 
-target_link_libraries( ycpx ${YAST_LIBRARY} )
-target_link_libraries( ycpx ${YAST_YCP_LIBRARY} )
+target_link_libraries( yastx ${YAST_LIBRARY} )
+target_link_libraries( yastx ${YAST_YCP_LIBRARY} )
 #
 # The WFM and SCR component can only be initialized statically
 # (e.g. through Y2CCWFM), thus we must link against the plugin libs
 # and set the executables 'rpath' accordingly
 #
-target_link_libraries( ycpx ${YAST_PLUGIN_UI_LIBRARY} )
-target_link_libraries( ycpx ${RUBY_LIBRARY} )
+target_link_libraries( yastx ${YAST_PLUGIN_UI_LIBRARY} )
+target_link_libraries( yastx ${RUBY_LIBRARY} )
 
 target_link_libraries( builtinx ${YAST_LIBRARY} )
 target_link_libraries( builtinx ${YAST_YCP_LIBRARY} )
@@ -93,8 +93,8 @@ target_link_libraries( builtinx ${YAST_PLUGIN_SCR_LIBRARY} )
 target_link_libraries( builtinx ${YAST_PLUGIN_WFM_LIBRARY} )
 target_link_libraries( builtinx crypt )
 
-install(TARGETS ycpx LIBRARY DESTINATION ${RUBY_VENDORARCH_DIR} )
-install(TARGETS builtinx LIBRARY DESTINATION ${RUBY_VENDORARCH_DIR}/ycp )
+install(TARGETS yastx LIBRARY DESTINATION ${RUBY_VENDORARCH_DIR} )
+install(TARGETS builtinx LIBRARY DESTINATION ${RUBY_VENDORARCH_DIR}/yast )
 
 #
 # YCP -> Ruby

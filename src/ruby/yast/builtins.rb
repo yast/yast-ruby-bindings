@@ -1,15 +1,15 @@
 require "set"
 require "scanf"
 
-require "ycp/ycp"
-require "ycp/path"
-require "ycp/break"
-require "ycp/external"
-require "ycp/i18n"
+require "yast/yast"
+require "yast/path"
+require "yast/break"
+require "yast/external"
+require "yast/i18n"
 require "fast_gettext"
-require "ycp/builtinx"
+require "yast/builtinx"
 
-module YCP
+module Yast
   class ArgRef; end
   class FunRef; end
 
@@ -23,17 +23,17 @@ module YCP
     # - Create a new list with a new element - add(<list>, <value>)
     # - Add value to term - add(<term>, <value>)
     # - Add a path element to existing path - add(<path>, <value>)
-    # Method that simulates behavior of add in ycp builtin.
+    # Method that simulates behavior of add in yast builtin.
     # Most notably difference is that it always create new object
     # For new code it is recommended to use directly methods on objects
     def self.add object, *params
       case object
-      when ::Array then return YCP::deep_copy(object).concat(YCP::deep_copy(params))
-      when ::Hash then  return YCP::deep_copy(object).merge(YCP::deep_copy(::Hash[*params]))
-      when YCP::Path then return YCP::deep_copy(object) + YCP::deep_copy(params.first)
-      when YCP::Term then
-        res = YCP::deep_copy(object)
-        res.params << YCP::deep_copy(params.first)
+      when ::Array then return Yast::deep_copy(object).concat(Yast::deep_copy(params))
+      when ::Hash then  return Yast::deep_copy(object).merge(Yast::deep_copy(::Hash[*params]))
+      when Yast::Path then return Yast::deep_copy(object) + Yast::deep_copy(params.first)
+      when Yast::Term then
+        res = Yast::deep_copy(object)
+        res.params << Yast::deep_copy(params.first)
         return res
       when ::NilClass then return nil
       else
@@ -53,13 +53,13 @@ module YCP
     def self.filter object, &block
       #TODO investigate break and continue with filter as traverse workflow is different for ruby
       if object.is_a?(::Array) || object.is_a?(::Hash)
-        YCP::deep_copy(object).select &block
+        Yast::deep_copy(object).select &block
       else
         return nil
       end
     end
 
-    # find() YCP built-in
+    # find() Yast built-in
     # - Returns position of a substring (-1 if not found)
     # - Searches for the first occurence of a certain element in a list
     def self.find object, what=nil, &block
@@ -68,9 +68,9 @@ module YCP
       case object
       when ::String
         ret = object.index what
-        return ret.nil? ? -1 : YCP::deep_copy(ret)
+        return ret.nil? ? -1 : Yast::deep_copy(ret)
       when ::Array
-        YCP::deep_copy(object.find(&block))
+        Yast::deep_copy(object.find(&block))
       else
         raise "Invalid object for find() builtin"
       end
@@ -80,26 +80,26 @@ module YCP
     # - Processes the content of a list
     def self.foreach object, &block
       res = nil
-      object = YCP::deep_copy(object)
+      object = Yast::deep_copy(object)
       if object.is_a? ::Array
         begin
           object.each do |i|
             res = block.call(i)
           end
-        rescue YCP::Break
+        rescue Yast::Break
           res = nil
         end
       elsif object.is_a? ::Hash
         begin
-          #sort keys so it behaves same as in YCP
+          #sort keys so it behaves same as in Yast
           sort(object.keys).each do |k|
             res = block.call(k,object[k])
           end
-        rescue YCP::Break
+        rescue Yast::Break
           res = nil
         end
       else
-        YCP.y2warning ("foreach builtin called on wrong type #{object.class}")
+        Yast.y2warning ("foreach builtin called on wrong type #{object.class}")
       end
       return res
     end
@@ -120,9 +120,9 @@ module YCP
         res = []
         begin
           object.each do |i|
-            res << block.call(YCP::deep_copy(i))
+            res << block.call(Yast::deep_copy(i))
           end
-        rescue YCP::Break
+        rescue Yast::Break
           #break skips out of each loop, but allow to keep previous results
         end
         return res
@@ -130,14 +130,14 @@ module YCP
         res = []
         begin
           sort(object.keys).each do |k|
-            res << block.call(YCP::deep_copy(k),YCP::deep_copy(object[k]))
+            res << block.call(Yast::deep_copy(k),Yast::deep_copy(object[k]))
           end
-        rescue YCP::Break
+        rescue Yast::Break
           #break skips out of each loop, but allow to keep previous results
         end
         return res
       else
-        YCP.y2warning ("Called builtin maplist on wrong type #{object.class}")
+        Yast.y2warning ("Called builtin maplist on wrong type #{object.class}")
         return nil
       end
     end
@@ -148,7 +148,7 @@ module YCP
     def self.remove object, element
       return nil if object.nil?
 
-      res = YCP::deep_copy(object)
+      res = Yast::deep_copy(object)
       return res if element.nil?
       case object
       when ::Array
@@ -156,7 +156,7 @@ module YCP
         res.delete_at element
       when ::Hash
         res.delete element
-      when YCP::Term
+      when Yast::Term
         return res if element < 1
         res.params.delete_at element-1
       else
@@ -169,10 +169,10 @@ module YCP
     # - Selects a list element (deprecated, use LIST[INDEX]:DEFAULT)
     # - Select item from term
     def self.select object, element, default
-      YCP::Ops.index(object, [element], default)
+      Yast::Ops.index(object, [element], default)
     end
 
-    # size() YCP built-in
+    # size() Yast built-in
     # - Size of a map
     # - Returns the number of path elements
     # - Returns size of list
@@ -183,7 +183,7 @@ module YCP
       return nil if object.nil?
 
       case object
-      when ::String, ::Array, ::Hash, YCP::Term, YCP::Path
+      when ::String, ::Array, ::Hash, Yast::Term, Yast::Path
         return object.size
       # TODO: byteblock
       else
@@ -195,7 +195,7 @@ module YCP
     # Get the current random number generator seed - int srandom()
     def self.srandom param=nil
       if param.nil?
-        # be more secure here, original YCP uses Time.now with second precision
+        # be more secure here, original Yast uses Time.now with second precision
         # for seeding which is not secure enough, calling Ruby srand without
         # paramater causes to use time, PID and a sequence number for seeding
         # which is more secure
@@ -216,7 +216,7 @@ module YCP
 
       case first
       when ::Array
-        return (YCP::deep_copy(first)+YCP::deep_copy(second)).reduce([]) do |acc,i|
+        return (Yast::deep_copy(first)+Yast::deep_copy(second)).reduce([]) do |acc,i|
           acc << i unless acc.include? i
           acc
         end
@@ -229,7 +229,7 @@ module YCP
 
 
     ###########################################################
-    # YCP Byteblock Builtins
+    # Yast Byteblock Builtins
     ###########################################################
 
     # Converts a value to a byteblock.
@@ -238,7 +238,7 @@ module YCP
     end
 
     ###########################################################
-    # YCP Float Builtins
+    # Yast Float Builtins
     ###########################################################
 
     module Float
@@ -290,7 +290,7 @@ module YCP
     end
 
     ###########################################################
-    # YCP Integer Builtins
+    # Yast Integer Builtins
     ###########################################################
 
     # Converts a value to an integer.
@@ -300,13 +300,13 @@ module YCP
       case object
       when ::String
         # ideally this should be enought: object.scanf("%i").first
-        # but to be 100% YCP compatible we need to do this,
-        # see https://github.com/yast/yast-core/blob/master/libycp/src/YCPInteger.cc#L39
+        # but to be 100% Yast compatible we need to do this,
+        # see https://github.com/yast/yast-core/blob/master/libyast/src/YastInteger.cc#L39
         if object[0] == "0"
           return object.scanf((object[1] == "x") ? "%x" : "%o").first
         end
         object.scanf("%d").first
-      # use full qualified ::Float to avoid clash with YCP::Builtins::Float
+      # use full qualified ::Float to avoid clash with Yast::Builtins::Float
       when ::Float, ::Fixnum, ::Bignum
         object.to_i
       else
@@ -315,10 +315,10 @@ module YCP
     end
 
     ###########################################################
-    # YCP List Builtins
+    # Yast List Builtins
     ###########################################################
 
-    # contains() YCP built-in
+    # contains() Yast built-in
     # Checks if a list contains an element
     def self.contains list, value
       return nil if list.nil? || value.nil?
@@ -331,7 +331,7 @@ module YCP
 
       return value.reduce([]) do |acc,i|
         return nil if i.nil?
-        acc.push *YCP::deep_copy(i)
+        acc.push *Yast::deep_copy(i)
       end
     end
 
@@ -341,11 +341,11 @@ module YCP
         return nil if params.first.nil?
         list = if params.size == 2 #so first is default and second is list
             return nil if params[1].nil?
-            [params.first].concat(YCP::deep_copy(params[1]))
+            [params.first].concat(Yast::deep_copy(params[1]))
           else
             params.first
           end
-        return YCP::deep_copy(list).reduce &block
+        return Yast::deep_copy(list).reduce &block
       end
 
 
@@ -353,7 +353,7 @@ module YCP
       def self.swap list, offset1, offset2
         return nil if list.nil? || offset1.nil? || offset2.nil?
 
-        return YCP::deep_copy(list) if offset1 < 0 || offset2 >= list.size || (offset1 > offset2)
+        return Yast::deep_copy(list) if offset1 < 0 || offset2 >= list.size || (offset1 > offset2)
 
         res = []
         if offset1 > 0
@@ -363,7 +363,7 @@ module YCP
         if offset2 < list.size-1
           res.concat list[offset2+1..-1]
         end
-        return YCP::deep_copy(res)
+        return Yast::deep_copy(res)
       end
     end
 
@@ -373,10 +373,10 @@ module YCP
 
       res = ::Hash.new
       begin
-        YCP::deep_copy(list).each do |i|
+        Yast::deep_copy(list).each do |i|
           res.merge! block.call(i)
         end
-      rescue YCP::Break
+      rescue Yast::Break
         #break stops adding to hash
       end
 
@@ -387,45 +387,45 @@ module YCP
     def self.lsort list
       return nil if list.nil?
 
-      YCP::deep_copy(list.sort { |s1, s2| Ops.comparable_object(s1, true) <=> s2 })
+      Yast::deep_copy(list.sort { |s1, s2| Ops.comparable_object(s1, true) <=> s2 })
     end
 
-    # merge() YCP built-in
+    # merge() Yast built-in
     # Merges two lists into one
     def self.merge a1, a2
       return nil if a1.nil? || a2.nil?
-      YCP::deep_copy(a1 + a2)
+      Yast::deep_copy(a1 + a2)
     end
 
     # Prepends a list with a new element
     def self.prepend list, element
       return nil if list.nil?
 
-      return [YCP::deep_copy(element)].push *YCP::deep_copy(list)
+      return [Yast::deep_copy(element)].push *Yast::deep_copy(list)
     end
 
-    # setcontains() YCP built-in
+    # setcontains() Yast built-in
     # Checks if a sorted list contains an element
     def self.setcontains list, value
       # simply call contains(), setcontains() is just optimized contains() call
       contains list, value
     end
 
-    # sort() YCP built-in
-    # Sorts a List according to the YCP builtin predicate
+    # sort() Yast built-in
+    # Sorts a List according to the Yast builtin predicate
     def self.sort array, &block
       return nil if array.nil?
 
       res = if block_given?
         array.sort { |x,y| block.call(x,y) ? -1 : 1 }
       else  
-        array.sort {|x,y| YCP::Ops.comparable_object(x) <=> y }
+        array.sort {|x,y| Yast::Ops.comparable_object(x) <=> y }
       end
 
-      YCP::deep_copy(res)
+      Yast::deep_copy(res)
     end
 
-    # splitstring() YCP built-in
+    # splitstring() Yast built-in
     # Split a string by delimiter
     def self.splitstring string, sep
       return nil if string.nil? || sep.nil?
@@ -447,7 +447,7 @@ module YCP
       return nil if offset < 0 || offset >= list.size
       return nil if length < 0 || offset+length > list.size
 
-      return YCP::deep_copy(list)[offset..offset+length-1]
+      return Yast::deep_copy(list)[offset..offset+length-1]
     end
 
     # Converts a value to a list (deprecated, use (list)VAR).
@@ -455,12 +455,12 @@ module YCP
       return object.is_a?(::Array) ? object : nil
     end
 
-    # toset() YCP built-in
+    # toset() Yast built-in
     # Sorts list and removes duplicates
     def self.toset array
       return nil if array.nil?
-      res = array.uniq.sort { |x,y| YCP::Ops.comparable_object(x) <=> y }
-      YCP::deep_copy(res)
+      res = array.uniq.sort { |x,y| Yast::Ops.comparable_object(x) <=> y }
+      Yast::deep_copy(res)
     end
 
     ###########################################################
@@ -475,20 +475,20 @@ module YCP
 
     # Select a map element (deprecated, use MAP[KEY]:DEFAULT)
     def self.lookup map, key, default
-      map.has_key?(key) ? YCP::deep_copy(map[key]) : YCP::deep_copy(default)
+      map.has_key?(key) ? Yast::deep_copy(map[key]) : Yast::deep_copy(default)
     end
 
     # Maps an operation onto all key/value pairs of a map
     def self.mapmap map, &block
       return nil if map.nil?
 
-      map = YCP::deep_copy(map)
+      map = Yast::deep_copy(map)
       res = ::Hash.new
       begin
         sort(map.keys).each do |k|
           res.merge! block.call(k,map[k])
         end
-      rescue YCP::Break
+      rescue Yast::Break
         #break stops adding to hash
       end
 
@@ -501,15 +501,15 @@ module YCP
     end
 
     ###########################################################
-    # Miscellaneous YCP Builtins
+    # Miscellaneous Yast Builtins
     ###########################################################
 
-    # Evaluate a YCP value.
+    # Evaluate a Yast value.
     def self.eval object
       if object.respond_to? :call
         return object.call
       else
-        return YCP::deep_copy(object)
+        return Yast::deep_copy(object)
       end
     end
 
@@ -550,11 +550,11 @@ module YCP
           if (pos < args.size)
             tostring args[pos]
           else
-            YCP.y2warning "Illegal argument number #{match}. Maximum is %#{args.size-1}."
+            Yast.y2warning "Illegal argument number #{match}. Maximum is %#{args.size-1}."
             ""
           end
         else
-          YCP.y2warning "Illegal argument number #{match}."
+          Yast.y2warning "Illegal argument number #{match}."
           ""
         end
       end
@@ -566,7 +566,7 @@ module YCP
       ::Kernel.sleep milisecs / 1000.0
     end
 
-    # time() YCP built-in
+    # time() Yast built-in
     # Return the number of seconds since 1.1.1970.
     def self.time
       ::Time.now.to_i
@@ -575,37 +575,37 @@ module YCP
     # Log a message to the y2log.
     def self.y2debug *args
       shift_frame_number args
-      YCP.y2debug *args
+      Yast.y2debug *args
     end
 
     # Log an error to the y2log.
     def self.y2error *args
       shift_frame_number args
-      YCP.y2error *args
+      Yast.y2error *args
     end
 
     # Log an internal message to the y2log.
     def self.y2internal *args
       shift_frame_number args
-      YCP.y2internal *args
+      Yast.y2internal *args
     end
 
     # Log a milestone to the y2log.
     def self.y2milestone*args
       shift_frame_number args
-      YCP.y2milestone *args
+      Yast.y2milestone *args
     end
 
     # Log a security message to the y2log.
     def self.y2security *args
       shift_frame_number args
-      YCP.y2security *args
+      Yast.y2security *args
     end
 
     # Log a warning to the y2log.
     def self.y2warning *args
       shift_frame_number args
-      YCP.y2warning *args
+      Yast.y2warning *args
     end
 
     def self.shift_frame_number args
@@ -629,24 +629,24 @@ module YCP
     end
 
     ###########################################################
-    # YCP Path Builtins
+    # Yast Path Builtins
     ###########################################################
 
     # Converts a value to a path.
     def self.topath object
       case object
-      when YCP::Path
+      when Yast::Path
         return object
       when ::String
         object = "."+object unless object.start_with?(".")
-        return YCP::Path.new(object)
+        return Yast::Path.new(object)
       else
         return nil
       end
     end
 
     ###########################################################
-    # YCP ::String Builtins
+    # Yast ::String Builtins
     # crypt* builtins implemented in C part
     ###########################################################
 
@@ -657,7 +657,7 @@ module YCP
       return string.gsub(/[#{Regexp.escape chars}]/, "")
     end
 
-    extend YCP::I18n
+    extend Yast::I18n
     # Translates the text using the given text domain
     def self.dgettext (domain, text)
       old_text_domain = FastGettext.text_domain
@@ -732,7 +732,7 @@ module YCP
       return string.rindex /[#{Regexp.escape chars}]/
     end
 
-    # issubstring() YCP built-in
+    # issubstring() Yast built-in
     # searches for a specific string within another string
     def self.issubstring string, substring
       return nil if string.nil? || substring.nil?
@@ -745,7 +745,7 @@ module YCP
       substring string, offset, length
     end
 
-    # mergestring() YCP built-in
+    # mergestring() Yast built-in
     # Joins list elements with a string
     def self.mergestring string, sep
       return nil if string.nil? || sep.nil?
@@ -759,9 +759,9 @@ module YCP
       string.index substring
     end
 
-    # substring() YCP built-in
+    # substring() Yast built-in
     # Extracts a substring
-    # little bit complicated because YCP returns different values
+    # little bit complicated because Yast returns different values
     # in corner cases (nil or negative parameters, out of range...)
     def self.substring string, offset, length = -1
       return nil if string.nil? || offset.nil? || length.nil?
@@ -802,7 +802,7 @@ module YCP
       else
         # compatibility for negative numbers
         # Ruby: -3 => '0x..fd'
-        # YCP:  -3 => '0xfffffffffffffffd' (64bit integer)
+        # Yast:  -3 => '0xfffffffffffffffd' (64bit integer)
 
         # this has '..fff' prefix
         ret = sprintf("%018x", int)
@@ -820,7 +820,7 @@ module YCP
       end
     end
 
-    # tolower() YCP built-in
+    # tolower() Yast built-in
     # Makes a string lowercase
     def self.tolower string
       return nil if string.nil?
@@ -843,20 +843,20 @@ module YCP
       when ::NilClass then "nil"
       when ::TrueClass then "true"
       when ::FalseClass then "false"
-      when ::Fixnum, ::Bignum, ::Float, YCP::Term, YCP::Path, YCP::External then val.to_s
+      when ::Fixnum, ::Bignum, ::Float, Yast::Term, Yast::Path, Yast::External then val.to_s
       when ::Array then "[#{val.map{|a|inside_tostring(a)}.join(", ")}]"
       when ::Hash then "$[#{sort(val.keys).map{|k|"#{inside_tostring(k)}:#{inside_tostring(val[k])}"}.join(", ")}]"
-      when YCP::FunRef
-        # TODO FIXME: YCP puts also the parameter names,
+      when Yast::FunRef
+        # TODO FIXME: Yast puts also the parameter names,
         # here the signature contains only data type without parameter name:
-        #   YCP:     <YCPRef:boolean foo (string str, string str2)>
-        #   Ruby:    <YCPRef:boolean foo (string, string)>
+        #   Yast:     <YastRef:boolean foo (string str, string str2)>
+        #   Ruby:    <YastRef:boolean foo (string, string)>
         #
         # There is also extra "any" in lists/maps:
-        #   YCP:     <YCPRef:list <map> bar (list <map> a)>
-        #   Ruby:    <YCPRef:list <map<any,any>> bar (list <map<any,any>>)>
+        #   Yast:     <YastRef:list <map> bar (list <map> a)>
+        #   Ruby:    <YastRef:list <map<any,any>> bar (list <map<any,any>>)>
         val.signature.match /(.*)\((.*)\)/
-        "<YCPRef:#{$1}#{val.remote_method.name} (#{$2})>"
+        "<YastRef:#{$1}#{val.remote_method.name} (#{$2})>"
       else
         y2warning "unknown type for tostring #{val.inspect}"
         return val.inspect
@@ -872,7 +872,7 @@ module YCP
       end
     end
 
-    # toupper() YCP built-in
+    # toupper() Yast built-in
     # Makes a string uppercase
     def self.toupper string
       return nil if string.nil?
@@ -880,14 +880,14 @@ module YCP
     end
 
     ###########################################################
-    # YCP Term Builtins
+    # Yast Term Builtins
     ###########################################################
 
     # Returns the arguments of a term.
     def self.argsof term
       return nil if term.nil?
 
-      return YCP::deep_copy(term.params)
+      return Yast::deep_copy(term.params)
     end
 
     # Returns the symbol of the term TERM.
@@ -904,14 +904,14 @@ module YCP
 
       case symbol
       when ::String
-        return YCP::Term.new(symbol.to_sym)
+        return Yast::Term.new(symbol.to_sym)
       when ::Symbol
         if list==DEF_LENGHT
-          return YCP::Term.new(symbol)
+          return Yast::Term.new(symbol)
         else
-          return YCP::Term.new(symbol,*list)
+          return Yast::Term.new(symbol,*list)
         end
-      when YCP::Term
+      when Yast::Term
         return symbol
       end
     end
@@ -934,7 +934,7 @@ module YCP
       end
 
       def self.difference set1, set2
-        YCP::deep_copy(set1.to_set - set2.to_set).to_a
+        Yast::deep_copy(set1.to_set - set2.to_set).to_a
       end
 
       def self.symmetric_difference set1, set2
@@ -964,7 +964,7 @@ module YCP
         unless ss2.empty?
           res = res + ss2.reverse
         end
-        return YCP::deep_copy(res.reverse)
+        return Yast::deep_copy(res.reverse)
       end
 
       def self.intersection set1, set2
@@ -987,7 +987,7 @@ module YCP
             raise "unknown value from comparison #{i1 <=> u2}"
           end
         end
-        return YCP::deep_copy(res.reverse)
+        return Yast::deep_copy(res.reverse)
       end
 
       def self.union set1, set2
@@ -1020,11 +1020,11 @@ module YCP
           res = res + ss2.reverse
         end
 
-        return YCP::deep_copy(res.reverse)
+        return Yast::deep_copy(res.reverse)
       end
 
       def self.merge set1, set2
-        YCP::deep_copy(set1 + set2)
+        Yast::deep_copy(set1 + set2)
       end
     end
   end

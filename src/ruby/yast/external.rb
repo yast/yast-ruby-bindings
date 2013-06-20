@@ -1,4 +1,4 @@
-module YCP
+module Yast
   class External
     attr_reader :magic
 

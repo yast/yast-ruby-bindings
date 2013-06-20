@@ -1,4 +1,4 @@
-module YCP
+module Yast
   class Path
     include Comparable 
     attr_reader :components
@@ -17,7 +17,7 @@ module YCP
     end
 
     def + another
-      another = self.class.from_string(another) unless another.is_a? YCP::Path
+      another = self.class.from_string(another) unless another.is_a? Yast::Path
       return another.dup if components.empty?
       return dup if another.components.empty?
       return Path.new(self.to_s+another.to_s)
@@ -46,7 +46,7 @@ module YCP
   private
     COMPLEX_CHAR_REGEX = /[^a-zA-Z0-9_-]/
     SIMPLE_CHAR_REGEX = /[a-zA-Z0-9_-]/
-    # Rewritten ycp parser
+    # Rewritten yast parser
     def load_components (value)
       state = :initial
       skip_next = false
@@ -68,7 +68,7 @@ module YCP
           if c == '.'
             state = :dot
             if buffer.start_with?("-") || buffer.end_with?("-")
-              YCP.y2error "Cannot have dash before or after dot '#{value}'"
+              Yast.y2error "Cannot have dash before or after dot '#{value}'"
               @components.clear
               return
             end

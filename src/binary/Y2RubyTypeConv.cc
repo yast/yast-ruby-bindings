@@ -260,23 +260,23 @@ rbvalue_2_ycpvalue( VALUE value )
   default:
   {
     const char *class_name = rb_obj_classname(value);
-    if ( !strcmp(class_name, "YCP::Path"))
+    if ( !strcmp(class_name, "Yast::Path"))
     {
       return rbpath_2_ycppath(value);
     }
-    else if ( !strcmp(class_name, "YCP::Term"))
+    else if ( !strcmp(class_name, "Yast::Term"))
     {
       return rbterm_2_ycpterm(value);
     }
-    else if ( !strcmp(class_name, "YCP::ArgRef"))
+    else if ( !strcmp(class_name, "Yast::ArgRef"))
     {
       return rbargreference_2_ycpreference(value);
     }
-    else if ( !strcmp(class_name, "YCP::FunRef"))
+    else if ( !strcmp(class_name, "Yast::FunRef"))
     {
       return rbreference_2_ycpreference(value);
     }
-    else if ( !strcmp(class_name, "YCP::YReference"))
+    else if ( !strcmp(class_name, "Yast::YReference"))
     {
       return rbyreference_2_ycpreference(value);
     }
@@ -284,7 +284,7 @@ rbvalue_2_ycpvalue( VALUE value )
     {
       return rbproc_2_ycpcode(value);
     }
-    else if ( !strcmp(class_name, "YCP::External"))
+    else if ( !strcmp(class_name, "Yast::External"))
     {
       return rbexternal_2_ycpexternal(value);
     }

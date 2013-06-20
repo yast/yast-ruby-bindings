@@ -1,9 +1,9 @@
-require "ycp/ops"
-require "ycp/path"
-require "ycp/term"
-require "ycp/logger"
+require "yast/ops"
+require "yast/path"
+require "yast/term"
+require "yast/logger"
 
-module YCP
+module Yast
   module Convert
 
     #generate shortcuts
@@ -42,14 +42,14 @@ END
         return object.to_f
       elsif to == "integer"
         return nil unless object.is_a? Float
-        YCP.y2warning "Conversion from integer to float lead to loose precision."
+        Yast.y2warning "Conversion from integer to float lead to loose precision."
         return object.to_i
       elsif to == "locale" && from == "string"
         return object
       elsif to == "string" && from == "locale"
         return object
       else
-        YCP.y2warning "Cannot convert #{object.class} from '#{from}' to '#{to}'"
+        Yast.y2warning "Cannot convert #{object.class} from '#{from}' to '#{to}'"
         return nil
       end
     end
