@@ -26,7 +26,7 @@ module YCP
       'function' => [YCP::FunRef, YCP::YReference]
     }
 
-      def self.index (object, indexes, default)
+      def self.index (object, indexes, default=nil)
         res = object
         default = YCP.deep_copy(default)
         indexes.each do |i|
@@ -37,24 +37,24 @@ module YCP
                 res = res[i]
               else
                 YCP.y2milestone "Index #{i} is out of array size"
-                return default
+                return block_given? ? yield : default
               end
             else
               YCP.y2warning "Passed #{i.inspect} as index key for array."
-              return default
+              return block_given? ? yield : default
             end
           when ::Hash
             if res.has_key? i
               res = res[i]
             else
-              return default
+              return block_given? ? yield : default
             end
           when ::NilClass
             YCP.y2milestone 1, "Builtin index called on nil."
-            return default
+            return block_given? ? yield : default
           else
             YCP.y2warning "Builtin index called on wrong type #{res.class} from #{caller.inspect}"
-            return default
+            return block_given? ? yield : default
           end
       end
       return YCP.deep_copy(res)

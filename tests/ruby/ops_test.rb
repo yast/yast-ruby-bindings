@@ -167,6 +167,7 @@ class YCP::OpsTest < YCP::TestCase
     assert_equal "c", YCP::Ops.index(map,["a","b"],"n")
     assert_equal "n", YCP::Ops.index(map,["a","c"],"n")
     assert_equal "n", YCP::Ops.index(map,["c","b"],"n")
+    assert_equal "n", YCP::Ops.index(map,["c","b"]){ "n" }
   end
 
   def test_index_list
