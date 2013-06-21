@@ -1,10 +1,10 @@
 $LOAD_PATH << File.dirname(__FILE__)
 require "test_helper"
 
-require 'ycp'
+require 'yast'
 
 class MyTestClass
-  extend YCP::Exportable
+  extend Yast::Exportable
   publish :variable => :complex, :type => "map< string, map<list, map> >"
   publish :variable => :variable_a, :type => "map"
   def initialize
@@ -19,7 +19,7 @@ end
 
 MyTest = MyTestClass.new
 
-class ExportableTest < YCP::TestCase
+class ExportableTest < Yast::TestCase
   def test_publish_methods
     assert_equal [:test], MyTest.class.published_functions.keys
     assert_equal :test, MyTest.class.published_functions.values.first.function

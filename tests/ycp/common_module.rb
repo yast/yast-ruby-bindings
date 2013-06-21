@@ -1,8 +1,7 @@
-require "ycp"
+require "yast"
 
-module YCP
-  class CommonModuleClass
-    extend Exportable
+module Yast
+  class CommonModuleClass < Module
 
     publish :function => :method_a, :type => "string(integer,integer)"
     def method_a first, second

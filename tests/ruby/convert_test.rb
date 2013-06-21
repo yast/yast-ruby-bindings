@@ -3,11 +3,11 @@
 $LOAD_PATH << File.dirname(__FILE__)
 require "test_helper"
 
-require "ycp/convert"
-require "ycp/path"
-require "ycp/term"
+require "yast/convert"
+require "yast/path"
+require "yast/term"
 
-class OpsTest < YCP::TestCase
+class OpsTest < Yast::TestCase
   # data description [object, from, to, result]
   CONVERT_TESTDATA = [
     [nil,'any','integer',nil],
@@ -24,11 +24,11 @@ class OpsTest < YCP::TestCase
 
   def test_convert
     CONVERT_TESTDATA.each do |object,from,to,result|
-      assert_equal result, YCP::Convert.convert(object, :from => from, :to => to), "Cannot convert from #{object.inspect} '#{from}' to '#{to}'"
+      assert_equal result, Yast::Convert.convert(object, :from => from, :to => to), "Cannot convert from #{object.inspect} '#{from}' to '#{to}'"
     end
   end
 
   def test_shortcuts
-    assert_equal "t", YCP::Convert.to_string("t")
+    assert_equal "t", Yast::Convert.to_string("t")
   end
 end

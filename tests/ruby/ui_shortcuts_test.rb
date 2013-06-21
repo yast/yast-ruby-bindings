@@ -1,13 +1,13 @@
 $LOAD_PATH << File.dirname(__FILE__)
 require "test_helper"
 
-require "ycp/ui_shortcuts"
+require "yast/ui_shortcuts"
 
-class UIShortcutsTest < YCP::TestCase
-  include YCP::UIShortcuts
+class UIShortcutsTest < Yast::TestCase
+  include Yast::UIShortcuts
 
   def test_shortcuts
-    assert_equal YCP::Term.new(:HBox), HBox()
-    assert_equal YCP::Term.new(:HBox, "test"), HBox("test")
+    assert_equal Yast::Term.new(:HBox), HBox()
+    assert_equal Yast::Term.new(:HBox, "test"), HBox("test")
   end
 end
