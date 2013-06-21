@@ -72,7 +72,7 @@ module Yast
 
     target.class.send(:include, mod)
 
-    method_name = "initialize_" + path_without_suffix.gsub(/[.-\/]/, "_")
+    method_name = "initialize_" + path_without_suffix.gsub(/[-.\/]/, "_")
 
     target.send method_name.to_sym, target
   end
