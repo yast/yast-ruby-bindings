@@ -60,7 +60,7 @@ cd -
 %files
 %defattr (-, root, root)
 %{_libdir}/YaST2/plugin/libpy2lang_ruby.so
-%{_libdir}/ruby/vendor_ruby/%{rb_ver}/ycp.rb
-%{_libdir}/ruby/vendor_ruby/%{rb_ver}/ycp
-%{_libdir}/ruby/vendor_ruby/%{rb_ver}/%{rb_arch}/ycpx.so
-%{_libdir}/ruby/vendor_ruby/%{rb_ver}/%{rb_arch}/ycp
+%{_libdir}/ruby/vendor_ruby/%{rb_ver}/*.rb
+%{_libdir}/ruby/vendor_ruby/%{rb_ver}/yast
+%{_libdir}/ruby/vendor_ruby/%{rb_ver}/%{rb_arch}/*x.so
+%{_libdir}/ruby/vendor_ruby/%{rb_ver}/%{rb_arch}/yast
