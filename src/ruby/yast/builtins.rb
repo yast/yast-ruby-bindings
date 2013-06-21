@@ -99,7 +99,7 @@ module Yast
           res = nil
         end
       else
-        Yast.y2warning ("foreach builtin called on wrong type #{object.class}")
+        Yast.y2warning(1, "foreach builtin called on wrong type #{object.class}")
       end
       return res
     end
@@ -137,7 +137,7 @@ module Yast
         end
         return res
       else
-        Yast.y2warning ("Called builtin maplist on wrong type #{object.class}")
+        Yast.y2warning(1, "maplist builtin called on wrong type #{object.class}")
         return nil
       end
     end
@@ -223,7 +223,7 @@ module Yast
       when ::Hash
         return first.merge(second)
       else
-        raise "Wrong type #{first.class} to union builtin"
+        raise "union builtin called on wrong type #{first.class}"
       end
     end
 
@@ -550,11 +550,11 @@ module Yast
           if (pos < args.size)
             tostring args[pos]
           else
-            Yast.y2warning "Illegal argument number #{match}. Maximum is %#{args.size-1}."
+            Yast.y2warning 1, "sformat: Illegal argument number #{match}, maximum is %#{args.size-1}."
             ""
           end
         else
-          Yast.y2warning "Illegal argument number #{match}."
+          Yast.y2warning 1, "sformat: Illegal argument number #{match}."
           ""
         end
       end
@@ -830,7 +830,7 @@ module Yast
     # Converts a value to a string.
     def self.tostring val, width=nil
       if width
-        raise "negative width" if width < 0
+        raise "tostring: negative 'width' argument: #{width}" if width < 0
 
         return "%.#{width}f" % val
       end
@@ -858,7 +858,7 @@ module Yast
         val.signature.match /(.*)\((.*)\)/
         "<YastRef:#{$1}#{val.remote_method.name} (#{$2})>"
       else
-        y2warning "unknown type for tostring #{val.inspect}"
+        y2warning "tostring builtin called on wrong type #{val.class}"
         return val.inspect
       end
     end
