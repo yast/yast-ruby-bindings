@@ -221,6 +221,15 @@ ycp_module_symbols(VALUE self, VALUE namespace_name)
   return res;
 }
 
+/*
+ * set the caller location to log properly the Ruby source location,
+ * needs to be called before evaluating any YaST function outside Ruby
+ */
+void set_ruby_source_location(VALUE file, VALUE lineno)
+{
+  YaST::ee.setFilename(RSTRING_PTR(file));
+  YaST::ee.setLinenumber(FIX2INT(lineno));
+}
 
 /*
  * call_ycp_function
@@ -291,7 +300,7 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
     y2debug("Call %s", function_name);
     std::map<int,SymbolEntryPtr> refs;
     // add the parameters
-    for (int i=2; i < argc; i++)
+    for (int i=4; i < argc; i++)
     {
       YCPValue v = rbvalue_2_ycpvalue(argv[i]);
       y2debug("Append parameter %s", v->toString().c_str());
@@ -305,6 +314,8 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
       call->appendParameter (v);
     }
     call->finishParameters ();
+
+    set_ruby_source_location(argv[2], argv[3]);
 
     YCPValue res = call->evaluateCall ();
     delete call;
