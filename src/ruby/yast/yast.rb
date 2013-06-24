@@ -108,7 +108,7 @@ module Yast
         m.module_eval <<-"END"
           def self.#{sname}(*args)
             caller[0].match BACKTRACE_REGEXP
-            return YCP::call_ycp_function("#{mname}", :#{sname}, $1, $2.to_i, *args)
+            return YCP::call_yast_function("#{mname}", :#{sname}, $1, $2.to_i, *args)
           end
         END
       end
