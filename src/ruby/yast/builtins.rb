@@ -849,14 +849,14 @@ module Yast
       when Yast::FunRef
         # TODO FIXME: Yast puts also the parameter names,
         # here the signature contains only data type without parameter name:
-        #   Yast:     <YastRef:boolean foo (string str, string str2)>
-        #   Ruby:    <YastRef:boolean foo (string, string)>
+        #   Yast:    <YCPRef:boolean foo (string str, string str2)>
+        #   Ruby:    <YCPRef:boolean foo (string, string)>
         #
         # There is also extra "any" in lists/maps:
-        #   Yast:     <YastRef:list <map> bar (list <map> a)>
-        #   Ruby:    <YastRef:list <map<any,any>> bar (list <map<any,any>>)>
+        #   Yast:    <YCPRef:list <map> bar (list <map> a)>
+        #   Ruby:    <YCPRef:list <map<any,any>> bar (list <map<any,any>>)>
         val.signature.match /(.*)\((.*)\)/
-        "<YastRef:#{$1}#{val.remote_method.name} (#{$2})>"
+        "<YCPRef:#{$1}#{val.remote_method.name} (#{$2})>"
       else
         y2warning "tostring builtin called on wrong type #{val.class}"
         return val.inspect
