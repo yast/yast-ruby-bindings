@@ -76,7 +76,7 @@ module Yast
 
     method_name = "initialize_" + path_without_suffix.gsub(/[-.\/]/, "_")
 
-    target.send method_name.to_sym, target if targer.respond_to? method_name.to_sym
+    target.send method_name.to_sym, target if target.respond_to? method_name.to_sym
   end
 
   def self.import(mname)
