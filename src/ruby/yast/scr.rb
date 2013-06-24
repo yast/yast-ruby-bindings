@@ -44,10 +44,9 @@ module Yast
 
     # FIXME duplicate of code in wfm
     def self.call_builtin_wrapper *args
-      from = caller[1]          # caller[0] is one of the functions above
-      filename = from[/^[^:]+/]
-      lineno = from[/:\d+/][1..-1].to_i
-      call_builtin(filename,lineno,*args)
+      # caller[0] is one of the functions above
+      caller[1].match BACKTRACE_REGEXP
+      call_builtin($1, $2.to_i, *args)
     end
 
   end
