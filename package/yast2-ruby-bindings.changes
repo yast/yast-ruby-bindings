@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Mon Jun 24 07:15:46 UTC 2013 - jreidinger@suse.com
+
+- set the source location when calling YaST functions outside Ruby
+- few minor fixes in logging
+- 1.1.1
+
+-------------------------------------------------------------------
 Thu Jun 20 20:19:31 UTC 2013 - jreidinger@suse.com
 
 - Rename top level namespace from YCP to Yast
