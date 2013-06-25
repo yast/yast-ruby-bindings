@@ -1,7 +1,7 @@
 $LOAD_PATH << File.dirname(__FILE__)
 require "test_helper"
 
-require 'yast'
+require 'yast/exportable'
 
 class MyTestClass
   extend Yast::Exportable

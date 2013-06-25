@@ -1,7 +1,5 @@
 require "ostruct"
 
-require "yast/yast"
-
 module Yast
   module Exportable
 
@@ -32,9 +30,7 @@ module Yast
       elsif options[:variable]
         published_variables[options[:variable]] = ExportData.new options
         if !options[:private] || ENV["Y2ALLGLOBAL"]
-          attr_writer :"#{options[:variable]}"
-          # reader that do deep copy
-          class_eval "def #{options[:variable]}; Yast.deep_copy(@#{options[:variable]}); end"
+          attr_accessor :"#{options[:variable]}"
         end
       else
         raise "Missing publish kind"
