@@ -307,7 +307,7 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
 
       const char *class_name = rb_obj_classname(argv[i]);
       //handle args passed by references
-      if (!strcmp(class_name, "YCP::ArgRef"))
+      if (!strcmp(class_name, "Yast::ArgRef"))
       {
         refs[i] = v->asReference()->entry();
       }
