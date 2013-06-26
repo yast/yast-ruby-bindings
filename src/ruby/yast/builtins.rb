@@ -610,7 +610,7 @@ module Yast
 
     def self.shift_frame_number args
       if args.first.is_a? ::Fixnum
-        args[0] = args.first + 1
+        args[0] += 1 if args[0] >= 0
       else 
         args.unshift 1
       end
