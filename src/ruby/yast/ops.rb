@@ -64,8 +64,11 @@ module Yast
 
     def self.assign (object, indexes, value)
       return if indexes.nil? || object.nil?
+
       last = indexes.pop
       res = object
+      indexes = [indexes] unless indexes.is_a? ::Array
+
       indexes.each do |i|
         case res
         when ::Array, Yast::Term
