@@ -32,9 +32,8 @@ module Yast
       when ::Hash then  return Yast::deep_copy(object).merge(Yast::deep_copy(::Hash[*params]))
       when Yast::Path then return Yast::deep_copy(object) + Yast::deep_copy(params.first)
       when Yast::Term then
-        res = Yast::deep_copy(object)
-        res.params << Yast::deep_copy(params.first)
-        return res
+        params = object.params << Yast::deep_copy(params.first)
+        return Yast::Term.new(object.value,*params)
       when ::NilClass then return nil
       else
         raise "Invalid object '#{object.inspect}' for add builtin"
@@ -158,7 +157,9 @@ module Yast
         res.delete element
       when Yast::Term
         return res if element < 1
-        res.params.delete_at element-1
+        params = res.params
+        params.delete_at element-1
+        return Yast::Term.new res.value, *params
       else
         raise "Invalid type passed to remove #{object.class}"
       end
@@ -887,7 +888,7 @@ module Yast
     def self.argsof term
       return nil if term.nil?
 
-      return Yast::deep_copy(term.params)
+      return term.params
     end
 
     # Returns the symbol of the term TERM.

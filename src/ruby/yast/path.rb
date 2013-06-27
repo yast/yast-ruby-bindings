@@ -1,7 +1,7 @@
 module Yast
+  # Immutable class
   class Path
     include Comparable 
-    attr_reader :components
 
     def initialize value
       @components = []
@@ -13,13 +13,13 @@ module Yast
     end
 
     def clone
-      Path.new(to_s())
+      self
     end
 
     def + another
       another = self.class.from_string(another) unless another.is_a? Yast::Path
       return another.dup if components.empty?
-      return dup if another.components.empty?
+      return dup if another.empty?
       return Path.new(self.to_s+another.to_s)
     end
 
@@ -31,12 +31,16 @@ module Yast
       return components.size
     end
 
+    def empty?
+      return components.empty?
+    end
+
     def <=>(other)
-      0.upto(components.size-1) do |i|
-        return 1 unless other.components[i]
+      0.upto(size-1) do |i|
+        return 1 unless other.send(:components)[i]
         #we strip enclosing quotes for complex expression
         our_component = components[i].sub(/\A"(.*)"\Z/,"\\1");
-        other_component = other.components[i].sub(/\A"(.*)"\Z/,"\\1");
+        other_component = other.send(:components)[i].sub(/\A"(.*)"\Z/,"\\1");
         res = our_component <=> other_component
         return res if res != 0
       end
@@ -44,6 +48,7 @@ module Yast
     end
 
   private
+    attr_reader :components
     COMPLEX_CHAR_REGEX = /[^a-zA-Z0-9_-]/
     SIMPLE_CHAR_REGEX = /[a-zA-Z0-9_-]/
     # Rewritten yast parser

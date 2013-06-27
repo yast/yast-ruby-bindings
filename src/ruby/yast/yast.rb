@@ -31,6 +31,8 @@ module Yast
     case object
     when Numeric,TrueClass,FalseClass,NilClass,Symbol #immutable
       object
+    when ::String, Yast::Term, Yast::Path #immutable in sense of yast buildins
+      object
     when Yast::FunRef, Yast::ArgRef, Yast::External, Yast::YReference #contains only reference somewhere
       object
     when ::Hash

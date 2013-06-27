@@ -13,10 +13,10 @@ class TermTest < Yast::TestCase
     assert_equal :VBox, Yast::Term.new(:HBox, Yast::Term.new(:VBox)).params.first.value
   end
 
-  def test_update
+  def test_immutable_params
     t = Yast::Term.new(:HBox, 1, 2)
     t.params[0] = 0
-    assert_equal t.params.first, 0
+    assert_equal t.params.first, 1
   end
 
   def test_equal
