@@ -1,4 +1,15 @@
 -------------------------------------------------------------------
+Thu Jun 27 07:12:13 UTC 2013 - jreidinger@suse.com
+
+- make term and path class immutable, so deep copy can be 
+  optimalized
+- support backtrace in y2log() (lslezak)
+- call include init method only if it is there
+- update UI shortcuts to allow also terms starting with lowercase
+- various small bug fixes
+- 1.1.2
+
+-------------------------------------------------------------------
 Mon Jun 24 07:15:46 UTC 2013 - jreidinger@suse.com
 
 - set the source location when calling YaST functions outside Ruby
