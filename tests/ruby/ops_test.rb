@@ -164,6 +164,7 @@ class Yast::OpsTest < Yast::TestCase
 
   def test_index_map
     map = { "a" => { "b" => "c" }}
+    assert_equal({ "b" => "c"}, Yast::Ops.index(map,"a","n"))
     assert_equal "c", Yast::Ops.index(map,["a","b"],"n")
     assert_equal "n", Yast::Ops.index(map,["a","c"],"n")
     assert_equal "n", Yast::Ops.index(map,["c","b"],"n")
@@ -172,6 +173,7 @@ class Yast::OpsTest < Yast::TestCase
 
   def test_index_list
     list = [["a","b"]]
+    assert_equal(["a","b"], Yast::Ops.index(list,0,"n"))
     assert_equal "b", Yast::Ops.index(list,[0,1],"n")
     assert_equal "n", Yast::Ops.index(list,[0,2],"n")
     assert_equal "n", Yast::Ops.index(list,[1,1],"n")
@@ -179,7 +181,7 @@ class Yast::OpsTest < Yast::TestCase
 
   def test_index_term
     term = Yast::Term.new(:a,"a","b")
-    assert_equal "b", Yast::Ops.index(term,[1],"n")
+    assert_equal "b", Yast::Ops.index(term,1,"n")
     assert_equal "n", Yast::Ops.index(term,[2],"n")
   end
 
