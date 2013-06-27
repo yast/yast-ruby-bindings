@@ -29,6 +29,8 @@ module Yast
       def self.index (object, indexes, default=nil)
         res = object
         default = Yast.deep_copy(default)
+        indexes = [indexes] unless indexes.is_a? ::Array
+
         indexes.each do |i|
           case res
           when ::Array, Yast::Term
