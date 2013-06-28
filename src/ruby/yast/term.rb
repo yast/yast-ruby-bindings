@@ -3,12 +3,13 @@ require 'yast/builtins'
 require 'yast/ops'
 
 module Yast
-  # Immutable class
   class Term
     include Comparable
 
     # term symbol
     attr_reader :value
+    # term parameters
+    attr_reader :params
 
     def initialize value, *params
       @value = value
@@ -16,19 +17,19 @@ module Yast
     end
 
     def [] index
-      @params[index]
+      params[index]
+    end
+
+    def []= index, value
+      params[index] = value
     end
 
     def size
-      @params.size
-    end
-
-    def params
-      Yast.deep_copy @params
+      params.size
     end
 
     def clone
-      self
+      Yast::Term.new value, *Yast.deep_copy(params)
     end
 
     def to_s

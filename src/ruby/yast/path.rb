@@ -18,8 +18,8 @@ module Yast
 
     def + another
       another = self.class.from_string(another) unless another.is_a? Yast::Path
-      return another.dup if components.empty?
-      return dup if another.empty?
+      return another.clone if components.empty?
+      return clone if another.empty?
       return Path.new(self.to_s+another.to_s)
     end
 

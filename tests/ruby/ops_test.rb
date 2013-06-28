@@ -228,8 +228,10 @@ class Yast::OpsTest < Yast::TestCase
     assert_equal Hash[5=>2,4=>[]], l
 
     l = Yast::Term.new(:a,:b)
-    Yast::Ops.assign(l, 1, :c)
-    assert_equal Yast::Term.new(:a, :c)
+    Yast::Ops.assign(l, 0, :c)
+    assert_equal Yast::Term.new(:a, :c), l
+    Yast::Ops.assign(l, 1, :b)
+    assert_equal Yast::Term.new(:a, :c, :b), l
   end
 
 #test case format is [value1,value2,result]
