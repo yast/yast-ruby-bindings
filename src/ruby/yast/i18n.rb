@@ -8,6 +8,9 @@ module Yast
     DEFAULT_LOCALE = "en_US"
 
     def textdomain domain
+      # initialize FastGettext only if the locale directory exists
+      return unless File.exist? LOCALE_DIR
+
       # FastGettext does not track which file/class uses which text domain,
       # it has just single global text domain (the current one),
       # remember the requested text domain here
@@ -30,6 +33,9 @@ module Yast
     end
 
     def _(str)
+      # no textdomain configured yet
+      return str unless @my_textdomain
+
       old_text_domain = FastGettext.text_domain
       FastGettext.text_domain = @my_textdomain
       FastGettext::Translation::_ str
@@ -38,6 +44,9 @@ module Yast
     end
 
     def n_(singular, plural, num)
+      # no textdomain configured yet
+      return (num == 1) ? singular : plural unless @my_textdomain
+
       old_text_domain = FastGettext.text_domain
       FastGettext.text_domain = @my_textdomain
       FastGettext::Translation::n_(singular, plural, num)
