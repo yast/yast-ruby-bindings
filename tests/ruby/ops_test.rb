@@ -462,5 +462,13 @@ class Yast::OpsTest < Yast::TestCase
     end
   end
 
+  def test_is
+    assert Yast::Ops.is("t", "string")
+    assert !Yast::Ops.is("t", "integer")
+  end
 
+  def test_is_shortcut
+    assert Yast::Ops.is_string?("t")
+    assert !Yast::Ops.is_void?("t")
+  end
 end

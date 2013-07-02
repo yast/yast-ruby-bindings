@@ -256,6 +256,12 @@ module Yast
       return first >= second
     end
 
+    TYPES_MAP.keys.each do |type|
+      class_eval "def self.is_#{type}? (object)
+        Ops.is(object, \"#{type}\")
+      end"
+    end
+
     def self.is (object, type)
       type = "function" if type =~ /\(.*\)/ #reference to function
       type.gsub!(/<.*>/, "")
