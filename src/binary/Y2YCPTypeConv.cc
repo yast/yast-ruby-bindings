@@ -24,6 +24,7 @@ as published by the Free Software Foundation; either version
 #include <ycp/YCPValue.h>
 #include <ycp/YCPCode.h>
 #include <ycp/YCPBoolean.h>
+#include <ycp/YCPByteblock.h>
 #include <ycp/YCPList.h>
 #include <ycp/YCPMap.h>
 #include <ycp/YCPString.h>
@@ -86,18 +87,35 @@ ycp_term_to_rb_term( YCPTerm ycpterm )
 extern "C" VALUE
 ycp_ref_to_rb_ref( YCPReference ycpref )
 {
-  int error = 0;
-//  rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) "ycp/term",&error);
   rb_require("yastx");
-  if (error)
-  {
-    y2internal("Cannot found ycp/term module.");
-    return Qnil;
-  }
 
   VALUE yast = rb_define_module("Yast");
   VALUE cls = rb_const_get(yast, rb_intern("YReference"));
   return Data_Wrap_Struct(cls, 0, NULL, (void*)&*ycpref->entry());
+}
+
+extern "C" void
+rb_bb_free(void *p)
+{
+  YCPByteblock *bb = (YCPByteblock*) p;
+  delete bb;
+}
+
+extern "C" VALUE
+ycp_bb_to_rb_bb( YCPByteblock ycpbb )
+{
+  rb_require("yastx");
+
+  VALUE yast = rb_define_module("Yast");
+  VALUE cls = rb_const_get(yast, rb_intern("Byteblock"));
+  return Data_Wrap_Struct(cls, 0, rb_bb_free, new YCPByteblock(ycpbb->value(), ycpbb->size()));
+}
+
+extern "C" void
+rb_ext_free(void *p)
+{
+  YCPExternal *ext = (YCPExternal*) p;
+  delete ext;
 }
 
 extern "C" VALUE
@@ -114,8 +132,7 @@ ycp_ext_to_rb_ext( YCPExternal ext )
 
   VALUE yast = rb_define_module("Yast");
   VALUE cls = rb_const_get(yast, rb_intern("External"));
-  // FIXME marking and deallocation
-  VALUE tdata = Data_Wrap_Struct(cls, 0, NULL, new YCPExternal(ext));
+  VALUE tdata = Data_Wrap_Struct(cls, 0, rb_ext_free, new YCPExternal(ext));
   VALUE argv[] = {rb_utf8_str_new(ext->magic())};
   rb_obj_call_init(tdata, 1, argv);
   return tdata;
@@ -216,6 +233,10 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
     y2debug("Evaluated code returned: %s", val->toString().c_str() );
 
     return ycpvalue_2_rbvalue(val);
+  }
+  else if (ycpval->isByteblock())
+  {
+    return ycp_bb_to_rb_bb(ycpval->asByteblock());
   }
   rb_raise( rb_eTypeError, "Conversion of YCP type '%s': %s not supported", Type::vt2type(ycpval->valuetype())->toString().c_str(), ycpval->toString().c_str() );
   return Qnil;
