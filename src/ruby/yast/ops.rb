@@ -6,6 +6,7 @@ require "yast/logger"
 class Yast::Term;end
 class Yast::FunRef;end
 class Yast::YReference;end
+class Yast::Byteblock;end
 
 module Yast
   module Ops
@@ -13,6 +14,7 @@ module Yast
     TYPES_MAP = {
       'any' => ::Object,
       'nil' => ::NilClass,
+      'void' => ::NilClass,
       'boolean' => [::TrueClass,::FalseClass],
       'string' => ::String,
       'symbol' => ::Symbol,
@@ -23,7 +25,8 @@ module Yast
       'term' => Yast::Term,
       'path' => Yast::Path,
       'locale' => ::String,
-      'function' => [Yast::FunRef, Yast::YReference]
+      'function' => [Yast::FunRef, Yast::YReference],
+      'byteblock' => Yast::Byteblock
     }
 
       def self.index (object, indexes, default=nil)
