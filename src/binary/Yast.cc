@@ -49,6 +49,7 @@ as published by the Free Software Foundation; either version
 static VALUE rb_mUi;
 static VALUE rb_mYast;
 static VALUE rb_cYReference;
+static VALUE rb_cByteblock;
 
 
 static Y2Component *owned_uic = 0;
@@ -451,6 +452,9 @@ extern "C"
     rb_define_singleton_method(rb_cYReference, "new", RUBY_METHOD_FUNC(ref_new), 1);
     rb_define_method(rb_cYReference, "initialize", RUBY_METHOD_FUNC(ref_init), 0);
     rb_define_method(rb_cYReference, "call", RUBY_METHOD_FUNC(ref_call), -1);
+
+    //Byteblock
+    rb_cByteblock = rb_define_class_under(rb_mYast, "Byteblock", rb_cObject);
 
     /*
      * module YCP::Ui

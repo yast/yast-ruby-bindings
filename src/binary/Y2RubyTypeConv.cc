@@ -23,6 +23,7 @@ as published by the Free Software Foundation; either version
 
 #include <ycp/YCPValue.h>
 #include <ycp/YCPBoolean.h>
+#include <ycp/YCPByteblock.h>
 #include <ycp/YCPCode.h>
 #include <ycp/YCPList.h>
 #include <ycp/YCPMap.h>
@@ -159,6 +160,13 @@ static YCPValue rbexternal_2_ycpexternal( VALUE value )
   return *payload;
 }
 
+static YCPValue rbbyteblock_2_ycpbyteblock( VALUE value )
+{
+  YCPByteblock *payload;
+  Data_Get_Struct(value, YCPByteblock, payload);
+  return *payload;
+}
+
 #define YCP_EXTERNAL_MAGIC "Ruby object"
 
 static void ycpexternal_finalizer(void * value_v, string /*magic*/)
@@ -287,6 +295,10 @@ rbvalue_2_ycpvalue( VALUE value )
     else if ( !strcmp(class_name, "Yast::External"))
     {
       return rbexternal_2_ycpexternal(value);
+    }
+    else if ( !strcmp(class_name, "Yast::Byteblock"))
+    {
+      return rbbyteblock_2_ycpbyteblock(value);
     }
     else
     {
