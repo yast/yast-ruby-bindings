@@ -33,6 +33,7 @@ as published by the Free Software Foundation; either version
 #include <ycp/YExpression.h>
 #include <ycp/YCPValue.h>
 #include <ycp/YCPCode.h>
+#include <ycp/YCPByteblock.h>
 #include <ycp/Import.h>
 #include <ycp/y2log.h>
 
@@ -377,6 +378,18 @@ add_include_path( VALUE self, VALUE path )
   return Qnil;
 }
 
+static VALUE byteblock_to_s(VALUE self)
+{
+  YCPByteblock *bb;
+  Data_Get_Struct(self, YCPByteblock, bb);
+
+  if (bb)
+    return rb_utf8_str_new((*bb)->toString());
+  else
+    rb_raise(rb_eRuntimeError, "Byteblock is empty");
+
+}
+
 static VALUE ref_init(VALUE self)
 {
   return self;
@@ -455,6 +468,7 @@ extern "C"
 
     //Byteblock
     rb_cByteblock = rb_define_class_under(rb_mYast, "Byteblock", rb_cObject);
+    rb_define_method(rb_cByteblock, "to_s", RUBY_METHOD_FUNC(byteblock_to_s), 0);
 
     /*
      * module YCP::Ui

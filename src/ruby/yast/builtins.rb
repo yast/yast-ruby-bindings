@@ -1,6 +1,7 @@
 require "set"
 require "scanf"
 
+require "yastx"
 require "yast/yast"
 require "yast/path"
 require "yast/break"
@@ -235,6 +236,7 @@ module Yast
     ###########################################################
 
     # Converts a value to a byteblock.
+    # @note not implmeneted as noone use it as far as we know
     def self.tobyteblock
       raise "Builtin tobyteblock() is not implemented yet"
     end
@@ -845,7 +847,14 @@ module Yast
       when ::NilClass then "nil"
       when ::TrueClass then "true"
       when ::FalseClass then "false"
-      when ::Fixnum, ::Bignum, ::Float, Yast::Term, Yast::Path, Yast::External then val.to_s
+      when ::Fixnum,
+           ::Bignum,
+           ::Float,
+           Yast::Term,
+           Yast::Path,
+           Yast::External,
+           Yast::Byteblock
+        val.to_s
       when ::Array then "[#{val.map{|a|inside_tostring(a)}.join(", ")}]"
       when ::Hash then "$[#{sort(val.keys).map{|k|"#{inside_tostring(k)}:#{inside_tostring(val[k])}"}.join(", ")}]"
       when Yast::FunRef

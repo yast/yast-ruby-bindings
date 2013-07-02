@@ -233,7 +233,6 @@ rbterm_2_ycpterm( VALUE value )
 YCPValue
 rbvalue_2_ycpvalue( VALUE value )
 {
-  // TODO convert integers
   switch (TYPE(value))
   {
   case T_NIL:

@@ -201,14 +201,12 @@ YRubyNamespace::~YRubyNamespace ()
 
 const string YRubyNamespace::filename () const
 {
-  // TODO improve
   return ".../" + m_name;
 }
 
 // this is for error reporting only?
 string YRubyNamespace::toString () const
 {
-  y2error ("TODO");
   return "{\n"
          "/* this namespace is provided in Ruby */\n"
          "}\n";
