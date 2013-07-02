@@ -21,7 +21,7 @@ module Yast
         available = available_locales
         if FastGettext.available_locales != available
           # reload the translations, a new language is available
-          FastGettext.translation_repositories.keys.each {|dom| FastGettext.add_text_domain(domain, :path => LOCALE_DIR)}
+          FastGettext.translation_repositories.keys.each {|dom| FastGettext.add_text_domain(dom, :path => LOCALE_DIR)}
           FastGettext.available_locales = available
         end
 
