@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Tue Jul  9 08:57:21 UTC 2013 - jreidinger@suse.com
+
+- fix calling methods on namespace that is already used as nested
+  namespace (gh#yast/ycp-killer#465)
+- 1.1.4
+
+-------------------------------------------------------------------
 Thu Jul  4 09:13:59 UTC 2013 - jreidinger@suse.com
 
 - allow passing single value to Ops.index and Ops.assign
