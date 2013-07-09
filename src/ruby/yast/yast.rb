@@ -95,13 +95,20 @@ module Yast
       base = tmp_m
     end
 
-    # do not reimport if already imported
-    return if base.constants.include?(modules.last.to_sym)
+    # do not reimport if already imported and contain some methods
+    # ( in case namespace contain some methods )
+    if base.constants.include?(modules.last.to_sym) &&
+        !(base.const_get(modules.last).methods - Object.methods()).empty?
+      return
+    end
 
     import_pure(mname)
 
     # do not create wrapper if module is in ruby and define itself object
-    return if base.constants.include?(modules.last.to_sym)
+    if base.constants.include?(modules.last.to_sym) &&
+        !(base.const_get(modules.last).methods - Object.methods()).empty?
+      return
+    end
 
     m = ::Module.new
     symbols(mname).each do |sname,stype|
