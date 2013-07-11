@@ -17,8 +17,8 @@ END
     end
 
     def self.convert(object, options)
-      from = options[:from]
-      to = options[:to]
+      from = options[:from].dup
+      to = options[:to].dup
 
       #ignore whitespaces and specialization in types
       to.gsub!(/<.*>/, "")
