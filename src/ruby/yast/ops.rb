@@ -29,7 +29,12 @@ module Yast
       'byteblock' => Yast::Byteblock
     }
 
-      def self.index (object, indexes, default=nil)
+
+      def self.index (*args, &block)
+        get *args, &block
+      end
+
+      def self.get (object, indexes, default=nil)
         res = object
         default = Yast.deep_copy(default)
         indexes = [indexes] unless indexes.is_a? ::Array
@@ -65,7 +70,11 @@ module Yast
       return Yast.deep_copy(res)
     end
 
-    def self.assign (object, indexes, value)
+    def self.assign(*args)
+      set *args
+    end
+
+    def self.set (object, indexes, value)
       return if indexes.nil? || object.nil?
 
       indexes = [indexes] unless indexes.is_a? ::Array
