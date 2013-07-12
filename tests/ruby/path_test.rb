@@ -6,7 +6,7 @@ require "yast/path"
 class PathTest < Yast::TestCase
   def test_initialize
     assert_equal ".etc", Yast::Path.new(".etc").to_s
-    assert_equal '."et?c"', Yast::Path.new('."et?c"').to_s
+    assert_equal '."et?c"', Yast::Path.new('.et?c').to_s
   end
 
   def test_load_from_string

@@ -72,16 +72,9 @@ module Yast
         when :simple
           if c == '.'
             state = :dot
-            if buffer.start_with?("-") || buffer.end_with?("-")
-              Yast.y2error "Cannot have dash before or after dot '#{value}'"
-              @components.clear
-              return
-            end
-            if buffer =~ COMPLEX_CHAR_REGEX # we can get unescaped complex path from topath builtin
-              buffer.gsub!(/"/,"\\\"")
-              buffer = "\"#{buffer}\""
-            end
-            @components << buffer
+            return if invalid_buffer?(buffer)
+
+            @components << modify_buffer(buffer)
             buffer = ""
             next
           end
@@ -107,8 +100,31 @@ module Yast
           end
         end
       end
-      # do not forget to pass content of remainint component
-      @components << buffer unless buffer.empty?
+
+      unless buffer.empty?
+        return if invalid_buffer?(buffer)
+
+        @components << modify_buffer(buffer)
+      end
+    end
+
+    def invalid_buffer? buffer
+      if buffer.start_with?("-") || buffer.end_with?("-")
+        Yast.y2error "Cannot have dash before or after dot '#{value}'"
+        @components.clear
+        return true
+      end
+
+      false
+    end
+
+    def modify_buffer buffer
+      if buffer =~ COMPLEX_CHAR_REGEX # we can get unescaped complex path from topath builtin
+        buffer = buffer.gsub(/"/,"\\\"")
+        buffer = "\"#{buffer}\""
+      end
+
+      buffer
     end
   end
 end
