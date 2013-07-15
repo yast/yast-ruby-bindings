@@ -1,7 +1,6 @@
 require "yast/yast"
 require "yast/path"
 require "yast/logger"
-require "yast/convert"
 
 #predefine term to avoid circular dependency
 class Yast::Term;end
@@ -68,25 +67,6 @@ module Yast
             return block_given? ? yield : default
           end
       end
-
-      #included automatic conversion based on type of default
-      unless default.nil? #nil is any, but false is boolean
-        target_type = ""
-        TYPES_MAP.each_pair do |k,v|
-          values = v.is_a?(::Array) ? v : [v]
-          if values.any? { |val| val == default.class }
-            target_type = k
-            break
-          end
-        end
-
-        if target_type.empty?
-          Yast.y2internal "wrong type '#{default.class}' for index"
-        else
-          res = Convert.convert(res, :from => "any", :to => target_type)
-        end
-      end
-
       return Yast.deep_copy(res)
     end
 
