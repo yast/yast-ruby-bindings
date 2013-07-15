@@ -164,7 +164,7 @@ class Yast::OpsTest < Yast::TestCase
 
   def test_index_map
     map = { "a" => { "b" => "c" }}
-    assert_equal({ "b" => "c"}, Yast::Ops.index(map,"a",{}))
+    assert_equal({ "b" => "c"}, Yast::Ops.index(map,"a","n"))
     assert_equal "c", Yast::Ops.index(map,["a","b"],"n")
     assert_equal "n", Yast::Ops.index(map,["a","c"],"n")
     assert_equal "n", Yast::Ops.index(map,["c","b"],"n")
@@ -173,7 +173,7 @@ class Yast::OpsTest < Yast::TestCase
 
   def test_index_list
     list = [["a","b"]]
-    assert_equal(["a","b"], Yast::Ops.index(list,0,[]))
+    assert_equal(["a","b"], Yast::Ops.index(list,0,"n"))
     assert_equal "b", Yast::Ops.index(list,[0,1],"n")
     assert_equal "n", Yast::Ops.index(list,[0,2],"n")
     assert_equal "n", Yast::Ops.index(list,[1,1],"n")
@@ -196,10 +196,8 @@ class Yast::OpsTest < Yast::TestCase
 
   def test_index_corner_cases
     list = ["a"]
-     assert_equal "n", Yast::Ops.index(list,["a"],"n")
-     assert_equal "n", Yast::Ops.index(list,[0,0],"n")
-     assert_equal 1, Yast::Ops.index([1.0],0,0)
-    assert_equal nil, Yast::Ops.index([1.0],0,"")
+    assert_equal "n", Yast::Ops.index(list,["a"],"n")
+    assert_equal "n", Yast::Ops.index(list,[0,0],"n")
   end
 
   def test_assign
