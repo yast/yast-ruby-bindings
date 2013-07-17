@@ -86,6 +86,21 @@ module Yast
           e.backtrace
         )
         return nil
+      ensure
+        # unload the client class to ensure that the includes will be
+        # fully initialized when running it next time
+        # (Yast.include skips initialize_<include> calls when the include
+        # module is already present in the target class)
+        client_without_suffix = File.basename(client).sub(/\.rb$/, "")
+        client_name = (client_without_suffix.
+          gsub(/^./)     { |s| s.upcase }.
+          gsub(/[-_.]./) { |s| s[1].upcase } +
+          "Client").to_sym
+
+        if Yast.constants.include?(client_name)
+          Yast.y2debug "Unloading client class #{client_name}"
+          Yast.send(:remove_const, client_name)
+        end
       end
     end
   end
