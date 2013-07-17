@@ -4,6 +4,7 @@ $LOAD_PATH << File.dirname(__FILE__)
 require "test_helper"
 
 require "yast/ops"
+require "yast/convert"
 require "yast/path"
 require "yast/term"
 
@@ -198,6 +199,12 @@ class Yast::OpsTest < Yast::TestCase
     list = ["a"]
     assert_equal "n", Yast::Ops.index(list,["a"],"n")
     assert_equal "n", Yast::Ops.index(list,[0,0],"n")
+  end
+
+  def test_get_shortcuts
+    list = ["a","b"]
+    assert_equal("a", Yast::Ops.get_string(list,0,"n"))
+    assert_equal(nil, Yast::Ops.get_integer(list,0,"n"))
   end
 
   def test_assign
