@@ -29,6 +29,28 @@ module Yast
       'byteblock' => Yast::Byteblock
     }
 
+    # Types for which we generate shortcut methods, e.g. Ops.get_string or
+    # Convert.to_string.
+    SHORTCUT_TYPES = [
+      "boolean",
+      "string",
+      "symbol",
+      "integer",
+      "float",
+      "list",
+      "map",
+      "term",
+      "path",
+      "locale"
+    ]
+
+    Ops::SHORTCUT_TYPES.each do |type|
+      eval <<END
+        def self.get_#{type}(*args, &block)
+          Yast::Convert.to_#{type} get(*args, &block)
+        end
+END
+    end
 
       def self.index (*args, &block)
         get *args, &block

@@ -7,8 +7,7 @@ module Yast
   module Convert
 
     #generate shortcuts
-    [ "boolean", "string", "symbol", "integer", "float", "list", "map", 
-      "term", "path", "locale" ].each do |type|
+    Ops::SHORTCUT_TYPES.each do |type|
       eval <<END
         def self.to_#{type}(object)
           convert object, :from => "any", :to => "#{type}"
