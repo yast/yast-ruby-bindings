@@ -58,7 +58,7 @@ ycp_path_to_rb_path( YCPPath ycppath )
 
   VALUE yast = rb_define_module("Yast");
   VALUE cls = rb_const_get(yast, rb_intern("Path"));
-  VALUE value = rb_utf8_str_new(ycppath->asString()->value());
+  VALUE value = rb_utf8_str_new(ycppath->toString());
   return rb_class_new_instance(1,&value,cls);
 }
 
