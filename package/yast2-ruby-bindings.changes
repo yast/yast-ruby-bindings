@@ -1,4 +1,13 @@
 -------------------------------------------------------------------
+Tue Jul 23 15:41:34 UTC 2013 - jreidinger@suse.com
+
+- fix path conversion (gh#yast/ycp-killer#562)
+- remove deprecated calls and YCP namespace
+- improve reporting problematic code when builtin is called in 
+  wrong way (gh#yast/ycp-killer#575)
+- 1.2.0
+
+-------------------------------------------------------------------
 Wed Jul 17 11:26:35 UTC 2013 - lslezak@suse.cz
 
 - added Ops.get_* shortcut methods (dmajda)
