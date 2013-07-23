@@ -868,7 +868,7 @@ module Yast
         val.signature.match /(.*)\((.*)\)/
         "<YCPRef:#{$1}#{val.remote_method.name} (#{$2})>"
       else
-        y2warning "tostring builtin called on wrong type #{val.class}"
+        y2warning 1, "tostring builtin called on wrong type #{val.class}"
         return val.inspect
       end
     end
