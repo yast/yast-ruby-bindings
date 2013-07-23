@@ -80,8 +80,6 @@ module Yast
     :item,
     :header,
     :opt,
-    :Time, #FIXME obsolete remove
-    :Date, #FIXME obsolete remove
     ]
 
    # for each symbol define a util function that will create a term

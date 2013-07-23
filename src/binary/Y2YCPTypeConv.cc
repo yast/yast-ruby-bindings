@@ -150,8 +150,6 @@ ycp_ext_to_rb_ext( YCPExternal ext )
 extern "C" VALUE
 ycpvalue_2_rbvalue( YCPValue ycpval )
 {
-  // TODO
-  // YT_BYTEBLOCK YT_CODE YT_RETURN YT_BREAK YT_ENTRY YT_ERROR  YT_REFERENCE YT_EXTERNA
   if (ycpval.isNull() || ycpval->isVoid())
   {
     return Qnil;
@@ -220,11 +218,7 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
   else if (ycpval->isExternal())
   {
     YCPExternal ex = ycpval->asExternal();
-    if (ex->magic() == string(YCP_EXTERNAL_MAGIC)) {
-      return (VALUE)(ex->payload()); // FIXME reference counting
-    } else {
-      return ycp_ext_to_rb_ext(ex);
-    }
+    return ycp_ext_to_rb_ext(ycpval->asExternal());
   }
   else if (ycpval->isCode())
   {

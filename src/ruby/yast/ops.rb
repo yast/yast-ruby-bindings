@@ -52,10 +52,6 @@ module Yast
 END
     end
 
-      def self.index (*args, &block)
-        get *args, &block
-      end
-
       def self.get (object, indexes, default=nil)
         res = object
         default = Yast.deep_copy(default)
@@ -90,10 +86,6 @@ END
           end
       end
       return Yast.deep_copy(res)
-    end
-
-    def self.assign(*args)
-      set *args
     end
 
     def self.set (object, indexes, value)

@@ -42,12 +42,10 @@ module Yast
       call_builtin_wrapper("UnmountAgent", *args)
     end
 
-    # FIXME duplicate of code in wfm
     def self.call_builtin_wrapper *args
       # caller[0] is one of the functions above
       caller[1].match BACKTRACE_REGEXP
       call_builtin($1, $2.to_i, *args)
     end
-
   end
 end

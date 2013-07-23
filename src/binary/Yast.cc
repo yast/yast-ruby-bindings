@@ -47,13 +47,9 @@ as published by the Free Software Foundation; either version
  * Ruby module anchors
  *
  */
-static VALUE rb_mUi;
 static VALUE rb_mYast;
 static VALUE rb_cYReference;
 static VALUE rb_cByteblock;
-
-
-static Y2Component *owned_uic = 0;
 
 extern "C" {
 
@@ -71,71 +67,6 @@ getNs (const char * ns_name)
     ns->initialize ();
   }
   return ns;
-}
-
-
-/*--------------------------------------------
- *
- * Document-module: YCP::Ui
- *
- *--------------------------------------------
- */
-
-/*
- * ui_init()
- *
- * Load and initialize UI component
- *
- * call-seq:
- *   Ui::init( name = "ncurses" )
- *
- */
-
-static VALUE
-ui_init( int argc, VALUE *argv, VALUE self )
-{
-  const char *ui_name = "ncurses";
-
-  if (argc == 1)
-  {
-    ui_name = StringValuePtr(argv[0]);
-  }
-  else if (argc != 0)
-  {
-    rb_raise(rb_eArgError,"zero or one arguments required");
-    return Qnil;
-  }
-
-  Y2Component *c = YUIComponent::uiComponent ();
-  if (c == 0)
-  {
-    y2debug ("UI component not created yet, creating %s", ui_name);
-
-    c = Y2ComponentBroker::createServer (ui_name);
-    if (c == 0)
-    {
-      rb_raise(rb_eRuntimeError,"can't create component");
-      return Qnil;
-    }
-
-    if (YUIComponent::uiComponent () == 0)
-    {
-      rb_raise(rb_eRuntimeError,"component is not UI");
-      return Qnil;
-    }
-    else
-    {
-      // got it - initialize, remember
-      //FIXME add support for various server options passed via CLI here
-      c->setServerOptions (0, NULL);
-      owned_uic = c;
-    }
-  }
-  else
-  {
-    rb_raise(rb_eRuntimeError,"UI component already present");
-  }
-  return Qnil;
 }
 
 
@@ -397,7 +328,6 @@ static VALUE ref_init(VALUE self)
 
 static VALUE ref_new(VALUE clas, VALUE ref)
 {
-  // TODO add delete of struct
   VALUE tdata = Data_Wrap_Struct(clas, 0, NULL, (void*)ref);
   rb_obj_call_init(tdata, 0, NULL);
   return tdata;
@@ -469,11 +399,5 @@ extern "C"
     //Byteblock
     rb_cByteblock = rb_define_class_under(rb_mYast, "Byteblock", rb_cObject);
     rb_define_method(rb_cByteblock, "to_s", RUBY_METHOD_FUNC(byteblock_to_s), 0);
-
-    /*
-     * module YCP::Ui
-     */
-    rb_mUi = rb_define_module_under(rb_mYast, "Ui");
-    rb_define_singleton_method( rb_mUi, "init", RUBY_METHOD_FUNC(ui_init), -1);
   }
 }

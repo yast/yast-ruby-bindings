@@ -167,43 +167,6 @@ static YCPValue rbbyteblock_2_ycpbyteblock( VALUE value )
   return *payload;
 }
 
-#define YCP_EXTERNAL_MAGIC "Ruby object"
-
-static void ycpexternal_finalizer(void * value_v, string /*magic*/)
-{
-  VALUE value = (VALUE)value_v;
-
-  if (!YRuby::yRuby()) {
-    return; // we're finalized
-  }
-
-  YRuby::refcount_map_t& vrby = YRuby::yRuby()->value_references_from_ycp;
-  YRuby::refcount_map_t::iterator it = vrby.find(value);
-  if (it == vrby.end()) {
-    // YRuby got re-constructed during final cleanup; do nothing
-    return;
-  }
-
-  int & count = it->second;
-  --count;
-  y2internal("Refcount of value %ld decremented to %d", value, count);
-  assert(count >= 0);
-
-  if (count == 0) {
-    vrby.erase(it);
-  }
-}
-
-static YCPExternal rbobject_2_ycpexternal( VALUE value )
-{
-  YCPExternal ex((void*) value, string(YCP_EXTERNAL_MAGIC), ycpexternal_finalizer);
-
-  // defaults to zero, ok
-  int count = ++YRuby::yRuby()->value_references_from_ycp[value];
-  y2internal("Refcount of value %ld incremented to %d", value, count);
-  return ex;
-}
-
 static YCPValue
 rbpath_2_ycppath( VALUE value )
 {
@@ -302,7 +265,6 @@ rbvalue_2_ycpvalue( VALUE value )
     else
     {
       rb_raise(rb_eRuntimeError, "Invalid value %s passed to component system", RSTRING_PTR(rb_inspect(value)));
-      return rbobject_2_ycpexternal(value);
     }
   }
   }

@@ -163,42 +163,42 @@ class Yast::OpsTest < Yast::TestCase
     assert_equal true, Yast::Ops.less_than({"a" => 1, 1 => 2},{"a" => 1, "b" => 2})
   end
 
-  def test_index_map
+  def test_get_map
     map = { "a" => { "b" => "c" }}
-    assert_equal({ "b" => "c"}, Yast::Ops.index(map,"a","n"))
-    assert_equal "c", Yast::Ops.index(map,["a","b"],"n")
-    assert_equal "n", Yast::Ops.index(map,["a","c"],"n")
-    assert_equal "n", Yast::Ops.index(map,["c","b"],"n")
-    assert_equal "n", Yast::Ops.index(map,["c","b"]){ "n" }
+    assert_equal({ "b" => "c"}, Yast::Ops.get(map,"a","n"))
+    assert_equal "c", Yast::Ops.get(map,["a","b"],"n")
+    assert_equal "n", Yast::Ops.get(map,["a","c"],"n")
+    assert_equal "n", Yast::Ops.get(map,["c","b"],"n")
+    assert_equal "n", Yast::Ops.get(map,["c","b"]){ "n" }
   end
 
-  def test_index_list
+  def test_get_list
     list = [["a","b"]]
-    assert_equal(["a","b"], Yast::Ops.index(list,0,"n"))
-    assert_equal "b", Yast::Ops.index(list,[0,1],"n")
-    assert_equal "n", Yast::Ops.index(list,[0,2],"n")
-    assert_equal "n", Yast::Ops.index(list,[1,1],"n")
+    assert_equal(["a","b"], Yast::Ops.get(list,0,"n"))
+    assert_equal "b", Yast::Ops.get(list,[0,1],"n")
+    assert_equal "n", Yast::Ops.get(list,[0,2],"n")
+    assert_equal "n", Yast::Ops.get(list,[1,1],"n")
   end
 
-  def test_index_term
+  def test_get_term
     term = Yast::Term.new(:a,"a","b")
-    assert_equal "b", Yast::Ops.index(term,1,"n")
-    assert_equal "n", Yast::Ops.index(term,[2],"n")
+    assert_equal "b", Yast::Ops.get(term,1,"n")
+    assert_equal "n", Yast::Ops.get(term,[2],"n")
   end
 
-  def test_index_mixture
+  def test_get_mixture
     map_list =  { "a" => ["b","c"]}
-    assert_equal "c", Yast::Ops.index(map_list,["a",1],"n")
-    assert_equal "n", Yast::Ops.index(map_list,["a",2],"n")
+    assert_equal "c", Yast::Ops.get(map_list,["a",1],"n")
+    assert_equal "n", Yast::Ops.get(map_list,["a",2],"n")
     map_term =  { "a" => Yast::Term.new(:a,"b","c")}
-    assert_equal "c", Yast::Ops.index(map_term,["a",1],"n")
-    assert_equal "n", Yast::Ops.index(map_term,["a",2],"n")
+    assert_equal "c", Yast::Ops.get(map_term,["a",1],"n")
+    assert_equal "n", Yast::Ops.get(map_term,["a",2],"n")
   end
 
-  def test_index_corner_cases
+  def test_get_corner_cases
     list = ["a"]
-    assert_equal "n", Yast::Ops.index(list,["a"],"n")
-    assert_equal "n", Yast::Ops.index(list,[0,0],"n")
+    assert_equal "n", Yast::Ops.get(list,["a"],"n")
+    assert_equal "n", Yast::Ops.get(list,[0,0],"n")
   end
 
   def test_get_shortcuts
@@ -207,37 +207,37 @@ class Yast::OpsTest < Yast::TestCase
     assert_equal(nil, Yast::Ops.get_integer(list,0,"n"))
   end
 
-  def test_assign
+  def test_set
     l = nil
-    Yast::Ops.assign(l,[1,2],5)
+    Yast::Ops.set(l,[1,2],5)
     assert_equal nil,l 
     
     l = [1,2]
-    Yast::Ops.assign(l,nil,5)
+    Yast::Ops.set(l,nil,5)
     assert_equal [1,2],l 
 
-    Yast::Ops.assign(l,[2],3)
+    Yast::Ops.set(l,[2],3)
     assert_equal [1,2,3],l
 
     l = [1,2]
-    Yast::Ops.assign(l,[1],[])
+    Yast::Ops.set(l,[1],[])
     assert_equal [1,[]],l 
 
-    Yast::Ops.assign(l,[1,1],5)
+    Yast::Ops.set(l,[1,1],5)
     assert_equal [1,[nil,5]], l
 
     l = {5=>2,4=>[]}
-    Yast::Ops.assign(l, [4,1],5)
+    Yast::Ops.set(l, [4,1],5)
     assert_equal Hash[5=>2,4=>[nil,5]], l
 
     l = {5=>2,4=>[]}
-    Yast::Ops.assign(l, [5,2],5)
+    Yast::Ops.set(l, [5,2],5)
     assert_equal Hash[5=>2,4=>[]], l
 
     l = Yast::Term.new(:a,:b)
-    Yast::Ops.assign(l, 0, :c)
+    Yast::Ops.set(l, 0, :c)
     assert_equal Yast::Term.new(:a, :c), l
-    Yast::Ops.assign(l, 1, :b)
+    Yast::Ops.set(l, 1, :b)
     assert_equal Yast::Term.new(:a, :c, :b), l
   end
 

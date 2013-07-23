@@ -11,7 +11,7 @@ module Yast
   class IncludeTest < Module
     def initialize
       @test = 5
-      YCP.include self, "example.rb"
+      Yast.include self, "example.rb"
     end
 
     attr_reader :test
@@ -23,7 +23,7 @@ module Yast
       YCP.include self, "example.rb"
       @test = 5
       # second include should not call again init, so @test is kept to 5
-      YCP.include self, "example.rb"
+      Yast.include self, "example.rb"
     end
 
     attr_reader :test

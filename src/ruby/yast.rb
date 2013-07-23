@@ -42,5 +42,3 @@ require "yast/scr"
 require "yast/term"
 require "yast/ui_shortcuts"
 require "yast/wfm"
-
-YCP = Yast #temporary backward compatible fix

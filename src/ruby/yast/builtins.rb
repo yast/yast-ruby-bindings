@@ -172,7 +172,7 @@ module Yast
     # - Selects a list element (deprecated, use LIST[INDEX]:DEFAULT)
     # - Select item from term
     def self.select object, element, default
-      Yast::Ops.index(object, [element], default)
+      Yast::Ops.get(object, [element], default)
     end
 
     # size() Yast built-in
@@ -188,7 +188,6 @@ module Yast
       case object
       when ::String, ::Array, ::Hash, Yast::Term, Yast::Path
         return object.size
-      # TODO: byteblock
       else
         raise "Invalid object for size() builtin"
       end
