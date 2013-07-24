@@ -42,3 +42,11 @@ require "yast/scr"
 require "yast/term"
 require "yast/ui_shortcuts"
 require "yast/wfm"
+
+#add yast specific path for ruby libraries, similar to lib directory in rails
+Yast.y2paths.each do |p|
+  dir_path = File.join(p, "dir")
+  if File.exists? dir_path
+    $LOAD_PATH << dir_path
+  end
+end

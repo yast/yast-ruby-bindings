@@ -309,6 +309,18 @@ add_include_path( VALUE self, VALUE path )
   return Qnil;
 }
 
+static VALUE
+y2dir_paths( VALUE self )
+{
+  int size = Y2PathSearch::numberOfComponentLevels();
+  VALUE result = rb_ary_new2(size);
+  for (int i = 0; i < size; ++i)
+  {
+    rb_ary_push(result, rb_utf8_str_new(Y2PathSearch::searchPath(Y2PathSearch::GENERIC,i)));
+  }
+  return result;
+}
+
 static VALUE byteblock_to_s(VALUE self)
 {
   YCPByteblock *bb;
@@ -386,6 +398,7 @@ extern "C"
     rb_define_singleton_method( rb_mYast, "symbols", RUBY_METHOD_FUNC(ycp_module_symbols), 1);
     rb_define_singleton_method( rb_mYast, "add_module_path", RUBY_METHOD_FUNC(add_module_path), 1);
     rb_define_singleton_method( rb_mYast, "add_include_path", RUBY_METHOD_FUNC(add_include_path), 1);
+    rb_define_singleton_method( rb_mYast, "y2paths", RUBY_METHOD_FUNC(y2dir_paths), 0);
 
     rb_define_method( rb_mYast, "y2_logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
     rb_define_singleton_method( rb_mYast, "y2_logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);

@@ -10,7 +10,6 @@ require "yast"
 class YcpImportTest < Yast::TestCase
   def setup
     module_path = File.expand_path("../modules",__FILE__)+'/'
-    puts module_path
     Yast.add_module_path module_path
   end
 
