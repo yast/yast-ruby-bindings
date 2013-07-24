@@ -271,9 +271,12 @@ int YRubyNamespace::addVariables(VALUE module, int offset)
   for (int i = 0; i < RARRAY_LEN(variables); ++i)
   {
     VALUE variable = rb_ary_entry(variables,j);
-    if (getenv("Y2ALLGLOBAL") == NULL && RTEST(rb_funcall(variable, rb_intern("private?"), 0)))
-      continue;
     VALUE variable_name = rb_funcall(variable, rb_intern("variable"), 0);
+    if (getenv("Y2ALLGLOBAL") == NULL && RTEST(rb_funcall(variable, rb_intern("private?"), 0)))
+    {
+      y2debug("variable: '%s' is private and not needed", rb_id2name(SYM2ID(variable_name)));
+      continue;
+    }
     VALUE type = rb_funcall(variable,rb_intern("type"),0);
     string signature = StringValueCStr(type);
     constTypePtr sym_tp = Type::fromSignature(signature);
