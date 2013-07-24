@@ -270,7 +270,7 @@ int YRubyNamespace::addVariables(VALUE module, int offset)
   int j=0;
   for (int i = 0; i < RARRAY_LEN(variables); ++i)
   {
-    VALUE variable = rb_ary_entry(variables,j);
+    VALUE variable = rb_ary_entry(variables,i);
     VALUE variable_name = rb_funcall(variable, rb_intern("variable"), 0);
     if (getenv("Y2ALLGLOBAL") == NULL && RTEST(rb_funcall(variable, rb_intern("private?"), 0)))
     {
