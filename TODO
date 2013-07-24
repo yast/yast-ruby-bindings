@@ -1,6 +1,0 @@
-What is missing.
-
-- UI support
-- Conversion of some types from ruby to YCP like hash and arrays
-- handling of abort signal from the interpreter.
-- implement y2log functions

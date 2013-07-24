@@ -1,0 +1,1 @@
+--no-private --protected src/ruby/**/*.rb src/binary/**/*.cc - README
