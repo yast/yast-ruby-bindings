@@ -1,1 +1,1 @@
---no-private --protected src/ruby/**/*.rb src/binary/**/*.cc - README
+--no-private --markup markdown --protected src/ruby/**/*.rb src/binary/**/*.cc - README.md
