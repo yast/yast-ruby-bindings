@@ -137,7 +137,11 @@ module Yast
       return
     end
 
-    m = ::Module.new
+    m = if base.constants.include?(modules.last.to_sym)
+        base.const_get(modules.last)
+      else
+        ::Module.new
+      end
     symbols(mname).each do |sname,stype|
       next if sname.empty?
       if (stype == :function)
@@ -160,7 +164,7 @@ module Yast
       end
     end
 
-    base.const_set(modules.last, m)
+    base.const_set(modules.last, m) unless base.constants.include?(modules.last.to_sym)
   end
 
 end
