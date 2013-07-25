@@ -112,6 +112,26 @@ ycp_bb_to_rb_bb( YCPByteblock ycpbb )
 }
 
 extern "C" void
+rb_yc_free(void *p)
+{
+  YCPCode *yc = (YCPCode*) p;
+  delete yc;
+}
+
+extern "C" VALUE
+ycp_code_to_rb_code( YCPCode ycode )
+{
+  rb_require("yastx");
+
+  VALUE yast = rb_define_module("Yast");
+  VALUE cls = rb_const_get(yast, rb_intern("YCode"));
+  YCPCode * yc = new YCPCode(ycode);
+  VALUE res = Data_Wrap_Struct(cls, 0, rb_yc_free, yc);
+  rb_obj_call_init(res,0, NULL);
+  return res;
+}
+
+extern "C" void
 rb_ext_free(void *p)
 {
   YCPExternal *ext = (YCPExternal*) p;
@@ -217,16 +237,11 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
   }
   else if (ycpval->isExternal())
   {
-    YCPExternal ex = ycpval->asExternal();
     return ycp_ext_to_rb_ext(ycpval->asExternal());
   }
   else if (ycpval->isCode())
   {
-    y2debug("Evaluating YCP code: %s", ycpval->toString().c_str());
-    YCPValue val = ycpval->asCode()->evaluate();
-    y2debug("Evaluated code returned: %s", val->toString().c_str() );
-
-    return ycpvalue_2_rbvalue(val);
+    return ycp_code_to_rb_code(ycpval->asCode());
   }
   else if (ycpval->isByteblock())
   {

@@ -843,6 +843,7 @@ module Yast
       when ::String then val
       when ::Symbol then "`#{val}"
       when ::Proc then "\"Annonymous method\""
+      when Yast::YCode then "\"Remote code\""
       when ::NilClass then "nil"
       when ::TrueClass then "true"
       when ::FalseClass then "false"

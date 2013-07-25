@@ -50,6 +50,7 @@ as published by the Free Software Foundation; either version
 static VALUE rb_mYast;
 static VALUE rb_cYReference;
 static VALUE rb_cByteblock;
+static VALUE rb_cYCode;
 
 extern "C" {
 
@@ -333,18 +334,6 @@ static VALUE byteblock_to_s(VALUE self)
 
 }
 
-static VALUE ref_init(VALUE self)
-{
-  return self;
-}
-
-static VALUE ref_new(VALUE clas, VALUE ref)
-{
-  VALUE tdata = Data_Wrap_Struct(clas, 0, NULL, (void*)ref);
-  rb_obj_call_init(tdata, 0, NULL);
-  return tdata;
-}
-
 static VALUE ref_call( int argc, VALUE *argv, VALUE self )
 {
   SymbolEntry *se;
@@ -369,6 +358,16 @@ static VALUE ref_call( int argc, VALUE *argv, VALUE self )
     rb_raise(rb_eRuntimeError, "Unknown ref type %s", se->toString().c_str());
   }
   return Qnil;
+}
+
+static VALUE code_call( int argc, VALUE *argv, VALUE self )
+{
+  YCPCode *yc;
+  Data_Get_Struct(self, YCPCode, yc);
+  if (yc)
+    return ycpvalue_2_rbvalue((*yc)->evaluate());
+  else
+    rb_raise(rb_eRuntimeError, "YCode is empty");
 }
 
 } //extern C
@@ -405,9 +404,11 @@ extern "C"
 
     // Y2 references
     rb_cYReference = rb_define_class_under(rb_mYast, "YReference", rb_cObject);
-    rb_define_singleton_method(rb_cYReference, "new", RUBY_METHOD_FUNC(ref_new), 1);
-    rb_define_method(rb_cYReference, "initialize", RUBY_METHOD_FUNC(ref_init), 0);
     rb_define_method(rb_cYReference, "call", RUBY_METHOD_FUNC(ref_call), -1);
+
+    // Y2 code
+    rb_cYCode = rb_define_class_under(rb_mYast, "YCode", rb_cObject);
+    rb_define_method(rb_cYCode, "call", RUBY_METHOD_FUNC(code_call), -1);
 
     //Byteblock
     rb_cByteblock = rb_define_class_under(rb_mYast, "Byteblock", rb_cObject);

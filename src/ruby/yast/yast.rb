@@ -59,7 +59,7 @@ module Yast
       object
     when ::String, Yast::Path, Yast::Byteblock #immutable in sense of yast buildins
       options[:full] ? object.clone : object
-    when Yast::FunRef, Yast::ArgRef, Yast::External, Yast::YReference #contains only reference somewhere
+    when Yast::FunRef, Yast::ArgRef, Yast::External, Yast::YReference, Yast::YCode #contains only reference somewhere
       object
     when ::Hash
       object.reduce({}) do |acc,kv|
