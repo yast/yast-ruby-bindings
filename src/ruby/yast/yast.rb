@@ -8,31 +8,57 @@ class Yast::Path;end
 
 module Yast
 
+  # @private used to extract place from backtrace
   BACKTRACE_REGEXP = /^(.*):(\d+):in `.*'$/
 
+  # shortcut to construct new Yast term
+  # @see Yast::Term
   def term(*args)
     return Term.new *args
   end
 
+  # shortcut to construct new function reference
+  # @see Yast::FunRef
   def fun_ref(*args)
     return FunRef.new *args
   end
 
+  # shortcut to construct new argument reference
+  # @see Yast::ArgRef
   def arg_ref(*args)
     return ArgRef.new *args
   end
 
+  # shortcut to construct new Yast path
+  # @see Yast::Path
   def path(*args)
     return Path.new *args
   end
 
-  #makes copy of object unless object is immutable. In such case return object itself
-  def self.deep_copy object
+  # Makes deep copy of object. Difference to #dup or #clone is that it copy all elements of Array, Hash, Yast::Term.
+  # Immutable classes is just returned.
+  # @param [Hash] options modifies behavior
+  # @option options [TrueClass,FalseClass] :full (false) make full copy even for types that is immutable in Yast builtins context
+  # @note String, Yast::Path and Yast::Byteblock is also immutable in sense of Yast because there is no builtin operation for string modify that do not copy it. Use :full option to copy it also.
+  # @example how to refactor generated code
+  #   #old method where a is not need to copy and b is needed, but we plan to use full ruby features to modify strings
+  #   def old(a, b)
+  #     a = copy_arg(a)
+  #     b = copy_arg(b)
+  #     ...
+  #   end
+  #
+  #   #refactored method
+  #   def new(a, b)
+  #     b = copy_arg b, :full => true
+  #     ...
+  #   end
+  def self.deep_copy object, options = {}
     case object
     when Numeric,TrueClass,FalseClass,NilClass,Symbol #immutable
       object
     when ::String, Yast::Path, Yast::Byteblock #immutable in sense of yast buildins
-      object
+      options[:full] ? object.clone : object
     when Yast::FunRef, Yast::ArgRef, Yast::External, Yast::YReference #contains only reference somewhere
       object
     when ::Hash
@@ -49,7 +75,8 @@ module Yast
     end
   end
 
-#makes copy of object unless object is immutable. In such case return object itself
+  # Shortcut for Yast::deep_copy
+  # @see Yast.deep_copy
   def deep_copy object
     Yast.deep_copy(object)
   end

@@ -1,7 +1,7 @@
 require "yast/builtinx"
 require "yast/builtins"
 
-#we need it as clients is called in global contenxt
+# @private we need it as clients is called in global contenxt
 GLOBAL_WFM_CONTEXT = Proc.new {}
 module Yast
   module WFM

@@ -264,9 +264,9 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
 
 /*--------------------------------------------
  *
- * Document-module: YaST
+ * Document-module: Yast
  *
- * The YaST module gives access to the YaST infrastructure, mostly implemented in the YCP language.
+ * The YaST module encloses all Yast related code.
  *
  *--------------------------------------------
  */

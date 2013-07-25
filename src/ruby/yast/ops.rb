@@ -325,7 +325,7 @@ END
       end
     end
 
-    class ::HashComparator
+    class HashComparator
       include Comparable
       def initialize value, localized = false
         @value = value
@@ -371,7 +371,7 @@ END
           when ::NilClass
             return 0 #comparison of two nils is equality
           when ::Hash
-            return ::HashComparator.new(@value, @localized) <=> second
+            return HashComparator.new(@value, @localized) <=> second
           when ::String
             if @localized
               return Yast.strcoll(@value,second)
