@@ -1,6 +1,7 @@
 require "yast/term"
 
 module Yast
+  # Module that provides shortcuts for known UI terms, so UI can be constructed in nice way.
   module UIShortcuts
 
   # Define symbols for the UI

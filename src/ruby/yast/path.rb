@@ -1,13 +1,17 @@
 module Yast
+  # Represents paths like it is in ycp. It is path elements separated by dot.
+  # Elements can be simple or complex. Simple can contain only ascii characters [a-zA-Z0-9].
+  # Complex elements are enclosed by ```"``` and can contain all characters.
   # Immutable class
   class Path
-    include Comparable 
+    include Comparable
 
     def initialize value
       @components = []
       load_components value
     end
 
+    # Creates path from generic string
     def self.from_string string
       self.new ".\"#{string}\""
     end
@@ -16,6 +20,7 @@ module Yast
       self
     end
 
+    # concats path
     def + another
       another = self.class.from_string(another) unless another.is_a? Yast::Path
       return another.clone if components.empty?
@@ -27,10 +32,12 @@ module Yast
       '.'+components.join('.')
     end
 
+    # gets number of elements
     def size
       return components.size
     end
 
+    # Detect if there is no  elements
     def empty?
       return components.empty?
     end

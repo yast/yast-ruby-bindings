@@ -4,6 +4,8 @@ require "yast/builtins"
 # @private we need it as clients is called in global contenxt
 GLOBAL_WFM_CONTEXT = Proc.new {}
 module Yast
+  # Wrapper class for WFM component in Yast
+  # See yast documentation for WFM
   module WFM
     def self.Args *args
       call_builtin_wrapper("Args", *args)

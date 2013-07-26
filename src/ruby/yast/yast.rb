@@ -82,6 +82,18 @@ module Yast
   end
   alias_method :copy_arg, :deep_copy
 
+  # includes module from include directory.
+  # given include must satisfied few restrictions.
+  # 1) file must contain module enclosed in Yast namespace with name constructed from path and its name
+  #    it is constructed that all parts is upcased and also all [-_.] is replaced and next character must be upper case.
+  #    At the end is appended Include string
+  #    example in file network/udev_lan.source.rb must be module Yast::NetworkUdevLanSourceInclude
+  # 2) initialization of module must be in method with prefix initialize and rest is
+  #    translated path, where all [-./] is replaced by underscore. Method take one parameter that is propagated target param.
+  #    example in file network/udev_lan.source.rb initialization method will be initialize_network_udev_lan_source
+  # @param path [String] relative path to Y2DIR/include path with file suffix
+  # @param target [Class] where include module
+  # @deprecated use "lib" directory where you can place common ruby code without any special handling.
   def self.include(target, path)
     path_without_suffix = path.sub(/\.rb$/,"")
     module_name = path_without_suffix.
@@ -108,6 +120,8 @@ module Yast
     target.send method_name.to_sym, target if target.respond_to? method_name.to_sym
   end
 
+  # imports component module with given name and create wrapper for it.
+  # @note for components written in ruby just require it and it is used directly without component system.
   def self.import(mname)
     modules = mname.split("::")
 

@@ -10,7 +10,7 @@ class Yast::Byteblock;end
 
 module Yast
   module Ops
-    #TODO investigate if convert also get more complex typesfor map and list
+    # map of YCPTypes to ruby types
     TYPES_MAP = {
       'any' => ::Object,
       'nil' => ::NilClass,
@@ -29,8 +29,8 @@ module Yast
       'byteblock' => Yast::Byteblock
     }
 
-    # Types for which we generate shortcut methods, e.g. Ops.get_string or
-    # Convert.to_string.
+    # Types for which we generate shortcut methods, e.g. {Yast::Ops.get_string} or
+    # {Yast::Convert.to_string}.
     SHORTCUT_TYPES = [
       "boolean",
       "string",
@@ -52,42 +52,46 @@ module Yast
 END
     end
 
-      def self.get (object, indexes, default=nil)
-        res = object
-        default = Yast.deep_copy(default)
-        indexes = [indexes] unless indexes.is_a? ::Array
+    # gets value from object at indexes. In case that value is not found, then return default value.
+    # @deprecated use ruby native operator []
+    def self.get (object, indexes, default=nil)
+      res = object
+      default = Yast.deep_copy(default)
+      indexes = [indexes] unless indexes.is_a? ::Array
 
-        indexes.each do |i|
-          case res
-          when ::Array, Yast::Term
-            if i.is_a? Fixnum
-              if (0..res.size-1).include? i
-                res = res[i]
-              else
-                Yast.y2milestone 1, "Index #{i} is out of array size"
-                return block_given? ? yield : default
-              end
-            else
-              Yast.y2warning 1, "Passed #{i.inspect} as index key for array."
-              return block_given? ? yield : default
-            end
-          when ::Hash
-            if res.has_key? i
+      indexes.each do |i|
+        case res
+        when ::Array, Yast::Term
+          if i.is_a? Fixnum
+            if (0..res.size-1).include? i
               res = res[i]
             else
+              Yast.y2milestone 1, "Index #{i} is out of array size"
               return block_given? ? yield : default
             end
-          when ::NilClass
-            Yast.y2milestone 1, "Builtin index called on nil."
-            return block_given? ? yield : default
           else
-            Yast.y2warning 1, "Builtin index called on wrong type #{res.class}"
+            Yast.y2warning 1, "Passed #{i.inspect} as index key for array."
             return block_given? ? yield : default
           end
+        when ::Hash
+          if res.has_key? i
+            res = res[i]
+          else
+            return block_given? ? yield : default
+          end
+        when ::NilClass
+          Yast.y2milestone 1, "Builtin index called on nil."
+          return block_given? ? yield : default
+        else
+          Yast.y2warning 1, "Builtin index called on wrong type #{res.class}"
+          return block_given? ? yield : default
+        end
       end
       return Yast.deep_copy(res)
     end
 
+    # sets value to object at given indexes.
+    # @deprecated use ruby native operator []=
     def self.set (object, indexes, value)
       return if indexes.nil? || object.nil?
 
@@ -129,6 +133,8 @@ END
     end
 
 
+    # Adds second to first.
+    # @deprecated use ruby native operator +
     def self.add first, second
       return nil if first.nil? || second.nil?
 
@@ -148,60 +154,75 @@ END
       end
     end
 
+    # Subtracts second from first.
+    # @deprecated use ruby native operator -
     def self.subtract first, second
       return nil if first.nil? || second.nil?
 
       return first - second
     end
 
+    # Multiplies first with second.
+    # @deprecated use ruby native operator *
     def self.multiply first, second
       return nil if first.nil? || second.nil?
 
       return first * second
     end
 
+    # Divides first with second.
+    # @deprecated use ruby native operator /
+    # @note allows division with zero and in such case return nil
     def self.divide first, second
       return nil if first.nil? || second.nil? || second == 0
 
       return first / second
     end
 
+    # Computes module after division of first with second.
+    # @deprecated use ruby native operator %
     def self.modulo first, second
       return nil if first.nil? || second.nil?
 
       return first % second
     end
 
+    # @deprecated use ruby native operator &
     def self.bitwise_and first, second
       return nil if first.nil? || second.nil?
 
       return first & second
     end
 
+    # @deprecated use ruby native operator |
     def self.bitwise_or first, second
       return nil if first.nil? || second.nil?
 
       return first | second
     end
 
+    # @deprecated use ruby native operator ^
     def self.bitwise_xor first, second
       return nil if first.nil? || second.nil?
 
       return first ^ second
     end
 
+    # @deprecated use ruby native operator <<
     def self.shift_left first, second
       return nil if first.nil? || second.nil?
 
       return first << second
     end
 
+    # @deprecated use ruby native operator >>
     def self.shift_right first, second
       return nil if first.nil? || second.nil?
 
       return first >> second
     end
 
+    # @deprecated use ruby native operator &&
     def self.logical_and first, second
       first = false if first.nil?
       second = false if second.nil?
@@ -209,6 +230,7 @@ END
       return first && second
     end
 
+    # @deprecated use ruby native operator ||
     def self.logical_or first, second
       first = false if first.nil?
       second = false if second.nil?
@@ -216,12 +238,15 @@ END
       return first || second
     end
 
+    # @deprecated use ruby native operator -
     def self.unary_minus value
       return nil if value.nil?
 
       return -value
     end
 
+    # @deprecated use ruby native operator !
+    # @note for nil returns nil to be compatible with ycp implementation
     def self.logical_not value
       #Yast really do it!!!
       return nil if value.nil?
@@ -229,24 +254,28 @@ END
       return !value
     end
 
+    # @deprecated use ruby native operator ~
     def self.bitwise_not value
       return nil if value.nil?
 
       return ~value
     end
 
+    # @deprecated use ruby native operator ==
     def self.equal first, second
       first = comparable_object(first)
 
       return first == second
     end
 
+    # @deprecated use ruby native operator !=
     def self.not_equal first, second
       first = comparable_object(first)
 
       return first != second
     end
 
+    # @deprecated use ruby native operator <
     def self.less_than first, second
       return nil if first.nil? || second.nil?
 
@@ -255,6 +284,7 @@ END
       return first < second
     end
 
+    # @deprecated use ruby native operator <=
     def self.less_or_equal first, second
       return nil if first.nil? || second.nil?
 
@@ -263,6 +293,7 @@ END
       return first <= second
     end
 
+    # @deprecated use ruby native operator >
     def self.greater_than first, second
       return nil if first.nil? || second.nil?
 
@@ -271,6 +302,7 @@ END
       return first > second
     end
 
+    # @deprecated use ruby native operator >=
     def self.greater_or_equal first, second
       return nil if first.nil? || second.nil?
 
@@ -285,6 +317,8 @@ END
       end"
     end
 
+    # Checks if object is given YCP type. There is also shorfcuts for most of types in 
+    # format is_<type>
     def self.is (object, type)
       type = "function" if type =~ /\(.*\)/ #reference to function
       type.gsub!(/<.*>/, "")
@@ -295,10 +329,14 @@ END
       return classes.any? { |cl| object.is_a? cl }
     end
 
+    # Creates comparable wrapper that makes ycp compatible comparison
     def self.comparable_object object, localized = false
       return GenericComparable.new(object, localized)
     end
 
+    # Implements ycp compatible comparison of lists. Difference is only that it use {Yast::Ops::GenericComparator}
+    # for each of its element.
+    # @deprecated array usually don't need comparing
     class ListComparator
       include Comparable
       def initialize value, localized = false
@@ -316,7 +354,7 @@ END
             return 1
           end
 
-          # we need to use out builtin, but also we need to 
+          # we need to use out builtin, but also we need to
           res = Ops.comparable_object(fval, @localized) <=> sval
           return res if res != 0
         end
@@ -325,6 +363,8 @@ END
       end
     end
 
+    # Implements ycp compatible comparison of Hash. It uses lexical comparison for keys and elements.
+    # @deprecated hash comparison usually doesn't make sense
     class HashComparator
       include Comparable
       def initialize value, localized = false
@@ -351,17 +391,18 @@ END
       end
     end
 
-    #speciality of this comparable is that it can compare various classes together like yast, order is based on yast class order
+    # Generic comparator that can compare various classes together like yast, order is based on yast class order.
+    # @deprecated use native ruby comparing, comparing various class usually is not usable.
     class GenericComparable
       include Comparable
-      
+
       def initialize value, localized = false
         @value = value
         @localized = localized
       end
       #ordered classes from low priority to high
       # Only tricky part is Fixnum/Bignum, which is in fact same, so it has special handling in code
-      CLASS_ORDER = [ ::NilClass, ::FalseClass, ::TrueClass, ::Fixnum, ::Bignum, ::Float, 
+      CLASS_ORDER = [ ::NilClass, ::FalseClass, ::TrueClass, ::Fixnum, ::Bignum, ::Float,
         ::String, Yast::Path, ::Symbol, ::Array, Yast::Term, ::Hash ]
       def <=> (second)
         if @value.class == second.class

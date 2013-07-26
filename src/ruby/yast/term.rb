@@ -3,6 +3,7 @@ require 'yast/builtins'
 require 'yast/ops'
 
 module Yast
+  # Represents YCP type term
   class Term
     include Comparable
 
@@ -24,6 +25,7 @@ module Yast
       params[index] = value
     end
 
+    # gets number of parameters
     def size
       params.size
     end
@@ -33,11 +35,7 @@ module Yast
     end
 
     def to_s
-      if params.empty?
-        "`#{value} ()"
-      else
-        "`#{value} (#{params.map{|p| Yast::Builtins.inside_tostring p}.join ', '})"
-      end
+      "`#{value} (#{params.map{|p| Yast::Builtins.inside_tostring p}.join ', '})"
     end
 
     def <=> (other)

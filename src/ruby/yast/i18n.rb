@@ -1,12 +1,16 @@
 require "fast_gettext"
 
 module Yast
+  # Provides translation wrapper.
   module I18n
 
+    # @private
     #TODO load alternative in development recent translation
     LOCALE_DIR = "/usr/share/YaST2/locale"
+    # if every heuristic fails then use the default for locale
     DEFAULT_LOCALE = "en_US"
 
+    # sets new text domain
     def textdomain domain
       # initialize FastGettext only if the locale directory exists
       return unless File.exist? LOCALE_DIR
@@ -32,6 +36,7 @@ module Yast
       FastGettext.add_text_domain(domain, :path => LOCALE_DIR) unless FastGettext::translation_repositories[domain]
     end
 
+    # translates given string
     def _(str)
       # no textdomain configured yet
       return str unless @my_textdomain
@@ -43,6 +48,9 @@ module Yast
       FastGettext.text_domain = old_text_domain
     end
 
+    # Gets translation based on number.
+    # @param (String) singular text for translators for single value
+    # @param (String) plural text for translators for bigger value
     def n_(singular, plural, num)
       # no textdomain configured yet
       return (num == 1) ? singular : plural unless @my_textdomain

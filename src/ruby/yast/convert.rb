@@ -4,8 +4,10 @@ require "yast/term"
 require "yast/logger"
 
 module Yast
+  # Wrapper to simulate behavior of type conversion in YCP.
+  # there is generated shortcuts for conversion to_<type>
+  # @deprecated ruby need not type conversion and int<->float conversion is explicit
   module Convert
-
     #generate shortcuts
     Ops::SHORTCUT_TYPES.each do |type|
       eval <<END
@@ -15,6 +17,7 @@ module Yast
 END
     end
 
+    # Converts object from given type to target one.
     def self.convert(object, options)
       from = options[:from].dup
       to = options[:to].dup
@@ -53,12 +56,13 @@ END
       end
     end
 
+    # @private
     def self.allowed_type(object, to)
       types = Ops::TYPES_MAP[to]
       raise "Unknown type '#{to}' for conversion" if types.nil?
 
       types = [types] unless types.is_a? Array
-    
+
       return types.any? {|t|  object.is_a? t }
     end
   end

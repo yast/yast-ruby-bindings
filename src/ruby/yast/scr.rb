@@ -1,6 +1,8 @@
 require "yast/builtinx"
 
 module Yast
+  # Wrapper class for SCR component in Yast
+  # See yast documentation for SCR
   module SCR
     def self.Read *args
       call_builtin_wrapper("Read",*args)

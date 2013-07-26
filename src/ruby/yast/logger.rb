@@ -2,7 +2,9 @@ require "yastx"
 require "yast/builtins"
 
 module Yast
+
   module_function
+  # @private
   def y2_logger_helper(level,args)
     caller_frame = 1
     backtrace = false
@@ -30,31 +32,38 @@ module Yast
   end
 
   module_function
+  # write to log debug message with arguments formated by {Yast::Builtins.sformat}
   def y2debug(*args)
     y2_logger_helper(0, args)
   end
 
   module_function
+  # write to log milestone message with arguments formated by {Yast::Builtins.sformat}
   def y2milestone(*args)
     y2_logger_helper(1, args)
   end
 
   module_function
+  # write to log warning message with arguments formated by {Yast::Builtins.sformat}
   def y2warning(*args)
     y2_logger_helper(2, args)
   end
 
   module_function
+  # write to log error message with arguments formated by {Yast::Builtins.sformat}
   def y2error(*args)
     y2_logger_helper(3, args)
   end
 
   module_function
+  # write to log security message with arguments formated by {Yast::Builtins.sformat}
+  # @todo make it clear what is supposed to write to this level
   def y2security(*args)
     y2_logger_helper(4, args)
   end
 
   module_function
+  # write to log internal error message with arguments formated by {Yast::Builtins.sformat}
   def y2internal(*args)
     y2_logger_helper(5, args)
   end
