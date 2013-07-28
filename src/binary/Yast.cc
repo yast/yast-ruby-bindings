@@ -294,14 +294,26 @@ yast_y2_logger( int argc, VALUE *argv, VALUE self )
   return Qnil;
 }
 
-static VALUE
-add_module_path( VALUE self, VALUE path )
+/*--------------------------------------------
+ * Document-method: add_module_path(path)
+ * call-seq:
+ *   Yast.add_module_path([String]) -> nil
+ *
+ * Adds path to module search path. Useful to test modules from specific directory.
+ *
+ * For testing recomended way is to set properly Y2DIR ENV.
+ */
+static VALUE add_module_path( VALUE self, VALUE path )
 {
   y2debug ("add module path %s", RSTRING_PTR(path));
   YCPPathSearch::addPath (YCPPathSearch::Module, RSTRING_PTR(path));
   return Qnil;
 }
 
+/*
+ * Adds path to include search path. Useful to test includes from specific directory.
+ * For testing recomended way is to set properly Y2DIR ENV.
+ */
 static VALUE
 add_include_path( VALUE self, VALUE path )
 {
