@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Tue Jul 30 08:02:01 UTC 2013 - yast-devel@opensuse.org
+
+- version 3.0.0
+
+-------------------------------------------------------------------
 Tue Jul 23 15:41:34 UTC 2013 - jreidinger@suse.com
 
 - fix path conversion (gh#yast/ycp-killer#562)
