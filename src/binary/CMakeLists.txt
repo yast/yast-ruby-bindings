@@ -91,7 +91,7 @@ target_link_libraries( builtinx ${YAST_LIBRARY} )
 target_link_libraries( builtinx ${YAST_YCP_LIBRARY} )
 target_link_libraries( builtinx ${YAST_PLUGIN_SCR_LIBRARY} )
 target_link_libraries( builtinx ${YAST_PLUGIN_WFM_LIBRARY} )
-target_link_libraries( builtinx crypt )
+target_link_libraries( builtinx crypt owcrypt )
 
 install(TARGETS yastx LIBRARY DESTINATION ${RUBY_VENDORARCH_DIR} )
 install(TARGETS builtinx LIBRARY DESTINATION ${RUBY_VENDORARCH_DIR}/yast )
