@@ -84,7 +84,6 @@ target_link_libraries( yastx ${YAST_YCP_LIBRARY} )
 # (e.g. through Y2CCWFM), thus we must link against the plugin libs
 # and set the executables 'rpath' accordingly
 #
-target_link_libraries( yastx ${YAST_PLUGIN_UI_LIBRARY} )
 target_link_libraries( yastx ${RUBY_LIBRARY} )
 
 target_link_libraries( builtinx ${YAST_LIBRARY} )
