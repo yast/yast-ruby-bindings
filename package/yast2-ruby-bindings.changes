@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Wed Sep 11 14:58:20 UTC 2013 - jreidinger@suse.com
+
+- remove workaround for ruby 1.9 as only 2.0 is supported
+- do not link against UI plugin, because showing UI without y2base 
+  is not supported
+- 3.0.2
+
+-------------------------------------------------------------------
 Wed Sep 11 13:26:46 UTC 2013 - mvidner@suse.com
 
 - link to owcrypt only if it exists (fixes 12.3 builds)
