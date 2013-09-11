@@ -63,10 +63,6 @@ YRuby::YRuby()
 
   RUBY_INIT_STACK;
   ruby_init();
-  // call ruby_process_options to invoke prelude.rb which defines Mutex#synchronize
-  // see http://www.ruby-forum.com/topic/4408161
-  static char* args[] = { (char *)"ruby", (char *)"/dev/null" };
-  ruby_process_options(2, args);
   ruby_init_loadpath();
 
   rb_enc_find_index("encdb");
