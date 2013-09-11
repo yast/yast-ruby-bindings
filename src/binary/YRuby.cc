@@ -67,14 +67,12 @@ YRuby::YRuby()
   // see http://www.ruby-forum.com/topic/4408161
   static char* args[] = { (char *)"ruby", (char *)"/dev/null" };
   ruby_process_options(2, args);
-  ruby_script("yast");
   ruby_init_loadpath();
 
   rb_enc_find_index("encdb");
 
   VALUE ycp_references = Data_Wrap_Struct(rb_cObject, gc_mark, gc_free, & value_references_from_ycp);
   rb_global_variable(&ycp_references);
-//  rb_gc_disable();
 }
 
 void YRuby::gc_mark(void *object)
