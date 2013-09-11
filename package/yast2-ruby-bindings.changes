@@ -1,4 +1,13 @@
 -------------------------------------------------------------------
+Wed Sep 11 11:47:35 UTC 2013 - jreidinger@suse.com
+
+- do not overwrite script name which require yast 
+  gh#yast/yast-ruby-bindings#73,74
+- crypt_gensalt moved to separate library libowcrypt (fate#314945)
+  (thanks to Andreas Schwab <schwab@suse.de>)
+- 3.0.1
+
+-------------------------------------------------------------------
 Tue Jul 30 08:02:01 UTC 2013 - yast-devel@opensuse.org
 
 - version 3.0.0
