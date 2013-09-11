@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Wed Sep 11 13:26:46 UTC 2013 - mvidner@suse.com
+
+- link to owcrypt only if it exists (fixes 12.3 builds)
+
+-------------------------------------------------------------------
 Wed Sep 11 11:47:35 UTC 2013 - jreidinger@suse.com
 
 - do not overwrite script name which require yast 
