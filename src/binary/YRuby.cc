@@ -65,6 +65,11 @@ YRuby::YRuby()
   ruby_init();
   ruby_init_loadpath();
 
+  //FIX for setup gem load path. See http://subforge.org/blogs/show/1
+  //for reason, but solution is different to not touch internal ruby
+  rb_define_module("Gem");
+  rb_require("rubygems");
+
   rb_enc_find_index("encdb");
 
   VALUE ycp_references = Data_Wrap_Struct(rb_cObject, gc_mark, gc_free, & value_references_from_ycp);
