@@ -87,7 +87,7 @@ module Yast
           e.message,
           e.backtrace
         )
-        return nil
+        return false
       ensure
         # unload the client class to ensure that the includes will be
         # fully initialized when running it next time

@@ -37,6 +37,7 @@ as published by the Free Software Foundation; either version
 #include <ycp/pathsearch.h>
 
 #include <ycp/YCPVoid.h>
+#include <ycp/YCPBoolean.h>
 
 
 #include "YRuby.h"
@@ -64,6 +65,14 @@ YRuby::YRuby()
   RUBY_INIT_STACK;
   ruby_init();
   ruby_init_loadpath();
+
+  // FIX for setup gem load path. Embedded ruby initialization mixes up gem 
+  // initialization (which we want) with option processing (which we don't want).
+  // Copying only needed parts of `ruby_options` here.
+  // See http://subforge.org/blogs/show/1
+  // Note that the solution is different to not touch internal ruby
+  rb_define_module("Gem");
+  rb_require("rubygems");
 
   rb_enc_find_index("encdb");
 
@@ -227,7 +236,7 @@ YCPValue YRuby::callClient(const string& path)
     VALUE trace = rb_gv_get("$@"); /* get last exception trace */
     VALUE backtrace = RARRAY_LEN(trace)>0 ? rb_ary_entry(trace, 0) : rb_str_new2("Unknown");
     y2error("cannot require yast:%s at %s", StringValuePtr(reason),StringValuePtr(backtrace));
-    return YCPVoid();
+    return YCPBoolean(false);
   }
 
   VALUE wfm_module = y2ruby_nested_const_get("Yast::WFM");
