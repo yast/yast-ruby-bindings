@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Thu Sep 12 07:53:00 UTC 2013 - jreidinger@suse.com
+
+- fix loading rubygems in embedded ruby
+- when client raise exception set proper exit code
+- 3.0.3
+
+-------------------------------------------------------------------
 Wed Sep 11 14:58:20 UTC 2013 - jreidinger@suse.com
 
 - remove workaround for ruby 1.9 as only 2.0 is supported
