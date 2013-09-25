@@ -66,8 +66,11 @@ YRuby::YRuby()
   ruby_init();
   ruby_init_loadpath();
 
-  //FIX for setup gem load path. See http://subforge.org/blogs/show/1
-  //for reason, but solution is different to not touch internal ruby
+  // FIX for setup gem load path. Embedded ruby initialization mixes up gem 
+  // initialization (which we want) with option processing (which we don't want).
+  // Copying only needed parts of `ruby_options` here.
+  // See http://subforge.org/blogs/show/1
+  // Note that the solution is different to not touch internal ruby
   rb_define_module("Gem");
   rb_require("rubygems");
 
