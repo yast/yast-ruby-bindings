@@ -1,12 +1,9 @@
-
-
 #
-# spec file for package yast2-ruby-bindings (Version 0.1)
+# spec file for package yast2-ruby-bindings
 #
-# norootforbuild
 
 Name:           yast2-ruby-bindings
-Version:        @VERSION@
+Version:        3.1.0
 Release:        0
 License:        GPL-2.0
 Group:          System/YaST
@@ -19,12 +16,12 @@ BuildRequires:  yast2-devtools >= 2.16.3
 # libzypp-devel is missing .la requires
 BuildRequires:	ruby-devel
 BuildRequires:	rubygem-fast_gettext
-Requires:	      rubygem-fast_gettext
+Requires:	rubygem-fast_gettext
 Requires:     	yast2-core >= 2.24.0
 BuildRequires:  yast2-core-devel >= 2.24.0
 Requires:       yast2-ycp-ui-bindings       >= 2.21.9
 BuildRequires:  yast2-ycp-ui-bindings-devel >= 2.21.9
-Requires:	      ruby
+Requires:	ruby
 Summary:	Ruby bindings for the YaST platform
 
 %description
@@ -54,8 +51,6 @@ cd ..
 cd build/tests/ruby
 make test ARGS=-V
 cd -
-
-@CLEAN@
 
 %files
 %defattr (-, root, root)
