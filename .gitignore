@@ -1,3 +1,4 @@
 /doc
 /build
 /.yardoc
+/package/*.tar.*

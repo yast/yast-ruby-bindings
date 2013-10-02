@@ -49,9 +49,3 @@ enable_testing()
 
 add_subdirectory(tests)
 
-#
-# packaging
-#
-set(RPMNAME "yast2-ruby-bindings")
-
-generate_packaging(${RPMNAME} ${VERSION})
