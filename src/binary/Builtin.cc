@@ -8,6 +8,7 @@
 
 #include <string>
 #include <sstream>
+#include <stdexcept>
 #include <iconv.h>
 #include <errno.h>
 extern "C" {
@@ -163,7 +164,16 @@ extern "C" {
       return Qnil;
 
     std::wostringstream ss; // bnc#683881#c12: need wide chars
-    ss.imbue (std::locale (""));
+
+    try
+    {
+      ss.imbue (std::locale (""));
+    }
+    catch (const std::runtime_error &error)
+    {
+      y2warning("Cannot set locale (missing glibc-locale package?): %s", error.what());
+    }
+
     ss.precision (NUM2LONG(rprecision));
     ss << fixed<< NUM2DBL(rfloat);
     std::wstring res = ss.str();
