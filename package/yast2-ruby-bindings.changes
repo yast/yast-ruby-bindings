@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Tue Oct 15 13:01:18 UTC 2013 - lslezak@suse.cz
+
+- float_to_lstring(): do not crash when glibc-locale is missing,
+  fallback to unlocalized version (bnc#803163)
+- 3.1.1
+
+-------------------------------------------------------------------
 Thu Sep 12 07:53:00 UTC 2013 - jreidinger@suse.com
 
 - fix loading rubygems in embedded ruby
