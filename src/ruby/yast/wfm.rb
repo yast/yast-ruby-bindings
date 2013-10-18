@@ -83,10 +83,19 @@ module Yast
       begin
         return eval(code, GLOBAL_WFM_CONTEXT.binding, client)
       rescue Exception => e
-        Builtins.y2error("Client call failed with %1 and backtrace %2",
-          e.message,
-          e.backtrace
-        )
+        begin
+          Builtins.y2error("Client call failed with '%1' and backtrace %2",
+            e.message,
+            e.backtrace
+          )
+          Yast.import "Report"
+          Report.Error "Internal error. Please report a bug report with logs.\nDetails: #{e.message}"
+        rescue Exception => e
+          Builtins.y2internal("Error reporting failed with '%1' and backtrace %2",
+            e.message,
+            e.backtrace
+          )
+        end
         return false
       ensure
         # unload the client class to ensure that the includes will be
