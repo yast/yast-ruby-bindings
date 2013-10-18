@@ -7,16 +7,43 @@ module Yast
   # Wrapper class for WFM component in Yast
   # See yast documentation for WFM
   module WFM
-    def self.Args *args
-      call_builtin_wrapper("Args", *args)
+
+    # Returns list of arguments passed to client or element at given index
+    #
+    # @example Get all args
+    #    Yast::WFM.Args
+    #
+    # @example Get only first argument
+    #    Yast::WFM.Args 0
+    def self.Args index=nil
+      call_builtin_wrapper("Args", index)
     end
 
-    def self.ClientExists *args
-      call_builtin_wrapper("ClientExists", *args)
+    # Checks if client of given name exists on system
+    #
+    # @note useful for checking before calling given client
+    # @see {WFM.CallFunction}
+    #
+    # @example Check if there is client "inst_bootloader"
+    #    Yast::WFM.ClientExists "inst_bootloader"
+    def self.ClientExists client
+      call_builtin_wrapper("ClientExists", client)
     end
 
-    def self.Execute *args
-      call_builtin_wrapper("Execute", *args)
+    # Runs local system agent operating on inst-sys
+    #
+    # @param path[Yast::Path] agent path
+    # @param args arguments to agent
+    #
+    # @note very limited use-case. It is needed only if installer switched to
+    # scr on target system and agent from inst-sys must be called
+    #
+    # @see {SCR.Execute} for common agent execute
+    #
+    # @example Run command in bash in inst-sys
+    #    Yast::WFM.Execute(Yast::Path.new(".local.bash"), "halt -p")
+    def self.Execute path, *args
+      call_builtin_wrapper("Execute", path, *args)
     end
 
     def self.GetEncoding *args
