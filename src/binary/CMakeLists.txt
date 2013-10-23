@@ -67,10 +67,9 @@ set_target_properties(builtinx PROPERTIES PREFIX "")
 # tight control) CMake should be able to handle this. However, it somehow does
 # not work.
 #
-#set_target_properties( yastx PROPERTIES SKIP_BUILD_RPATH FALSE)
-#set_target_properties( yastx PROPERTIES BUILD_WITH_INSTALL_RPATH FALSE)
-#set_target_properties( yastx PROPERTIES INSTALL_RPATH_USE_LINK_PATH FALSE)
-#set_target_properties( yastx PROPERTIES INSTALL_RPATH "${YAST_PLUGIN_DIR}")
+# jreidinger: new cmake start stripping it, so it need to be explicitelly added
+set_target_properties( yastx PROPERTIES INSTALL_RPATH "${YAST_PLUGIN_DIR}")
+set_target_properties( builtinx PROPERTIES INSTALL_RPATH "${YAST_PLUGIN_DIR}")
 #
 # So using an explicit linker option instead:
 # (http://www.cmake.org/pipermail/cmake/2008-January/019321.html)
@@ -109,4 +108,5 @@ target_link_libraries( py2lang_ruby ${YAST_LIBRARY} )
 target_link_libraries( py2lang_ruby ${YAST_YCP_LIBRARY} )
 target_link_libraries( py2lang_ruby ${YAST_PLUGIN_WFM_LIBRARY} )
 target_link_libraries( py2lang_ruby ${RUBY_LIBRARY} )
+set_target_properties( py2lang_ruby PROPERTIES INSTALL_RPATH "${YAST_PLUGIN_DIR}")
 install(TARGETS py2lang_ruby LIBRARY DESTINATION ${YAST_PLUGIN_DIR} )
