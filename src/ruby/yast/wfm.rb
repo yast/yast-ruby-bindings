@@ -162,7 +162,7 @@ module Yast
     #   {WFM.Args}
     # @return response from client
     #
-    # @example call inst_moust client living in src/clients/inst_mouse.rb with parameter true
+    # @example call inst_moust client living in $Y2DIR/clients/inst_mouse.rb with parameter true
     #     Yast::WFM.CallFunction("inst_mouse", true)
     def self.CallFunction client, *args
       call_builtin_wrapper("CallFunction", client, *args)
