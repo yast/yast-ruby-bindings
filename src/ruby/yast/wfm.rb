@@ -7,76 +7,175 @@ module Yast
   # Wrapper class for WFM component in Yast
   # See yast documentation for WFM
   module WFM
+
+    # Returns list of arguments passed to client or element at given index
+    #
+    # @example Get all args
+    #    Yast::WFM.Args
+    #
+    # @example Get only first argument
+    #    Yast::WFM.Args 0
     def self.Args *args
       call_builtin_wrapper("Args", *args)
     end
 
-    def self.ClientExists *args
-      call_builtin_wrapper("ClientExists", *args)
+    # Checks if client of given name exists on system
+    #
+    # @note useful for checking before calling given client
+    # @see Yast::WFM.CallFunction
+    # @return [true,false]
+    #
+    # @example Check if there is client "inst_bootloader"
+    #    Yast::WFM.ClientExists "inst_bootloader"
+    def self.ClientExists client
+      call_builtin_wrapper("ClientExists", client)
     end
 
-    def self.Execute *args
-      call_builtin_wrapper("Execute", *args)
+    # Runs execute on local system agent operating on inst-sys
+    #
+    # @param path[Yast::Path] agent path
+    # @param args arguments to agent
+    #
+    # @note very limited use-case. It is needed only if installer switched to
+    #   scr on target system and agent from inst-sys must be called
+    #
+    # @see SCR.Execute common agent execute
+    #
+    # @example Run command in bash in inst-sys
+    #    Yast::WFM.Execute(Yast::Path.new(".local.bash"), "halt -p")
+    def self.Execute path, *args
+      call_builtin_wrapper("Execute", path, *args)
     end
 
-    def self.GetEncoding *args
-      call_builtin_wrapper("GetEncoding", *args)
+    # Returns current encoding code as string
+    #
+    # @deprecated enconding is now always UTF-8
+    # @return [String]
+    def self.GetEncoding
+      call_builtin_wrapper("GetEncoding")
     end
 
-    def self.GetEnvironmentEncoding *args
-      call_builtin_wrapper("GetEnvironmentEncoding", *args)
+    # Returns enconding of environment where Yast start
+    #
+    # @return [String]
+    def self.GetEnvironmentEncoding
+      call_builtin_wrapper("GetEnvironmentEncoding")
     end
 
-    def self.GetLanguage *args
-      call_builtin_wrapper("GetLanguage", *args)
+    # Returns current language without modifiers as string
+    #
+    # @return [String]
+    # @example return value
+    #   Yast::WFM.GetLanguage
+    #     => "en_US.UTF-8"
+    def self.GetLanguage
+      call_builtin_wrapper("GetLanguage")
     end
 
-    def self.Read *args
-      call_builtin_wrapper("Read", *args)
+    # Runs read on local system agent operating on inst-sys
+    #
+    # @param path[Yast::Path] agent path
+    # @param args arguments to agent
+    #
+    # @note very limited use-case. It is needed only if installer switched to
+    #   scr on target system and agent from inst-sys must be called
+    #
+    # @see SCR.Read common agent read
+    #
+    # @example Read kernel cmdline
+    #    Yast::WFM.Read(path(".local.string"), "/proc/cmdline")
+    def self.Read path, *args
+      call_builtin_wrapper("Read", path, *args)
     end
 
-    def self.SCRClose *args
-      call_builtin_wrapper("SCRClose", *args)
+    # Closes SCR handle obtained via {SCROpen}
+    #
+    # If SCR is set as default, then try to switch to another reasonable SCR
+    # openned
+    def self.SCRClose handle
+      call_builtin_wrapper("SCRClose", handle)
     end
 
-    def self.SCRGetDefault *args
-      call_builtin_wrapper("SCRGetDefault", *args)
+    # Gets handle of current default SCR
+    def self.SCRGetDefault
+      call_builtin_wrapper("SCRGetDefault")
     end
 
-    def self.SCRGetName *args
-      call_builtin_wrapper("SCRGetName", *args)
+    # Gets name of SCR associated with handle
+    #
+    # @return [String]
+    def self.SCRGetName handle
+      call_builtin_wrapper("SCRGetName", handle)
     end
 
-    def self.SCROpen *args
-      call_builtin_wrapper("SCROpen", *args)
+    # Creates new SCR instance
+    #
+    # It is useful for installation where agents start operation on installed system
+    #
+    # @param name[String] name for instance. Currently it is supported on scr name
+    #    with possible chrooting in format `"chroot=<path_to_chroot>:scr"`
+    # @param check_version[Boolean] check if chrooted version match current
+    #    core version
+    # @return handle of SCR instance
+    #
+    # @example open SCR instance on /mnt root without version check
+    #    Yast::WFM.SCROpen("chroot=/mnt:scr", false)
+    def self.SCROpen name, check_version
+      call_builtin_wrapper("SCROpen", name, check_version)
     end
 
-    def self.SCRSetDefault *args
-      call_builtin_wrapper("SCRSetDefault", *args)
+    # Sets the default SCR to given handle
+    def self.SCRSetDefault handle
+      call_builtin_wrapper("SCRSetDefault", handle)
     end
 
-    def self.SetLanguage *args
-      call_builtin_wrapper("SetLanguage", *args)
+    # Sets language for translate with optional enconding
+    def self.SetLanguage language, *args
+      call_builtin_wrapper("SetLanguage", language, *args)
     end
 
-    def self.Write *args
-      call_builtin_wrapper("Write", *args)
+    # Runs write on local system agent operating on inst-sys
+    #
+    # @param path[Yast::Path] agent path
+    # @param args arguments to agent
+    #
+    # @note very limited use-case. It is needed only if installer switched to
+    #   scr on target system and agent from inst-sys must be called
+    #
+    # @see SCR.Read common agent execute
+    #
+    # @example Write yast inf file in inst-sys
+    #    Yast::WFM.Write(path(".local.string"), "/etc/yast.inf", yast_inf)
+    def self.Write path, *args
+      call_builtin_wrapper("Write", path, *args)
     end
 
+    # @deprecated use {CallFunction}
     def self.call *args
       call_builtin_wrapper("call", *args)
     end
 
-    def self.CallFunction *args
-      call_builtin_wrapper("CallFunction", *args)
+    # calls client of given name with passed args
+    #
+    # @param client[String] name of client to run without suffix
+    # @param args additional args passed to client, that can be obtained with
+    #   {WFM.Args}
+    # @return response from client
+    #
+    # @example call inst_moust client living in $Y2DIR/clients/inst_mouse.rb with parameter true
+    #     Yast::WFM.CallFunction("inst_mouse", true)
+    def self.CallFunction client, *args
+      call_builtin_wrapper("CallFunction", client, *args)
     end
 
+    # @private wrapper to C code
     def self.call_builtin_wrapper *args
       # caller[0] is one of the functions above
       caller[1].match BACKTRACE_REGEXP
       call_builtin($1, $2.to_i, *args)
     end
 
+    # @private wrapper to run client in ruby
     def self.run_client client
       Builtins.y2milestone "Call client %1", client
       code = File.read client
