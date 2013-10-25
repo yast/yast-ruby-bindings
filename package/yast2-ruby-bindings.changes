@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Fri Oct 25 14:26:08 UTC 2013 - jreidinger@suse.com
+
+- report exceptions via Report.Error so there is no hidden failures
+- detect invalid response type from clients
+  (gh#yast/yast-ruby-bindings#81)
+- 3.1.2
+
+-------------------------------------------------------------------
 Tue Oct 15 13:01:18 UTC 2013 - lslezak@suse.cz
 
 - float_to_lstring(): do not crash when glibc-locale is missing,
