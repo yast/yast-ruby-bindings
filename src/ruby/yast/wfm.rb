@@ -1,5 +1,6 @@
 require "yast/builtinx"
 require "yast/builtins"
+require "yast/ops"
 
 # @private we need it as clients is called in global contenxt
 GLOBAL_WFM_CONTEXT = Proc.new {}
@@ -180,7 +181,17 @@ module Yast
       Builtins.y2milestone "Call client %1", client
       code = File.read client
       begin
-        return eval(code, GLOBAL_WFM_CONTEXT.binding, client)
+        result = eval(code, GLOBAL_WFM_CONTEXT.binding, client)
+
+        allowed_types = Ops::TYPES_MAP.values.flatten
+        allowed_types.delete(::Object) #remove generic type for any
+
+        # check if response is allowed
+        allowed = allowed_types.any? { |t| result.is_a? t }
+
+        raise "Invalid type #{result.class} from client #{client}" unless allowed
+
+        return result
       rescue Exception => e
         begin
           Builtins.y2error("Client call failed with '%1' and backtrace %2",
