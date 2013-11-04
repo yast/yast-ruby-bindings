@@ -22,6 +22,7 @@ module Yast
     # @param path[Yast::Path] path that is combination of path where agent is
     #   attached and path inside agent
     # @param args additional arguments depending on agent
+    # @return [true,false] success
     #
     # @example change default desktop in sysconfig to kde
     #   SCR.Write(path(".sysconfig.windowmanager.DEFAULT_WM"), "kde")
@@ -42,8 +43,9 @@ module Yast
       call_builtin_wrapper("Execute", path, *args)
     end
 
-    # Gets array of all subtree attached below path
+    # Gets array of all children attached directly below path
     # @param path[Yast::Path] sub-path where to search for children
+    # @return [Array<String>] list of children names
     #
     # @example get all sysconfig agents
     #    SCR.Dir(path(".sysconfig"))
