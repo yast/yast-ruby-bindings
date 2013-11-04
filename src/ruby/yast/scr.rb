@@ -8,14 +8,14 @@ module Yast
     # Reads data
     # @param path[Yast::Path] path that is combination of path where agent is
     #   attached and path inside agent
-    # @param args additional arguments depending on agent
+    # @param args additional arguments depending on agent, usually optional
     #
     # @example Get netcards discovered by probe agent
     #    SCR.Read(path(".probe.netcard"))
     # @example Read content of file /tmp/test
     #    SCR.Read(path(".target.string"), "tmp/test")
-    def self.Read path, *args
-      call_builtin_wrapper("Read",path, *args)
+    def self.Read (path, *args)
+      call_builtin_wrapper("Read", path, *args)
     end
 
     # Writes data
@@ -27,7 +27,7 @@ module Yast
     #   SCR.Write(path(".sysconfig.windowmanager.DEFAULT_WM"), "kde")
     # @example write string s to file /tmp/f
     #  SCR.Write(path(".target.string"), "/tmp/f", "s")
-    def self.Write path, *args
+    def self.Write (path, *args)
       call_builtin_wrapper("Write", path, *args)
     end
 
@@ -49,7 +49,7 @@ module Yast
     #    SCR.Dir(path(".sysconfig"))
     # @example get all keys in install inf
     #    SCR.Dir(path(".etc.install_inf"))
-    def self.Dir path
+    def self.Dir (path)
       call_builtin_wrapper("Dir", path)
     end
 
@@ -60,13 +60,13 @@ module Yast
       call_builtin_wrapper("Error", path)
     end
 
-    # Register a agent at given path with description
+    # Register an agent at given path with description
     #
     # @param path [Yast::Path] path to agent
     # @param description [Yast::Term,String] path to file description or direct
     #    term with agent description
     # @return [true,false] if succeed
-    def self.RegisterAgent path, description
+    def self.RegisterAgent (path, description)
       call_builtin_wrapper("RegisterAgent", path, description)
     end
 
@@ -85,7 +85,7 @@ module Yast
     # Unregister agent from given path
     # @param path [Yast::Path] path to agent
     # @return [true,false] if succeed
-    def self.UnregisterAgent path
+    def self.UnregisterAgent (path)
       call_builtin_wrapper("UnregisterAgent", path)
     end
 
@@ -100,12 +100,12 @@ module Yast
     # It sends to component result() which force to terminate component.
     # If there is any lazy write, then it is properly finished.
     # @param path[Yast::Path] path to agent
-    def self.UnmountAgent path
+    def self.UnmountAgent (path)
       call_builtin_wrapper("UnmountAgent", path)
     end
 
     # @private wrapper to C bindings
-    def self.call_builtin_wrapper *args
+    def self.call_builtin_wrapper (*args)
       # caller[0] is one of the functions above
       caller[1].match BACKTRACE_REGEXP
       call_builtin($1, $2.to_i, *args)
