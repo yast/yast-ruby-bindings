@@ -39,7 +39,7 @@ module Yast
     #    SCR.Execute(path(".target.bash"), "/sbin/halt -f -n -p")
     # @example umount /mnt path
     #    SCR.Execute(path(".target.umount"), "/mnt")
-    def self.Execute path, *args
+    def self.Execute (path, *args)
       call_builtin_wrapper("Execute", path, *args)
     end
 
@@ -58,7 +58,7 @@ module Yast
     # Gets detailled error description from agent
     # @param path[Yast::Path] path to agent
     # @return [Hash] with keys "code" and "summary"
-    def self.Error path
+    def self.Error (path)
       call_builtin_wrapper("Error", path)
     end
 
