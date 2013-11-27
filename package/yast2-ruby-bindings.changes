@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed Nov 27 10:10:53 UTC 2013 - jreidinger@suse.com
+
+- add detection of invalid type in publish call
+- 3.1.3
+
+-------------------------------------------------------------------
 Fri Oct 25 14:26:08 UTC 2013 - jreidinger@suse.com
 
 - report exceptions via Report.Error so there is no hidden failures
