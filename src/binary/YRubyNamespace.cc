@@ -31,9 +31,36 @@ as published by the Free Software Foundation; either version
 #include <ycp/Type.h>
 #include <ycp/YCPVoid.h>
 #include <stdio.h>
+#include <exception>
 
 #include "YRuby.h"
 #include "Y2RubyUtils.h"
+
+/**
+ * Exception raised when type signature in ruby class is invalid
+ */
+class WrongTypeException: public exception
+{
+public:
+
+  WrongTypeException(string method_name, string signature)
+  {
+    message += "Invalid type '";
+    message += signature;
+    message += "' definition for method/variable: '";
+    message += method_name;
+    message += "'.";
+  }
+
+  virtual const char* what() const throw()
+  {
+    return message.c_str();
+  }
+
+  virtual ~WrongTypeException() throw() {}
+private:
+  string message;
+};
 
 /**
  * The definition of a function that is implemented in Ruby
@@ -281,6 +308,9 @@ int YRubyNamespace::addVariables(VALUE module, int offset)
     string signature = StringValueCStr(type);
     constTypePtr sym_tp = Type::fromSignature(signature);
 
+    if (sym_tp == NULL)
+      throw WrongTypeException(rb_id2name(SYM2ID(variable_name)), signature);
+
     // symbol entry for the function
     SymbolEntry *se = new VariableSymbolEntry ( ruby_module_name,
       this,
@@ -305,6 +335,8 @@ int YRubyNamespace::addExceptionMethod(VALUE module, int offset)
 void YRubyNamespace::addMethod( const char* name, const string &signature, int offset)
 {
   constTypePtr sym_tp = Type::fromSignature(signature);
+  if (sym_tp == NULL || !sym_tp->isFunction())
+    throw WrongTypeException(name, signature);
 
   // symbol entry for the function
   SymbolEntryPtr fun_se = new SymbolEntry ( this,

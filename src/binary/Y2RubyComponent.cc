@@ -75,12 +75,17 @@ Y2Namespace *Y2RubyComponent::import (const char* name)
   args->add (YCPString(/*module*/ name));
   args->add (YCPString(/*module*/ module));
 
-  YRuby::loadModule (args);
-  y2debug("Module '%s' loaded", name);
-  // introspect, create data structures for the interpreter
-  Y2Namespace * res = new YRubyNamespace (name);
-  namespaces[name] = res;
-  return res;
+  try {
+    YRuby::loadModule (args);
+    y2debug("Module '%s' loaded", name);
+    // introspect, create data structures for the interpreter
+    Y2Namespace * res = new YRubyNamespace (name);
+    namespaces[name] = res;
+    return res;
+  } catch (exception& e) {
+    y2error("Loading module failed: %s", e.what());
+    return NULL;
+  }
 }
 
 const string Y2RubyComponent::CamelCase2DelimSepated( const char* name)
