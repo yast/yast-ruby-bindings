@@ -3,7 +3,7 @@
 #
 
 Name:           yast2-ruby-bindings
-Version:        3.1.3
+Version:        3.1.4
 Release:        0
 License:        GPL-2.0
 Group:          System/YaST
