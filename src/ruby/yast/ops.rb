@@ -66,11 +66,11 @@ END
             if (0..res.size-1).include? i
               res = res[i]
             else
-              Yast.y2milestone 1, "Index #{i} is out of array size"
+              Yast.y2milestone 2, "Index #{i} is out of array size"
               return block_given? ? yield : default
             end
           else
-            Yast.y2warning 1, "Passed #{i.inspect} as index key for array."
+            Yast.y2warning 2, "Passed #{i.inspect} as index key for array."
             return block_given? ? yield : default
           end
         when ::Hash
@@ -80,10 +80,10 @@ END
             return block_given? ? yield : default
           end
         when ::NilClass
-          Yast.y2milestone 1, "Builtin index called on nil."
+          Yast.y2milestone 2, "Builtin index called on nil."
           return block_given? ? yield : default
         else
-          Yast.y2warning 1, "Builtin index called on wrong type #{res.class}"
+          Yast.y2warning 2, "Builtin index called on wrong type #{res.class}"
           return block_given? ? yield : default
         end
       end
@@ -106,11 +106,11 @@ END
             if (0..res.size-1).include? i
               res = res[i]
             else
-              Yast.y2warning 1, "Index #{i} is out of array size"
+              Yast.y2warning 2, "Index #{i} is out of array size"
               return
             end
           else
-            Yast.y2warning 1, "Passed #{i.inspect} as index key for array."
+            Yast.y2warning 2, "Passed #{i.inspect} as index key for array."
             return
           end
         when ::Hash
@@ -120,7 +120,7 @@ END
             return
           end
         else
-          Yast.y2warning 1, "Builtin assign called on wrong type #{res.class}"
+          Yast.y2warning 2, "Builtin assign called on wrong type #{res.class}"
           return
         end
       end
