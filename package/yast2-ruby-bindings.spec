@@ -12,7 +12,7 @@ Source0:        yast2-ruby-bindings-%{version}.tar.bz2
 Prefix:         /usr
 
 BuildRequires:	cmake gcc-c++ yast2-core-devel
-BuildRequires:  yast2-devtools >= 2.16.3
+BuildRequires:  yast2-devtools >= 3.1.10
 # libzypp-devel is missing .la requires
 BuildRequires:	ruby-devel
 BuildRequires:	rubygem-fast_gettext
