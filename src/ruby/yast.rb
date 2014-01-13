@@ -47,6 +47,6 @@ require "yast/wfm"
 Yast.y2paths.each do |p|
   dir_path = File.join(p, "lib")
   if File.exists? dir_path
-    $LOAD_PATH << dir_path
+    $LOAD_PATH.unshift dir_path
   end
 end
