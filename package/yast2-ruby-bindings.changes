@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Mon Jan 13 09:52:21 UTC 2014 - jreidinger@suse.com
+
+- Prefer yast lib directory in LOAD_PATH to reduce collisions with
+  random rubygem
+- 3.1.5
+
+-------------------------------------------------------------------
 Mon Dec  9 09:57:33 UTC 2013 - jreidinger@suse.com
 
 - fixed Ops.get and Ops.set warnings to not point inside their own
