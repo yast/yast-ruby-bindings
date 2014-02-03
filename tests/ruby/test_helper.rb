@@ -8,8 +8,3 @@ $:.unshift binary_path # yastx.so
 $:.unshift "#{ROOT_DIR}/src/ruby"       # yast.rb
 ENV["Y2DIR"] = File.dirname(__FILE__)
 
-require 'test/unit'
-
-module Yast
-  TestCase = Test::Unit::TestCase
-end
