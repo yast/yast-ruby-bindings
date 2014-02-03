@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Mon Feb  3 14:15:39 UTC 2014 - lslezak@suse.cz
+
+- added Y2Logger - Ruby Logger for writing logs using the Yast
+  format, can be used by external libraries for logging into y2log
+- 3.1.7
+
+-------------------------------------------------------------------
 Mon Feb  3 10:07:48 UTC 2014 - jreidinger@suse.com
 
 - final fix for Ops.get and Ops.set warnings to not point inside

@@ -1,5 +1,4 @@
-$LOAD_PATH << File.dirname(__FILE__)
-require "test_helper"
+require_relative "test_helper_test_unit"
 
 require "yast/term"
 

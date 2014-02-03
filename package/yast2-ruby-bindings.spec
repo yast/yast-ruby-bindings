@@ -3,7 +3,7 @@
 #
 
 Name:           yast2-ruby-bindings
-Version:        3.1.6
+Version:        3.1.7
 Release:        0
 License:        GPL-2.0
 Group:          System/YaST
@@ -16,6 +16,7 @@ BuildRequires:  yast2-devtools >= 3.1.10
 # libzypp-devel is missing .la requires
 BuildRequires:	ruby-devel
 BuildRequires:	rubygem-fast_gettext
+BuildRequires:  rubygem-rspec
 Requires:	rubygem-fast_gettext
 Requires:     	yast2-core >= 2.24.0
 BuildRequires:  yast2-core-devel >= 2.24.0
