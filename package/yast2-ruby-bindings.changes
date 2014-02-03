@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Mon Feb  3 10:07:48 UTC 2014 - jreidinger@suse.com
+
+- final fix for Ops.get and Ops.set warnings to not point inside
+  their own implementation
+- 3.1.6
+
+-------------------------------------------------------------------
 Mon Jan 13 09:52:21 UTC 2014 - jreidinger@suse.com
 
 - Prefer yast lib directory in LOAD_PATH to reduce collisions with
