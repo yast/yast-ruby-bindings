@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Tue Feb  4 14:34:15 UTC 2014 - jreidinger@suse.com
+
+- format spec file
+
+-------------------------------------------------------------------
 Mon Feb  3 14:15:39 UTC 2014 - lslezak@suse.cz
 
 - added Y2Logger - Ruby Logger for writing logs using the Yast

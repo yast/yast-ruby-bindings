@@ -1,29 +1,45 @@
 #
 # spec file for package yast2-ruby-bindings
 #
+# Copyright (c) 2014 SUSE LINUX Products GmbH, Nuernberg, Germany.
+#
+# All modifications and additions to the file contributed by third parties
+# remain the property of their copyright owners, unless otherwise agreed
+# upon. The license for this file, and modifications and additions to the
+# file, is the same license as for the pristine package itself (unless the
+# license for the pristine package is not an Open Source License, in which
+# case the license is the MIT License). An "Open Source License" is a
+# license that conforms to the Open Source Definition (Version 1.9)
+# published by the Open Source Initiative.
+
+# Please submit bugfixes or comments via http://bugs.opensuse.org/
+#
+
 
 Name:           yast2-ruby-bindings
 Version:        3.1.7
 Release:        0
-License:        GPL-2.0
-Group:          System/YaST
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Source0:        yast2-ruby-bindings-%{version}.tar.bz2
 Prefix:         /usr
 
-BuildRequires:	cmake gcc-c++ yast2-core-devel
+BuildRequires:  cmake
+BuildRequires:  gcc-c++
+BuildRequires:  yast2-core-devel
 BuildRequires:  yast2-devtools >= 3.1.10
 # libzypp-devel is missing .la requires
-BuildRequires:	ruby-devel
-BuildRequires:	rubygem-fast_gettext
+BuildRequires:  ruby-devel
+BuildRequires:  rubygem-fast_gettext
 BuildRequires:  rubygem-rspec
-Requires:	rubygem-fast_gettext
-Requires:     	yast2-core >= 2.24.0
+Requires:       rubygem-fast_gettext
+Requires:       yast2-core >= 2.24.0
 BuildRequires:  yast2-core-devel >= 2.24.0
 Requires:       yast2-ycp-ui-bindings       >= 2.21.9
 BuildRequires:  yast2-ycp-ui-bindings-devel >= 2.21.9
-Requires:	ruby
-Summary:	Ruby bindings for the YaST platform
+Requires:       ruby
+Summary:        Ruby bindings for the YaST platform
+License:        GPL-2.0
+Group:          System/YaST
 
 %description
 The bindings allow YaST modules to be written using the Ruby language
@@ -60,3 +76,5 @@ cd -
 %{_libdir}/ruby/vendor_ruby/%{rb_ver}/yast
 %{_libdir}/ruby/vendor_ruby/%{rb_ver}/%{rb_arch}/*x.so
 %{_libdir}/ruby/vendor_ruby/%{rb_ver}/%{rb_arch}/yast
+
+%changelog
