@@ -15,6 +15,9 @@ module Yast
   class FunRef; end
 
   # Contains builtins available in YCP for easier transition. Big part of methods are deprecated.
+  #
+  # For logging use {Yast::Logger} module instead of deprecated {Builtins.y2milestone},... functions
+  #
   # @note All builtins return copy of result
   module Builtins
 
@@ -604,36 +607,42 @@ module Yast
     end
 
     # Log a message to the y2log.
+    # @deprecated Use {Yast::Logger} instead
     def self.y2debug *args
       shift_frame_number args
       Yast.y2debug *args
     end
 
     # Log an error to the y2log.
+    # @deprecated Use {Yast::Logger} instead
     def self.y2error *args
       shift_frame_number args
       Yast.y2error *args
     end
 
     # Log an internal message to the y2log.
+    # @deprecated Use {Yast::Logger} instead
     def self.y2internal *args
       shift_frame_number args
       Yast.y2internal *args
     end
 
     # Log a milestone to the y2log.
+    # @deprecated Use {Yast::Logger} instead
     def self.y2milestone*args
       shift_frame_number args
       Yast.y2milestone *args
     end
 
     # Log a security message to the y2log.
+    # @deprecated Use {Yast::Logger} instead
     def self.y2security *args
       shift_frame_number args
       Yast.y2security *args
     end
 
     # Log a warning to the y2log.
+    # @deprecated Use {Yast::Logger} instead
     def self.y2warning *args
       shift_frame_number args
       Yast.y2warning *args
@@ -643,7 +652,7 @@ module Yast
     def self.shift_frame_number args
       if args.first.is_a? ::Fixnum
         args[0] += 1 if args[0] >= 0
-      else 
+      else
         args.unshift 1
       end
     end
