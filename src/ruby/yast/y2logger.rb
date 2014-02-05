@@ -45,16 +45,26 @@ module Yast
 
   # This module provides access to Yast specific logging
   #
-  # @example Use YastLogger in an easy way
-  #   class Foo
-  #     include Yast::Logger
+  # @example Yast::Logger example
+  #    module Yast
+  #      class Foo < Client
+  #        include Yast::Logger
   #
-  #     def foo
-  #       # this will be logged into y2log using the usual y2log format
-  #       log.debug "debug"
-  #       log.error "error"
-  #     end
-  #   end
+  #        def foo
+  #          # this will be logged into y2log using the usual y2log format
+  #
+  #          # Builtins.y2debug() replacement
+  #          log.debug "debug"
+  #
+  #          # Builtins.y2milestone() replacement
+  #          log.info "info"
+  #
+  #          # Builtins.y2error() replacement
+  #          log.error "error"
+  #        end
+  #      end
+  #    end
+  #
   module Logger
     def log
       Y2Logger.instance

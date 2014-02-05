@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Wed Feb  5 14:20:37 UTC 2014 - lslezak@suse.cz
+
+- Builtins.y2milestone(),... marked as deprecated, use Yast::Logger
+  instead in the new code
+- 3.1.8
+
+-------------------------------------------------------------------
 Tue Feb  4 14:34:15 UTC 2014 - jreidinger@suse.com
 
 - format spec file
