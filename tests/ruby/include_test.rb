@@ -32,11 +32,6 @@ end
 
 
 class IncludeTest < Yast::TestCase
-  def setup
-    include_path = File.expand_path("../include",__FILE__)+'/'
-    Yast.add_include_path include_path
-  end
-
   def test_include
     assert_equal 15, Yast::IT.test
   end

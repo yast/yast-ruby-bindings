@@ -6,5 +6,5 @@ if !File.exists? "#{binary_path}/yast"
 end
 $:.unshift binary_path # yastx.so
 $:.unshift "#{ROOT_DIR}/src/ruby"       # yast.rb
-ENV["Y2DIR"] = File.dirname(__FILE__)
+ENV["Y2DIR"] = File.dirname(__FILE__) + "/test_module"
 
