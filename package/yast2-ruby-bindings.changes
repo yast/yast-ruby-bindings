@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Mon Feb 10 13:43:23 UTC 2014 - jreidinger@suse.com
+
+- Do not unload clients after execution (BNC#861529)
+- 3.1.9
+
+-------------------------------------------------------------------
 Wed Feb  5 14:20:37 UTC 2014 - lslezak@suse.cz
 
 - Builtins.y2milestone(),... marked as deprecated, use Yast::Logger
