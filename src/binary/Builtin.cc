@@ -31,7 +31,6 @@ extern "C" {
 #include "Y2YCPTypeConv.h"
 #include "Y2RubyTypeConv.h"
 #include "RubyLogger.h"
-#include "YRuby.h"
 #include "Y2RubyUtils.h"
 
 static VALUE rb_mSCR;
@@ -49,7 +48,6 @@ extern "C" {
 
   static VALUE call_builtin(const string &qualified_name, int argc, VALUE *argv)
   {
-    YRuby::yRuby();
     extern StaticDeclaration static_declarations;
     YaST::ee.setFilename(RSTRING_PTR(argv[0]));
     YaST::ee.setLinenumber(FIX2INT(argv[1]));
