@@ -121,9 +121,10 @@ module Yast
     method_name = "initialize_" + encoded_name
 
     # tricky condition. Here collide two yast features that had old ycp
-    # 1) in clients multi call result in new client object, but client base class
-    #    is already defined, so not need to include, but need to reinitialize, so
-    #    we need to call initialization method even if module already included
+    # 1) in clients reapeated call results in new client object, but client base class
+    #    is already defined, so not needed to include again, but it's
+    #    needed to be reinitialized, so we need to call initialization method
+    #    even if module is already included
     # 2) if there is multi include, then only first one must call initialization
     #    because other calls are ignored
     if target.respond_to?(method_name.to_sym) &&
