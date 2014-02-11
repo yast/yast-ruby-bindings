@@ -66,7 +66,7 @@ cd ..
 
 %check
 cd build/tests/ruby
-Y2DIR=$RPM_BUILD_ROOT/%{_libdir}/YaST2 test ARGS=-V
+Y2DIR=$RPM_BUILD_ROOT/%{_libdir}/YaST2 make test ARGS=-V
 cd -
 
 %files
