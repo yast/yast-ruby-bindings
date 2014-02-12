@@ -15,6 +15,18 @@ module Yast
         expect(WFM.CallFunction("test_client")).to eq 15
         expect(WFM.CallFunction("test_client")).to eq 15
       end
+
+      it "produces no warning (about redefined constants)" do
+        # require_relative does not work in -e
+        helper = $LOADED_FEATURES.grep(/test_helper_rspec/).first
+        script = <<-EOS
+          load '#{helper}'
+          require 'yast'
+          Yast::WFM.CallFunction('test_client')
+        EOS
+        stdout_stderr = `ruby -e "#{script}" 2>&1`
+        expect(stdout_stderr).to eq ""
+      end
     end
   end
 end
