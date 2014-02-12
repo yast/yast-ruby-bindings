@@ -23,6 +23,7 @@ module Yast
           load '#{helper}'
           require 'yast'
           Yast::WFM.CallFunction('test_client')
+          Yast::WFM.CallFunction('test_client')
         EOS
         stdout_stderr = `ruby -e "#{script}" 2>&1`
         expect(stdout_stderr).to eq ""

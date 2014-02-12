@@ -6,7 +6,10 @@ module Yast
       Yast.include self, "example.rb"
       @test
     end
-  end
+  end unless const_defined? :TestClient
+  # Clients are re-eval-ed to mimic the YCP behavior;
+  # but we skip the class redefinition
+  # to avoid warnings about redefined constants
 end
 
 Yast::TestClient.new.main
