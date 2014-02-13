@@ -7,11 +7,6 @@ require_relative "test_helper_test_unit"
 require "yast"
 
 class YcpImportTest < Yast::TestCase
-  def setup
-    module_path = File.expand_path("../modules",__FILE__)+'/'
-    Yast.add_module_path module_path
-  end
-
   def test_import
     Yast.import( "ExampleTestModule" )
     assert Yast::ExampleTestModule.respond_to?(:sparc_map)

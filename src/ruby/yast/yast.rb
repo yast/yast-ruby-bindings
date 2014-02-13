@@ -111,13 +111,27 @@ module Yast
 
     mod = Yast.const_get module_name
 
-    return if target.class.include? mod
+    # if never included, then include
+    if !target.class.include? mod
+      target.class.send(:include, mod)
+    end
 
-    target.class.send(:include, mod)
+    encoded_name = path_without_suffix.gsub(/[-.\/]/, "_")
+    initialized_variable = "@" + encoded_name + "initialized"
+    method_name = "initialize_" + encoded_name
 
-    method_name = "initialize_" + path_without_suffix.gsub(/[-.\/]/, "_")
-
-    target.send method_name.to_sym, target if target.respond_to? method_name.to_sym
+    # tricky condition. Here collide two yast features that had old ycp
+    # 1) in clients reapeated call results in new client object, but client base class
+    #    is already defined, so not needed to include again, but it's
+    #    needed to be reinitialized, so we need to call initialization method
+    #    even if module is already included
+    # 2) if there is multi include, then only first one must call initialization
+    #    because other calls are ignored
+    if target.respond_to?(method_name.to_sym) &&
+        !target.instance_variable_defined?(initialized_variable)
+      target.send(method_name.to_sym, target)
+      target.instance_variable_set(initialized_variable, true)
+    end
   end
 
   # imports component module with given name and create wrapper for it.

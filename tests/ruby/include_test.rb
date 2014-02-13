@@ -19,7 +19,7 @@ module Yast
 
   class DoubleIncludeTest < Module
     def initialize
-      YCP.include self, "example.rb"
+      Yast.include self, "example.rb"
       @test = 5
       # second include should not call again init, so @test is kept to 5
       Yast.include self, "example.rb"
@@ -27,16 +27,11 @@ module Yast
 
     attr_reader :test
   end
-  DIT = IncludeTest.new
+  DIT = DoubleIncludeTest.new
 end
 
 
 class IncludeTest < Yast::TestCase
-  def setup
-    include_path = File.expand_path("../include",__FILE__)+'/'
-    Yast.add_include_path include_path
-  end
-
   def test_include
     assert_equal 15, Yast::IT.test
   end
