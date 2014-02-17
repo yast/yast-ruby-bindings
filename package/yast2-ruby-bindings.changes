@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Mon Feb 17 10:34:13 UTC 2014 - jreidinger@suse.com
+
+- fix stack level too deep (BNC#864056,BNC#864180)
+- 3.1.10
+
+-------------------------------------------------------------------
 Mon Feb 10 13:43:23 UTC 2014 - jreidinger@suse.com
 
 - Do not unload clients after execution (BNC#861529)

@@ -129,8 +129,10 @@ module Yast
     #    because other calls are ignored
     if target.respond_to?(method_name.to_sym) &&
         !target.instance_variable_defined?(initialized_variable)
-      target.send(method_name.to_sym, target)
+      # allways set initialized before method call otherwise endless loop in
+      # circle include calls
       target.instance_variable_set(initialized_variable, true)
+      target.send(method_name.to_sym, target)
     end
   end
 
