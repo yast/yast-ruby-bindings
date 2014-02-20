@@ -1,8 +1,8 @@
 -------------------------------------------------------------------
 Thu Feb 20 07:58:32 UTC 2014 - jreidinger@suse.com
 
-- always log full backtrace when type conversion failed to help
-  debugging
+- always log full backtrace when type conversion failed, to help
+  with debugging
 - 3.1.11
 
 -------------------------------------------------------------------
