@@ -48,6 +48,18 @@ module Yast
       FastGettext.text_domain = old_text_domain
     end
 
+    # No translation, only marks the text to be found by gettext when creating POT file,
+    # the text needs to be translated by _() later.
+    def N_(str)
+      str
+    end
+
+    # No translation, only marks the texts to be found by gettext when creating POT file,
+    # the texts need to be translated by n_() later.
+    def Nn_(*keys)
+      keys
+    end
+
     # Gets translation based on number.
     # @param (String) singular text for translators for single value
     # @param (String) plural text for translators for bigger value
