@@ -50,6 +50,31 @@ module Yast
 
     # No translation, only marks the text to be found by gettext when creating POT file,
     # the text needs to be translated by _() later.
+    #
+    # @example Error messages
+    #  begin
+    #    # does not translate, the exception contains the untranslated string,
+    #    # but it's recognized by gettext like normal _()
+    #    raise FooError, N_("Foo failed.")
+    #  rescue FooError => e
+    #    # log the original (untranslated) error
+    #    log.error e.message
+    #
+    #    # but display translated error to the user,
+    #    # _() does the actual translation
+    #    Popup.Error(_(e.message))
+    #  end
+    #
+    # @example Translating Constants
+    #  class Foo
+    #    # ERROR_MSG will not be translated, but the string will be found
+    #    # by gettext when creating the POT file
+    #    ERROR_MSG = N_("Something failed")
+    #  end
+    #
+    #  # here the string will be translated using the current locale
+    #  puts _(Foo::ERROR_MSG)
+    #
     def N_(str)
       str
     end
