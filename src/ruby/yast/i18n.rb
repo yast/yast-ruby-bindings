@@ -49,7 +49,7 @@ module Yast
     end
 
     # No translation, only marks the text to be found by gettext when creating POT file,
-    # the text needs to be translated by _() later.
+    # the text needs to be translated by {#_} later.
     #
     # @example Error messages
     #  begin
@@ -80,7 +80,7 @@ module Yast
     end
 
     # No translation, only marks the texts to be found by gettext when creating POT file,
-    # the texts need to be translated by n_() later.
+    # the texts need to be translated by {#n_} later.
     def Nn_(*keys)
       keys
     end
