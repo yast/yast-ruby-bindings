@@ -17,7 +17,7 @@
 
 
 Name:           yast2-ruby-bindings
-Version:        3.1.10
+Version:        3.1.11
 Release:        0
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Source0:        yast2-ruby-bindings-%{version}.tar.bz2

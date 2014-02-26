@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Thu Feb 20 07:58:32 UTC 2014 - jreidinger@suse.com
+
+- always log full backtrace when type conversion failed, to help
+  with debugging
+- 3.1.11
+
+-------------------------------------------------------------------
 Mon Feb 17 10:34:13 UTC 2014 - jreidinger@suse.com
 
 - fix stack level too deep (BNC#864056,BNC#864180)

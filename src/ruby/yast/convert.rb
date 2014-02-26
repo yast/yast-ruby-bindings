@@ -38,7 +38,7 @@ END
       return object if from == to
 
       if from == "any" && allowed_type(object,to)
-        return object 
+        return object
       elsif to == "float"
         return nil unless (object.is_a? Fixnum) || (object.is_a? Bignum)
         return object.to_f
@@ -51,7 +51,7 @@ END
       elsif to == "string" && from == "locale"
         return object
       else
-        Yast.y2warning "Cannot convert #{object.class} from '#{from}' to '#{to}'"
+        Yast.y2warning -1, "Cannot convert #{object.class} from '#{from}' to '#{to}'"
         return nil
       end
     end
