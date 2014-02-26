@@ -14,5 +14,5 @@ endforeach(test)
 FILE(GLOB Specs "*_spec.rb")
 
 foreach(test ${Specs})
-    ADD_TEST(${test}   rspec ${test})
+    ADD_TEST(${test}   rspec --format doc ${test})
 endforeach(test)
