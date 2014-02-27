@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Thu Feb 27 12:10:11 UTC 2014 - jreidinger@suse.com
+
+- fix precedence of loading files in lib
+- 3.1.13
+
+-------------------------------------------------------------------
 Wed Feb 26 12:22:48 UTC 2014 - lslezak@suse.cz
 
 - added N_() and Nn_() gettext equivalents (to only mark a text
