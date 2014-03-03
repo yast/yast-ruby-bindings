@@ -4,10 +4,30 @@
 #include <ruby.h>
 #include <ruby/encoding.h>
 
+#define y2log_component "Y2Ruby"
+#include <ycp/y2log.h>
+
 #include "y2util/stringutil.h"
 #include "Y2RubyUtils.h"
 
 using namespace std;
+
+bool y2_require(const char *str)
+{
+  int error;
+  rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) str, &error);
+  if (error)
+  {
+    VALUE exception = rb_gv_get("$!"); /* get last exception */
+    VALUE reason = rb_funcall(exception, rb_intern("message"), 0 );
+    VALUE trace = rb_gv_get("$@"); /* get last exception trace */
+    VALUE backtrace = RARRAY_LEN(trace)>0 ? rb_ary_entry(trace, 0) : rb_str_new2("Unknown");
+    y2error("cannot require yast:%s at %s", StringValuePtr(reason),StringValuePtr(backtrace));
+    return false;
+  }
+
+  return true;
+}
 
 // cache the UTF-8 encoding object
 static rb_encoding *utf8;

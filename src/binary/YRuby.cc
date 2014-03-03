@@ -72,7 +72,7 @@ YRuby::YRuby()
   // See http://subforge.org/blogs/show/1
   // Note that the solution is different to not touch internal ruby
   rb_define_module("Gem");
-  rb_require("rubygems");
+  y2_require("rubygems");
 
   rb_enc_find_index("encdb");
 
@@ -140,17 +140,10 @@ YRuby::loadModule( YCPList argList )
 {
   YRuby::yRuby();
   string module_path = argList->value(1)->asString()->value();
-  int error = 0;
-  rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) module_path.c_str(), &error);
-  if (error)
-  {
-    VALUE exception = rb_gv_get("$!"); /* get last exception */
-    VALUE reason = rb_funcall(exception, rb_intern("message"), 0 );
-    VALUE trace = rb_gv_get("$@"); /* get last exception trace */
-    VALUE backtrace = RARRAY_LEN(trace)>0 ? rb_ary_entry(trace, 0) : rb_str_new2("Unknown");
-    y2error("Module %s load failed:%s at %s", module_path.c_str(), StringValuePtr(reason),StringValuePtr(backtrace));
+
+  if (!y2_require(module_path.c_str()))
     return YCPError( "Ruby::loadModule() / Can't load ruby module '" + module_path + "'" );
-  }
+
   return YCPVoid();
 }
 
@@ -227,17 +220,8 @@ YCPValue YRuby::callInner (string module_name, string function,
 
 YCPValue YRuby::callClient(const string& path)
 {
-  int error;
-  rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) "yast", &error);
-  if (error)
-  {
-    VALUE exception = rb_gv_get("$!"); /* get last exception */
-    VALUE reason = rb_funcall(exception, rb_intern("message"), 0 );
-    VALUE trace = rb_gv_get("$@"); /* get last exception trace */
-    VALUE backtrace = RARRAY_LEN(trace)>0 ? rb_ary_entry(trace, 0) : rb_str_new2("Unknown");
-    y2error("cannot require yast:%s at %s", StringValuePtr(reason),StringValuePtr(backtrace));
+  if (!y2_require("yast"))
     return YCPBoolean(false);
-  }
 
   VALUE wfm_module = y2ruby_nested_const_get("Yast::WFM");
   VALUE result = rb_funcall(wfm_module, rb_intern("run_client"), 1, rb_str_new2(path.c_str()));
