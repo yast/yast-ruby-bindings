@@ -32,7 +32,7 @@ as published by the Free Software Foundation; either version
 VALUE y2ruby_nested_const_get(const std::string &name);
 
 /**
- * safe variant of require if exception happen, then log it
+ * safe variant of rb_require: if an exception happens then log it
  */
 bool y2_require(const char *str);
 

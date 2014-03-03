@@ -53,7 +53,7 @@ ycp_path_to_rb_path( YCPPath ycppath )
 {
   if (!y2_require("yast/path"))
   {
-    y2internal("Cannot found yast/path module.");
+    y2internal("Cannot find yast/path module.");
     return Qnil;
   }
 
@@ -68,7 +68,7 @@ ycp_term_to_rb_term( YCPTerm ycpterm )
 {
   if (!y2_require("yast/term"))
   {
-    y2internal("Cannot found yast/term module.");
+    y2internal("Cannot find yast/term module.");
     return Qnil;
   }
 
@@ -87,7 +87,7 @@ ycp_ref_to_rb_ref( YCPReference ycpref )
 {
   if (!y2_require("yastx"))
   {
-    y2internal("Cannot found yastx module.");
+    y2internal("Cannot find yastx module.");
     return Qnil;
   }
 
@@ -108,7 +108,7 @@ ycp_bb_to_rb_bb( YCPByteblock ycpbb )
 {
   if (!y2_require("yastx"))
   {
-    y2internal("Cannot found yastx module.");
+    y2internal("Cannot find yastx module.");
     return Qnil;
   }
 
@@ -129,7 +129,7 @@ ycp_code_to_rb_code( YCPCode ycode )
 {
   if (!y2_require("yastx"))
   {
-    y2internal("Cannot found yastx module.");
+    y2internal("Cannot find yastx module.");
     return Qnil;
   }
 
@@ -154,7 +154,7 @@ ycp_ext_to_rb_ext( YCPExternal ext )
   y2debug("Convert ext %s", ext->toString().c_str());
   if (!y2_require("yast"))
   {
-    y2internal("Cannot found yastx module.");
+    y2internal("Cannot find yast module.");
     return Qnil;
   }
 
