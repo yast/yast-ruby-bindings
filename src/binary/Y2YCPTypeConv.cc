@@ -51,10 +51,11 @@ as published by the Free Software Foundation; either version
 extern "C" VALUE
 ycp_path_to_rb_path( YCPPath ycppath )
 {
-  int error = 0;
-  rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) "yast/path",&error);
-  if (error)
-    y2internal("Cannot found yast/path module.");
+  if (!y2_require("yast/path"))
+  {
+    y2internal("Cannot find yast/path module.");
+    return Qnil;
+  }
 
   VALUE yast = rb_define_module("Yast");
   VALUE cls = rb_const_get(yast, rb_intern("Path"));
@@ -65,12 +66,9 @@ ycp_path_to_rb_path( YCPPath ycppath )
 extern "C" VALUE
 ycp_term_to_rb_term( YCPTerm ycpterm )
 {
-  int error = 0;
-//  rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) "ycp/term",&error);
-  rb_require("yast/term");
-  if (error)
+  if (!y2_require("yast/term"))
   {
-    y2internal("Cannot found yast/term module.");
+    y2internal("Cannot find yast/term module.");
     return Qnil;
   }
 
@@ -87,7 +85,11 @@ ycp_term_to_rb_term( YCPTerm ycpterm )
 extern "C" VALUE
 ycp_ref_to_rb_ref( YCPReference ycpref )
 {
-  rb_require("yastx");
+  if (!y2_require("yastx"))
+  {
+    y2internal("Cannot find yastx module.");
+    return Qnil;
+  }
 
   VALUE yast = rb_define_module("Yast");
   VALUE cls = rb_const_get(yast, rb_intern("YReference"));
@@ -104,7 +106,11 @@ rb_bb_free(void *p)
 extern "C" VALUE
 ycp_bb_to_rb_bb( YCPByteblock ycpbb )
 {
-  rb_require("yastx");
+  if (!y2_require("yastx"))
+  {
+    y2internal("Cannot find yastx module.");
+    return Qnil;
+  }
 
   VALUE yast = rb_define_module("Yast");
   VALUE cls = rb_const_get(yast, rb_intern("Byteblock"));
@@ -121,7 +127,11 @@ rb_yc_free(void *p)
 extern "C" VALUE
 ycp_code_to_rb_code( YCPCode ycode )
 {
-  rb_require("yastx");
+  if (!y2_require("yastx"))
+  {
+    y2internal("Cannot find yastx module.");
+    return Qnil;
+  }
 
   VALUE yast = rb_define_module("Yast");
   VALUE cls = rb_const_get(yast, rb_intern("YCode"));
@@ -142,11 +152,9 @@ extern "C" VALUE
 ycp_ext_to_rb_ext( YCPExternal ext )
 {
   y2debug("Convert ext %s", ext->toString().c_str());
-  int error = 0;
-  rb_require("yast");
-  if (error)
+  if (!y2_require("yast"))
   {
-    y2internal("Cannot found yast module.");
+    y2internal("Cannot find yast module.");
     return Qnil;
   }
 
@@ -156,7 +164,6 @@ ycp_ext_to_rb_ext( YCPExternal ext )
   VALUE argv[] = {rb_utf8_str_new(ext->magic())};
   rb_obj_call_init(tdata, 1, argv);
   return tdata;
-  
 }
 
 /**
