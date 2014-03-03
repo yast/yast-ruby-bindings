@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Mon Mar  3 16:43:21 UTC 2014 - jreidinger@suse.com
+
+- do not crash if ruby cannot find yast ruby part
+- 3.1.14
+
+-------------------------------------------------------------------
 Thu Feb 27 12:10:11 UTC 2014 - jreidinger@suse.com
 
 - fix precedence of loading files in lib
