@@ -1,7 +1,7 @@
 -------------------------------------------------------------------
 Tue Apr 22 09:34:12 UTC 2014 - jreidinger@suse.com
 
-- Fix hang out of YaST2 if Turkish is locale (bnc#852242)
+- Fix hang out of YaST2 in Turkish locale (bnc#852242)
 - 3.0.5
 
 -------------------------------------------------------------------
