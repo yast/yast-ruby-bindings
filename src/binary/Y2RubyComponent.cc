@@ -95,7 +95,7 @@ const string Y2RubyComponent::CamelCase2DelimSepated( const char* name)
   if (size==0)
     return res;
   // convert always in C locale (bnc#852242)
-  char *old_locale = setlocale(LC_ALL, NULL);
+  char *old_locale = strdup(setlocale(LC_ALL, NULL));
   setlocale(LC_ALL, "C");
   res[0] = tolower(res[0]);
   //first character and first char after :: is lowercase without underscore
@@ -115,5 +115,6 @@ const string Y2RubyComponent::CamelCase2DelimSepated( const char* name)
     }
   }
   setlocale(LC_ALL, old_locale);
+  free(old_locale);
   return res;
 }
