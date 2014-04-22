@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Apr 22 09:31:18 UTC 2014 - jreidinger@suse.com
+
+- Fix hang out of YaST2 in Turkish locale(bnc#852242)
+- 3.1.16
+
+-------------------------------------------------------------------
 Fri Mar 14 15:33:30 UTC 2014 - mvidner@suse.com
 
 - Show the caller in the Internal error popup.
