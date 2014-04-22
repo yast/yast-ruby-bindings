@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Apr 22 09:34:12 UTC 2014 - jreidinger@suse.com
+
+- Fix hang out of YaST2 in Turkish locale (bnc#852242)
+- 3.0.5
+
+-------------------------------------------------------------------
 Tue Oct 15 13:01:18 UTC 2013 - lslezak@suse.cz
 
 - float_to_lstring(): do not crash when glibc-locale is missing,
