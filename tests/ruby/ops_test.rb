@@ -8,62 +8,6 @@ require "yast/path"
 require "yast/term"
 
 class Yast::OpsTest < Yast::TestCase
-  #Testing source for all this test is ops.yast in test directory used to verify any behavior
-
-  SAME_VALUES = [
-    [ nil,                   nil ],
-    [ 1  ,                   1 ],
-    [ 1.1,                   1.1 ],
-    [ "s",                   "s" ],
-    [ :s ,                   :s ],
-    [ false,                 false ],
-    [ [1],                   [1] ],
-    [ { 1 => 2 },            { 1 => 2} ],
-    [ Yast::Path.new("."),    Yast::Path.new(".") ],
-    [ Yast::Term.new(:a, :b), Yast::Term.new(:a, :b)],
-  ]
-  def test_equal_same
-    SAME_VALUES.each do |first,second|
-      assert first == second, "Value should be same, but differs \n-#{first.inspect}\n+#{second.inspect}"
-    end
-  end
-
-  def test_not_equal_same
-    SAME_VALUES.each do |first,second|
-      assert first == second, "Value is same, but marked as not equal \n-#{first.inspect}\n+#{second.inspect}"
-    end
-  end
-
-  DIFFERENT_VALUES = [
-    [ 1  ,                   2 ],
-    [ 1.1,                   1.2 ],
-    [ "s",                   "st" ],
-    [ :s ,                   :st ],
-    [ false,                 true ],
-    [ [1],                   [1, 2] ],
-    [ { 1 => 2 },            { 1 => 2, 2 => 3 } ],
-    [ Yast::Path.new("."),    Yast::Path.new(".etc") ],
-    [ Yast::Term.new(:a, :b), Yast::Term.new(:a)],
-  ]
-  def test_equal_different_value
-    DIFFERENT_VALUES.each do |first,second|
-      assert first !=  second, "Value should differs, but mark as same \n-#{first.inspect}\n+#{second.inspect}"
-    end
-  end
-
-  def test_not_equal_different_value
-    DIFFERENT_VALUES.each do |first,second|
-      assert first != second, "Value should differs, but mark as same \n-#{first.inspect}\n+#{second.inspect}"
-    end
-  end
-
-  def test_equal_with_nil
-    DIFFERENT_VALUES.each do |first,second|
-      assert first != nil, "Value should differs from nil, but marked as same \n-#{first.inspect}"
-      assert nil != second, "Nil should differ from value, but marked as same \n+#{second.inspect}"
-    end
-  end
-
   def test_comparison_int
     assert_equal true, Yast::Ops.less_than(1,2)
     assert_equal true, Yast::Ops.less_or_equal(1,1)
