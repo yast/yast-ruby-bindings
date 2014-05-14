@@ -1,3 +1,10 @@
+#!/usr/bin/env rspec
+# encoding: utf-8
+
+# FIXME: this file was autoconverted from test/unit syntax without
+# adjusting it to good RSpec style (http://betterspecs.org/).
+# Please improve it whenever adding examples.
+
 require_relative "test_helper"
 
 require "yast/path"
