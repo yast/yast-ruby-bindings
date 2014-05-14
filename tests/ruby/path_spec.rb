@@ -1,4 +1,4 @@
-require_relative "test_helper_rspec"
+require_relative "test_helper"
 
 require "yast/path"
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env rspec
 # encoding: utf-8
 
-require_relative "test_helper_rspec"
+require_relative "test_helper"
 
 require "yast/convert"
 require "yast/path"

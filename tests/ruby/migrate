@@ -6,7 +6,7 @@ inf = File.open(test)
 outf = File.open(spec, "w")
 while inf.gets do
   $_.gsub! %r{/usr/bin/env ruby}, "/usr/bin/env rspec"
-  $_.gsub! %r{"test_helper_test_unit"}, '"test_helper_rspec"'
+  $_.gsub! %r{"test_helper_test_unit"}, '"test_helper"'
   $_.gsub! %r{require "test/unit"\n}, ""
   $_.gsub!(%r{class (\S+) < .*::TestCase}) { "describe \"#{$1}\" do" }
   $_.gsub! %r{def setup}, "before(:each) do"
