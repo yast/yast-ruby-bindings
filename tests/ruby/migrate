@@ -6,9 +6,9 @@ inf = File.open(test)
 outf = File.open(spec, "w")
 while inf.gets do
   $_.gsub! %r{/usr/bin/env ruby}, "/usr/bin/env rspec"
-  $_.gsub! %r{require File.expand_path\("../test_helper", __FILE__\)}, 'require_relative "spec_helper"'
+  $_.gsub! %r{"test_helper_test_unit"}, '"test_helper_rspec"'
   $_.gsub! %r{require "test/unit"\n}, ""
-  $_.gsub!(%r{class (\S+) < Test::Unit::TestCase}) { "describe \"#{$1}\" do" }
+  $_.gsub!(%r{class (\S+) < .*::TestCase}) { "describe \"#{$1}\" do" }
   $_.gsub! %r{def setup}, "before(:each) do"
   $_.gsub!(%r{def test_(\S+)}) { "it \"tests #{$1.gsub '_', ' '}\" do" }
   $_.gsub!(%r{assert_nil (\S+)})     { "expect(#{$1}).to be_nil" }
