@@ -1,12 +1,13 @@
+#!/usr/bin/env rspec
 # encoding: utf-8
 
-require_relative "test_helper_test_unit"
+require_relative "test_helper_rspec"
 
 require "yast/convert"
 require "yast/path"
 require "yast/term"
 
-class OpsTest < Yast::TestCase
+describe "OpsTest" do
   # data description [object, from, to, result]
   CONVERT_TESTDATA = [
     [nil,'any','integer',nil],
@@ -21,13 +22,13 @@ class OpsTest < Yast::TestCase
     [5,'any','float',5.0],
   ]
 
-  def test_convert
+  it "tests convert" do
     CONVERT_TESTDATA.each do |object,from,to,result|
-      assert_equal result, Yast::Convert.convert(object, :from => from, :to => to), "Cannot convert from #{object.inspect} '#{from}' to '#{to}'"
+      expect(Yast::Convert.convert(object, :from => from, :to => to)).to eq(result)
     end
   end
 
-  def test_shortcuts
-    assert_equal "t", Yast::Convert.to_string("t")
+  it "tests shortcuts" do
+    expect(Yast::Convert.to_string("t")).to eq("t")
   end
 end
