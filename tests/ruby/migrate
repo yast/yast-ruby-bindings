@@ -13,6 +13,7 @@ while inf.gets do
   $_.gsub!(%r{def test_(\S+)}) { "it \"tests #{$1.gsub '_', ' '}\" do" }
   $_.gsub!(%r{assert(_not)?_nil (\S+)})     { "expect(#{$2}).to#{$1} be_nil" }
   $_.gsub!(%r{assert(_not)?_equal (\S+), (.+)$}) { "expect(#{$3}).to#{$1} eq(#{$2})" }
+  $_.gsub!(%r{assert(_not)?_equal (.+), (\S+)$}) { "expect(#{$3}).to#{$1} eq(#{$2})" }
   $_.gsub!(%r{assert_match\(([^,]+), (\S+)\)}) { "expect(#{$2}).to match(#{$1})" }
   # halfway
   $_.gsub!(%r{assert_raises (\S+) do}) { "expect do end.to raise_error(#{$1})" }
