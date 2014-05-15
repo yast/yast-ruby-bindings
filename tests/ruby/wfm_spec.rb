@@ -1,6 +1,6 @@
 #!/usr/bin/env rspec
 
-require_relative "test_helper_rspec"
+require_relative "test_helper"
 
 require "yast"
 
@@ -18,7 +18,7 @@ module Yast
 
       it "produces no warning (about redefined constants)" do
         # require_relative does not work in -e
-        helper = $LOADED_FEATURES.grep(/test_helper_rspec/).first
+        helper = $LOADED_FEATURES.grep(/test_helper/).first
         script = <<-EOS
           load '#{helper}'
           require 'yast'

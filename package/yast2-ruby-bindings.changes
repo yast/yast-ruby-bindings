@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Wed May 14 13:13:09 UTC 2014 - mvidner@suse.com
+
+- Mechanically converted the remaining test/unit tests to RSpec
+  (bnc#877758)
+- 3.1.17
+
+-------------------------------------------------------------------
 Tue Apr 22 09:31:18 UTC 2014 - jreidinger@suse.com
 
 - Fix hang out of YaST2 in Turkish locale(bnc#852242)
