@@ -99,8 +99,43 @@ END
       return Yast.deep_copy(res)
     end
 
-    # sets value to object at given indexes.
-    # @deprecated use ruby native operator []=
+    # @deprecated Use the native Ruby operator `[]=`
+    #
+    # Sets *value* to *object* at given *indexes*.
+    #
+    # If *object* or *indexes* is `nil`, `set` does nothing.
+    #
+    # If *indexes* is an Array, `set` recursively descends
+    # through all but last indexes to find the destination container.
+    # As expected, if the last index does not exist,
+    #              *object* is assigned.
+    # However, if an intermediate index does not exist,
+    #          *object* is **not** asigned (no Perl-like autovivification).
+    #
+    # **Replacement**
+    #
+    # `Ops.set(object, indexes, value)`
+    #   can be mechanically replaced by
+    # `object[indexes] = value`
+    # if **all** conditions below are met
+    #
+    # - *object* is a non-nil Array, Hash, {Yast::Term}
+    # - *indexes* is a non-nil scalar
+    # - *value* does not need {deep_copy}
+    #
+    # **Idiomatic Replacement**
+    #
+    # If you want cleaner code and are ready to rescue exceptions, this applies:
+    #
+    # - *object* will simply raise an error if it cannot handle `[]=`;
+    #   that works as expected.
+    # - If *indexes* is an Array of the form [i, j, k],
+    #   use `object[i][j][k] = value`.
+    #   Missing indexes will become `nil` and raise an exception
+    #   on the next index.
+    # - *value* may need a deep copy: `object[indexes] = deep_copy(value)`
+    #
+    # @return [void]
     def self.set (object, indexes, value)
       return if indexes.nil? || object.nil?
 
