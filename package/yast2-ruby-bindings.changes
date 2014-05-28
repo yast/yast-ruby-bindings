@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Wed May 28 15:20:10 UTC 2014 - lslezak@suse.cz
+
+- logger - remove invalid UTF-8 characters to avoid crash
+  (bnc#876459)
+- 3.1.18
+
+-------------------------------------------------------------------
 Wed May 14 13:13:09 UTC 2014 - mvidner@suse.com
 
 - Mechanically converted the remaining test/unit tests to RSpec

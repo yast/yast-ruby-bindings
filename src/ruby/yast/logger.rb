@@ -20,6 +20,12 @@ module Yast
     end
 
     res = Builtins.sformat(*args)
+
+    # replace invalid UTF-8 characters by "?", UTF-16 step is needed to force
+    # the re-encoding (it would skip recoding for string already in UTF-8)
+    res.encode!('UTF-16', :undef => :replace, :invalid => :replace, :replace => "?")
+    res.encode!('UTF-8')
+
     res.gsub!(/%/,"%%") #reescape all %
     caller[caller_frame] =~ /(.+):(\d+):in `([^']+)'/
     y2_logger(level, "Ruby", $1, $2.to_i, "", res)
