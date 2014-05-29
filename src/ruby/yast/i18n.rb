@@ -44,14 +44,14 @@ module Yast
       return str unless @my_textdomain
 
       old_text_domain = FastGettext.text_domain
-      # find domain where key is defined
-      @my_textdomain.each do |domain|
-        # order here may be confusing, but reason is optimalization
-        # every assign to text_domain destroy caches, so first try if we can
-        # use current one. For the last one we do not need to test if it is there.
-        FastGettext.text_domain ||= domain #set it only if it is nil
-        break if FastGettext.key_exist?(str)
-        FastGettext.text_domain = domain
+      # optimalize to not switch if it not needed as switch textdomain clear gettext caches
+      if !@my_textdomain.include?(old_text_domain) ||
+          !FastGettext.key_exist?(str)
+        # find domain where key is defined
+        @my_textdomain.each do |domain|
+          FastGettext.text_domain = domain
+          break if FastGettext.key_exist?(str)
+        end
       end
       FastGettext::Translation::_ str
     ensure
