@@ -18,7 +18,9 @@ module Yast
       # FastGettext does not track which file/class uses which text domain,
       # it has just single global text domain (the current one),
       # remember the requested text domain here
-      @my_textdomain = domain
+      # One object can have multiple text domains via multiple Yast.include (bnc#877687).
+      @my_textdomain ||= []
+      @my_textdomain << domain unless @my_textdomain.include? domain
 
       # initialize available locales at first use or when the current language is changed
       if FastGettext.available_locales.nil? || current_language != FastGettext.locale
@@ -42,7 +44,15 @@ module Yast
       return str unless @my_textdomain
 
       old_text_domain = FastGettext.text_domain
-      FastGettext.text_domain = @my_textdomain
+      # Switching textdomain clears gettext caches so avoid it if possible.
+      if !@my_textdomain.include?(old_text_domain) ||
+          !FastGettext.key_exist?(str)
+        # Set domain where key is defined.
+        @my_textdomain.each do |domain|
+          FastGettext.text_domain = domain
+          break if FastGettext.key_exist?(str)
+        end
+      end
       FastGettext::Translation::_ str
     ensure
       FastGettext.text_domain = old_text_domain
