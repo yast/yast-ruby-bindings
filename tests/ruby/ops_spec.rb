@@ -117,48 +117,56 @@ describe "Yast::OpsTest" do
     expect(Yast::Ops.less_than({"a" => 1, 1 => 2},{"a" => 1, "b" => 2})).to eq(true)
   end
 
-  it "tests get map" do
-    map = { "a" => { "b" => "c" }}
-    expect(Yast::Ops.get(map,"a","n")).to eq({ "b" => "c"})
-    expect(Yast::Ops.get(map,["a","b"],"n")).to eq("c")
-    expect(Yast::Ops.get(map,["a","c"],"n")).to eq("n")
-    expect(Yast::Ops.get(map,["c","b"],"n")).to eq("n")
-    expect(Yast::Ops.get(map,["c","b"]){ "n" }).to eq("n")
+  describe "Ops.get" do
+    it "tests get map" do
+      map = { "a" => { "b" => "c" }}
+      expect(Yast::Ops.get(map,"a","n")).to eq({ "b" => "c"})
+      expect(Yast::Ops.get(map,["a","b"],"n")).to eq("c")
+      expect(Yast::Ops.get(map,["a","c"],"n")).to eq("n")
+      expect(Yast::Ops.get(map,["c","b"],"n")).to eq("n")
+      expect(Yast::Ops.get(map,["c","b"]){ "n" }).to eq("n")
+    end
+
+    it "tests get list" do
+      list = [["a","b"]]
+      expect(Yast::Ops.get(list,0,"n")).to eq(["a","b"])
+      expect(Yast::Ops.get(list,[0,1],"n")).to eq("b")
+      expect(Yast::Ops.get(list,[0,2],"n")).to eq("n")
+      expect(Yast::Ops.get(list,[1,1],"n")).to eq("n")
+    end
+
+    it "tests get term" do
+      term = Yast::Term.new(:a,"a","b")
+      expect(Yast::Ops.get(term,1,"n")).to eq("b")
+      expect(Yast::Ops.get(term,[2],"n")).to eq("n")
+    end
+
+    it "tests get mixture" do
+      map_list =  { "a" => ["b","c"]}
+      expect(Yast::Ops.get(map_list,["a",1],"n")).to eq("c")
+      expect(Yast::Ops.get(map_list,["a",2],"n")).to eq("n")
+      map_term =  { "a" => Yast::Term.new(:a,"b","c")}
+      expect(Yast::Ops.get(map_term,["a",1],"n")).to eq("c")
+      expect(Yast::Ops.get(map_term,["a",2],"n")).to eq("n")
+    end
+
+    it "tests get corner cases" do
+      list = ["a"]
+      expect(Yast::Ops.get(list,["a"],"n")).to eq("n")
+      expect(Yast::Ops.get(list,[0,0],"n")).to eq("n")
+    end
   end
 
-  it "tests get list" do
-    list = [["a","b"]]
-    expect(Yast::Ops.get(list,0,"n")).to eq(["a","b"])
-    expect(Yast::Ops.get(list,[0,1],"n")).to eq("b")
-    expect(Yast::Ops.get(list,[0,2],"n")).to eq("n")
-    expect(Yast::Ops.get(list,[1,1],"n")).to eq("n")
-  end
+  describe "Ops.get_foo shortcuts" do
+    let(:list) { ["a","b"] }
 
-  it "tests get term" do
-    term = Yast::Term.new(:a,"a","b")
-    expect(Yast::Ops.get(term,1,"n")).to eq("b")
-    expect(Yast::Ops.get(term,[2],"n")).to eq("n")
-  end
+    it "gets a matching type" do
+      expect(Yast::Ops.get_string(list,0,"n")).to eq("a")
+    end
 
-  it "tests get mixture" do
-    map_list =  { "a" => ["b","c"]}
-    expect(Yast::Ops.get(map_list,["a",1],"n")).to eq("c")
-    expect(Yast::Ops.get(map_list,["a",2],"n")).to eq("n")
-    map_term =  { "a" => Yast::Term.new(:a,"b","c")}
-    expect(Yast::Ops.get(map_term,["a",1],"n")).to eq("c")
-    expect(Yast::Ops.get(map_term,["a",2],"n")).to eq("n")
-  end
-
-  it "tests get corner cases" do
-    list = ["a"]
-    expect(Yast::Ops.get(list,["a"],"n")).to eq("n")
-    expect(Yast::Ops.get(list,[0,0],"n")).to eq("n")
-  end
-
-  it "tests get shortcuts" do
-    list = ["a","b"]
-    expect(Yast::Ops.get_string(list,0,"n")).to eq("a")
-    expect(Yast::Ops.get_integer(list,0,"n")).to eq(nil)
+    it "nils a mismatching type" do
+      expect(Yast::Ops.get_integer(list,0,"n")).to eq(nil)
+    end
   end
 
   it "tests set" do
