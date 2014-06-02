@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Mon Jun  2 14:29:54 UTC 2014 - mvidner@suse.com
+
+- Converted "should" to "expect" in RSpec,
+  to be prepared for rspec-3.0.
+- 3.1.19
+
+-------------------------------------------------------------------
 Thu May 29 15:03:23 UTC 2014 - jreidinger@suse.com
 
 - fix translation if mixture of textdomain are used in included
