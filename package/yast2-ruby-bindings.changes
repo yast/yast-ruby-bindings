@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Jun  3 17:52:12 UTC 2014 - jreidinger@suse.com
+
+- fix crash of n_ as now textdomain is array (bnc#881124)
+- 3.1.20
+
+-------------------------------------------------------------------
 Mon Jun  2 14:29:54 UTC 2014 - mvidner@suse.com
 
 - Converted "should" to "expect" in RSpec,
