@@ -43,9 +43,8 @@ module Yast
       # no textdomain configured yet
       return str unless @my_textdomain
 
-      old_text_domain = FastGettext.text_domain
       # Switching textdomain clears gettext caches so avoid it if possible.
-      if !@my_textdomain.include?(old_text_domain) ||
+      if !@my_textdomain.include?(FastGettext.text_domain) ||
           !FastGettext.key_exist?(str)
         # Set domain where key is defined.
         @my_textdomain.each do |domain|
@@ -54,8 +53,6 @@ module Yast
         end
       end
       FastGettext::Translation::_ str
-    ensure
-      FastGettext.text_domain = old_text_domain
     end
 
     # No translation, only marks the text to be found by gettext when creating POT file,
@@ -102,11 +99,17 @@ module Yast
       # no textdomain configured yet
       return (num == 1) ? singular : plural unless @my_textdomain
 
-      old_text_domain = FastGettext.text_domain
-      FastGettext.text_domain = @my_textdomain
+      # Switching textdomain clears gettext caches so avoid it if possible.
+      # difference between _ and n_ is hat we need special cache for plural forms
+      if !@my_textdomain.include?(FastGettext.text_domain) ||
+          !FastGettext.cached_plural_find(singular, plural)
+        # Set domain where key is defined.
+        @my_textdomain.each do |domain|
+          FastGettext.text_domain = domain
+          break if FastGettext.cached_plural_find(singular, plural)
+        end
+      end
       FastGettext::Translation::n_(singular, plural, num)
-    ensure
-      FastGettext.text_domain = old_text_domain
     end
 
     private
@@ -137,6 +140,5 @@ module Yast
 
       lang
     end
-
   end
 end
