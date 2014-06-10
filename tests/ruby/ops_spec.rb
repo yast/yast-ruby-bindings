@@ -35,6 +35,12 @@ describe "Yast::OpsTest" do
     expect(Yast::Ops.greater_or_equal(2.0,2.1)).to eq(false)
   end
 
+  it "properly compare between int and float" do
+    expect(Yast::Ops.less_than(1,1.1)).to eq(true)
+    expect(Yast::Ops.less_than(1.1,1)).to eq(false)
+    expect(Yast::Ops.greater_than(44.5, 10000)).to eq(false)
+  end
+
   it "tests comparison string" do
     expect(Yast::Ops.less_than("s","sa")).to eq(true)
     expect(Yast::Ops.less_or_equal("s","s")).to eq(true)

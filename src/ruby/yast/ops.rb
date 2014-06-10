@@ -449,6 +449,7 @@ END
       # Only tricky part is Fixnum/Bignum, which is in fact same, so it has special handling in code
       CLASS_ORDER = [ ::NilClass, ::FalseClass, ::TrueClass, ::Fixnum, ::Bignum, ::Float,
         ::String, Yast::Path, ::Symbol, ::Array, Yast::Term, ::Hash ]
+      NUMBERS_CLASS = [ ::Fixnum, ::Bignum, ::Float]
       def <=> (second)
         if @value.class == second.class
           case @value
@@ -468,8 +469,7 @@ END
             @value <=> second
           end
         else
-          if ((@value.class == Fixnum && second.class == Bignum) ||
-              @value.class == Bignum && second.class == Fixnum)
+          if NUMBERS_CLASS.include?(@value.class) && NUMBERS_CLASS.include?(second.class)
             return @value <=> second
           end
 
