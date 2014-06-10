@@ -468,8 +468,7 @@ END
             @value <=> second
           end
         else
-          if ((@value.class == Fixnum && second.class == Bignum) ||
-              @value.class == Bignum && second.class == Fixnum)
+          if @value.is_a?(::Numeric) && second.is_a?(::Numeric)
             return @value <=> second
           end
 
