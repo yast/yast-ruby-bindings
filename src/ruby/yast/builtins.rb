@@ -507,6 +507,9 @@ module Yast
     # @deprecated use ruby native methods for creating new Hash from other Hash
     def self.mapmap map, &block
       return nil if map.nil?
+      unless map.is_a?(Hash)
+        raise TypeError, "expected a Hash, got a #{map.class}"
+      end
 
       map = Yast::deep_copy(map)
       res = ::Hash.new
