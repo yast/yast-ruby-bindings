@@ -718,6 +718,15 @@ describe "BuiltinsTest" do
   it "tests mapmap" do
     expect(Yast::Builtins.listmap(nil) {|k,v| next {v => k}}).to eq(nil)
 
+    # bnc#888585: Incorrect input class raises TypeError
+    # Only Hash/nil is allowed
+    expect{Yast::Builtins.mapmap(false) {|k,v| {v => k}}}.to raise_error(TypeError)
+    expect{Yast::Builtins.mapmap(['Array']) {|k,v| {v => k}}}.to raise_error(TypeError)
+    expect{Yast::Builtins.mapmap('String') {|k,v| {v => k}}}.to raise_error(TypeError)
+    expect{Yast::Builtins.mapmap(32) {|k,v| {v => k}}}.to raise_error(TypeError)
+
+    expect(Yast::Builtins.mapmap(nil) {|k,v| {v => k}}).to eq(nil)
+
     expect(Yast::Builtins.mapmap({2=>1,4=>3}) {|k,v| next {v => k}}).to eq(Hash[1=>2,3=>4])
 
     res = Yast::Builtins.mapmap({2=>1,4=>3}) do |k,v|

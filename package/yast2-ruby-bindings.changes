@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Wed Jul 23 17:18:58 CEST 2014 - locilka@suse.com
+
+- Builtins.mapmap newly only accepts Hash, otherwise raises
+  a TypeError (bnc#888585)
+- 3.1.22
+
+-------------------------------------------------------------------
 Tue Jun 10 12:41:14 UTC 2014 - jreidinger@suse.com
 
 - fix comparison of float and integer (bnc#865037)
