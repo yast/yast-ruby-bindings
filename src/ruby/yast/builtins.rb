@@ -974,6 +974,16 @@ module Yast
     #
     # The dot `.` does match a newline. Use `/pattern/m`.
     #
+    # To match a literal dot, replace a double backslash `"\\."`
+    # with a single backslash `/\./`
+    #
+    # Literal brackets inside character classes need a backslash
+    # (gh#yast/yast-ruby-bindings#10)
+    #
+    # Unfortunately regexp dialects are full of subtle differences
+    # like this. See  http://www.regular-expressions.info/refflavors.html
+    # and do test.
+    #
     # **Idiomatic Replacement**
     #
     # In a condition, use `string =~ pattern` which returns integer or nil.
