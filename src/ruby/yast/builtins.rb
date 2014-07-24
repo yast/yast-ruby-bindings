@@ -951,6 +951,44 @@ module Yast
     end
 
     ###########################################################
+    # Documentation of methods implemented in C is here
+    # because I could not figure out how to make yard parse it there.
+
+    # @method self.regexpmatch(string, pattern)
+    #
+    # @param string [String] a string to search
+    # @param pattern [String] a regex in the C(!) syntax
+    # @return [Boolean, nil] does *string* match *pattern*
+    # @deprecated use string =~ pattern
+    #
+    # Searches a string for a POSIX Extended Regular Expression match.
+    #
+    # If *string* or *pattern* is `nil`, or
+    # if pattern is an invalid regex, `nil` is returned.
+    #
+    # **Replacement**
+    #
+    # Notably `^` and `$` match the ends of the entire string,
+    # not each line like in Regexp. Use /\A/ and /\z/
+    # (There is also /\Z/ which matches before a final newline.)
+    #
+    # The dot `.` does match a newline. Use `/pattern/m`.
+    #
+    # To match a literal dot, replace a double backslash `"\\."`
+    # with a single backslash `/\./`
+    #
+    # Literal brackets inside character classes need a backslash
+    # (gh#yast/yast-ruby-bindings#10)
+    #
+    # Unfortunately regexp dialects are full of subtle differences
+    # like this. See  http://www.regular-expressions.info/refflavors.html
+    # and do test.
+    #
+    # **Idiomatic Replacement**
+    #
+    # In a condition, use `string =~ pattern` which returns integer or nil.
+
+    ###########################################################
     # Yast Term Builtins
     ###########################################################
 

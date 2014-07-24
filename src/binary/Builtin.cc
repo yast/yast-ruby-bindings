@@ -446,6 +446,7 @@ extern "C" {
       return reg_ret;
   }
 
+  // documented in builtins.rb
   static VALUE regexpmatch(VALUE o, VALUE i, VALUE p)
   {
     if (NIL_P(i) || NIL_P(p))
