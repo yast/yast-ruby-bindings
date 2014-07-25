@@ -6,6 +6,12 @@ Wed Jul 23 17:18:58 CEST 2014 - locilka@suse.com
 - 3.1.22
 
 -------------------------------------------------------------------
+Mon Jul  7 09:31:40 UTC 2014 - mrueckert@suse.de
+
+- switch to rubygem() based requires so we can easily pass the
+  preferred ruby version using rb_default_ruby_abi
+
+-------------------------------------------------------------------
 Tue Jun 10 12:41:14 UTC 2014 - jreidinger@suse.com
 
 - fix comparison of float and integer (bnc#865037)
