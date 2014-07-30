@@ -45,7 +45,7 @@ module Yast
     ]
 
     Ops::SHORTCUT_TYPES.each do |type|
-      eval <<END
+      eval <<END, binding, __FILE__, __LINE__ + 1
         def self.get_#{type}(object, indexes, default=nil, &block)
           Yast::Convert.to_#{type} get(object, indexes, default, 1, &block)
         end
