@@ -91,10 +91,10 @@ END
             return block_given? ? yield : default
           end
         when ::NilClass
-          Yast.y2milestone skip_frames, "Builtin index called on nil."
+          Yast.y2milestone skip_frames, "Ops.get called on nil."
           return block_given? ? yield : default
         else
-          Yast.y2warning skip_frames, "Builtin index called on wrong type #{res.class}"
+          Yast.y2warning skip_frames, "Ops.get called on wrong type #{res.class}"
           return block_given? ? yield : default
         end
       end
