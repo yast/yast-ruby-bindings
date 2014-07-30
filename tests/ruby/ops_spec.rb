@@ -424,12 +424,12 @@ describe "Yast::OpsTest" do
   end
 
   it "tests is" do
-    expect(Yast::Ops.is("t", "string")).to be_true
-    expect(!Yast::Ops.is("t", "integer")).to be_true
+    expect(Yast::Ops.is("t", "string")).to be true
+    expect(Yast::Ops.is("t", "integer")).to be false
   end
 
   it "tests is shortcut" do
-    expect(Yast::Ops.is_string?("t")).to be_true
-    expect(!Yast::Ops.is_void?("t")).to be_true
+    expect(Yast::Ops.is_string?("t")).to be true
+    expect(Yast::Ops.is_void?("t")).to be false
   end
 end
