@@ -167,6 +167,21 @@ describe "Yast::OpsTest" do
     it "nils a mismatching type" do
       expect(Yast::Ops.get_integer(list,0,"n")).to eq(nil)
     end
+
+    it "warns when the container is nil" do
+      any_frame = kind_of(Integer)
+      expect(Yast).to receive(:y2milestone).with(any_frame, /called on nil/)
+      Yast::Ops.get_string(nil, 0, "n")
+    end
+
+    it "reports the right location when warning" do
+      # The internal method that sees the file is:
+      # y2_logger(log_level, component, file, line, method, format, args)
+      line = __LINE__ + 3 # this must be the line where get_string is called
+      expect(Yast).to receive(:y2_logger).
+        with(kind_of(Integer), "Ruby", __FILE__, line, //, //)
+      Yast::Ops.get_string(nil, 0, "n")
+    end
   end
 
   it "tests set" do
