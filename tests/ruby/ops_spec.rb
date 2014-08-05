@@ -117,48 +117,104 @@ describe "Yast::OpsTest" do
     expect(Yast::Ops.less_than({"a" => 1, 1 => 2},{"a" => 1, "b" => 2})).to eq(true)
   end
 
-  it "tests get map" do
-    map = { "a" => { "b" => "c" }}
-    expect(Yast::Ops.get(map,"a","n")).to eq({ "b" => "c"})
-    expect(Yast::Ops.get(map,["a","b"],"n")).to eq("c")
-    expect(Yast::Ops.get(map,["a","c"],"n")).to eq("n")
-    expect(Yast::Ops.get(map,["c","b"],"n")).to eq("n")
-    expect(Yast::Ops.get(map,["c","b"]){ "n" }).to eq("n")
+  describe "Ops.get" do
+    context "when the container is a map" do
+      let(:map) { { "a" => { "b" => "c" }} }
+
+      it "returns value if key exists" do
+        expect(Yast::Ops.get(map,"a","n")).to eq({ "b" => "c"})
+      end
+
+      it "supports nested access with list of keys" do
+        expect(Yast::Ops.get(map,["a","b"],"n")).to eq("c")
+      end
+
+      it "returns default if any key is not available" do
+        expect(Yast::Ops.get(map,["a","c"],"n")).to eq("n")
+        expect(Yast::Ops.get(map,["c","b"],"n")).to eq("n")
+      end
+
+      it "support blocks for default where it return result of block" do
+        expect(Yast::Ops.get(map,["c","b"]){ "n" }).to eq("n")
+      end
+    end
+
+    context "when the container is a list" do
+      let(:list)  { [["a","b"]] }
+      let(:list2) { ["a"] }
+
+      it "returns value if key exists" do
+        expect(Yast::Ops.get(list,0,"n")).to eq(["a","b"])
+      end
+
+      it "supports nested access with list of keys" do
+        expect(Yast::Ops.get(list,[0,1],"n")).to eq("b")
+        expect(Yast::Ops.get(list,[0,2],"n")).to eq("n")
+        expect(Yast::Ops.get(list,[1,1],"n")).to eq("n")
+      end
+
+      it "returns default value when indexing with a non-integer" do
+        expect(Yast::Ops.get(list2,["a"],"n")).to eq("n")
+      end
+
+      it "returns default value for too many indices" do
+        expect(Yast::Ops.get(list2,[0,0],"n")).to eq("n")
+      end
+    end
+
+    context "when the container is a term" do
+      let(:term) { Yast::Term.new(:a,"a","b") }
+
+      it "returns value if key exists" do
+        expect(Yast::Ops.get(term,1,"n")).to eq("b")
+      end
+
+      it "returns default if FIXME" do
+        expect(Yast::Ops.get(term,[2],"n")).to eq("n")
+      end
+    end
+
+    context "when the container is heterogeneous" do
+      let(:map_list) { { "a" => ["b","c"]} }
+      let(:map_term) { { "a" => Yast::Term.new(:a,"b","c")} }
+
+      it "supports nested access with list of keys" do
+        expect(Yast::Ops.get(map_list,["a",1],"n")).to eq("c")
+        expect(Yast::Ops.get(map_term,["a",1],"n")).to eq("c")
+      end
+
+      it "returns default if any key is not available" do
+        expect(Yast::Ops.get(map_list,["a",2],"n")).to eq("n")
+        expect(Yast::Ops.get(map_term,["a",2],"n")).to eq("n")
+      end
+    end
   end
 
-  it "tests get list" do
-    list = [["a","b"]]
-    expect(Yast::Ops.get(list,0,"n")).to eq(["a","b"])
-    expect(Yast::Ops.get(list,[0,1],"n")).to eq("b")
-    expect(Yast::Ops.get(list,[0,2],"n")).to eq("n")
-    expect(Yast::Ops.get(list,[1,1],"n")).to eq("n")
-  end
+  describe "Ops.get_foo shortcuts" do
+    let(:list) { ["a","b"] }
 
-  it "tests get term" do
-    term = Yast::Term.new(:a,"a","b")
-    expect(Yast::Ops.get(term,1,"n")).to eq("b")
-    expect(Yast::Ops.get(term,[2],"n")).to eq("n")
-  end
+    it "returns .get result for a matching type" do
+      expect(Yast::Ops.get_string(list,0,"n")).to eq("a")
+    end
 
-  it "tests get mixture" do
-    map_list =  { "a" => ["b","c"]}
-    expect(Yast::Ops.get(map_list,["a",1],"n")).to eq("c")
-    expect(Yast::Ops.get(map_list,["a",2],"n")).to eq("n")
-    map_term =  { "a" => Yast::Term.new(:a,"b","c")}
-    expect(Yast::Ops.get(map_term,["a",1],"n")).to eq("c")
-    expect(Yast::Ops.get(map_term,["a",2],"n")).to eq("n")
-  end
+    it "returns nil for a mismatching type" do
+      expect(Yast::Ops.get_integer(list,0,"n")).to eq(nil)
+    end
 
-  it "tests get corner cases" do
-    list = ["a"]
-    expect(Yast::Ops.get(list,["a"],"n")).to eq("n")
-    expect(Yast::Ops.get(list,[0,0],"n")).to eq("n")
-  end
+    it "warns when the container is nil" do
+      any_frame = kind_of(Integer)
+      expect(Yast).to receive(:y2milestone).with(any_frame, /called on nil/)
+      Yast::Ops.get_string(nil, 0, "n")
+    end
 
-  it "tests get shortcuts" do
-    list = ["a","b"]
-    expect(Yast::Ops.get_string(list,0,"n")).to eq("a")
-    expect(Yast::Ops.get_integer(list,0,"n")).to eq(nil)
+    it "reports the right location when warning" do
+      # The internal method that sees the file is:
+      # y2_logger(log_level, component, file, line, method, format, args)
+      line = __LINE__ + 3 # this must be the line where get_string is called
+      expect(Yast).to receive(:y2_logger).
+        with(kind_of(Integer), "Ruby", __FILE__, line, //, //)
+      Yast::Ops.get_string(nil, 0, "n")
+    end
   end
 
   it "tests set" do
@@ -424,12 +480,12 @@ describe "Yast::OpsTest" do
   end
 
   it "tests is" do
-    expect(Yast::Ops.is("t", "string")).to be_true
-    expect(!Yast::Ops.is("t", "integer")).to be_true
+    expect(Yast::Ops.is("t", "string")).to be true
+    expect(Yast::Ops.is("t", "integer")).to be false
   end
 
   it "tests is shortcut" do
-    expect(Yast::Ops.is_string?("t")).to be_true
-    expect(!Yast::Ops.is_void?("t")).to be_true
+    expect(Yast::Ops.is_string?("t")).to be true
+    expect(Yast::Ops.is_void?("t")).to be false
   end
 end

@@ -33,7 +33,6 @@ describe "ExportableTest" do
   end
 
   it "tests publish variables" do
-    expect(MyTest.class.published_variables[:variable_a]).to be_true
     expect(MyTest.class.published_variables[:variable_a].type).to eq("map<any,any>")
   end
 

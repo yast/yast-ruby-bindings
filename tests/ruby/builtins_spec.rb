@@ -232,7 +232,7 @@ describe "BuiltinsTest" do
   end
 
   it "tests time" do
-    expect(Yast::Builtins.time > 0).to be_true
+    expect(Yast::Builtins.time).to be > 0
   end
 
   it "tests find string" do
@@ -345,7 +345,7 @@ describe "BuiltinsTest" do
   end
 
   it "tests srandom" do
-    expect(Yast::Builtins.srandom() > 0).to be_true
+    expect(Yast::Builtins.srandom()).to be > 0
     expect(Yast::Builtins.srandom(10)).to eq(nil)
   end
 
@@ -742,7 +742,7 @@ describe "BuiltinsTest" do
 
     # there is quite nice chance with this repetition to test even border or range
     100.times do
-      expect((0..9).include? Yast::Builtins.random(10)).to be_true
+      expect(0..9).to cover Yast::Builtins.random(10)
     end
   end
 
@@ -838,7 +838,7 @@ describe "BuiltinsTest" do
     # crypt is salted so cannot reproduce, just test if run and returns something useful
     ["", "md5", "blowfish", "sha256", "sha512"].each do |suffix|
       res = Yast::Builtins.send(:"crypt#{suffix}", "test")
-      expect(res).to be_true
+      expect(res).to be_a String
       expect(res.size).to be > 10
     end
   end

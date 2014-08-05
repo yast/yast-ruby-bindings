@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Wed Jul 30 14:27:09 UTC 2014 - mvidner@suse.com
+
+- Fixed to report the right frame for Ops.get_foo (bnc#877758).
+- Futureproof tests for RSpec 3 even more, avoid be_true.
+- 3.1.23
+
+-------------------------------------------------------------------
 Wed Jul 23 17:18:58 CEST 2014 - locilka@suse.com
 
 - Builtins.mapmap newly only accepts Hash, otherwise raises
