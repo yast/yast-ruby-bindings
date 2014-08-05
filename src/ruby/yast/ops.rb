@@ -62,8 +62,13 @@ END
     #   a
     OUTER_LOOP_FRAME = 3
 
-    # gets value from object at indexes. In case that value is not found, then return default value.
-    # @deprecated use ruby native operator []
+    # @deprecated Use the native Ruby operator `[]`
+    #
+    # Gets value from *object* at *indexes*.
+    # In case value is not found, then return *default* value.
+    #
+    # @param skip_frames [Integer] private, how many caller frames to skip
+    #  when reporting warnings or exceptions (0 by default)
     def self.get (object, indexes, default=nil, skip_frames = 0)
       res = object
       default = Yast.deep_copy(default)
