@@ -29,8 +29,9 @@ module Yast
       'byteblock' => Yast::Byteblock
     }
 
-    # Types for which we generate shortcut methods, e.g. {Yast::Ops.get_string} or
-    # {Yast::Convert.to_string}.
+    # Types for which we generate shortcut methods,
+    # e.g. {Yast::Ops.get_string}
+    # or   {Yast::Convert.to_string}.
     SHORTCUT_TYPES = [
       "boolean",
       "string",
@@ -44,6 +45,26 @@ module Yast
       "locale"
     ]
 
+    # @!method                    self.get_boolean(       obj, idx, def )
+    #   @return [Boolean, nil] {Convert.to_boolean}({get}(obj, idx, def))
+    # @!method                     self.get_string(       obj, idx, def )
+    #   @return [String, nil]   {Convert.to_string}({get}(obj, idx, def))
+    # @!method                     self.get_symbol(       obj, idx, def )
+    #   @return [Symbol, nil]   {Convert.to_symbol}({get}(obj, idx, def))
+    # @!method                    self.get_integer(       obj, idx, def )
+    #   @return [Integer, nil] {Convert.to_integer}({get}(obj, idx, def))
+    # @!method                      self.get_float(       obj, idx, def )
+    #   @return [Float, nil]     {Convert.to_float}({get}(obj, idx, def))
+    # @!method                       self.get_list(       obj, idx, def )
+    #   @return [Array, nil]      {Convert.to_list}({get}(obj, idx, def))
+    # @!method                        self.get_map(       obj, idx, def )
+    #   @return [Hash, nil]        {Convert.to_map}({get}(obj, idx, def))
+    # @!method                       self.get_term(       obj, idx, def )
+    #   @return [Term, nil]       {Convert.to_term}({get}(obj, idx, def))
+    # @!method                       self.get_path(       obj, idx, def )
+    #   @return [Path, nil]       {Convert.to_path}({get}(obj, idx, def))
+    # @!method                     self.get_locale(       obj, idx, def )
+    #   @return [String, nil]   {Convert.to_locale}({get}(obj, idx, def))
     Ops::SHORTCUT_TYPES.each do |type|
       eval <<END, binding, __FILE__, __LINE__ + 1
         def self.get_#{type}(object, indexes, default=nil, &block)
