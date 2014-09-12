@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Fri Sep 12 12:22:37 UTC 2014 - jreidinger@suse.com
+
+- GC-guard some Ruby values to prevent a crash in slideshow
+  (bnc#895964)
+- 3.1.24
+
+-------------------------------------------------------------------
 Wed Jul 30 14:27:09 UTC 2014 - mvidner@suse.com
 
 - Fixed to report the right frame for Ops.get_foo (bnc#877758).
