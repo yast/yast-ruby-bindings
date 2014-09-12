@@ -256,7 +256,9 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
     for (std::map<int,SymbolEntryPtr>::iterator i = refs.begin(); i != refs.end(); ++i)
     {
       //set back reference
-      rb_funcall(argv[i->first], rb_intern("value="), 1, ycpvalue_2_rbvalue(i->second->value()));
+      VALUE val = ycpvalue_2_rbvalue(i->second->value());
+      RB_GC_GUARD(val);
+      rb_funcall(argv[i->first], rb_intern("value="), 1, val);
     }
     return ycpvalue_2_rbvalue(res);
   }

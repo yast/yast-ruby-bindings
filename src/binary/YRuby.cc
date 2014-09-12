@@ -189,7 +189,9 @@ YCPValue YRuby::callInner (string module_name, string function,
     // get the
     YCPValue v = argList->value(i);
     y2debug("Adding argument %d of type %s", i, v->valuetype_str());
-    values[i+3] = ycpvalue_2_rbvalue(v);
+    VALUE vr = ycpvalue_2_rbvalue(v);
+    RB_GC_GUARD(vr);
+    values[i+3] = vr;
   }
 
   y2debug( "Will call function '%s' in module '%s' with '%d' arguments", function.c_str(), module_name.c_str(), size-1);
@@ -224,7 +226,9 @@ YCPValue YRuby::callClient(const string& path)
     return YCPBoolean(false);
 
   VALUE wfm_module = y2ruby_nested_const_get("Yast::WFM");
-  VALUE result = rb_funcall(wfm_module, rb_intern("run_client"), 1, rb_str_new2(path.c_str()));
+  VALUE client_path = rb_str_new2(path.c_str());
+  RB_GC_GUARD(client_path);
+  VALUE result = rb_funcall(wfm_module, rb_intern("run_client"), 1, client_path);
   return rbvalue_2_ycpvalue(result);
 }
 
