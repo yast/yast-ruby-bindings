@@ -65,10 +65,29 @@ END
     # @deprecated Use the native Ruby operator `[]`
     #
     # Gets value from *object* at *indexes*.
-    # In case value is not found, then return *default* value.
+    # Eager to return *default* at slightest provocation.
     #
+    # **Replacement**
+    #
+    # Consider using
+    #
+    # - `object[index]`
+    # - `object[i1][i2]`
+    # - `object.fetch(index)`
+    # - `object.fetch(index, default)`
+    # - `object[index] || default` if the value cannot be `false` or `nil`
+    #
+    # @param object [Array, Hash, Yast::Term]
+    # @param indexes Usually a scalar, but also an array of scalars
+    #    to recursively descend into *object*
+    # @param default the default value returned (via {deep_copy}) for any error;
+    #    also may be a **block**
     # @param skip_frames [Integer] private, how many caller frames to skip
-    #  when reporting warnings or exceptions (0 by default)
+    #  when reporting warnings or exceptions
+    #
+    # @return The value in *object* at *indexes*, if it exists.
+    #    The *default* value if *object*, *indexes* are nil, have wrong type,
+    #    or *indexes* does not exist in *object*.
     def self.get (object, indexes, default=nil, skip_frames = 0)
       res = object
       default = Yast.deep_copy(default)
