@@ -9,7 +9,7 @@ module Yast
   # @deprecated ruby need not type conversion and int<->float conversion is explicit
   module Convert
     # @!method  self.to_boolean(       object )
-    #   @return        [Boolean, nil] *object*, or `nil` if it is not a Boolean
+    #   @return        [Boolean, nil] *object*, or `nil` if it is not `true` or `false`
     # @!method  self.to_string(        object )
     #   @see Builtins.tostring
     #   @return        [String, nil]  *object*, or `nil` if it is not a String

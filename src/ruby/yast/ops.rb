@@ -94,15 +94,17 @@ END
     #
     # - `object[index]`
     # - `object[i1][i2]`
-    # - `object.fetch(index)`
-    # - `object.fetch(index, default)`
     # - `object[index] || default` if the value cannot be `false` or `nil`
+    # - `object.fetch(index, default)`
+    # - `object.fetch(index)` if you want an exception when index is absent
     #
     # @param object [Array, Hash, Yast::Term]
     # @param indexes Usually a scalar, but also an array of scalars
     #    to recursively descend into *object*
     # @param default the default value returned (via {deep_copy}) for any error;
-    #    also may be a **block**
+    #    if a **block** is given, it is called to provide the default value
+    #    (only when the default is needed, so it is useful for values
+    #    that are expensive to compute).
     # @param skip_frames [Integer] private, how many caller frames to skip
     #  when reporting warnings or exceptions
     #
