@@ -1,0 +1,4 @@
+// configuration file for yast2-ruby-bindings
+
+#cmakedefine HAVE_XCRYPT_H
+
