@@ -6,13 +6,19 @@
 #define _OW_SOURCE
 #endif
 
+#include "config.h"
+
 #include <string>
 #include <sstream>
 #include <stdexcept>
 #include <iconv.h>
 #include <errno.h>
 extern "C" {
-  #include <crypt.h>
+  #ifdef HAVE_XCRYPT_H
+    #include <xcrypt.h>
+  #else
+    #include <crypt.h>
+  #endif
 }
 #include <stdio.h>
 #include <unistd.h>
