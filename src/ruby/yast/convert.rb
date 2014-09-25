@@ -8,7 +8,34 @@ module Yast
   # there is generated shortcuts for conversion to_<type>
   # @deprecated ruby need not type conversion and int<->float conversion is explicit
   module Convert
-    #generate shortcuts
+    # @!method  self.to_boolean(       object )
+    #   @return        [Boolean, nil] *object*, or `nil` if it is not `true` or `false`
+    # @!method  self.to_string(        object )
+    #   @see Builtins.tostring
+    #   @return        [String, nil]  *object*, or `nil` if it is not a String
+    # @!method  self.to_symbol(        object )
+    #   @see Builtins.tosymbol
+    #   @return        [Symbol, nil]  *object*, or `nil` if it is not a Symbol
+    # @!method  self.to_integer(       object )
+    #   @see Builtins.tointeger
+    #   @return        [Integer, nil] *object*, or `nil` if it is not a Integer
+    # @!method  self.to_float(         object )
+    #   @see Builtins.tofloat
+    #   @return        [Float, nil]   *object*, or `nil` if it is not a Float
+    # @!method  self.to_list(          object )
+    #   @see Builtins.tolist
+    #   @return        [Array, nil]   *object*, or `nil` if it is not a Array
+    # @!method  self.to_map(           object )
+    #   @see Builtins.tomap
+    #   @return        [Hash, nil]    *object*, or `nil` if it is not a Hash
+    # @!method  self.to_term(          object )
+    #   @see Builtins.toterm
+    #   @return        [Term, nil]    *object*, or `nil` if it is not a Term
+    # @!method  self.to_path(          object )
+    #   @see Builtins.topath
+    #   @return        [Path, nil]    *object*, or `nil` if it is not a Path
+    # @!method  self.to_locale(        object )
+    #   @return        [String, nil]  *object*, or `nil` if it is not a String
     Ops::SHORTCUT_TYPES.each do |type|
       eval <<END
         def self.to_#{type}(object)
