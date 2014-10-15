@@ -17,7 +17,7 @@
 
 
 Name:           yast2-ruby-bindings
-Version:        3.1.24
+Version:        3.1.25
 Url:            https://github.com/yast/yast-ruby-bindings
 Release:        0
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -30,15 +30,9 @@ BuildRequires:  yast2-core-devel
 BuildRequires:  yast2-devtools >= 3.1.10
 # libzypp-devel is missing .la requires
 BuildRequires:  ruby-devel
-%if 0%{?suse_version} == 1315
 BuildRequires:  rubygem(%{rb_default_ruby_abi}:fast_gettext)
 BuildRequires:  rubygem(%{rb_default_ruby_abi}:rspec)
 Requires:       rubygem(%{rb_default_ruby_abi}:fast_gettext)
-%else
-BuildRequires:  rubygem-fast_gettext
-BuildRequires:  rubygem-rspec
-Requires:       rubygem-fast_gettext
-%endif
 Requires:       yast2-core >= 2.24.0
 BuildRequires:  yast2-core-devel >= 2.24.0
 Requires:       yast2-ycp-ui-bindings       >= 2.21.9
