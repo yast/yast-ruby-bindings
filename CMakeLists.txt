@@ -36,6 +36,13 @@ if(NOT RUBY_EXECUTABLE)
 endif()
 
 #
+# crypt.h or xcrypt.h ?
+#
+INCLUDE(CheckIncludeFiles)
+CHECK_INCLUDE_FILES(xcrypt.h HAVE_XCRYPT_H)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+
+#
 # -> src/
 #
 
