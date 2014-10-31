@@ -2,11 +2,10 @@ language: cpp
 compiler:
     - gcc
 before_install:
-    - sudo apt-get --reinstall install language-pack-en language-pack-cs
     # disable rvm, use system Ruby
     - rvm reset
     - wget https://raw.githubusercontent.com/yast/yast-devtools/master/travis-tools/travis_setup.sh
-    - sh ./travis_setup.sh -p "docbook-xsl xsltproc yast2-core-dev yast2-devtools libxcrypt-dev cmake yast2-ycp-ui-bindings-dev ruby2.1 ruby2.1-dev ruby-rspec ruby-fast-gettext"
+    - sh ./travis_setup.sh -p "docbook-xsl xsltproc yast2-core-dev yast2-devtools libxcrypt-dev cmake yast2-ycp-ui-bindings-dev ruby2.1 ruby2.1-dev ruby-rspec ruby-fast-gettext language-pack-en language-pack-cs"
 script:
     # TODO FIXME: hack for Travis build, cmake includes "/usr/include/ruby-2.1.0/x86_64-linux-gnu"
     # instead of "/usr/include/x86_64-linux-gnu/ruby-2.1.0"
