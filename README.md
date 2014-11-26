@@ -25,7 +25,7 @@ Publish is very similar to dbus interface provision. For more details see inline
 documentation of {Yast::Exportable#publish}. If a method is needed only from Ruby,
 then `publish` is not needed.
 
-[arch]: https://github.com/yast/yast.github.io/blob/master/doc/architecture.asciidoc
+[arch]: https://yastgithubio.readthedocs.org/en/latest/architecture/
 
 The second part is calling methods from the component system. *Clients* are called
 via WFM (see below). Methods from *modules* are imported with {Yast.import}, which
@@ -63,7 +63,8 @@ important provided classes with links to the inline documentation and a short ex
 * {Yast::Exportable}: provides the method `publish` (see above).
 * {Yast::FunRef}: a container used to pass references to methods to the component system.
 * {Yast::I18n}: provides methods used for translations.
-* {Yast::Module}: a base class for YaST modules in Ruby.
+* {Yast::Module}: a base class for YaST modules in Ruby. It is not strictly
+  required to inherit from it, but it adds useful helpers.
 * {Yast::Ops}: this module contains YCP operators that need to be simulated in
   Ruby. For new code it should not be used.
 * {Yast::Path}: represents the path type from the YCP protocol.
@@ -139,10 +140,8 @@ make install
 
 ### How to Create a Tarball
 
-Compile it, and from the `build` directory call:
-
 ```bash
-make srcpackage
+rake package
 ```
 
 Then the RPM sources are in the `package` subdirectory.
