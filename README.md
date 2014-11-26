@@ -3,82 +3,88 @@
 Travis:  [![Build Status](https://travis-ci.org/yast/yast-ruby-bindings.svg?branch=master)](https://travis-ci.org/yast/yast-ruby-bindings)
 Jenkins: [![Jenkins Build](http://img.shields.io/jenkins/s/https/ci.opensuse.org/yast-ruby-bindings-master.svg)](https://ci.opensuse.org/view/Yast/job/yast-ruby-bindings-master/)
 
-
 It is part of [YaST](http://yast.github.io) where you can find more information
-about YaST and its component system. Ruby bindings covers only connection to
-component system and provide some ruby helpers.
+about YaST and its component system. The Ruby bindings cover only the connection to
+the component system and provide some Ruby helpers.
 
-It starts as experimental project to allow writting in ruby, but after decision
-to switch from own language YCP to ruby, it is major part of YaST needed by
-almost all parts. Relict from language switch is construct to keep backward
-compatibility, then need human decision to remove it.
+It started as an experimental project to allow writting in Ruby, but after a decision
+to switch from an own language YCP to Ruby, it is a major part of YaST needed by
+almost all parts. As a relict from the language switch it contains constructs
+to keep backward compatibility which need a human decision before being removed.
 
 ## Features
 
 ### Publish, Import and Include
-Connection to YaST component system has two parts. The first one is ability
-to be called from component system. Clients can be called via WFM (see below )
-and modules provide interface via publish method, where is specified type.
-Publish is very similar to dbus interface provision. For more details see inline
-documentation of {Yast::Exportable#publish}. If method is needed only from ruby,
-then publish is not needed.
 
-The second part is calling methods from component system. Clients are called
-via WFM (see below). Methods from modules are imported with {Yast.import}, that
-load component and create ruby object in Yast namespace from it, on which can be
-called exported methods. Note that calling from ruby to ruby published methods
-are optimized, so it do not go thrue component system resulting in no speed
-penalty. If call is done from ruby to ruby, then it is not limited by component
-system and its protocol, so all ruby features can be used.
+The connection to the [YaST component system][arch] has two parts.
+The first one is the ability
+to be called from the component system. *Clients* can be called via WFM (see below )
+and *modules* provide an interface via the `publish` method, where the type
+signature is specified.
+Publish is very similar to dbus interface provision. For more details see inline
+documentation of {Yast::Exportable#publish}. If a method is needed only from Ruby,
+then `publish` is not needed.
+
+[arch]: https://yastgithubio.readthedocs.org/en/latest/architecture/
+
+The second part is calling methods from the component system. *Clients* are called
+via WFM (see below). Methods from *modules* are imported with {Yast.import}, which
+loads a component and creates a Ruby object in the Yast namespace from it, on which
+exported methods can be called.
+Note that if a call is done from Ruby to Ruby, then it is not limited
+by the component
+system and its protocol, so all Ruby features can be used.
 
 ```ruby
-# how to import module and call it
+# how to import a module and call it
 require "yast"
 Yast.import "IP"
-puts Yast::IP.Valid4
+puts Yast::IP.Check4("127.0.0.333")
 ```
 
-Relict from transformation from ycp to ruby is {Yast.include} which adds methods
-from included class to passed object. It is very similar to ruby `include` with
-exception Include object can include other Include objects and thus there is
-special constructor instead of common ruby `included`.
+A relict from the transformation from YCP to Ruby is {Yast.include} which adds methods
+from the included class to passed object. It is very similar to Ruby `include` with
+the exception that an Include object can include other Include objects and thus there is
+a special constructor instead of common Ruby `included`.
 
 ### Ruby Helpers
-Ruby bindings provides set of various helpers for work with YaST component
-system or to make translation from ycp to ruby easier. Here is overview of
-important provided classes with link to inline documentation and short explanation:
 
-* {Yast::ArgRef} class to be used for passing arguments by reference. Works
-  even for ruby immutable types like Fixnum or Symbol.
-* {Yast::Builtins} module contains ycp builtins that need to be simulated in
-  ruby. For new code it should not be used.
-* {Yast::Client} base class for clients in ruby. It is not required.
-  Just add helpers.
-* {Yast::Convert} simulate type conversion. Not needed in new code.
-* {Yast::Exportable} provides method publish ( see above )
-* {Yast::FunRef} container used to pass reference to method to component system.
-* {Yast::I18n} Provides methods used for translations.
-* {Yast::Module} base class for YaST modules in ruby. It is not required.
-  Just add helpers.
-* {Yast::Ops} module contains ycp operators that need to be simulated in
-  ruby. For new code it should not be used.
-* {Yast::Path} represents path type from YCP protocol.
-* {Yast::SCR} allows usage of SCR component for communication with system.
-* {Yast::Term} represents term type from YCP protocol. Often used for UI.
-* {Yast::WFM} allows usage of WFM component. WFM is used to call clients, gets
-  argument from call and for setting new SCR instance as global one.
-* {Yast::Y2Logger} ruby logger configured to work like yast log with proper
-  place to use. Module {Yast::Logger} provides easy access to log via method
+Ruby bindings provide a set of various helpers for working with the YaST component
+system or for making the translation from YCP to Ruby easier. Here is an overview of
+important provided classes with links to the inline documentation and a short explanation:
+
+* {Yast::ArgRef}: a class to be used for passing arguments by reference. Works
+  even for Ruby immutable types like Fixnum or Symbol.
+* {Yast::Builtins}: this module contains YCP builtins that need to be simulated in
+  Ruby. For new code it should not be used.
+* {Yast::Client}: a base class for clients in Ruby. It is not strictly
+  required to inherit from it, but it adds useful helpers.
+* {Yast::Convert}: simulates type conversion. Not needed in new code.
+* {Yast::Exportable}: provides the method `publish` (see above).
+* {Yast::FunRef}: a container used to pass references to methods to the component system.
+* {Yast::I18n}: provides methods used for translations.
+* {Yast::Module}: a base class for YaST modules in Ruby. It is not strictly
+  required to inherit from it, but it adds useful helpers.
+* {Yast::Ops}: this module contains YCP operators that need to be simulated in
+  Ruby. For new code it should not be used.
+* {Yast::Path}: represents the path type from the YCP protocol.
+* {Yast::SCR}: allows usage of SCR component for communication with the Linux system.
+* {Yast::Term}: represents the term type from the YCP protocol. Often used for UI.
+* {Yast::WFM}: allows usage of WFM component. WFM is used for calling clients,
+  and for setting a new SCR instance as the global one.
+* {Yast::Y2Logger}: a Ruby Logger configured to work with the YaST log with proper
+  place to use. The Ruby module {Yast::Logger} provides easy access via the method
   `log`.
-* {Yast} namespace itself contains few helpers to be used. It contains
-  shortcuts and method for deep copy of object.
+* {Yast}: the namespace itself contains a few helpers to be used. It contains
+  shortcuts and a method for a deep copy of an object.
 
 ### UI Shortcuts
-{Yast::UIShortcuts} provides shortcut to UI terms. It is useful to construct
+
+{Yast::UIShortcuts} provides shortcuts for UI terms. It is useful to construct
 dialogs or even popups.
 
 ```ruby
-# usage with term
+# usage with Term
 content = Yast::Term.new(
   :ButtonBox,
   Yast::Term.new(
@@ -102,37 +108,46 @@ content = ButtonBox(
 ```
 
 ### Testing
-YaST team encourages to use rspec for testing YaST code in ruby. There is
-a plan to create helper to allow easier testing.
+
+The YaST team encourages to use RSpec for testing YaST code in Ruby. There is
+a plan to create a helper to allow easier testing.
 
 ### Further Information
 
 More information about YaST can be found on its [homepage](http://yast.github.io).
-More information about ruby bindings can be found in generated documentation.
+More information about Ruby bindings can be found in the generated documentation.
 
 ## Packager information
-### How to compile
-Use latest yast2-devtools. then use this calls:
-```
+
+### How to Compile
+
+Use the latest yast2-devtools, then use these calls:
+
+```bash
 mkdir build
 cd build
 cmake ..
 make
 ```
 
-### How to install
-Compile it and from build directory call as root
-```
+### How to Install
+
+Compile it, and from the `build` directory call as root:
+
+```bash
 make install
 ```
 
-### How to create tarball
-compile and from build directory call
-```
-make srcpackage
-```
-Then in package subdir is sources.
+### How to Create a Tarball
 
+```bash
+rake package
+```
+
+Then the RPM sources are in the `package` subdirectory.
 
 ### Exception handling
-When ruby code raise exception, then method return `nil` in YCP and add method last_exception, that returns message of exception. Also exception details are logged.
+
+If Ruby code raises an exception, then the method returns `nil` to YCP,
+and the method `last_exception` returns the message of the exception.
+Also, exception details are logged.
