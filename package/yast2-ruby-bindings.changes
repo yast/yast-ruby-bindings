@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Thu Jan 22 11:46:58 UTC 2015 - ancor@suse.com
+
+- Added some RSpec helpers to easy the development of tests
+- 3.1.26
+
+-------------------------------------------------------------------
 Mon Oct 20 11:59:06 UTC 2014 - lslezak@suse.cz
 
 - added Travis support (.travis.yml, xcrypt.h detection)
