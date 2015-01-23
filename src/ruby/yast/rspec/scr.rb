@@ -1,37 +1,9 @@
 require "rspec"
 require "yast"
 
-# RSpec extension to handle several agent operations.
-#
-# @example usage
-#
-# require 'yast/rspec/scr'
-#
-# RSpec.configure do |c|
-#   c.include Yast::RSpec::SCR
-# end
-#
-# describe YaST::SCR do
-#   before do
-#     chroot = File.join(File.dirname(__FILE__), "test_chroot")
-#     change_scr_root(chroot)
-#   end
-#
-#   after do
-#     reset_scr_root
-#   end
-#
-#   describe "#Read" do
-#     it "works with the .proc.meminfo path"
-#       # This uses the #path helper from SCRStub and
-#       # reads from ./test_chroot/proc/meminfo
-#       values = Yast::SCR.Read(path(".proc.meminfo"))
-#       expect(values).to include("key" => "value")
-#     end
-#   end
-# end
 module Yast
   module RSpec
+    # RSpec extension to handle several agent operations.
     module SCR
       # Shortcut for generating Yast::Path objects
       #
@@ -41,43 +13,83 @@ module Yast
         Yast::Path.new(route)
       end
 
-      # Encapsulates subsequent SCR calls into a chroot.
+      # Encapsulates SCR calls into a chroot.
       #
-      # Raises an exception if something goes wrong.
+      # If a block if given, the SCR calls in the block are executed in the
+      # chroot and the corresponding SCR instance is automatically closed when
+      # the block ends (or if an exception is raised by the block).
       #
-      # @param [#to_s] directory to use as '/' for SCR calls
+      # If a block is not given, the chroot must be explicitly closed calling
+      # reset_root_path.
+      #
+      # Nesting of chroots is forbidden and the method will raise an exception
+      # if is called without closing a previous chroot.
+      #
+      # @param directory [#to_s] directory to use as '/' for SCR calls
+      #
+      # @example Usage with a block
+      #   change_scr_root("/home/chroot1") do
+      #     # This reads the content of /home/chroot1/
+      #     Yast::SCR.Read(path(".target.dir"), "/")
+      #   end
+      #
+      # @example Usage without a block
+      #   change_scr_root("/home/chroot1")
+      #   # This reads the content of /home/chroot1/
+      #   Yast::SCR.Read(path(".target.dir"), "/")
+      #   reset_scr_root
       def change_scr_root(directory)
-        # On first call, store the default handler in the stack
-        @scr_handles ||= [Yast::WFM.SCRGetDefault]
+        if @scr_handle
+          raise "There is already an open chrooted SCR instance, "\
+            "a call to reset_scr_root was expected"
+        end
 
+        if !File.directory?(directory)
+          raise "#{directory} is not a valid directory"
+        end
+
+        @scr_original_handle = Yast::WFM.SCRGetDefault
         check_version = false
-        handle = Yast::WFM.SCROpen("chroot=#{directory}:scr", check_version)
-        raise "Error creating the chrooted scr instance" if handle < 0
+        @scr_handle = Yast::WFM.SCROpen("chroot=#{directory}:scr", check_version)
+        if @scr_handle < 0
+          @scr_handle = nil
+          @scr_original_handle = nil
+          raise "Error creating the chrooted SCR instance"
+        end
+        Yast::WFM.SCRSetDefault(@scr_handle)
 
-        @scr_handles << handle
-        Yast::WFM.SCRSetDefault(handle)
+        if block_given?
+          begin
+            yield
+          ensure
+            reset_scr_root
+          end
+        end
       end
 
       # Resets the SCR calls to prior behaviour, closing the SCR instance open
-      # by the last call to #change_scr_root.
+      # by the call to #change_scr_root.
       #
       # Raises an exception if #change_scr_root has not been called before or if
       # the corresponding instance has already been closed.
       #
       # @see #change_scr_root
       def reset_scr_root
-        if @scr_handles.nil? || @scr_handles.size < 2
-          raise "The SCR instance cannot be closed, it's the last remaining one"
+        if @scr_handle.nil?
+          raise "Unable to find a chrooted SCR instance to close"
         end
 
         default_handle = Yast::WFM.SCRGetDefault
-        if default_handle != @scr_handles.pop
+        if default_handle != @scr_handle
           raise "Error closing the chrooted SCR instance, "\
             "it's not the current default one"
         end
 
         Yast::WFM.SCRClose(default_handle)
-        Yast::WFM.SCRSetDefault(@scr_handles.last)
+        Yast::WFM.SCRSetDefault(@scr_original_handle)
+      ensure
+        @scr_handle = nil
+        @scr_original_handle = nil
       end
     end
   end

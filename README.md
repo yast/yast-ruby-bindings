@@ -110,15 +110,16 @@ content = ButtonBox(
 ### Testing
 
 The YaST team encourages to use RSpec for testing YaST code in Ruby. To help in
-that task, this gem includes some RSpec extensions. In order to use them all,
-the following line must be added to the tests.
+that task, this gem includes some RSpec extensions under the {Yast::RSpec}
+namespace. In order to use these extensions, the following line must be added
+to the tests.
 
 ```ruby
 require 'yast/rspec'
 ```
 
 For example, the following code makes use of the #path helper provided by
-{Yast::RSpec::SCR} (the only extension currently provided).
+{Yast::RSpec::SCR}.
 
 ```ruby
 
