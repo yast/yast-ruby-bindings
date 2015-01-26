@@ -109,8 +109,29 @@ content = ButtonBox(
 
 ### Testing
 
-The YaST team encourages to use RSpec for testing YaST code in Ruby. There is
-a plan to create a helper to allow easier testing.
+The YaST team encourages to use RSpec for testing YaST code in Ruby. To help in
+that task, this gem includes some RSpec extensions under the {Yast::RSpec}
+namespace. In order to use these extensions, the following line must be added
+to the tests.
+
+```ruby
+require 'yast/rspec'
+```
+
+For example, the following code makes use of the #path helper provided by
+{Yast::RSpec::Shortcuts}.
+
+```ruby
+
+require 'yast/rspec'
+
+describe ".proc.meminfo agent" do
+  it "returns a Hash" do
+    value = Yast::SCR.Read(path(".proc.meminfo"))
+    expect(value).to be_a(Hash)
+  end
+end
+```
 
 ### Further Information
 
