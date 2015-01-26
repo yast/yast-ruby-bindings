@@ -5,14 +5,6 @@ module Yast
   module RSpec
     # RSpec extension to handle several agent operations.
     module SCR
-      # Shortcut for generating Yast::Path objects
-      #
-      # @param route [String] textual representation of the path
-      # @return [Yast::Path] the corresponding Path object
-      def path(route)
-        Yast::Path.new(route)
-      end
-
       # Encapsulates SCR calls into a chroot.
       #
       # If a block if given, the SCR calls in the block are executed in the
@@ -38,6 +30,19 @@ module Yast
       #   # This reads the content of /home/chroot1/
       #   Yast::SCR.Read(path(".target.dir"), "/")
       #   reset_scr_root
+      #
+      # @example Usage within RSpec
+      #   describe YaST::SCR do
+      #     around { |example| change_scr_root("/home/chroot1", &example) }
+      #
+      #     describe "#Read" do
+      #       it "works with the .proc.meminfo path"
+      #         # This reads from /home/chroot1/proc/meminfo
+      #         values = Yast::SCR.Read(path(".proc.meminfo"))
+      #         expect(values).to include("key" => "value")
+      #       end
+      #     end
+      #   end
       def change_scr_root(directory)
         if @scr_handle
           raise "There is already an open chrooted SCR instance, "\

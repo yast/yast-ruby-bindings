@@ -13,12 +13,6 @@ describe Yast::RSpec::SCR do
     Yast::SCR.Read(path(".target.dir"), "/")
   end
 
-  describe "#path" do
-    it "returns the expected Yast::Path object" do
-      expect(path(".target.dir")).to eq(Yast::Path.new(".target.dir"))
-    end
-  end
-
   describe "#change_scr_root" do
     describe "file check" do
       it "raises an exception if the directory does not exist" do
@@ -64,6 +58,19 @@ describe Yast::RSpec::SCR do
             to raise_exception(RuntimeError, /reset_scr_root was expected/)
         end
         expect(root_content).not_to eq(["just_a_file"])
+      end
+    end
+
+    describe "usage with an around hook" do
+      around { |example| change_scr_root(chroot, &example) }
+
+      it "changes the root path within the example" do
+        expect(root_content).to eq(["just_a_file"])
+      end
+
+      it "raises an exception for nested calls" do
+        expect { change_scr_root(chroot) }.
+          to raise_exception(RuntimeError, /reset_scr_root was expected/)
       end
     end
 

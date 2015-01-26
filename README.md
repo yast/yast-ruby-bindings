@@ -119,7 +119,7 @@ require 'yast/rspec'
 ```
 
 For example, the following code makes use of the #path helper provided by
-{Yast::RSpec::SCR}.
+{Yast::RSpec::Shortcuts}.
 
 ```ruby
 
