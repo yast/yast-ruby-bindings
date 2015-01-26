@@ -898,7 +898,7 @@ describe "BuiltinsTest" do
     [ "test", Yast::Term.new(:test) ],
     [ :test, Yast::Term.new(:test) ],
     [ [:test, [:lest, :srst]], Yast::Term.new(:test, :lest, :srst) ],
-    [ Yast::Term.new(:test), Yast::Term.new(:test) ],
+    [ [Yast::Term.new(:test)], Yast::Term.new(:test) ]
   ]
 
   it "tests toterm" do
