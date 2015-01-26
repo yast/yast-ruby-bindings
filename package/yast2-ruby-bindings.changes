@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Thu Jan 22 14:56:52 UTC 2015 - jreidinger@suse.com
+
+- enhance usability of Yast::Term class
+- 3.1.27
+
+-------------------------------------------------------------------
 Thu Jan 22 11:46:58 UTC 2015 - ancor@suse.com
 
 - Added some RSpec helpers to easy the development of tests
