@@ -13,6 +13,27 @@ module Yast
     extend Forwardable
     include Enumerable
 
+    # @!method each
+    #   Delegated directly to params
+    #   @see Array#each
+    # @!method size
+    #   @return [Integer] size of params
+    #   @see Array#size
+    # @!method empty?
+    #   @return [true,false] if params are empty
+    #   @see Array#empty?
+    # @!method []
+    #   Access element of params
+    #   @see Array#[]
+    # @!method []=
+    #   Assign element to params
+    #   @see Array#[]=
+    # @!method []=
+    #   Assign element to params
+    #   @see Array#[]=
+    # @!method <<
+    #   Append element to params
+    #   @see Array#<<
     def_delegators :@params, :each, :size, :empty?, :[], :[]=, :<<
 
     # term symbol
