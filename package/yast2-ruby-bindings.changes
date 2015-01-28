@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed Jan 28 14:12:38 UTC 2015 - jreidinger@suse.com
+
+- add more shortcuts for RSpec helpers, that makes tests shorter
+- 3.1.28
+
+-------------------------------------------------------------------
 Thu Jan 22 14:56:52 UTC 2015 - jreidinger@suse.com
 
 - enhance usability of Yast::Term class

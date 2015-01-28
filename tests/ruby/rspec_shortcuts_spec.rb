@@ -10,4 +10,14 @@ describe Yast::RSpec::Shortcuts do
       expect(path(".target.dir")).to eq(Yast::Path.new(".target.dir"))
     end
   end
+
+  describe "#term" do
+    it "returns the expected Yast::Term object" do
+      expect(term(:ButtonBox)).to eq(Yast::Term.new(:ButtonBox))
+    end
+  end
+
+  it "include Yast::UIShortcuts" do
+    expect(ButtonBox()).to eq(Yast::Term.new(:ButtonBox))
+  end
 end
