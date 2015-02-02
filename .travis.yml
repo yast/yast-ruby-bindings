@@ -16,7 +16,5 @@ script:
     - cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DLIB=lib -DCMAKE_VERBOSE_MAKEFILE=ON
     - make -j 4
     - sudo make install
-    # TODO FIXME: tests temporarily disabled, crypt and a locale test fail,
-    #             fix it later
-    #- (cd tests/ruby && make test ARGS=-V)
+    - (cd tests/ruby && make test ARGS=-V)
 
