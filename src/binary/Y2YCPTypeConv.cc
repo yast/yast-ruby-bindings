@@ -59,7 +59,7 @@ ycp_path_to_rb_path( YCPPath ycppath )
 
   VALUE yast = rb_define_module("Yast");
   VALUE cls = rb_const_get(yast, rb_intern("Path"));
-  VALUE value = rb_utf8_str_new(ycppath->toString());
+  VALUE value = yrb_utf8_str_new(ycppath->toString());
   return rb_class_new_instance(1,&value,cls);
 }
 
@@ -161,7 +161,7 @@ ycp_ext_to_rb_ext( YCPExternal ext )
   VALUE yast = rb_define_module("Yast");
   VALUE cls = rb_const_get(yast, rb_intern("External"));
   VALUE tdata = Data_Wrap_Struct(cls, 0, rb_ext_free, new YCPExternal(ext));
-  VALUE argv[] = {rb_utf8_str_new(ext->magic())};
+  VALUE argv[] = {yrb_utf8_str_new(ext->magic())};
   rb_obj_call_init(tdata, 1, argv);
   return tdata;
 }
@@ -188,7 +188,7 @@ ycpvalue_2_rbvalue( YCPValue ycpval )
   else if (ycpval->isString())
   {
     // always use UTF-8 encoding
-    return rb_utf8_str_new(ycpval->asString()->value());
+    return yrb_utf8_str_new(ycpval->asString()->value());
   }
   else if (ycpval->isPath())
   {

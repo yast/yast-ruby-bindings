@@ -59,14 +59,14 @@ VALUE y2ruby_nested_const_get(const std::string &name)
   return module;
 }
 
-VALUE rb_utf8_str_new(const std::string &str) {
+VALUE yrb_utf8_str_new(const std::string &str) {
   if (!utf8)
     utf8 = rb_enc_find("UTF-8");
 
   return rb_enc_str_new(str.c_str(), str.size(), utf8);
 }
 
-VALUE rb_utf8_str_new(const char *str) {
+VALUE yrb_utf8_str_new(const char *str) {
   if (!utf8)
     utf8 = rb_enc_find("UTF-8");
 

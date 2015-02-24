@@ -184,7 +184,7 @@ extern "C" {
     std::string utf_res;
     if (!recode(res,utf_res))
       return Qnil;
-    return rb_utf8_str_new(utf_res);
+    return yrb_utf8_str_new(utf_res);
   }
 
   // crypt part taken from y2crypt from yast core
@@ -325,7 +325,7 @@ extern "C" {
     char * res = crypt_pass(source, type);
     if (!res)
       return Qnil;
-    VALUE ret = rb_utf8_str_new(res);
+    VALUE ret = yrb_utf8_str_new(res);
     delete res;
     return ret;
   }
@@ -553,7 +553,7 @@ extern "C" {
     }
 
     if (result.solved)
-      return rb_utf8_str_new(result.result_str);
+      return yrb_utf8_str_new(result.result_str);
 
     return Qnil;
   }
@@ -614,7 +614,7 @@ extern "C" {
     if (result.solved) {
       for (int i = 1; i <= result.match_nb; i++)
       {
-          rb_ary_push(list, rb_utf8_str_new(result.match_str[i]));
+          rb_ary_push(list, yrb_utf8_str_new(result.match_str[i]));
       }
     }
 
