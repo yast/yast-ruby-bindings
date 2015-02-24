@@ -118,7 +118,7 @@ ycp_find_include_file( VALUE self, VALUE path)
   if (include_path.empty())
     rb_raise(rb_eRuntimeError, "Cannot find client %s", ipath.c_str());
 
-  return rb_utf8_str_new(include_path);
+  return yrb_utf8_str_new(include_path);
 }
 /*
  * ycp_module_each_symbol(namespace) -> iterator
@@ -148,7 +148,7 @@ ycp_module_symbols(VALUE self, VALUE namespace_name)
   for (unsigned int i=0; i < ns->symbolCount(); ++i)
   {
     SymbolEntryPtr s = ns->symbolEntry(i);
-    VALUE name = rb_utf8_str_new(s->name());
+    VALUE name = yrb_utf8_str_new(s->name());
     VALUE type = ID2SYM(rb_intern(s->catString().c_str()));
     rb_hash_aset(res,name,type);
   }
@@ -331,7 +331,7 @@ y2dir_paths( VALUE self )
   VALUE result = rb_ary_new2(size);
   for (int i = 0; i < size; ++i)
   {
-    rb_ary_push(result, rb_utf8_str_new(Y2PathSearch::searchPath(Y2PathSearch::GENERIC,i)));
+    rb_ary_push(result, yrb_utf8_str_new(Y2PathSearch::searchPath(Y2PathSearch::GENERIC,i)));
   }
   return result;
 }
@@ -342,7 +342,7 @@ static VALUE byteblock_to_s(VALUE self)
   Data_Get_Struct(self, YCPByteblock, bb);
 
   if (bb)
-    return rb_utf8_str_new((*bb)->toString());
+    return yrb_utf8_str_new((*bb)->toString());
   else
     rb_raise(rb_eRuntimeError, "Byteblock is empty");
 

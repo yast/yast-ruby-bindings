@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Feb 24 17:55:42 UTC 2015 - jreidinger@suse.com
+
+- fix building for ruby2.2
+- 3.1.29
+
+-------------------------------------------------------------------
 Wed Jan 28 14:12:38 UTC 2015 - jreidinger@suse.com
 
 - add more shortcuts for RSpec helpers, that makes tests shorter

@@ -40,7 +40,7 @@ bool y2_require(const char *str);
  * Create Ruby String object from a C++ string
  * The resulting string has UTF-8 encoding
  */
-VALUE rb_utf8_str_new(const std::string &str);
-VALUE rb_utf8_str_new(const char *str);
+VALUE yrb_utf8_str_new(const std::string &str);
+VALUE yrb_utf8_str_new(const char *str);
 
 #endif
