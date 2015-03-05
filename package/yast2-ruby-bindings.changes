@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Thu Mar  5 15:15:07 UTC 2015 - mvidner@suse.com
+
+- Fix building with yast2-core-3.1.16: use C++11 like core does
+  (boo#914255).
+- 3.1.30
+
+-------------------------------------------------------------------
 Tue Feb 24 17:55:42 UTC 2015 - jreidinger@suse.com
 
 - fix building for ruby2.2
