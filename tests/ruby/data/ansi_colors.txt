@@ -1,0 +1,2 @@
+[1m[36m Cyan[0m  [1mBold[0m
+[1m[35m Pink[0m  Normal
