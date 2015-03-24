@@ -384,6 +384,30 @@ static VALUE code_call( int argc, VALUE *argv, VALUE self )
     rb_raise(rb_eRuntimeError, "YCode is empty");
 }
 
+static void init_ui()
+{
+  const char *ui_name = "UI";
+
+  Y2Component *c = YUIComponent::uiComponent();
+  if (c == 0)
+  {
+    y2debug ("UI component not created yet, creating %s", ui_name);
+
+    c = Y2ComponentBroker::createServer(ui_name); // just dummy ui if none is defined
+    if (c == 0)
+    {
+      y2error("can't create UI component");
+      return;
+    }
+
+    c->setServerOptions(0, NULL);
+  }
+  else
+  {
+    y2debug("UI component already present: %s", c->name ().c_str ());
+  }
+}
+
 } //extern C
 
 extern "C"
@@ -398,6 +422,7 @@ extern "C"
   Init_yastx()
   {
     YCPPathSearch::initialize();
+    init_ui();
 
     /*
      * module YCP
