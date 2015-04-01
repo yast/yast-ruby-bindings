@@ -26,7 +26,11 @@ module Yast
         end
 
         def description
-          "path_matching(#{@expected})"
+          "path_matching(#{@expected.inspect})"
+        end
+
+        def inspect
+          description
         end
       end
     end
