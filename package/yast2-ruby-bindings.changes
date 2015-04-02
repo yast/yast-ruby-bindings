@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed Apr  1 15:38:04 UTC 2015 - ancor@suse.com
+
+- Added new RSpec argument matcher: path_matching
+- 3.1.31
+
+-------------------------------------------------------------------
 Thu Mar  5 15:15:07 UTC 2015 - mvidner@suse.com
 
 - Fix building with yast2-core-3.1.16: use C++11 like core does
