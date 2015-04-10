@@ -78,6 +78,8 @@ SET ( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-rpath,'${YAST
 
 target_link_libraries( yastx ${YAST_LIBRARY} )
 target_link_libraries( yastx ${YAST_YCP_LIBRARY} )
+target_link_libraries( yastx ${YAST_PLUGIN_SCR_LIBRARY} )
+target_link_libraries( yastx ${YAST_PLUGIN_WFM_LIBRARY} )
 target_link_libraries( yastx ${YAST_PLUGIN_UI_LIBRARY} )
 #
 # The WFM and SCR component can only be initialized statically
