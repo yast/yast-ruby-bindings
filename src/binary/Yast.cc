@@ -386,7 +386,7 @@ static VALUE code_call( int argc, VALUE *argv, VALUE self )
 
 static void init_ui()
 {
-  const char *ui_name = "UI";
+  const char *ui_name = "ncurses";
 
   Y2Component *c = YUIComponent::uiComponent();
   if (c == 0)
