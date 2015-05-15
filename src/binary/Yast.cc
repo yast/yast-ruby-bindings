@@ -384,9 +384,34 @@ static VALUE code_call( int argc, VALUE *argv, VALUE self )
     rb_raise(rb_eRuntimeError, "YCode is empty");
 }
 
+static VALUE ui_get_component()
+{
+  string s;
+  YUIComponent *c = YUIComponent::uiComponent();
+  if (c)
+  {
+    s = c->requestedUIName();
+  }
+  return yrb_utf8_str_new(s);
+}
+
+static VALUE ui_set_component(VALUE self, VALUE name)
+{
+  YUIComponent *c = YUIComponent::uiComponent();
+  if (c)
+  {
+    YUIComponent::setUseDummyUI(false);
+
+    string s = StringValuePtr(name);
+    c->setRequestedUIName(s);
+  }
+
+  return Qnil;
+}
+
 static void init_ui()
 {
-  const char *ui_name = "ncurses";
+  const char *ui_name = "UI";
 
   Y2Component *c = YUIComponent::uiComponent();
   if (c == 0)
@@ -440,6 +465,10 @@ extern "C"
 
     rb_define_method( rb_mYast, "y2_logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
     rb_define_singleton_method( rb_mYast, "y2_logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
+
+    // UI initialization
+    rb_define_singleton_method( rb_mYast, "ui_get_component", RUBY_METHOD_FUNC(ui_get_component), 0);
+    rb_define_singleton_method( rb_mYast, "ui_set_component", RUBY_METHOD_FUNC(ui_set_component), 1);
 
     // Y2 references
     rb_cYReference = rb_define_class_under(rb_mYast, "YReference", rb_cObject);
