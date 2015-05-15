@@ -32,6 +32,7 @@ as published by the Free Software Foundation; either version
 #include <ycp/y2log.h>
 #include <ycp/YExpression.h>
 #include <ycp/YCPValue.h>
+#include <ycp/YCPVoid.h>
 #include <ycp/YCPCode.h>
 #include <ycp/YCPByteblock.h>
 #include <ycp/Import.h>
@@ -433,6 +434,17 @@ static void init_ui()
   }
 }
 
+static VALUE ui_finalizer()
+{
+  YUIComponent *c = YUIComponent::uiComponent();
+  if (c)
+  {
+    // Shut down the component.
+    c->result(YCPVoid());
+  }
+  return Qnil;
+}
+
 } //extern C
 
 extern "C"
@@ -469,6 +481,7 @@ extern "C"
     // UI initialization
     rb_define_singleton_method( rb_mYast, "ui_get_component", RUBY_METHOD_FUNC(ui_get_component), 0);
     rb_define_singleton_method( rb_mYast, "ui_set_component", RUBY_METHOD_FUNC(ui_set_component), 1);
+    rb_define_singleton_method( rb_mYast, "ui_finalizer",     RUBY_METHOD_FUNC(ui_finalizer), 0);
 
     // Y2 references
     rb_cYReference = rb_define_class_under(rb_mYast, "YReference", rb_cObject);
