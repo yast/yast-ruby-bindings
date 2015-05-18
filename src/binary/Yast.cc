@@ -410,6 +410,22 @@ static VALUE ui_get_component()
  * we need to load the UI frontend if we need one.
  *
  * Assign "ncurses" or "qt" before UI calls.
+ *
+ *    #! /usr/bin/env ruby
+ *    require "yast"
+ *    include Yast
+ *    include Yast::UIShortcuts
+ *
+ *    if Yast.ui_component == ""
+ *      Yast.ui_component = ARGV[0] || "ncurses"
+ *    end
+ *
+ *    Builtins.y2milestone("UI component: %1", Yast.ui_component)
+ *    Yast.import "UI"
+ *
+ *    UI.OpenDialog(PushButton("This is a button"))
+ *    UI.UserInput
+ *    UI.CloseDialog
  */
 static VALUE ui_set_component(VALUE self, VALUE name)
 {
