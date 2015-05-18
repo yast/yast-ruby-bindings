@@ -100,7 +100,7 @@ import_namespace( const char *name)
  * Tries to import a YCP namespace
  *
  * call-seq:
- *   YCP::import("name")
+ *   Yast.import("name")
  *
  */
 
@@ -385,6 +385,12 @@ static VALUE code_call( int argc, VALUE *argv, VALUE self )
     rb_raise(rb_eRuntimeError, "YCode is empty");
 }
 
+/*
+ * Document-method: ui_component
+ *
+ * YaST component serving the UI: "gtk", "ncurses", "qt",
+ * or the dummy one "UI"
+ */
 static VALUE ui_get_component()
 {
   string s;
@@ -396,6 +402,15 @@ static VALUE ui_get_component()
   return yrb_utf8_str_new(s);
 }
 
+/*
+ * Document-method: ui_component=
+ *
+ * When Ruby is embedded in YaST (y2base is the main program), the UI
+ * is determined by the time Ruby code gets run. If ruby is the main program,
+ * we need to load the UI frontend if we need one.
+ *
+ * Assign "ncurses" or "qt" before UI calls.
+ */
 static VALUE ui_set_component(VALUE self, VALUE name)
 {
   YUIComponent *c = YUIComponent::uiComponent();
@@ -479,8 +494,8 @@ extern "C"
     rb_define_singleton_method( rb_mYast, "y2_logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
 
     // UI initialization
-    rb_define_singleton_method( rb_mYast, "ui_get_component", RUBY_METHOD_FUNC(ui_get_component), 0);
-    rb_define_singleton_method( rb_mYast, "ui_set_component", RUBY_METHOD_FUNC(ui_set_component), 1);
+    rb_define_singleton_method( rb_mYast, "ui_component",  RUBY_METHOD_FUNC(ui_get_component), 0);
+    rb_define_singleton_method( rb_mYast, "ui_component=", RUBY_METHOD_FUNC(ui_set_component), 1);
     rb_define_singleton_method( rb_mYast, "ui_finalizer",     RUBY_METHOD_FUNC(ui_finalizer), 0);
 
     // Y2 references
