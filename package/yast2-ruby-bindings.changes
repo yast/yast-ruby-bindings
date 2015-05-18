@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Mon May 18 08:34:37 UTC 2015 - mvidner@suse.com
+
+- Initialize the YaST UI so that it can be called
+  when the main program is not y2base (bsc#922023).
+- 3.1.32
+
+-------------------------------------------------------------------
 Wed Apr  1 15:38:04 UTC 2015 - ancor@suse.com
 
 - Added new RSpec argument matcher: path_matching

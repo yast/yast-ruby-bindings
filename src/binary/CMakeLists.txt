@@ -76,8 +76,17 @@ set_target_properties( builtinx PROPERTIES INSTALL_RPATH "${YAST_PLUGIN_DIR}")
 #
 SET ( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-rpath,'${YAST_PLUGIN_DIR}'" )
 
+# Correct initialization depends on libraries being linked and providing
+# global variables with certain names. (Y2PluginComponent: "g_y2cc*")
+# Tell the linker not to optimize them away.
+set_target_properties( yastx    PROPERTIES LINK_FLAGS "-Wl,--no-as-needed")
+set_target_properties( builtinx PROPERTIES LINK_FLAGS "-Wl,--no-as-needed")
+
 target_link_libraries( yastx ${YAST_LIBRARY} )
 target_link_libraries( yastx ${YAST_YCP_LIBRARY} )
+target_link_libraries( yastx ${YAST_PLUGIN_SCR_LIBRARY} )
+target_link_libraries( yastx ${YAST_PLUGIN_WFM_LIBRARY} )
+target_link_libraries( yastx ${YAST_PLUGIN_UI_LIBRARY} )
 #
 # The WFM and SCR component can only be initialized statically
 # (e.g. through Y2CCWFM), thus we must link against the plugin libs
@@ -89,6 +98,7 @@ target_link_libraries( builtinx ${YAST_LIBRARY} )
 target_link_libraries( builtinx ${YAST_YCP_LIBRARY} )
 target_link_libraries( builtinx ${YAST_PLUGIN_SCR_LIBRARY} )
 target_link_libraries( builtinx ${YAST_PLUGIN_WFM_LIBRARY} )
+target_link_libraries( builtinx ${YAST_PLUGIN_UI_LIBRARY} )
 target_link_libraries( builtinx crypt )
 find_library( OWCRYPT_LIBRARY owcrypt )
 if ( OWCRYPT_LIBRARY )
