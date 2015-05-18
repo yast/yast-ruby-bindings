@@ -54,8 +54,6 @@ and also Ruby scripts can use YaST agents, APIs and modules.
 %prep
 %setup -n yast2-ruby-bindings-%{version}
 %build
-export SUSE_ASNEEDED=0 # disable --as-needed until this package is fixed
-
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=%{prefix} \

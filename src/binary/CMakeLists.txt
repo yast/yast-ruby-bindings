@@ -76,6 +76,12 @@ set_target_properties( builtinx PROPERTIES INSTALL_RPATH "${YAST_PLUGIN_DIR}")
 #
 SET ( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-rpath,'${YAST_PLUGIN_DIR}'" )
 
+# Correct initialization depends on libraries being linked and providing
+# global variables with certain names. (Y2PluginComponent: "g_y2cc*")
+# Tell the linker not to optimize them away.
+set_target_properties( yastx    PROPERTIES LINK_FLAGS "-Wl,--no-as-needed")
+set_target_properties( builtinx PROPERTIES LINK_FLAGS "-Wl,--no-as-needed")
+
 target_link_libraries( yastx ${YAST_LIBRARY} )
 target_link_libraries( yastx ${YAST_YCP_LIBRARY} )
 target_link_libraries( yastx ${YAST_PLUGIN_SCR_LIBRARY} )
