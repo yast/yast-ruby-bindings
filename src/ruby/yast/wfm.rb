@@ -109,10 +109,10 @@ module Yast
       call_builtin_wrapper("SCRGetName", handle)
     end
 
-    # Tests if scr instance is local one
+    # Tests if scr instance is pointed to chroot
     # @return [Boolean]
-    def self.local_scr?
-      SCRGetName(SCRGetDefault()) == "scr"
+    def self.scr_chrooted?
+      SCRGetName(SCRGetDefault()) != "scr"
     end
 
     # Creates new SCR instance

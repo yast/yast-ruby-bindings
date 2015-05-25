@@ -30,17 +30,17 @@ module Yast
       end
     end
 
-    describe ".local_wfm?" do
-      it "returns true for local scr" do
-        expect(WFM.local_scr?).to eq true
+    describe ".scr_chrooted?" do
+      it "returns false for local scr" do
+        expect(WFM.scr_chrooted?).to eq false
       end
 
-      it "returns false for remote scr" do
+      it "returns true for scr in chroot" do
         old_handle = WFM.SCRGetDefault
         handle = WFM.SCROpen("chroot=/tmp:scr", false)
         WFM.SCRSetDefault(handle)
 
-        expect(WFM.local_scr?).to eq false
+        expect(WFM.scr_chrooted?).to eq true
 
         WFM.SCRSetDefault(old_handle)
       end
