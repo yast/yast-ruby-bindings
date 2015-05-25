@@ -29,5 +29,21 @@ module Yast
         expect(stdout_stderr).to eq ""
       end
     end
+
+    describe ".local_wfm?" do
+      it "returns true for local scr" do
+        expect(WFM.local_scr?).to eq true
+      end
+
+      it "returns false for remote scr" do
+        old_handle = WFM.SCRGetDefault
+        handle = WFM.SCROpen("chroot=/tmp:scr", false)
+        WFM.SCRSetDefault(handle)
+
+        expect(WFM.local_scr?).to eq false
+
+        WFM.SCRSetDefault(old_handle)
+      end
+    end
   end
 end

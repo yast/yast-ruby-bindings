@@ -109,6 +109,12 @@ module Yast
       call_builtin_wrapper("SCRGetName", handle)
     end
 
+    # Tests if scr instance is local one
+    # @return [Boolean]
+    def self.local_scr?
+      SCRGetName(SCRGetDefault()) == "scr"
+    end
+
     # Creates new SCR instance
     #
     # It is useful for installation where agents start operation on installed system
