@@ -29,5 +29,21 @@ module Yast
         expect(stdout_stderr).to eq ""
       end
     end
+
+    describe ".scr_chrooted?" do
+      it "returns false for local scr" do
+        expect(WFM.scr_chrooted?).to eq false
+      end
+
+      it "returns true for scr in chroot" do
+        old_handle = WFM.SCRGetDefault
+        handle = WFM.SCROpen("chroot=/tmp:scr", false)
+        WFM.SCRSetDefault(handle)
+
+        expect(WFM.scr_chrooted?).to eq true
+
+        WFM.SCRSetDefault(old_handle)
+      end
+    end
   end
 end

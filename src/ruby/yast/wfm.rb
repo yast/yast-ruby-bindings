@@ -109,6 +109,12 @@ module Yast
       call_builtin_wrapper("SCRGetName", handle)
     end
 
+    # Tests if scr instance is pointed to chroot
+    # @return [Boolean]
+    def self.scr_chrooted?
+      SCRGetName(SCRGetDefault()) != "scr"
+    end
+
     # Creates new SCR instance
     #
     # It is useful for installation where agents start operation on installed system
