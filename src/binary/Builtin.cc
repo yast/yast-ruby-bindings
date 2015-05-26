@@ -262,7 +262,7 @@ extern "C" {
     return strdup (retval);
   }
 
-
+  // the return value should be free'd
   char *
   crypt_pass (const char* unencrypted, crypt_ybuiltin_t use_crypt)
   {
@@ -326,7 +326,7 @@ extern "C" {
     if (!res)
       return Qnil;
     VALUE ret = yrb_utf8_str_new(res);
-    delete res;
+    free(res);
     return ret;
   }
 
