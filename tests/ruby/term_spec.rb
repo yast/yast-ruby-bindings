@@ -1,10 +1,6 @@
 #!/usr/bin/env rspec
 # encoding: utf-8
 
-# FIXME: this file was autoconverted from test/unit syntax without
-# adjusting it to good RSpec style (http://betterspecs.org/).
-# Please improve it whenever adding examples.
-
 require_relative "test_helper"
 
 require "yast/term"
@@ -47,7 +43,7 @@ describe Yast::Term do
     end
   end
 
-  describe "#<<" do
+  describe "#<<" do             #  " <- unconfuse Emacs string highlighting
     it "appends parameter to params" do
       t = term(:HBox, 1, 2)
       t << 3
@@ -55,7 +51,7 @@ describe Yast::Term do
     end
   end
 
-  describe "comparison" do
+  describe "#<=> (comparison)" do
     it "if value and params are equal, then it is equal terms" do
       expect(term(:HBox)).to eq(term(:HBox))
     end
@@ -74,6 +70,10 @@ describe Yast::Term do
 
     it "if value is equal, then use params to comparison" do
       expect(term(:HBox, "test")).to be > term(:HBox)
+    end
+
+    it "if non-term, then uncomparable" do
+      expect(term(:HBox, "test") <=> 42).to eq nil
     end
   end
 

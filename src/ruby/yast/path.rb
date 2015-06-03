@@ -43,6 +43,7 @@ module Yast
     end
 
     def <=>(other)
+      return nil unless other.is_a? self.class
       0.upto(size-1) do |i|
         return 1 unless other.send(:components)[i]
         #we strip enclosing quotes for complex expression

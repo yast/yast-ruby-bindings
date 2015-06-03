@@ -48,6 +48,11 @@ describe "Yast::Path" do
       expect(Yast::Path.new('.ba')).to be >= Yast::Path.new('."a?"')
       expect(Yast::Path.new('."b?"')).to be >= Yast::Path.new('.ab')
     end
+
+    # bsc#933470
+    it "survives comparison with a non-Path" do
+      expect(Yast::Path.new('.foo') <=> 42).to eq nil
+    end
   end
 
   describe "#clone" do

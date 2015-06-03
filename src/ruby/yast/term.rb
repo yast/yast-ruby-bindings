@@ -88,6 +88,7 @@ module Yast
     end
 
     def <=> (other)
+      return nil unless other.is_a? self.class
       res = value <=> other.value
       return res if res != 0
 
