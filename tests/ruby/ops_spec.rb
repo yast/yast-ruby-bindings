@@ -163,14 +163,14 @@ describe "Yast::OpsTest" do
     end
 
     context "when the container is a term" do
-      let(:term) { Yast::Term.new(:a,"a","b") }
+      let(:aterm) { Yast::Term.new(:a,"a","b") }
 
       it "returns value if key exists" do
-        expect(Yast::Ops.get(term,1,"n")).to eq("b")
+        expect(Yast::Ops.get(aterm,1,"n")).to eq("b")
       end
 
       it "returns default if FIXME" do
-        expect(Yast::Ops.get(term,[2],"n")).to eq("n")
+        expect(Yast::Ops.get(aterm,[2],"n")).to eq("n")
       end
     end
 
