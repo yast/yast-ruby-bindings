@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Wed Jun  3 13:01:29 UTC 2015 - mvidner@suse.com
+
+- Fixed "Comparable#== will no more rescue exceptions of #<=>"
+  (boo#933470).
+- Fixed a strdup/delete mismatch (boo#932306).
+- 3.1.34
+
+-------------------------------------------------------------------
 Mon May 25 10:00:40 UTC 2015 - jreidinger@suse.com
 
 - add ability to test if scr is local (FATE#317900)
