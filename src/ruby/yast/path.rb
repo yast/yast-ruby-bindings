@@ -13,7 +13,7 @@ module Yast
 
     # Creates path from generic string
     def self.from_string(string)
-      self.new ".\"#{string}\""
+      new ".\"#{string}\""
     end
 
     def clone
@@ -25,7 +25,7 @@ module Yast
       another = self.class.from_string(another) unless another.is_a? Yast::Path
       return another.clone if components.empty?
       return clone if another.empty?
-      Path.new(self.to_s+another.to_s)
+      Path.new(to_s+another.to_s)
     end
 
     def to_s
