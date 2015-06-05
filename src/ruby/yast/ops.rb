@@ -497,7 +497,7 @@ END
       #ordered classes from low priority to high
       # Only tricky part is Fixnum/Bignum, which is in fact same, so it has special handling in code
       CLASS_ORDER = [ ::NilClass, ::FalseClass, ::TrueClass, ::Fixnum, ::Bignum, ::Float,
-        ::String, Yast::Path, ::Symbol, ::Array, Yast::Term, ::Hash ]
+                      ::String, Yast::Path, ::Symbol, ::Array, Yast::Term, ::Hash ]
       def <=> (second)
         if @value.class == second.class
           case @value
