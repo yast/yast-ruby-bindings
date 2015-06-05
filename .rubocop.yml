@@ -142,11 +142,6 @@ Style/IfUnlessModifier:
 Style/MethodName:
   Enabled: false
 
-# Offense count: 3
-# Cop supports --auto-correct.
-Style/NegatedWhile:
-  Enabled: false
-
 # Offense count: 1
 # Configuration parameters: EnforcedStyle, MinBodyLength, SupportedStyles.
 Style/Next:
