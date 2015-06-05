@@ -137,11 +137,6 @@ Style/GuardClause:
 Style/IfUnlessModifier:
   Enabled: false
 
-# Offense count: 4
-# Cop supports --auto-correct.
-Style/MethodCallParentheses:
-  Enabled: false
-
 # Offense count: 135
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.

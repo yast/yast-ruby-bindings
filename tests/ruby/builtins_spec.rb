@@ -343,7 +343,7 @@ describe "BuiltinsTest" do
   end
 
   it "tests srandom" do
-    expect(Yast::Builtins.srandom()).to be > 0
+    expect(Yast::Builtins.srandom).to be > 0
     expect(Yast::Builtins.srandom(10)).to eq(nil)
   end
 
@@ -861,7 +861,7 @@ describe "BuiltinsTest" do
   EVAL_TEST_DATA = [
     [nil, nil],
     [5, 5],
-    [ Proc.new() { "15" }, "15"],
+    [ Proc.new { "15" }, "15"],
   ]
 
   it "tests eval" do
