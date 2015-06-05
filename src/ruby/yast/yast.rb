@@ -52,7 +52,7 @@ module Yast
   #     b = copy_arg b, :full => true
   #     ...
   #   end
-  def self.deep_copy object, options = {}
+  def self.deep_copy(object, options = {})
     case object
     when Numeric,TrueClass,FalseClass,NilClass,Symbol # immutable
       object
@@ -76,7 +76,7 @@ module Yast
 
   # Shortcut for Yast::deep_copy
   # @see Yast.deep_copy
-  def deep_copy object
+  def deep_copy(object)
     Yast.deep_copy(object)
   end
   alias_method :copy_arg, :deep_copy

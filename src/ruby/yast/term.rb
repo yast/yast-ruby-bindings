@@ -41,7 +41,7 @@ module Yast
     # term parameters
     attr_reader :params
 
-    def initialize value, *params
+    def initialize(value, *params)
       @value = value
       @params = params
     end

@@ -228,7 +228,7 @@ END
 
     # Adds second to first.
     # @deprecated use ruby native operator +
-    def self.add first, second
+    def self.add(first, second)
       return nil if first.nil? || second.nil?
 
       case first
@@ -249,7 +249,7 @@ END
 
     # Subtracts second from first.
     # @deprecated use ruby native operator -
-    def self.subtract first, second
+    def self.subtract(first, second)
       return nil if first.nil? || second.nil?
 
       return first - second
@@ -257,7 +257,7 @@ END
 
     # Multiplies first with second.
     # @deprecated use ruby native operator *
-    def self.multiply first, second
+    def self.multiply(first, second)
       return nil if first.nil? || second.nil?
 
       return first * second
@@ -266,7 +266,7 @@ END
     # Divides first with second.
     # @deprecated use ruby native operator /
     # @note allows division with zero and in such case return nil
-    def self.divide first, second
+    def self.divide(first, second)
       return nil if first.nil? || second.nil? || second == 0
 
       return first / second
@@ -274,49 +274,49 @@ END
 
     # Computes module after division of first with second.
     # @deprecated use ruby native operator %
-    def self.modulo first, second
+    def self.modulo(first, second)
       return nil if first.nil? || second.nil?
 
       return first % second
     end
 
     # @deprecated use ruby native operator &
-    def self.bitwise_and first, second
+    def self.bitwise_and(first, second)
       return nil if first.nil? || second.nil?
 
       return first & second
     end
 
     # @deprecated use ruby native operator |
-    def self.bitwise_or first, second
+    def self.bitwise_or(first, second)
       return nil if first.nil? || second.nil?
 
       return first | second
     end
 
     # @deprecated use ruby native operator ^
-    def self.bitwise_xor first, second
+    def self.bitwise_xor(first, second)
       return nil if first.nil? || second.nil?
 
       return first ^ second
     end
 
     # @deprecated use ruby native operator <<
-    def self.shift_left first, second
+    def self.shift_left(first, second)
       return nil if first.nil? || second.nil?
 
       return first << second
     end
 
     # @deprecated use ruby native operator >>
-    def self.shift_right first, second
+    def self.shift_right(first, second)
       return nil if first.nil? || second.nil?
 
       return first >> second
     end
 
     # @deprecated use ruby native operator &&
-    def self.logical_and first, second
+    def self.logical_and(first, second)
       first = false if first.nil?
       second = false if second.nil?
 
@@ -324,7 +324,7 @@ END
     end
 
     # @deprecated use ruby native operator ||
-    def self.logical_or first, second
+    def self.logical_or(first, second)
       first = false if first.nil?
       second = false if second.nil?
 
@@ -332,7 +332,7 @@ END
     end
 
     # @deprecated use ruby native operator -
-    def self.unary_minus value
+    def self.unary_minus(value)
       return nil if value.nil?
 
       return -value
@@ -340,7 +340,7 @@ END
 
     # @deprecated use ruby native operator !
     # @note for nil returns nil to be compatible with ycp implementation
-    def self.logical_not value
+    def self.logical_not(value)
       # Yast really do it!!!
       return nil if value.nil?
 
@@ -348,28 +348,28 @@ END
     end
 
     # @deprecated use ruby native operator ~
-    def self.bitwise_not value
+    def self.bitwise_not(value)
       return nil if value.nil?
 
       return ~value
     end
 
     # @deprecated use ruby native operator ==
-    def self.equal first, second
+    def self.equal(first, second)
       first = comparable_object(first)
 
       return first == second
     end
 
     # @deprecated use ruby native operator !=
-    def self.not_equal first, second
+    def self.not_equal(first, second)
       first = comparable_object(first)
 
       return first != second
     end
 
     # @deprecated use ruby native operator <
-    def self.less_than first, second
+    def self.less_than(first, second)
       return nil if first.nil? || second.nil?
 
       first = comparable_object(first)
@@ -378,7 +378,7 @@ END
     end
 
     # @deprecated use ruby native operator <=
-    def self.less_or_equal first, second
+    def self.less_or_equal(first, second)
       return nil if first.nil? || second.nil?
 
       first = comparable_object(first)
@@ -387,7 +387,7 @@ END
     end
 
     # @deprecated use ruby native operator >
-    def self.greater_than first, second
+    def self.greater_than(first, second)
       return nil if first.nil? || second.nil?
 
       first = comparable_object(first)
@@ -396,7 +396,7 @@ END
     end
 
     # @deprecated use ruby native operator >=
-    def self.greater_or_equal first, second
+    def self.greater_or_equal(first, second)
       return nil if first.nil? || second.nil?
 
       first = comparable_object(first)
@@ -423,7 +423,7 @@ END
     end
 
     # Creates comparable wrapper that makes ycp compatible comparison
-    def self.comparable_object object, localized = false
+    def self.comparable_object(object, localized = false)
       return GenericComparable.new(object, localized)
     end
 
@@ -432,7 +432,7 @@ END
     # @deprecated array usually don't need comparing
     class ListComparator
       include Comparable
-      def initialize value, localized = false
+      def initialize(value, localized = false)
         @value = value
         @localized = localized
       end
@@ -460,7 +460,7 @@ END
     # @deprecated hash comparison usually doesn't make sense
     class HashComparator
       include Comparable
-      def initialize value, localized = false
+      def initialize(value, localized = false)
         @value = value
         @localized = localized
       end
@@ -489,7 +489,7 @@ END
     class GenericComparable
       include Comparable
 
-      def initialize value, localized = false
+      def initialize(value, localized = false)
         @value = value
         @localized = localized
       end

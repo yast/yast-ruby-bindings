@@ -32,7 +32,7 @@ module Yast
     # @option options [Symbol] :variable exported variable
     # @option options [Symbol] :function exported function
     # @note mandatory options are :type and :variable xor :function. Both together is not supported
-    def publish options
+    def publish(options)
       raise "Missing signature" unless options[:type]
       # convert type to full specification
       type = options[:type].delete " \t"

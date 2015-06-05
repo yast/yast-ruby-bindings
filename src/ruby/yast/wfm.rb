@@ -15,7 +15,7 @@ module Yast
     #
     # @example Get only first argument
     #    Yast::WFM.Args 0
-    def self.Args *args
+    def self.Args(*args)
       call_builtin_wrapper("Args", *args)
     end
 
@@ -27,7 +27,7 @@ module Yast
     #
     # @example Check if there is client "inst_bootloader"
     #    Yast::WFM.ClientExists "inst_bootloader"
-    def self.ClientExists client
+    def self.ClientExists(client)
       call_builtin_wrapper("ClientExists", client)
     end
 
@@ -43,7 +43,7 @@ module Yast
     #
     # @example Run command in bash in inst-sys
     #    Yast::WFM.Execute(Yast::Path.new(".local.bash"), "halt -p")
-    def self.Execute path, *args
+    def self.Execute(path, *args)
       call_builtin_wrapper("Execute", path, *args)
     end
 
@@ -84,7 +84,7 @@ module Yast
     #
     # @example Read kernel cmdline
     #    Yast::WFM.Read(path(".local.string"), "/proc/cmdline")
-    def self.Read path, *args
+    def self.Read(path, *args)
       call_builtin_wrapper("Read", path, *args)
     end
 
@@ -92,7 +92,7 @@ module Yast
     #
     # If SCR is set as default, then try to switch to another reasonable SCR
     # openned
-    def self.SCRClose handle
+    def self.SCRClose(handle)
       call_builtin_wrapper("SCRClose", handle)
     end
 
@@ -104,7 +104,7 @@ module Yast
     # Gets name of SCR associated with handle
     #
     # @return [String]
-    def self.SCRGetName handle
+    def self.SCRGetName(handle)
       call_builtin_wrapper("SCRGetName", handle)
     end
 
@@ -126,17 +126,17 @@ module Yast
     #
     # @example open SCR instance on /mnt root without version check
     #    Yast::WFM.SCROpen("chroot=/mnt:scr", false)
-    def self.SCROpen name, check_version
+    def self.SCROpen(name, check_version)
       call_builtin_wrapper("SCROpen", name, check_version)
     end
 
     # Sets the default SCR to given handle
-    def self.SCRSetDefault handle
+    def self.SCRSetDefault(handle)
       call_builtin_wrapper("SCRSetDefault", handle)
     end
 
     # Sets language for translate with optional enconding
-    def self.SetLanguage language, *args
+    def self.SetLanguage(language, *args)
       call_builtin_wrapper("SetLanguage", language, *args)
     end
 
@@ -152,12 +152,12 @@ module Yast
     #
     # @example Write yast inf file in inst-sys
     #    Yast::WFM.Write(path(".local.string"), "/etc/yast.inf", yast_inf)
-    def self.Write path, *args
+    def self.Write(path, *args)
       call_builtin_wrapper("Write", path, *args)
     end
 
     # @deprecated use {CallFunction}
-    def self.call *args
+    def self.call(*args)
       call_builtin_wrapper("call", *args)
     end
 
@@ -170,19 +170,19 @@ module Yast
     #
     # @example call inst_moust client living in $Y2DIR/clients/inst_mouse.rb with parameter true
     #     Yast::WFM.CallFunction("inst_mouse", true)
-    def self.CallFunction client, *args
+    def self.CallFunction(client, *args)
       call_builtin_wrapper("CallFunction", client, *args)
     end
 
     # @private wrapper to C code
-    def self.call_builtin_wrapper *args
+    def self.call_builtin_wrapper(*args)
       # caller[0] is one of the functions above
       caller[1].match BACKTRACE_REGEXP
       call_builtin($1, $2.to_i, *args)
     end
 
     # @private wrapper to run client in ruby
-    def self.run_client client
+    def self.run_client(client)
       Builtins.y2milestone "Call client %1", client
       code = File.read client
       begin

@@ -6,13 +6,13 @@ module Yast
   class Path
     include Comparable
 
-    def initialize value
+    def initialize(value)
       @components = []
       load_components value
     end
 
     # Creates path from generic string
-    def self.from_string string
+    def self.from_string(string)
       self.new ".\"#{string}\""
     end
 
@@ -21,7 +21,7 @@ module Yast
     end
 
     # concats path
-    def + another
+    def +(another)
       another = self.class.from_string(another) unless another.is_a? Yast::Path
       return another.clone if components.empty?
       return clone if another.empty?
@@ -117,7 +117,7 @@ module Yast
       end
     end
 
-    def invalid_buffer? buffer
+    def invalid_buffer?(buffer)
       if buffer.start_with?("-") || buffer.end_with?("-")
         Yast.y2error "Cannot have dash before or after dot '#{value}'"
         @components.clear
@@ -127,7 +127,7 @@ module Yast
       false
     end
 
-    def modify_buffer buffer
+    def modify_buffer(buffer)
       if buffer =~ COMPLEX_CHAR_REGEX # we can get unescaped complex path from topath builtin
         buffer = buffer.gsub(/"/,"\\\"")
         buffer = "\"#{buffer}\""

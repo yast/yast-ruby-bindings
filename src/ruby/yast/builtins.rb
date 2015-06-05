@@ -22,7 +22,7 @@ module Yast
   module Builtins
     # Adds element to copy of element and return such copy.
     # @deprecated Use ruby operators for it.
-    def self.add object, *params
+    def self.add(object, *params)
       case object
       when ::Array then return Yast.deep_copy(object).concat(Yast.deep_copy(params))
       when ::Hash then  return Yast.deep_copy(object).merge(Yast.deep_copy(::Hash[*params]))
@@ -41,14 +41,14 @@ module Yast
     # - Change element pair in a map. Deprecated, use MAP[KEY] = VALUE. - change(<map>, <key>, <value>)
     # it's obsoleted, behaves like add() builtin now
     # @deprecated use ruby native methods
-    def self.change object, *params
+    def self.change(object, *params)
       add object, *params
     end
 
     # - Filters a List
     # - Filter a Map
     # @deprecated use ruby native select method
-    def self.filter object, &block
+    def self.filter(object, &block)
       # TODO investigate break and continue with filter as traverse workflow is different for ruby
       if object.is_a?(::Array) || object.is_a?(::Hash)
         Yast.deep_copy(object).select &block
@@ -61,7 +61,7 @@ module Yast
     # - Returns position of a substring (-1 if not found)
     # - Searches for the first occurence of a certain element in a list
     # @deprecated use native ruby method find
-    def self.find object, what=nil, &block
+    def self.find(object, what=nil, &block)
       return nil if object.nil? || (what.nil? && block.nil?)
 
       case object
@@ -78,7 +78,7 @@ module Yast
     # - Process the content of a map
     # - Processes the content of a list
     # @deprecated use ruby native each method
-    def self.foreach object, &block
+    def self.foreach(object, &block)
       res = nil
       object = Yast.deep_copy(object)
       if object.is_a? ::Array
@@ -108,7 +108,7 @@ module Yast
     # - Returns whether the string s is empty.
     # - Returns whether the list l is empty.
     # @deprecated use native `empty?` method
-    def self.isempty object
+    def self.isempty(object)
       return nil if object.nil?
       object.empty?
     end
@@ -116,7 +116,7 @@ module Yast
     # - Maps an operation onto all elements key/value and create a list
     # - Maps an operation onto all elements of a list and thus creates a new list.
     # @deprecated use ruby native method {::Enumerable#map}
-    def self.maplist object, &block
+    def self.maplist(object, &block)
       case object
       when ::Array
         res = []
@@ -148,7 +148,7 @@ module Yast
     # - Remove key/value pair from a map
     # - Remove item from term
     # @deprecated use native ruby method {::Hash#delete},{::Array#delete_at} or {Yast::Term#params} (call delete_at on term params)
-    def self.remove object, element
+    def self.remove(object, element)
       return nil if object.nil?
 
       res = Yast.deep_copy(object)
@@ -174,7 +174,7 @@ module Yast
     # - Selects a list element (deprecated, use LIST[INDEX]:DEFAULT)
     # - Select item from term
     # @deprecated use native `[]` operator
-    def self.select object, element, default
+    def self.select(object, element, default)
       Yast::Ops.get(object, [element], default)
     end
 
@@ -185,7 +185,7 @@ module Yast
     # - Returns the number of arguments of the term TERM.
     # - Returns the number of characters of the string s
     # @deprecated use builtin {::Array#size},{::Hash#size},{Yast::Term#size},{Yast::Path#size},{::String#size} method
-    def self.size object
+    def self.size(object)
       return nil if object.nil?
 
       case object
@@ -199,7 +199,7 @@ module Yast
     # Initialize random number generator - srandom(<int>)
     # Get the current random number generator seed - int srandom()
     # @deprecated use ruby native {::Kernel#srand}
-    def self.srandom param=nil
+    def self.srandom(param=nil)
       if param.nil?
         # be more secure here, original Yast uses Time.now with second precision
         # for seeding which is not secure enough, calling Ruby srand without
@@ -218,7 +218,7 @@ module Yast
     # - Unions of lists
     # - Union of 2 maps
     # @deprecated Use ruby builtins {::Hash#merge} and #{::Array#|}
-    def self.union first, second
+    def self.union(first, second)
       return nil if first.nil? || second.nil?
 
       case first
@@ -247,7 +247,7 @@ module Yast
     module Float
     	 # absolute value
       # @deprecated Use {::Float#abs} instead
-      def self.abs value
+      def self.abs(value)
         return nil if value.nil?
 
         return value.abs
@@ -255,7 +255,7 @@ module Yast
 
     	 # round upwards to integer
       # @deprecated Use {::Float#ceil} instead
-      def self.ceil value
+      def self.ceil(value)
         return nil if value.nil?
 
         return value.ceil.to_f
@@ -263,7 +263,7 @@ module Yast
 
     	 # round downwards to integer
       # @deprecated Use {::Float#floor} instead
-      def self.floor value
+      def self.floor(value)
         return nil if value.nil?
 
         return value.floor.to_f
@@ -271,7 +271,7 @@ module Yast
 
     	 # power function
       # @deprecated Use {::Float#**} instead
-      def self.pow base, power
+      def self.pow(base, power)
         return nil if base.nil? || power.nil?
 
         return base ** power
@@ -279,7 +279,7 @@ module Yast
 
     	 # round to integer, towards zero
       # @deprecated Use {::Float#to_i} instead
-      def self.trunc value
+      def self.trunc(value)
         return nil if value.nil?
 
         return value.to_i.to_f
@@ -288,7 +288,7 @@ module Yast
 
     # Converts a value to a floating point number.
     # @deprecated Use {::Object#to_f} instead
-    def self.tofloat value
+    def self.tofloat(value)
       return nil if value.nil?
 
       return value.to_f
@@ -302,7 +302,7 @@ module Yast
 
     # Converts a value to an integer.
     # @note recommended to replace by {::String#to_i} but behavior is slightly different
-    def self.tointeger object
+    def self.tointeger(object)
       return nil if object.nil?
 
       case object
@@ -325,14 +325,14 @@ module Yast
     # contains() Yast built-in
     # Checks if a list contains an element
     # @deprecated Use {::Array#include?}
-    def self.contains list, value
+    def self.contains(list, value)
       return nil if list.nil? || value.nil?
       list.include? value
     end
 
     # Flattens List
     # @deprecated Use {::Array#flatten} but be aware different behavior for nil in Array
-    def self.flatten value
+    def self.flatten(value)
       return nil if value.nil?
 
       return value.reduce([]) do |acc,i|
@@ -345,7 +345,7 @@ module Yast
     module List
       # Reduces a list to a single value.
       # @deprecated use {::Array#reduce} instead
-      def self.reduce *params, &block
+      def self.reduce(*params, &block)
         return nil if params.first.nil?
         list = if params.size == 2 # so first is default and second is list
                  return nil if params[1].nil?
@@ -358,7 +358,7 @@ module Yast
 
       # Creates new list with swaped elements at offset i1 and i2.
       # @note #{::Array#reverse} should be used for complete array swap
-      def self.swap list, offset1, offset2
+      def self.swap(list, offset1, offset2)
         return nil if list.nil? || offset1.nil? || offset2.nil?
 
         return Yast.deep_copy(list) if offset1 < 0 || offset2 >= list.size || (offset1 > offset2)
@@ -377,7 +377,7 @@ module Yast
 
     # Maps an operation onto all elements of a list and thus creates a map.
     # @deprecated for mapping of list to hash use various ruby builtins like {::Hash.[]} or {::Enumerable#reduce}
-    def self.listmap list, &block
+    def self.listmap(list, &block)
       return nil if list.nil?
 
       res = ::Hash.new
@@ -395,7 +395,7 @@ module Yast
     # Sort A List respecting locale
     # @deprecated use {::Array#sort} but be aware differences between ruby and old ycp sorting
     # @see Yast::Ops#comparable_object for details how it sorts
-    def self.lsort list
+    def self.lsort(list)
       return nil if list.nil?
 
       Yast.deep_copy(list.sort { |s1, s2| Ops.comparable_object(s1, true) <=> s2 })
@@ -404,14 +404,14 @@ module Yast
     # merge() Yast built-in
     # Merges two lists into one
     # @deprecated use {::Array#+}
-    def self.merge a1, a2
+    def self.merge(a1, a2)
       return nil if a1.nil? || a2.nil?
       Yast.deep_copy(a1 + a2)
     end
 
     # Prepends a list with a new element
     # @deprecated use {::Array#unshift}
-    def self.prepend list, element
+    def self.prepend(list, element)
       return nil if list.nil?
 
       return [Yast.deep_copy(element)].push *Yast.deep_copy(list)
@@ -420,7 +420,7 @@ module Yast
     # setcontains() Yast built-in
     # Checks if a sorted list contains an element
     # @deprecated use {::Array#include?}
-    def self.setcontains list, value
+    def self.setcontains(list, value)
       # simply call contains(), setcontains() is just optimized contains() call
       contains list, value
     end
@@ -429,7 +429,7 @@ module Yast
     # Sorts a List according to the Yast builtin predicate
     # @deprecated use {::Array#sort} but be aware differences between ruby and old ycp sorting
     # @see Yast::Ops#comparable_object for details how it sorts
-    def self.sort array, &block
+    def self.sort(array, &block)
       return nil if array.nil?
 
       res = if block_given?
@@ -444,7 +444,7 @@ module Yast
     # splitstring() Yast built-in
     # Split a string by delimiter
     # @deprecated use {::String#split} but note that ycp version keep empty values in list
-    def self.splitstring string, sep
+    def self.splitstring(string, sep)
       return nil if string.nil? || sep.nil?
       return [] if sep.empty?
 
@@ -458,7 +458,7 @@ module Yast
     # - sublist(<list>, <offset>)
     # - sublist(<list>, <offset>, <length>)
     # @deprecated use {::Array#slice} instead
-    def self.sublist list, offset, length=DEF_LENGHT
+    def self.sublist(list, offset, length=DEF_LENGHT)
       return nil if list.nil? || offset.nil? || length.nil?
 
       length = list.size - offset if length==DEF_LENGHT
@@ -470,14 +470,14 @@ module Yast
 
     # Converts a value to a list (deprecated, use (list)VAR).
     # @deprecated not needed in ruby
-    def self.tolist object
+    def self.tolist(object)
       return object.is_a?(::Array) ? object : nil
     end
 
     # toset() Yast built-in
     # Sorts list and removes duplicates
     # @deprecated use {::Set} type or combination of #{::Array#sort} and #{::Array#uniq}
-    def self.toset array
+    def self.toset(array)
       return nil if array.nil?
       res = array.uniq.sort { |x,y| Yast::Ops.comparable_object(x) <=> y }
       Yast.deep_copy(res)
@@ -489,20 +489,20 @@ module Yast
 
     # Check if map has a certain key
     # @deprecated use {::Hash#haskey?}
-    def self.haskey map, key
+    def self.haskey(map, key)
       return nil if map.nil? || key.nil?
       map.key? key
     end
 
     # Select a map element (deprecated, use MAP[KEY]:DEFAULT)
     # @deprecated
-    def self.lookup map, key, default
+    def self.lookup(map, key, default)
       map.key?(key) ? Yast.deep_copy(map[key]) : Yast.deep_copy(default)
     end
 
     # Maps an operation onto all key/value pairs of a map
     # @deprecated use ruby native methods for creating new Hash from other Hash
-    def self.mapmap map, &block
+    def self.mapmap(map, &block)
       return nil if map.nil?
       unless map.is_a?(Hash)
         raise TypeError, "expected a Hash, got a #{map.class}"
@@ -523,7 +523,7 @@ module Yast
 
     # Converts a value to a map.
     # @deprecated not needed in ruby or use {::Hash.try_convert}
-    def self.tomap object
+    def self.tomap(object)
       return object.is_a?(::Hash) ? object : nil
     end
 
@@ -533,7 +533,7 @@ module Yast
 
     # Evaluate a Yast value.
     # @deprecated for lazy evaluation use builtin lambda or block calls
-    def self.eval object
+    def self.eval(object)
       if object.respond_to? :call
         return object.call
       else
@@ -543,13 +543,13 @@ module Yast
 
     # Change or add an environment variable
     # @deprecated use {ENV#[]}
-    def self.getenv value
+    def self.getenv(value)
       return ENV[value]
     end
 
     # Random number generator.
     # @deprecated use {::Kernel#rand}
-    def self.random max
+    def self.random(max)
       return nil if max.nil?
 
       return max < 0 ? -rand(max) : rand(max)
@@ -557,7 +557,7 @@ module Yast
 
     # Change or add an environment variable
     # @deprecated use {ENV#[]=} instead
-    def self.setenv env, value, overwrite = true
+    def self.setenv(env, value, overwrite = true)
       return true if ENV.include?(env) && !overwrite
 
       ENV[env] = value
@@ -566,7 +566,7 @@ module Yast
 
     # Yast compatible way how to format string with type conversion
     # see tostring for type conversion
-    def self.sformat format, *args
+    def self.sformat(format, *args)
       if format.nil? || !format.is_a?(::String)
         return nil
       end
@@ -594,7 +594,7 @@ module Yast
 
     # Sleeps a number of milliseconds.
     # @deprecated use {::Kernel#sleep} instead. For miliseconds divide number by 1000.0.
-    def self.sleep milisecs
+    def self.sleep(milisecs)
       # ruby sleep() accepts seconds (float)
       ::Kernel.sleep milisecs / 1000.0
     end
@@ -608,48 +608,48 @@ module Yast
 
     # Log a message to the y2log.
     # @deprecated Use {Yast::Logger} instead
-    def self.y2debug *args
+    def self.y2debug(*args)
       shift_frame_number args
       Yast.y2debug *args
     end
 
     # Log an error to the y2log.
     # @deprecated Use {Yast::Logger} instead
-    def self.y2error *args
+    def self.y2error(*args)
       shift_frame_number args
       Yast.y2error *args
     end
 
     # Log an internal message to the y2log.
     # @deprecated Use {Yast::Logger} instead
-    def self.y2internal *args
+    def self.y2internal(*args)
       shift_frame_number args
       Yast.y2internal *args
     end
 
     # Log a milestone to the y2log.
     # @deprecated Use {Yast::Logger} instead
-    def self.y2milestone*args
+    def self.y2milestone(*args)
       shift_frame_number args
       Yast.y2milestone *args
     end
 
     # Log a security message to the y2log.
     # @deprecated Use {Yast::Logger} instead
-    def self.y2security *args
+    def self.y2security(*args)
       shift_frame_number args
       Yast.y2security *args
     end
 
     # Log a warning to the y2log.
     # @deprecated Use {Yast::Logger} instead
-    def self.y2warning *args
+    def self.y2warning(*args)
       shift_frame_number args
       Yast.y2warning *args
     end
 
     # @private used only internal for frame shifting
-    def self.shift_frame_number args
+    def self.shift_frame_number(args)
       if args.first.is_a? ::Fixnum
         args[0] += 1 if args[0] >= 0
       else
@@ -659,14 +659,14 @@ module Yast
 
     # Log an user-level system message to the y2changes
     # @note do nothing now, concept is quite unclear
-    def self.y2useritem *args
+    def self.y2useritem(*args)
       # TODO implement it
       return nil
     end
 
     # Log an user-level addional message to the y2changes
     # @note do nothing now, concept is quite unclear
-    def self.y2usernote *args
+    def self.y2usernote(*args)
       # TODO implement it
       return nil
     end
@@ -677,7 +677,7 @@ module Yast
 
     # Converts a value to a path.
     # @deprecated for conversion from String use directly {Yast::Path} methods
-    def self.topath object
+    def self.topath(object)
       case object
       when Yast::Path
         return object
@@ -696,7 +696,7 @@ module Yast
 
     # Removes all characters from a string
     # @deprecated use ruby native method for string handling like {::String#gsub} or {::String#delete}
-    def self.deletechars string, chars
+    def self.deletechars(string, chars)
       return nil if !string || !chars
 
       return string.gsub(/[#{Regexp.escape chars}]/, "")
@@ -744,7 +744,7 @@ module Yast
 
     # Filters characters out of a ::String
     # @deprecated use ruby native method for string handling like {::String#gsub} or {::String#delete}
-    def self.filterchars string, chars
+    def self.filterchars(string, chars)
       return nil if string.nil? || chars.nil?
 
       return string.gsub(/[^#{Regexp.escape chars}]/, "")
@@ -752,7 +752,7 @@ module Yast
 
     # Searches string for the first non matching chars
     # @deprecated use {::String#index} instead
-    def self.findfirstnotof string, chars
+    def self.findfirstnotof(string, chars)
       return nil if string.nil? || chars.nil?
 
       return string.index /[^#{Regexp.escape chars}]/
@@ -760,7 +760,7 @@ module Yast
 
     # Finds position of the first matching characters in string
     # @deprecated use {::String#index} instead
-    def self.findfirstof string, chars
+    def self.findfirstof(string, chars)
       return nil if string.nil? || chars.nil?
 
       return string.index /[#{Regexp.escape chars}]/
@@ -768,7 +768,7 @@ module Yast
 
     # Searches the last element of string that doesn't match
     # @deprecated use {::String#rindex} instead
-    def self.findlastnotof string, chars
+    def self.findlastnotof(string, chars)
       return nil if string.nil? || chars.nil?
 
       return string.rindex /[^#{Regexp.escape chars}]/
@@ -776,7 +776,7 @@ module Yast
 
     # Searches string for the last match
     # @deprecated use {::String#rindex} instead
-    def self.findlastof string, chars
+    def self.findlastof(string, chars)
       return nil if string.nil? || chars.nil?
 
       return string.rindex /[#{Regexp.escape chars}]/
@@ -785,14 +785,14 @@ module Yast
     # issubstring() Yast built-in
     # searches for a specific string within another string
     # @deprecated use {::String#include?} instead
-    def self.issubstring string, substring
+    def self.issubstring(string, substring)
       return nil if string.nil? || substring.nil?
       string.include? substring
     end
 
     # Extracts a substring in UTF-8 encoded string
     # @deprecated use {::String#include?} instead
-    def self.lsubstring string, offset, length = -1
+    def self.lsubstring(string, offset, length = -1)
       # ruby2.0 use by default UTF-8.
       substring string, offset, length
     end
@@ -800,7 +800,7 @@ module Yast
     # mergestring() Yast built-in
     # Joins list elements with a string
     # @deprecated use {::String#join} instead
-    def self.mergestring string, sep
+    def self.mergestring(string, sep)
       return nil if string.nil? || sep.nil?
 
       string.join sep
@@ -808,7 +808,7 @@ module Yast
 
     # Returns position of a substring (nil if not found)
     # @deprecated use {::String#index} instead
-    def self.search string, substring
+    def self.search(string, substring)
       return nil if string.nil? || substring.nil?
       string.index substring
     end
@@ -818,7 +818,7 @@ module Yast
     # little bit complicated because Yast returns different values
     # in corner cases (nil or negative parameters, out of range...)
     # @deprecated use {::String#[]} instead
-    def self.substring string, offset, length = -1
+    def self.substring(string, offset, length = -1)
       return nil if string.nil? || offset.nil? || length.nil?
       return "" if offset < 0 || offset >= string.size
 
@@ -829,7 +829,7 @@ module Yast
 
     # Returns time string
     # @deprecated use {::Time#strftime} instead
-    def self.timestring format, time, utc
+    def self.timestring(format, time, utc)
       return nil if format.nil? || time.nil? || utc.nil?
 
       t = Time.at time
@@ -839,7 +839,7 @@ module Yast
     end
 
     # Gets new string including only characters below 0x7F
-    def self.toascii string
+    def self.toascii(string)
       return nil if string.nil?
 
       ret = ""
@@ -851,7 +851,7 @@ module Yast
     # - tohexstring(<int>)
     # - tohexstring(<int>, <int>width)
     # @deprecated use {::Fixnum#to_s} with base 16 instead but note that there is slight differences
-    def self.tohexstring int, width = 0
+    def self.tohexstring(int, width = 0)
       return nil if int.nil? || width.nil?
 
       if int >= 0
@@ -880,14 +880,14 @@ module Yast
     # tolower() Yast built-in
     # Makes a string lowercase
     # @deprecated use {::String#downcase} instead
-    def self.tolower string
+    def self.tolower(string)
       return nil if string.nil?
       string.downcase
     end
 
     # Converts a value to a string in ycp.
     # @deprecated There is no strong reason to use this instead of inspect
-    def self.tostring val, width=nil
+    def self.tostring(val, width=nil)
       if width
         raise "tostring: negative 'width' argument: #{width}" if width < 0
 
@@ -931,7 +931,7 @@ module Yast
     end
 
     # @private string is handled diffent if string is inside other structure
-    def self.inside_tostring val
+    def self.inside_tostring(val)
       if val.is_a? ::String
         return val.inspect
       else
@@ -942,7 +942,7 @@ module Yast
     # toupper() Yast built-in
     # Makes a string uppercase
     # @deprecated use {::String#upcase} instead
-    def self.toupper string
+    def self.toupper(string)
       return nil if string.nil?
       string.upcase
     end
@@ -991,7 +991,7 @@ module Yast
 
     # Returns the arguments of a term.
     # @deprecated use {Yast::Term#params} instead
-    def self.argsof term
+    def self.argsof(term)
       return nil if term.nil?
 
       return Yast.deep_copy(term.params)
@@ -999,7 +999,7 @@ module Yast
 
     # Returns the symbol of the term TERM.
     # @deprecated use {Yast::Term#value} instead
-    def self.symbolof term
+    def self.symbolof(term)
       return nil if term.nil?
 
       return term.value
@@ -1007,7 +1007,7 @@ module Yast
 
     # Converts a value to a term.
     # @deprecated use {Yast::Term} constructor instead
-    def self.toterm symbol, list=DEF_LENGHT
+    def self.toterm(symbol, list=DEF_LENGHT)
       return nil if symbol.nil? || list.nil?
 
       case symbol
@@ -1025,7 +1025,7 @@ module Yast
     end
 
     # @deprecated use #{::String#to_sym} instead
-    def self.tosymbol value
+    def self.tosymbol(value)
       return nil if value.nil?
 
       return value.to_sym
@@ -1035,7 +1035,7 @@ module Yast
     # @deprecated use ruby type {::Set} instead or difference library for set handling
     module Multiset
       # @see http://www.sgi.com/tech/stl/includes.html for details
-      def self.includes set1, set2
+      def self.includes(set1, set2)
         # cannot use to_set because there is difference if there is element multipletime
         repetition = {}
         set2.all? do |e|
@@ -1046,12 +1046,12 @@ module Yast
       end
 
       # @see http://www.sgi.com/tech/stl/set_difference.html for details
-      def self.difference set1, set2
+      def self.difference(set1, set2)
         Yast.deep_copy(set1.to_set - set2.to_set).to_a
       end
 
       # @see http://www.sgi.com/tech/stl/set_symmetric_difference.html for details
-      def self.symmetric_difference set1, set2
+      def self.symmetric_difference(set1, set2)
         ss1 = set1.sort
         ss2 = set2.sort
         res = []
@@ -1082,7 +1082,7 @@ module Yast
       end
 
       # @see http://www.sgi.com/tech/stl/set_intersection.html for details
-      def self.intersection set1, set2
+      def self.intersection(set1, set2)
         ss1 = set1.sort
         ss2 = set2.sort
         res = []
@@ -1106,7 +1106,7 @@ module Yast
       end
 
       # @see http://www.sgi.com/tech/stl/set_union.html for details
-      def self.union set1, set2
+      def self.union(set1, set2)
         ss1 = set1.sort
         ss2 = set2.sort
         res = []
@@ -1140,7 +1140,7 @@ module Yast
       end
 
       # @see http://www.sgi.com/tech/stl/set_merge.html for details
-      def self.merge set1, set2
+      def self.merge(set1, set2)
         Yast.deep_copy(set1 + set2)
       end
     end

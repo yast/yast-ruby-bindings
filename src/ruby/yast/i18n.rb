@@ -10,7 +10,7 @@ module Yast
     DEFAULT_LOCALE = "en_US"
 
     # sets new text domain
-    def textdomain domain
+    def textdomain(domain)
       # initialize FastGettext only if the locale directory exists
       return unless File.exist? LOCALE_DIR
 
