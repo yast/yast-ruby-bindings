@@ -1,8 +1,8 @@
 require "forwardable"
 
-require 'yast/yast'
-require 'yast/builtins'
-require 'yast/ops'
+require "yast/yast"
+require "yast/builtins"
+require "yast/ops"
 
 module Yast
   # Represents YCP type term enhanced by some ruby convenient methods

@@ -12,21 +12,21 @@ module Yast
   module Ops
     # map of YCPTypes to ruby types
     TYPES_MAP = {
-      'any'       => ::Object,
-      'nil'       => ::NilClass,
-      'void'      => ::NilClass,
-      'boolean'   => [::TrueClass, ::FalseClass],
-      'string'    => ::String,
-      'symbol'    => ::Symbol,
-      'integer'   => [::Fixnum, ::Bignum],
-      'float'     => ::Float,
-      'list'      => ::Array,
-      'map'       => ::Hash,
-      'term'      => Yast::Term,
-      'path'      => Yast::Path,
-      'locale'    => ::String,
-      'function'  => [Yast::FunRef, Yast::YReference],
-      'byteblock' => Yast::Byteblock
+      "any"       => ::Object,
+      "nil"       => ::NilClass,
+      "void"      => ::NilClass,
+      "boolean"   => [::TrueClass, ::FalseClass],
+      "string"    => ::String,
+      "symbol"    => ::Symbol,
+      "integer"   => [::Fixnum, ::Bignum],
+      "float"     => ::Float,
+      "list"      => ::Array,
+      "map"       => ::Hash,
+      "term"      => Yast::Term,
+      "path"      => Yast::Path,
+      "locale"    => ::String,
+      "function"  => [Yast::FunRef, Yast::YReference],
+      "byteblock" => Yast::Byteblock
     }
 
     # Types for which we generate shortcut methods,

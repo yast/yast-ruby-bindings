@@ -1,4 +1,4 @@
-ROOT_DIR = File.expand_path('../../..', __FILE__)
+ROOT_DIR = File.expand_path("../../..", __FILE__)
 binary_path = "#{ROOT_DIR}/build/src/binary"
 require "fileutils"
 if !File.exists? "#{binary_path}/yast"

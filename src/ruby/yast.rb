@@ -19,10 +19,10 @@
 #
 
 # Load the native part (.so)
-require 'yastx'
+require "yastx"
 
 # load global Yast module
-require 'yast/yast'
+require "yast/yast"
 
 # load inside moduls
 require "yast/arg_ref"

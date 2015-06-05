@@ -7,7 +7,7 @@
 
 require_relative "test_helper"
 
-require 'yast/exportable'
+require "yast/exportable"
 
 class MyTestClass
   extend Yast::Exportable

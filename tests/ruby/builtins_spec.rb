@@ -718,8 +718,8 @@ describe "BuiltinsTest" do
     # bnc#888585: Incorrect input class raises TypeError
     # Only Hash/nil is allowed
     expect { Yast::Builtins.mapmap(false) { |k, v| { v => k } } }.to raise_error(TypeError)
-    expect { Yast::Builtins.mapmap(['Array']) { |k, v| { v => k } } }.to raise_error(TypeError)
-    expect { Yast::Builtins.mapmap('String') { |k, v| { v => k } } }.to raise_error(TypeError)
+    expect { Yast::Builtins.mapmap(["Array"]) { |k, v| { v => k } } }.to raise_error(TypeError)
+    expect { Yast::Builtins.mapmap("String") { |k, v| { v => k } } }.to raise_error(TypeError)
     expect { Yast::Builtins.mapmap(32) { |k, v| { v => k } } }.to raise_error(TypeError)
 
     expect(Yast::Builtins.mapmap(nil) { |k, v| { v => k } }).to eq(nil)

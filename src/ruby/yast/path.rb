@@ -29,7 +29,7 @@ module Yast
     end
 
     def to_s
-      '.' + components.join('.')
+      "." + components.join(".")
     end
 
     # gets number of elements
@@ -68,10 +68,10 @@ module Yast
       value.each_char do |c|
         case state
         when :initial
-          raise "Invalid path '#{value}'" if c != '.'
+          raise "Invalid path '#{value}'" if c != "."
           state = :dot
         when :dot
-          raise "Invalid path '#{value}'" if c == '.'
+          raise "Invalid path '#{value}'" if c == "."
           if c == '"'
             state = :complex
           else
@@ -79,7 +79,7 @@ module Yast
           end
           buffer << c
         when :simple
-          if c == '.'
+          if c == "."
             state = :dot
             return if invalid_buffer?(buffer)
 

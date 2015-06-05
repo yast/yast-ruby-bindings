@@ -14,16 +14,16 @@ require "yast/term"
 describe "OpsTest" do
   # data description [object, from, to, result]
   CONVERT_TESTDATA = [
-    [nil, 'any', 'integer', nil],
-    [nil, 'any', 'term', nil],
-    [nil, 'any', 'path', nil],
-    [5, 'any', 'string', nil],
-    [5, 'integer', 'string', nil],
-    [5, 'integer', 'string', nil],
-    [5, 'any', 'integer', 5],
-    [5.5, 'any', 'integer', 5],
-    [5.9, 'any', 'integer', 5],
-    [5, 'any', 'float', 5.0],
+    [nil, "any", "integer", nil],
+    [nil, "any", "term", nil],
+    [nil, "any", "path", nil],
+    [5, "any", "string", nil],
+    [5, "integer", "string", nil],
+    [5, "integer", "string", nil],
+    [5, "any", "integer", 5],
+    [5.5, "any", "integer", 5],
+    [5.9, "any", "integer", 5],
+    [5, "any", "float", 5.0],
   ]
 
   it "tests convert" do

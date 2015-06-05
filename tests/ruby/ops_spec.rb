@@ -93,9 +93,9 @@ describe "Yast::OpsTest" do
   end
 
   it "tests comparison path" do
-    expect(Yast::Ops.less_than(Yast::Path.new('.'), Yast::Path.new('.etc'))).to eq(true)
-    expect(Yast::Ops.less_than(Yast::Path.new('.etca'), Yast::Path.new('.etcb'))).to eq(true)
-    expect(Yast::Ops.less_than(Yast::Path.new('.etc.a'), Yast::Path.new('.etca'))).to eq(true)
+    expect(Yast::Ops.less_than(Yast::Path.new("."), Yast::Path.new(".etc"))).to eq(true)
+    expect(Yast::Ops.less_than(Yast::Path.new(".etca"), Yast::Path.new(".etcb"))).to eq(true)
+    expect(Yast::Ops.less_than(Yast::Path.new(".etc.a"), Yast::Path.new(".etca"))).to eq(true)
   end
 
   it "tests comparison nil" do
