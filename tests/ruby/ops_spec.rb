@@ -114,7 +114,7 @@ describe "Yast::OpsTest" do
     expect(Yast::Ops.less_than("s",Yast::Term.new(:a,1,3))).to eq(true)
     expect(Yast::Ops.less_than(:a,Yast::Term.new(:b,1,1))).to eq(true)
     expect(Yast::Ops.less_than({ :a => "b"},Yast::Term.new(:b))).to eq(false)
-    expect(Yast::Ops.less_than({"a" => 1, 1 => 2},{"a" => 1, "b" => 2})).to eq(true)
+    expect(Yast::Ops.less_than({"a" => 1, 1 => 2},"a" => 1, "b" => 2)).to eq(true)
   end
 
   describe "Ops.get" do
@@ -122,7 +122,7 @@ describe "Yast::OpsTest" do
       let(:map) { { "a" => { "b" => "c" }} }
 
       it "returns value if key exists" do
-        expect(Yast::Ops.get(map,"a","n")).to eq({ "b" => "c"})
+        expect(Yast::Ops.get(map,"a","n")).to eq("b" => "c")
       end
 
       it "supports nested access with list of keys" do

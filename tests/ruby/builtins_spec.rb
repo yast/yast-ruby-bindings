@@ -330,7 +330,7 @@ describe "BuiltinsTest" do
 
     h = { :a => 1, :b => 2 }
     res = Yast::Builtins.change(h, :c, 3)
-    expect(res).to eq({:a => 1, :b => 2, :c => 3})
+    expect(res).to eq(:a => 1, :b => 2, :c => 3)
     expect(h).to eq(({:a => 1, :b => 2}))
   end
 
@@ -340,7 +340,7 @@ describe "BuiltinsTest" do
     expect(Yast::Builtins.isempty({})).to eq(true)
     expect(Yast::Builtins.isempty("")).to eq(true)
     expect(Yast::Builtins.isempty([1])).to eq(false)
-    expect(Yast::Builtins.isempty({"a" => "b"})).to eq(false)
+    expect(Yast::Builtins.isempty("a" => "b")).to eq(false)
     expect(Yast::Builtins.isempty("foo")).to eq(false)
   end
 
@@ -727,9 +727,9 @@ describe "BuiltinsTest" do
 
     expect(Yast::Builtins.mapmap(nil) {|k,v| {v => k}}).to eq(nil)
 
-    expect(Yast::Builtins.mapmap({2=>1,4=>3}) {|k,v| next {v => k}}).to eq(Hash[1=>2,3=>4])
+    expect(Yast::Builtins.mapmap(2=>1,4=>3) {|k,v| next {v => k}}).to eq(Hash[1=>2,3=>4])
 
-    res = Yast::Builtins.mapmap({2=>1,4=>3}) do |k,v|
+    res = Yast::Builtins.mapmap(2=>1,4=>3) do |k,v|
       raise Yast::Break if k == 4
       next {v => k}
     end
