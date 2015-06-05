@@ -226,7 +226,6 @@ END
       end
     end
 
-
     # Adds second to first.
     # @deprecated use ruby native operator +
     def self.add first, second
@@ -525,6 +524,5 @@ END
         end
       end
     end
-
   end
 end

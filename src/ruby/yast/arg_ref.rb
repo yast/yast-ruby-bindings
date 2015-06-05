@@ -15,6 +15,5 @@ module Yast
     def initialize initial=nil
       @value = initial
     end
-
   end
 end

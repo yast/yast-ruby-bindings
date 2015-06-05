@@ -13,7 +13,6 @@ require "yast/term"
 require "yast/break"
 
 describe "BuiltinsTest" do
-
   ADD_TEST_DATA = [
     [ nil, 5, nil],
     [ [1,2], 3, [1,2,3]],
@@ -297,7 +296,6 @@ describe "BuiltinsTest" do
 
     expect(Yast::Builtins.toset([1, 5, 3, 2, 3, true, false, true])).to eq([false, true, 1, 2, 3, 5])
   end
-
 
   TOSTRING_TEST_DATA = [
     [ nil, "nil"],
@@ -665,7 +663,6 @@ describe "BuiltinsTest" do
     expect(Yast::Builtins.listmap(nil) {|i| next {i => i}}).to eq(nil)
 
     expect(Yast::Builtins.listmap([1,2]) {|i| next {i => i}}).to eq(Hash[1=>1,2=>2])
-
   end
 
   PREPEND_TESTDATA = [
@@ -767,7 +764,6 @@ describe "BuiltinsTest" do
 
     expect(Yast::Builtins.sformat("test %1",:lest)).to eq("test `lest")
   end
-
 
   FINDFIRSTOF_TESTDATA = [
     [nil,"ab",nil],

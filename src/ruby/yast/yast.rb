@@ -7,7 +7,6 @@ class Yast::YReference;end
 class Yast::Path;end
 
 module Yast
-
   # @private used to extract place from backtrace
   BACKTRACE_REGEXP = /^(.*):(\d+):in `.*'$/
 
@@ -196,7 +195,6 @@ module Yast
 
     base.const_set(modules.last, m) unless base.constants.include?(modules.last.to_sym)
   end
-
 end
 
 

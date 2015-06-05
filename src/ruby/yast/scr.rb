@@ -4,7 +4,6 @@ module Yast
   # Wrapper class for SCR component in Yast
   # See yast documentation for SCR
   module SCR
-
     # Reads data
     # @param path[Yast::Path] path that is combination of path where agent is
     #   attached and path inside agent

@@ -20,7 +20,6 @@ module Yast
   #
   # @note All builtins return copy of result
   module Builtins
-
     # Adds element to copy of element and return such copy.
     # @deprecated Use ruby operators for it.
     def self.add object, *params
@@ -232,7 +231,6 @@ module Yast
       end
     end
 
-
     ###########################################################
     # Yast Byteblock Builtins
     ###########################################################
@@ -357,7 +355,6 @@ module Yast
           end
         return Yast.deep_copy(list).reduce &block
       end
-
 
       # Creates new list with swaped elements at offset i1 and i2.
       # @note #{::Array#reverse} should be used for complete array swap
@@ -1007,7 +1004,6 @@ module Yast
 
       return term.value
     end
-
 
     # Converts a value to a term.
     # @deprecated use {Yast::Term} constructor instead

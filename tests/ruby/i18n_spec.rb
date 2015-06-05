@@ -8,7 +8,6 @@ include Yast::I18n
 
 module Yast
   describe I18n do
-
     describe ".N_" do
       it "returns the original parameter" do
         input = "INPUT TEST"
@@ -25,6 +24,5 @@ module Yast
         expect(Nn_(singular, plural, count)).to eq [singular, plural, count]
       end
     end
-
   end
 end

@@ -8,7 +8,6 @@ module Yast
   # Wrapper class for WFM component in Yast
   # See yast documentation for WFM
   module WFM
-
     # Returns list of arguments passed to client or element at given index
     #
     # @example Get all args

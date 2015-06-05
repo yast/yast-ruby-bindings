@@ -4,7 +4,6 @@ module Yast
   # Provides ability to export functions and variables to Yast component system.
   # The most important method is {Yast::Exportable#publish}
   module Exportable
-
     # Holder for exported data
     class ExportData < OpenStruct
       # Is exported data only for private purpose.

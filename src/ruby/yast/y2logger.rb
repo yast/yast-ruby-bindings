@@ -6,7 +6,6 @@ require "singleton"
 require "yast/logger"
 
 module Yast
-
   # A Ruby Logger which wraps Yast.y2*() calls
   class Y2Logger < ::Logger
     include Singleton
@@ -74,5 +73,4 @@ module Yast
       base.extend self
     end
   end
-
 end

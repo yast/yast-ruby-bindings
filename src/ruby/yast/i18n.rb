@@ -3,7 +3,6 @@ require "fast_gettext"
 module Yast
   # Provides translation wrapper.
   module I18n
-
     # @private
     #TODO load alternative in development recent translation
     LOCALE_DIR = "/usr/share/YaST2/locale"

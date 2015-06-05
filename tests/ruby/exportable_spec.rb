@@ -43,6 +43,5 @@ describe "ExportableTest" do
 
   it "tests type full specification" do
     expect(MyTest.class.published_variables[:complex].type).to eq("map<string,map<list<any>,map<any,any>>>")
-
   end
 end

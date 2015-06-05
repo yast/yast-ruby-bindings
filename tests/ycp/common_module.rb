@@ -2,7 +2,6 @@ require "yast"
 
 module Yast
   class CommonModuleClass < Module
-
     publish :function => :method_a, :type => "string(integer,integer)"
     def method_a first, second
       (first+second).to_s
