@@ -146,7 +146,7 @@ module Yast
     modules[0..-2].each do |module_|
       tmp_m = if base.constants.include?(module_.to_sym)
           base.const_get(module_)
-        else
+              else
           base.const_set(module_, ::Module.new)
         end
       base = tmp_m
@@ -169,7 +169,7 @@ module Yast
 
     m = if base.constants.include?(modules.last.to_sym)
         base.const_get(modules.last)
-      else
+        else
         ::Module.new
       end
     symbols(mname).each do |sname,stype|
