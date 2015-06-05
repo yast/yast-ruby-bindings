@@ -3,7 +3,7 @@ require "yast/builtins"
 require "yast/ops"
 
 # @private we need it as clients is called in global contenxt
-GLOBAL_WFM_CONTEXT = Proc.new {}
+GLOBAL_WFM_CONTEXT = proc {}
 module Yast
   # Wrapper class for WFM component in Yast
   # See yast documentation for WFM

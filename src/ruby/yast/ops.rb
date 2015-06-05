@@ -466,7 +466,7 @@ END
       end
 
       def <=>(second)
-        comparator = Proc.new do |k1,k2|
+        comparator = proc do |k1,k2|
           Ops.comparable_object(k1, @localized) <=> k2
         end
         keys = @value.keys.sort(&comparator)

@@ -861,7 +861,7 @@ describe "BuiltinsTest" do
   EVAL_TEST_DATA = [
     [nil, nil],
     [5, 5],
-    [ Proc.new { "15" }, "15"],
+    [ proc { "15" }, "15"],
   ]
 
   it "tests eval" do

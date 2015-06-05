@@ -151,11 +151,6 @@ Style/Next:
 Style/OpMethod:
   Enabled: false
 
-# Offense count: 3
-# Cop supports --auto-correct.
-Style/Proc:
-  Enabled: false
-
 # Offense count: 73
 # Cop supports --auto-correct.
 # Configuration parameters: AllowMultipleReturnValues.
