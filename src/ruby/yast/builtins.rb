@@ -247,7 +247,7 @@ module Yast
     # builtins enclosed at Float namespace
     # @deprecated all calls are deprecated
     module Float
-    	# absolute value
+    	 # absolute value
       # @deprecated Use {::Float#abs} instead
       def self.abs value
         return nil if value.nil?
@@ -255,7 +255,7 @@ module Yast
         return value.abs
       end
 
-    	# round upwards to integer
+    	 # round upwards to integer
       # @deprecated Use {::Float#ceil} instead
       def self.ceil value
         return nil if value.nil?
@@ -263,7 +263,7 @@ module Yast
         return value.ceil.to_f
       end
 
-    	# round downwards to integer
+    	 # round downwards to integer
       # @deprecated Use {::Float#floor} instead
       def self.floor value
         return nil if value.nil?
@@ -271,7 +271,7 @@ module Yast
         return value.floor.to_f
       end
 
-    	# power function
+    	 # power function
       # @deprecated Use {::Float#**} instead
       def self.pow base, power
         return nil if base.nil? || power.nil?
@@ -279,7 +279,7 @@ module Yast
         return base ** power
       end
 
-    	# round to integer, towards zero
+    	 # round to integer, towards zero
       # @deprecated Use {::Float#to_i} instead
       def self.trunc value
         return nil if value.nil?
@@ -289,7 +289,7 @@ module Yast
     end
 
     # Converts a value to a floating point number.
-      # @deprecated Use {::Object#to_f} instead
+    # @deprecated Use {::Object#to_f} instead
     def self.tofloat value
       return nil if value.nil?
 

@@ -83,7 +83,7 @@ module Yast
     :opt,
     ]
 
-   # for each symbol define a util function that will create a term
+    # for each symbol define a util function that will create a term
     UI_TERMS.each do | term_name |
       method_name = term_name.to_s
       method_name[0] = method_name[0].upcase

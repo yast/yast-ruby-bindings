@@ -101,11 +101,6 @@ Style/ClassAndModuleChildren:
 Style/CommentAnnotation:
   Enabled: false
 
-# Offense count: 23
-# Cop supports --auto-correct.
-Style/CommentIndentation:
-  Enabled: false
-
 # Offense count: 4
 # Cop supports --auto-correct.
 Style/DeprecatedHashMethods:
