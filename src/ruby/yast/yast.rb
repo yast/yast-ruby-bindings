@@ -67,8 +67,8 @@ module Yast
       end
     when ::Array
       object.reduce([]) do |acc, v|
-       acc << deep_copy(v)
-     end
+        acc << deep_copy(v)
+      end
     else
       object.clone # deep copy
     end
