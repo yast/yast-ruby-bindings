@@ -10,7 +10,7 @@ module Yast
       # It is useful only to test private methods from old Yast testsuite.
       def private?
         table = marshal_dump
-        return !!table[:private]
+        !!table[:private]
       end
     end
 

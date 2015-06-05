@@ -14,7 +14,7 @@ module Yast
 
     publish function: :formated_name, type: "string()"
     def formated_name
-      return name+" Fancy Formated!!!"
+      name+" Fancy Formated!!!"
     end
   end
 

@@ -101,7 +101,7 @@ module Yast
       else
         Yast.y2warning(1, "foreach builtin called on wrong type #{object.class}")
       end
-      return res
+      res
     end
 
     # - Returns whether the map m is empty.
@@ -168,7 +168,7 @@ module Yast
         raise "Invalid type passed to remove #{object.class}"
       end
 
-      return res
+      res
     end
 
     # - Selects a list element (deprecated, use LIST[INDEX]:DEFAULT)
@@ -250,7 +250,7 @@ module Yast
       def self.abs(value)
         return nil if value.nil?
 
-        return value.abs
+        value.abs
       end
 
     	 # round upwards to integer
@@ -258,7 +258,7 @@ module Yast
       def self.ceil(value)
         return nil if value.nil?
 
-        return value.ceil.to_f
+        value.ceil.to_f
       end
 
     	 # round downwards to integer
@@ -266,7 +266,7 @@ module Yast
       def self.floor(value)
         return nil if value.nil?
 
-        return value.floor.to_f
+        value.floor.to_f
       end
 
     	 # power function
@@ -274,7 +274,7 @@ module Yast
       def self.pow(base, power)
         return nil if base.nil? || power.nil?
 
-        return base ** power
+        base ** power
       end
 
     	 # round to integer, towards zero
@@ -282,7 +282,7 @@ module Yast
       def self.trunc(value)
         return nil if value.nil?
 
-        return value.to_i.to_f
+        value.to_i.to_f
       end
     end
 
@@ -335,7 +335,7 @@ module Yast
     def self.flatten(value)
       return nil if value.nil?
 
-      return value.reduce([]) do |acc,i|
+      value.reduce([]) do |acc,i|
         return nil if i.nil?
         acc.push *Yast.deep_copy(i)
       end
@@ -353,7 +353,7 @@ module Yast
                else
                  params.first
           end
-        return Yast.deep_copy(list).reduce &block
+        Yast.deep_copy(list).reduce &block
       end
 
       # Creates new list with swaped elements at offset i1 and i2.
@@ -371,7 +371,7 @@ module Yast
         if offset2 < list.size-1
           res.concat list[offset2+1..-1]
         end
-        return Yast.deep_copy(res)
+        Yast.deep_copy(res)
       end
     end
 
@@ -389,7 +389,7 @@ module Yast
         # break stops adding to hash
       end
 
-      return res
+      res
     end
 
     # Sort A List respecting locale
@@ -414,7 +414,7 @@ module Yast
     def self.prepend(list, element)
       return nil if list.nil?
 
-      return [Yast.deep_copy(element)].push *Yast.deep_copy(list)
+      [Yast.deep_copy(element)].push *Yast.deep_copy(list)
     end
 
     # setcontains() Yast built-in
@@ -465,13 +465,13 @@ module Yast
       return nil if offset < 0 || offset >= list.size
       return nil if length < 0 || offset+length > list.size
 
-      return Yast.deep_copy(list)[offset..offset+length-1]
+      Yast.deep_copy(list)[offset..offset+length-1]
     end
 
     # Converts a value to a list (deprecated, use (list)VAR).
     # @deprecated not needed in ruby
     def self.tolist(object)
-      return object.is_a?(::Array) ? object : nil
+      object.is_a?(::Array) ? object : nil
     end
 
     # toset() Yast built-in
@@ -518,13 +518,13 @@ module Yast
         # break stops adding to hash
       end
 
-      return res
+      res
     end
 
     # Converts a value to a map.
     # @deprecated not needed in ruby or use {::Hash.try_convert}
     def self.tomap(object)
-      return object.is_a?(::Hash) ? object : nil
+      object.is_a?(::Hash) ? object : nil
     end
 
     ###########################################################
@@ -544,7 +544,7 @@ module Yast
     # Change or add an environment variable
     # @deprecated use {ENV#[]}
     def self.getenv(value)
-      return ENV[value]
+      ENV[value]
     end
 
     # Random number generator.
@@ -552,7 +552,7 @@ module Yast
     def self.random(max)
       return nil if max.nil?
 
-      return max < 0 ? -rand(max) : rand(max)
+      max < 0 ? -rand(max) : rand(max)
     end
 
     # Change or add an environment variable
@@ -561,7 +561,7 @@ module Yast
       return true if ENV.include?(env) && !overwrite
 
       ENV[env] = value
-      return true
+      true
     end
 
     # Yast compatible way how to format string with type conversion
@@ -573,7 +573,7 @@ module Yast
 
       return format if args.empty?
 
-      return format.gsub(/%./) do |match|
+      format.gsub(/%./) do |match|
         case match
         when "%%"
           "%"
@@ -661,14 +661,14 @@ module Yast
     # @note do nothing now, concept is quite unclear
     def self.y2useritem(*args)
       # TODO implement it
-      return nil
+      nil
     end
 
     # Log an user-level addional message to the y2changes
     # @note do nothing now, concept is quite unclear
     def self.y2usernote(*args)
       # TODO implement it
-      return nil
+      nil
     end
 
     ###########################################################
@@ -699,7 +699,7 @@ module Yast
     def self.deletechars(string, chars)
       return nil if !string || !chars
 
-      return string.gsub(/[#{Regexp.escape chars}]/, "")
+      string.gsub(/[#{Regexp.escape chars}]/, "")
     end
 
     extend Yast::I18n
@@ -747,7 +747,7 @@ module Yast
     def self.filterchars(string, chars)
       return nil if string.nil? || chars.nil?
 
-      return string.gsub(/[^#{Regexp.escape chars}]/, "")
+      string.gsub(/[^#{Regexp.escape chars}]/, "")
     end
 
     # Searches string for the first non matching chars
@@ -755,7 +755,7 @@ module Yast
     def self.findfirstnotof(string, chars)
       return nil if string.nil? || chars.nil?
 
-      return string.index /[^#{Regexp.escape chars}]/
+      string.index /[^#{Regexp.escape chars}]/
     end
 
     # Finds position of the first matching characters in string
@@ -763,7 +763,7 @@ module Yast
     def self.findfirstof(string, chars)
       return nil if string.nil? || chars.nil?
 
-      return string.index /[#{Regexp.escape chars}]/
+      string.index /[#{Regexp.escape chars}]/
     end
 
     # Searches the last element of string that doesn't match
@@ -771,7 +771,7 @@ module Yast
     def self.findlastnotof(string, chars)
       return nil if string.nil? || chars.nil?
 
-      return string.rindex /[^#{Regexp.escape chars}]/
+      string.rindex /[^#{Regexp.escape chars}]/
     end
 
     # Searches string for the last match
@@ -779,7 +779,7 @@ module Yast
     def self.findlastof(string, chars)
       return nil if string.nil? || chars.nil?
 
-      return string.rindex /[#{Regexp.escape chars}]/
+      string.rindex /[#{Regexp.escape chars}]/
     end
 
     # issubstring() Yast built-in
@@ -994,7 +994,7 @@ module Yast
     def self.argsof(term)
       return nil if term.nil?
 
-      return Yast.deep_copy(term.params)
+      Yast.deep_copy(term.params)
     end
 
     # Returns the symbol of the term TERM.
@@ -1002,7 +1002,7 @@ module Yast
     def self.symbolof(term)
       return nil if term.nil?
 
-      return term.value
+      term.value
     end
 
     # Converts a value to a term.
@@ -1028,7 +1028,7 @@ module Yast
     def self.tosymbol(value)
       return nil if value.nil?
 
-      return value.to_sym
+      value.to_sym
     end
 
     # builtins enclosed in Multiset namespace
@@ -1078,7 +1078,7 @@ module Yast
         unless ss2.empty?
           res = res + ss2.reverse
         end
-        return Yast.deep_copy(res.reverse)
+        Yast.deep_copy(res.reverse)
       end
 
       # @see http://www.sgi.com/tech/stl/set_intersection.html for details
@@ -1102,7 +1102,7 @@ module Yast
             raise "unknown value from comparison #{i1 <=> u2}"
           end
         end
-        return Yast.deep_copy(res.reverse)
+        Yast.deep_copy(res.reverse)
       end
 
       # @see http://www.sgi.com/tech/stl/set_union.html for details
@@ -1136,7 +1136,7 @@ module Yast
           res = res + ss2.reverse
         end
 
-        return Yast.deep_copy(res.reverse)
+        Yast.deep_copy(res.reverse)
       end
 
       # @see http://www.sgi.com/tech/stl/set_merge.html for details

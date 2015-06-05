@@ -25,7 +25,7 @@ module Yast
       another = self.class.from_string(another) unless another.is_a? Yast::Path
       return another.clone if components.empty?
       return clone if another.empty?
-      return Path.new(self.to_s+another.to_s)
+      Path.new(self.to_s+another.to_s)
     end
 
     def to_s
@@ -34,12 +34,12 @@ module Yast
 
     # gets number of elements
     def size
-      return components.size
+      components.size
     end
 
     # Detect if there is no  elements
     def empty?
-      return components.empty?
+      components.empty?
     end
 
     def <=>(other)
@@ -52,7 +52,7 @@ module Yast
         res = our_component <=> other_component
         return res if res != 0
       end
-      return size <=> other.size
+      size <=> other.size
     end
 
     private

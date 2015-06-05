@@ -93,7 +93,7 @@ module Yast
       return res if res != 0
 
       list = Ops.comparable_object(params)
-      return list <=> other.params
+      list <=> other.params
     end
   end
 end

@@ -145,7 +145,7 @@ END
           return block_given? ? yield : default
         end
       end
-      return Yast.deep_copy(res)
+      Yast.deep_copy(res)
     end
 
     # @deprecated Use the native Ruby operator `[]=`
@@ -252,7 +252,7 @@ END
     def self.subtract(first, second)
       return nil if first.nil? || second.nil?
 
-      return first - second
+      first - second
     end
 
     # Multiplies first with second.
@@ -260,7 +260,7 @@ END
     def self.multiply(first, second)
       return nil if first.nil? || second.nil?
 
-      return first * second
+      first * second
     end
 
     # Divides first with second.
@@ -269,7 +269,7 @@ END
     def self.divide(first, second)
       return nil if first.nil? || second.nil? || second == 0
 
-      return first / second
+      first / second
     end
 
     # Computes module after division of first with second.
@@ -277,42 +277,42 @@ END
     def self.modulo(first, second)
       return nil if first.nil? || second.nil?
 
-      return first % second
+      first % second
     end
 
     # @deprecated use ruby native operator &
     def self.bitwise_and(first, second)
       return nil if first.nil? || second.nil?
 
-      return first & second
+      first & second
     end
 
     # @deprecated use ruby native operator |
     def self.bitwise_or(first, second)
       return nil if first.nil? || second.nil?
 
-      return first | second
+      first | second
     end
 
     # @deprecated use ruby native operator ^
     def self.bitwise_xor(first, second)
       return nil if first.nil? || second.nil?
 
-      return first ^ second
+      first ^ second
     end
 
     # @deprecated use ruby native operator <<
     def self.shift_left(first, second)
       return nil if first.nil? || second.nil?
 
-      return first << second
+      first << second
     end
 
     # @deprecated use ruby native operator >>
     def self.shift_right(first, second)
       return nil if first.nil? || second.nil?
 
-      return first >> second
+      first >> second
     end
 
     # @deprecated use ruby native operator &&
@@ -320,7 +320,7 @@ END
       first = false if first.nil?
       second = false if second.nil?
 
-      return first && second
+      first && second
     end
 
     # @deprecated use ruby native operator ||
@@ -328,14 +328,14 @@ END
       first = false if first.nil?
       second = false if second.nil?
 
-      return first || second
+      first || second
     end
 
     # @deprecated use ruby native operator -
     def self.unary_minus(value)
       return nil if value.nil?
 
-      return -value
+      -value
     end
 
     # @deprecated use ruby native operator !
@@ -344,28 +344,28 @@ END
       # Yast really do it!!!
       return nil if value.nil?
 
-      return !value
+      !value
     end
 
     # @deprecated use ruby native operator ~
     def self.bitwise_not(value)
       return nil if value.nil?
 
-      return ~value
+      ~value
     end
 
     # @deprecated use ruby native operator ==
     def self.equal(first, second)
       first = comparable_object(first)
 
-      return first == second
+      first == second
     end
 
     # @deprecated use ruby native operator !=
     def self.not_equal(first, second)
       first = comparable_object(first)
 
-      return first != second
+      first != second
     end
 
     # @deprecated use ruby native operator <
@@ -374,7 +374,7 @@ END
 
       first = comparable_object(first)
 
-      return first < second
+      first < second
     end
 
     # @deprecated use ruby native operator <=
@@ -383,7 +383,7 @@ END
 
       first = comparable_object(first)
 
-      return first <= second
+      first <= second
     end
 
     # @deprecated use ruby native operator >
@@ -392,7 +392,7 @@ END
 
       first = comparable_object(first)
 
-      return first > second
+      first > second
     end
 
     # @deprecated use ruby native operator >=
@@ -401,7 +401,7 @@ END
 
       first = comparable_object(first)
 
-      return first >= second
+      first >= second
     end
 
     TYPES_MAP.keys.each do |type|
@@ -419,12 +419,12 @@ END
       classes = TYPES_MAP[type]
       raise "Invalid type to detect in is '#{type}'" unless classes
       classes = [classes] unless classes.is_a? ::Array
-      return classes.any? { |cl| object.is_a? cl }
+      classes.any? { |cl| object.is_a? cl }
     end
 
     # Creates comparable wrapper that makes ycp compatible comparison
     def self.comparable_object(object, localized = false)
-      return GenericComparable.new(object, localized)
+      GenericComparable.new(object, localized)
     end
 
     # Implements ycp compatible comparison of lists. Difference is only that it use {Yast::Ops::GenericComparator}
@@ -452,7 +452,7 @@ END
           return res if res != 0
         end
         # no decision yet
-        return @value.size <=> second.size
+        @value.size <=> second.size
       end
     end
 
@@ -480,7 +480,7 @@ END
           return res if res != 0
         end
 
-        return @value.size <=> second.size
+        @value.size <=> second.size
       end
     end
 

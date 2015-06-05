@@ -8,6 +8,6 @@ module InRuby
   end
 
   def self.get_hash
-    return { "a" => "b", "b" => "c" }
+    { "a" => "b", "b" => "c" }
   end
 end

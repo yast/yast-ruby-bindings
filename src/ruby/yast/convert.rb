@@ -90,7 +90,7 @@ END
 
       types = [types] unless types.is_a? Array
 
-      return types.any? {|t|  object.is_a? t }
+      types.any? {|t|  object.is_a? t }
     end
   end
 end
