@@ -25,12 +25,12 @@ module Yast
     # @deprecated Use ruby operators for it.
     def self.add object, *params
       case object
-      when ::Array then return Yast::deep_copy(object).concat(Yast::deep_copy(params))
-      when ::Hash then  return Yast::deep_copy(object).merge(Yast::deep_copy(::Hash[*params]))
+      when ::Array then return Yast.deep_copy(object).concat(Yast.deep_copy(params))
+      when ::Hash then  return Yast.deep_copy(object).merge(Yast.deep_copy(::Hash[*params]))
       when Yast::Path then return object + params.first
       when Yast::Term then
-        res = Yast::deep_copy(object)
-        res.params << Yast::deep_copy(params.first)
+        res = Yast.deep_copy(object)
+        res.params << Yast.deep_copy(params.first)
         return res
       when ::NilClass then return nil
       else
@@ -52,7 +52,7 @@ module Yast
     def self.filter object, &block
       #TODO investigate break and continue with filter as traverse workflow is different for ruby
       if object.is_a?(::Array) || object.is_a?(::Hash)
-        Yast::deep_copy(object).select &block
+        Yast.deep_copy(object).select &block
       else
         return nil
       end
@@ -68,9 +68,9 @@ module Yast
       case object
       when ::String
         ret = object.index what
-        return ret.nil? ? -1 : Yast::deep_copy(ret)
+        return ret.nil? ? -1 : Yast.deep_copy(ret)
       when ::Array
-        Yast::deep_copy(object.find(&block))
+        Yast.deep_copy(object.find(&block))
       else
         raise "Invalid object for find() builtin"
       end
@@ -81,7 +81,7 @@ module Yast
     # @deprecated use ruby native each method
     def self.foreach object, &block
       res = nil
-      object = Yast::deep_copy(object)
+      object = Yast.deep_copy(object)
       if object.is_a? ::Array
         begin
           object.each do |i|
@@ -123,7 +123,7 @@ module Yast
         res = []
         begin
           object.each do |i|
-            res << block.call(Yast::deep_copy(i))
+            res << block.call(Yast.deep_copy(i))
           end
         rescue Yast::Break
           #break skips out of each loop, but allow to keep previous results
@@ -133,7 +133,7 @@ module Yast
         res = []
         begin
           sort(object.keys).each do |k|
-            res << block.call(Yast::deep_copy(k),Yast::deep_copy(object[k]))
+            res << block.call(Yast.deep_copy(k),Yast.deep_copy(object[k]))
           end
         rescue Yast::Break
           #break skips out of each loop, but allow to keep previous results
@@ -152,7 +152,7 @@ module Yast
     def self.remove object, element
       return nil if object.nil?
 
-      res = Yast::deep_copy(object)
+      res = Yast.deep_copy(object)
       return res if element.nil?
       case object
       when ::Array
@@ -224,7 +224,7 @@ module Yast
 
       case first
       when ::Array
-        return Yast::deep_copy(first) | Yast::deep_copy(second)
+        return Yast.deep_copy(first) | Yast.deep_copy(second)
       when ::Hash
         return first.merge(second)
       else
@@ -339,7 +339,7 @@ module Yast
 
       return value.reduce([]) do |acc,i|
         return nil if i.nil?
-        acc.push *Yast::deep_copy(i)
+        acc.push *Yast.deep_copy(i)
       end
     end
 
@@ -351,11 +351,11 @@ module Yast
         return nil if params.first.nil?
         list = if params.size == 2 #so first is default and second is list
             return nil if params[1].nil?
-            [params.first].concat(Yast::deep_copy(params[1]))
+            [params.first].concat(Yast.deep_copy(params[1]))
           else
             params.first
           end
-        return Yast::deep_copy(list).reduce &block
+        return Yast.deep_copy(list).reduce &block
       end
 
 
@@ -364,7 +364,7 @@ module Yast
       def self.swap list, offset1, offset2
         return nil if list.nil? || offset1.nil? || offset2.nil?
 
-        return Yast::deep_copy(list) if offset1 < 0 || offset2 >= list.size || (offset1 > offset2)
+        return Yast.deep_copy(list) if offset1 < 0 || offset2 >= list.size || (offset1 > offset2)
 
         res = []
         if offset1 > 0
@@ -374,7 +374,7 @@ module Yast
         if offset2 < list.size-1
           res.concat list[offset2+1..-1]
         end
-        return Yast::deep_copy(res)
+        return Yast.deep_copy(res)
       end
     end
 
@@ -385,7 +385,7 @@ module Yast
 
       res = ::Hash.new
       begin
-        Yast::deep_copy(list).each do |i|
+        Yast.deep_copy(list).each do |i|
           res.merge! block.call(i)
         end
       rescue Yast::Break
@@ -401,7 +401,7 @@ module Yast
     def self.lsort list
       return nil if list.nil?
 
-      Yast::deep_copy(list.sort { |s1, s2| Ops.comparable_object(s1, true) <=> s2 })
+      Yast.deep_copy(list.sort { |s1, s2| Ops.comparable_object(s1, true) <=> s2 })
     end
 
     # merge() Yast built-in
@@ -409,7 +409,7 @@ module Yast
     # @deprecated use {::Array#+}
     def self.merge a1, a2
       return nil if a1.nil? || a2.nil?
-      Yast::deep_copy(a1 + a2)
+      Yast.deep_copy(a1 + a2)
     end
 
     # Prepends a list with a new element
@@ -417,7 +417,7 @@ module Yast
     def self.prepend list, element
       return nil if list.nil?
 
-      return [Yast::deep_copy(element)].push *Yast::deep_copy(list)
+      return [Yast.deep_copy(element)].push *Yast.deep_copy(list)
     end
 
     # setcontains() Yast built-in
@@ -441,7 +441,7 @@ module Yast
         array.sort {|x,y| Yast::Ops.comparable_object(x) <=> y }
       end
 
-      Yast::deep_copy(res)
+      Yast.deep_copy(res)
     end
 
     # splitstring() Yast built-in
@@ -468,7 +468,7 @@ module Yast
       return nil if offset < 0 || offset >= list.size
       return nil if length < 0 || offset+length > list.size
 
-      return Yast::deep_copy(list)[offset..offset+length-1]
+      return Yast.deep_copy(list)[offset..offset+length-1]
     end
 
     # Converts a value to a list (deprecated, use (list)VAR).
@@ -483,7 +483,7 @@ module Yast
     def self.toset array
       return nil if array.nil?
       res = array.uniq.sort { |x,y| Yast::Ops.comparable_object(x) <=> y }
-      Yast::deep_copy(res)
+      Yast.deep_copy(res)
     end
 
     ###########################################################
@@ -500,7 +500,7 @@ module Yast
     # Select a map element (deprecated, use MAP[KEY]:DEFAULT)
     # @deprecated
     def self.lookup map, key, default
-      map.has_key?(key) ? Yast::deep_copy(map[key]) : Yast::deep_copy(default)
+      map.has_key?(key) ? Yast.deep_copy(map[key]) : Yast.deep_copy(default)
     end
 
     # Maps an operation onto all key/value pairs of a map
@@ -511,7 +511,7 @@ module Yast
         raise TypeError, "expected a Hash, got a #{map.class}"
       end
 
-      map = Yast::deep_copy(map)
+      map = Yast.deep_copy(map)
       res = ::Hash.new
       begin
         sort(map.keys).each do |k|
@@ -540,7 +540,7 @@ module Yast
       if object.respond_to? :call
         return object.call
       else
-        return Yast::deep_copy(object)
+        return Yast.deep_copy(object)
       end
     end
 
@@ -735,12 +735,12 @@ module Yast
       @textdomain_mapping ||= {}
 
       # check if the domain is already loaded from the path
-      if @textdomain_mapping[domain] != dirname && !FastGettext::translation_repositories[domain]
+      if @textdomain_mapping[domain] != dirname && !FastGettext.translation_repositories[domain]
         FastGettext.add_text_domain(domain, :path => dirname)
         @textdomain_mapping[domain.dup] = dirname.dup
       end
       FastGettext.text_domain = domain
-      return FastGettext::Translation::_(text)
+      return FastGettext::Translation._(text)
     ensure
       FastGettext.text_domain = old_text_domain
     end
@@ -1051,7 +1051,7 @@ module Yast
 
       # @see http://www.sgi.com/tech/stl/set_difference.html for details
       def self.difference set1, set2
-        Yast::deep_copy(set1.to_set - set2.to_set).to_a
+        Yast.deep_copy(set1.to_set - set2.to_set).to_a
       end
 
       # @see http://www.sgi.com/tech/stl/set_symmetric_difference.html for details
@@ -1082,7 +1082,7 @@ module Yast
         unless ss2.empty?
           res = res + ss2.reverse
         end
-        return Yast::deep_copy(res.reverse)
+        return Yast.deep_copy(res.reverse)
       end
 
       # @see http://www.sgi.com/tech/stl/set_intersection.html for details
@@ -1106,7 +1106,7 @@ module Yast
             raise "unknown value from comparison #{i1 <=> u2}"
           end
         end
-        return Yast::deep_copy(res.reverse)
+        return Yast.deep_copy(res.reverse)
       end
 
       # @see http://www.sgi.com/tech/stl/set_union.html for details
@@ -1140,12 +1140,12 @@ module Yast
           res = res + ss2.reverse
         end
 
-        return Yast::deep_copy(res.reverse)
+        return Yast.deep_copy(res.reverse)
       end
 
       # @see http://www.sgi.com/tech/stl/set_merge.html for details
       def self.merge set1, set2
-        Yast::deep_copy(set1 + set2)
+        Yast.deep_copy(set1 + set2)
       end
     end
   end

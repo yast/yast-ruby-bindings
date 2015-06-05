@@ -35,7 +35,7 @@ module Yast
       end
 
       # add the text domain (only if missing to avoid re-reading translations)
-      FastGettext.add_text_domain(domain, :path => LOCALE_DIR) unless FastGettext::translation_repositories[domain]
+      FastGettext.add_text_domain(domain, :path => LOCALE_DIR) unless FastGettext.translation_repositories[domain]
     end
 
     # translates given string
@@ -52,7 +52,7 @@ module Yast
           break if FastGettext.key_exist?(str)
         end
       end
-      FastGettext::Translation::_ str
+      FastGettext::Translation._ str
     end
 
     # No translation, only marks the text to be found by gettext when creating POT file,
@@ -109,7 +109,7 @@ module Yast
           break if FastGettext.cached_plural_find(singular, plural)
         end
       end
-      FastGettext::Translation::n_(singular, plural, num)
+      FastGettext::Translation.n_(singular, plural, num)
     end
 
     private

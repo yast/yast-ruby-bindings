@@ -96,11 +96,6 @@ Style/AccessorMethodName:
 Style/ClassAndModuleChildren:
   Enabled: false
 
-# Offense count: 43
-# Cop supports --auto-correct.
-Style/ColonMethodCall:
-  Enabled: false
-
 # Offense count: 5
 # Configuration parameters: Keywords.
 Style/CommentAnnotation:
