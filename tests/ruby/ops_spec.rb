@@ -211,8 +211,8 @@ describe "Yast::OpsTest" do
       # The internal method that sees the file is:
       # y2_logger(log_level, component, file, line, method, format, args)
       line = __LINE__ + 3 # this must be the line where get_string is called
-      expect(Yast).to receive(:y2_logger).
-        with(kind_of(Integer), "Ruby", __FILE__, line, //, //)
+      expect(Yast).to receive(:y2_logger)
+        .with(kind_of(Integer), "Ruby", __FILE__, line, //, //)
       Yast::Ops.get_string(nil, 0, "n")
     end
   end

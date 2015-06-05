@@ -105,12 +105,6 @@ Style/CommentAnnotation:
 Style/Documentation:
   Enabled: false
 
-# Offense count: 11
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/DotPosition:
-  Enabled: false
-
 # Offense count: 1
 Style/DoubleNegation:
   Enabled: false

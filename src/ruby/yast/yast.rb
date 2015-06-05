@@ -96,10 +96,10 @@ module Yast
   # @deprecated use "lib" directory where you can place common ruby code without any special handling.
   def self.include(target, path)
     path_without_suffix = path.sub(/\.rb$/,"")
-    module_name = path_without_suffix.
-      gsub(/^./)     { |s| s.upcase }.
-      gsub(/\/./)    { |s| s[1].upcase }.
-      gsub(/[-_.]./) { |s| s[1].upcase } +
+    module_name = path_without_suffix
+      .gsub(/^./)     { |s| s.upcase }
+      .gsub(/\/./)    { |s| s[1].upcase }
+      .gsub(/[-_.]./) { |s| s[1].upcase } +
       "Include"
 
     loaded = Yast.constants.include? module_name.to_sym
