@@ -11,13 +11,13 @@ require 'yast/exportable'
 
 class MyTestClass
   extend Yast::Exportable
-  publish :variable => :complex, :type => "map< string, map<list, map> >"
-  publish :variable => :variable_a, :type => "map"
+  publish variable: :complex, type: "map< string, map<list, map> >"
+  publish variable: :variable_a, type: "map"
   def initialize
-    self.variable_a = { :test => "lest" }
+    self.variable_a = { test: "lest" }
   end
 
-  publish :function => :test, :type => "string(integer,term)"
+  publish function: :test, type: "string(integer,term)"
   def test(a,b)
     return "test"
   end
@@ -37,8 +37,8 @@ describe "ExportableTest" do
   end
 
   it "tests variable definition" do
-    MyTest.variable_a = ({ :a => 15 })
-    expect(MyTest.variable_a).to eq(({:a => 15}))
+    MyTest.variable_a = ({ a: 15 })
+    expect(MyTest.variable_a).to eq(({a: 15}))
   end
 
   it "tests type full specification" do

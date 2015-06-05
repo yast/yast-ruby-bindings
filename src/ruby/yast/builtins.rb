@@ -733,7 +733,7 @@ module Yast
 
       # check if the domain is already loaded from the path
       if @textdomain_mapping[domain] != dirname && !FastGettext.translation_repositories[domain]
-        FastGettext.add_text_domain(domain, :path => dirname)
+        FastGettext.add_text_domain(domain, path: dirname)
         @textdomain_mapping[domain.dup] = dirname.dup
       end
       FastGettext.text_domain = domain

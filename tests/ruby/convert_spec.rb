@@ -28,7 +28,7 @@ describe "OpsTest" do
 
   it "tests convert" do
     CONVERT_TESTDATA.each do |object,from,to,result|
-      expect(Yast::Convert.convert(object, :from => from, :to => to)).to eq(result)
+      expect(Yast::Convert.convert(object, from: from, to: to)).to eq(result)
     end
   end
 

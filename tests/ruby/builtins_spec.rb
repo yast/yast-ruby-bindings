@@ -16,7 +16,7 @@ describe "BuiltinsTest" do
   ADD_TEST_DATA = [
     [ nil, 5, nil],
     [ [1,2], 3, [1,2,3]],
-    [ { :a => 1, :b => 2 },[:c,3],{ :a => 1, :b => 2, :c => 3}],
+    [ { a: 1, b: 2 },[:c,3],{ a: 1, b: 2, c: 3}],
     [ Yast::Path.new(".etc"),
       Yast::Path.new(".sysconfig"),
       Yast::Path.new(".etc.sysconfig") ],
@@ -308,7 +308,7 @@ describe "BuiltinsTest" do
     [ ["test",:lest], '["test", `lest]'],
     [ Yast::Path.new(".etc.syconfig.\"-arg\""), ".etc.syconfig.\"-arg\""],
     [ Yast::Term.new(:id,["test",:lest]), "`id ([\"test\", `lest])"],
-    [ { :test => "data" }, "$[`test:\"data\"]"]
+    [ { test: "data" }, "$[`test:\"data\"]"]
   ]
 
   it "tests tostring" do
@@ -326,10 +326,10 @@ describe "BuiltinsTest" do
     expect(Yast::Builtins.change(a,3)).to eq([1,2,3])
     expect(a).to eq([1,2])
 
-    h = { :a => 1, :b => 2 }
+    h = { a: 1, b: 2 }
     res = Yast::Builtins.change(h, :c, 3)
-    expect(res).to eq(:a => 1, :b => 2, :c => 3)
-    expect(h).to eq(({:a => 1, :b => 2}))
+    expect(res).to eq(a: 1, b: 2, c: 3)
+    expect(h).to eq(({a: 1, b: 2}))
   end
 
   it "tests isempty" do
