@@ -132,7 +132,7 @@ END
             return block_given? ? yield : default
           end
         when ::Hash
-          if res.has_key? i
+          if res.key? i
             res = res[i]
           else
             return block_given? ? yield : default
@@ -207,7 +207,7 @@ END
             return
           end
         when ::Hash
-          if res.has_key? i
+          if res.key? i
             res = res[i]
           else
             return

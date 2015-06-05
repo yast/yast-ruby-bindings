@@ -494,13 +494,13 @@ module Yast
     # @deprecated use {::Hash#haskey?}
     def self.haskey map, key
       return nil if map.nil? || key.nil?
-      map.has_key? key
+      map.key? key
     end
 
     # Select a map element (deprecated, use MAP[KEY]:DEFAULT)
     # @deprecated
     def self.lookup map, key, default
-      map.has_key?(key) ? Yast.deep_copy(map[key]) : Yast.deep_copy(default)
+      map.key?(key) ? Yast.deep_copy(map[key]) : Yast.deep_copy(default)
     end
 
     # Maps an operation onto all key/value pairs of a map
