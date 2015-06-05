@@ -47,8 +47,8 @@ module Yast
       0.upto(size-1) do |i|
         return 1 unless other.send(:components)[i]
         # we strip enclosing quotes for complex expression
-        our_component = components[i].sub(/\A"(.*)"\Z/,"\\1");
-        other_component = other.send(:components)[i].sub(/\A"(.*)"\Z/,"\\1");
+        our_component = components[i].sub(/\A"(.*)"\Z/,"\\1")
+        other_component = other.send(:components)[i].sub(/\A"(.*)"\Z/,"\\1")
         res = our_component <=> other_component
         return res if res != 0
       end

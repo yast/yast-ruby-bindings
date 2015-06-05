@@ -7,7 +7,7 @@ module URI
   end
 
   # garbage_collect
-  class << self;
+  class << self
     include GC
   end
 end
