@@ -109,7 +109,7 @@ module Yast
     def self.call_builtin_wrapper (*args)
       # caller[0] is one of the functions above
       caller[1].match BACKTRACE_REGEXP
-      call_builtin($1, $2.to_i, *args)
+      call_builtin(Regexp.last_match(1), Regexp.last_match(2).to_i, *args)
     end
   end
 end

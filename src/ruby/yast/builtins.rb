@@ -578,7 +578,7 @@ module Yast
         when "%%"
           "%"
         when /%([1-9])/
-          pos = $1.to_i - 1
+          pos = Regexp.last_match(1).to_i - 1
           if pos < args.size
             tostring args[pos]
           else
@@ -923,7 +923,7 @@ module Yast
         #   Yast:    <YCPRef:list <map> bar (list <map> a)>
         #   Ruby:    <YCPRef:list <map<any,any>> bar (list <map<any,any>>)>
         val.signature.match /(.*)\((.*)\)/
-        "<YCPRef:#{$1}#{val.remote_method.name} (#{$2})>"
+        "<YCPRef:#{Regexp.last_match(1)}#{val.remote_method.name} (#{Regexp.last_match(2)})>"
       else
         y2warning 1, "tostring builtin called on wrong type #{val.class}"
         return val.inspect
