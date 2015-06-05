@@ -13,8 +13,8 @@ module Yast
     # location of the caller
     CALL_FRAME = 2
 
-    def add(severity, _progname = nil, message = nil, &_block)
-      message = yield if block_given?
+    def add(severity, _progname = nil, message = nil, &block)
+      message = block.call if block
 
       case severity
       when DEBUG
