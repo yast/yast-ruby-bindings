@@ -165,7 +165,7 @@ describe "BuiltinsTest" do
     expect(Yast::Builtins.tohexstring(0)).to eq("0x0")
     expect(Yast::Builtins.tohexstring(10)).to eq("0xa")
     expect(Yast::Builtins.tohexstring(255)).to eq("0xff")
-    expect(Yast::Builtins.tohexstring(222222)).to eq("0x3640e")
+    expect(Yast::Builtins.tohexstring(222_222)).to eq("0x3640e")
 
     expect(Yast::Builtins.tohexstring(31, 0)).to eq("0x1f")
     expect(Yast::Builtins.tohexstring(31, 1)).to eq("0x1f")
@@ -191,8 +191,8 @@ describe "BuiltinsTest" do
     # disabled: system dependent (depends on the current system time zone),
     # fails if the current offset is not UTC+2:00
     # expect(Yast::Builtins.timestring("%c", 1367839796, false)).to eq("Mon May  6 13:29:56 2013")
-    expect(Yast::Builtins.timestring("%c", 1367839796, true)).to eq("Mon May  6 11:29:56 2013")
-    expect(Yast::Builtins.timestring("%Y%m%d", 1367839796, false)).to eq("20130506")
+    expect(Yast::Builtins.timestring("%c", 1_367_839_796, true)).to eq("Mon May  6 11:29:56 2013")
+    expect(Yast::Builtins.timestring("%Y%m%d", 1_367_839_796, false)).to eq("20130506")
   end
 
   it "tests tolower" do

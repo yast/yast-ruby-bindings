@@ -38,7 +38,7 @@ describe "Yast::OpsTest" do
   it "properly compare between int and float" do
     expect(Yast::Ops.less_than(1,1.1)).to eq(true)
     expect(Yast::Ops.less_than(1.1,1)).to eq(false)
-    expect(Yast::Ops.greater_than(44.5, 10000)).to eq(false)
+    expect(Yast::Ops.greater_than(44.5, 10_000)).to eq(false)
   end
 
   it "tests comparison string" do
@@ -469,8 +469,8 @@ describe "Yast::OpsTest" do
   BITWISE_NOT_TESTCASES = [
     [nil,nil],
     [5,-6],
-    [8589934592,-8589934593],
-    [-558589934592,558589934591]
+    [8_589_934_592,-8_589_934_593],
+    [-558_589_934_592,558_589_934_591]
   ]
 
   it "tests bitwise not" do
