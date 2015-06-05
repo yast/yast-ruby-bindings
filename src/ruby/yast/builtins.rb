@@ -49,7 +49,7 @@ module Yast
     # - Filter a Map
     # @deprecated use ruby native select method
     def self.filter object, &block
-      #TODO investigate break and continue with filter as traverse workflow is different for ruby
+      # TODO investigate break and continue with filter as traverse workflow is different for ruby
       if object.is_a?(::Array) || object.is_a?(::Hash)
         Yast.deep_copy(object).select &block
       else
@@ -91,7 +91,7 @@ module Yast
         end
       elsif object.is_a? ::Hash
         begin
-          #sort keys so it behaves same as in Yast
+          # sort keys so it behaves same as in Yast
           sort(object.keys).each do |k|
             res = block.call(k,object[k])
           end
@@ -125,7 +125,7 @@ module Yast
             res << block.call(Yast.deep_copy(i))
           end
         rescue Yast::Break
-          #break skips out of each loop, but allow to keep previous results
+          # break skips out of each loop, but allow to keep previous results
         end
         return res
       when ::Hash
@@ -135,7 +135,7 @@ module Yast
             res << block.call(Yast.deep_copy(k),Yast.deep_copy(object[k]))
           end
         rescue Yast::Break
-          #break skips out of each loop, but allow to keep previous results
+          # break skips out of each loop, but allow to keep previous results
         end
         return res
       else
@@ -347,7 +347,7 @@ module Yast
       # @deprecated use {::Array#reduce} instead
       def self.reduce *params, &block
         return nil if params.first.nil?
-        list = if params.size == 2 #so first is default and second is list
+        list = if params.size == 2 # so first is default and second is list
                  return nil if params[1].nil?
                  [params.first].concat(Yast.deep_copy(params[1]))
                else
@@ -386,7 +386,7 @@ module Yast
           res.merge! block.call(i)
         end
       rescue Yast::Break
-        #break stops adding to hash
+        # break stops adding to hash
       end
 
       return res
@@ -515,7 +515,7 @@ module Yast
           res.merge! block.call(k,map[k])
         end
       rescue Yast::Break
-        #break stops adding to hash
+        # break stops adding to hash
       end
 
       return res
@@ -793,7 +793,7 @@ module Yast
     # Extracts a substring in UTF-8 encoded string
     # @deprecated use {::String#include?} instead
     def self.lsubstring string, offset, length = -1
-      #ruby2.0 use by default UTF-8.
+      # ruby2.0 use by default UTF-8.
       substring string, offset, length
     end
 
@@ -1036,7 +1036,7 @@ module Yast
     module Multiset
       # @see http://www.sgi.com/tech/stl/includes.html for details
       def self.includes set1, set2
-        #cannot use to_set because there is difference if there is element multipletime
+        # cannot use to_set because there is difference if there is element multipletime
         repetition = {}
         set2.all? do |e|
           repetition[e] ||= 0

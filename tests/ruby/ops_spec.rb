@@ -251,7 +251,7 @@ describe "Yast::OpsTest" do
     expect(l).to eq(Yast::Term.new(:a, :c, :b))
   end
 
-  #test case format is [value1,value2,result]
+  # test case format is [value1,value2,result]
   ADD_TESTCASES = [
     [nil,1,nil],
     [1,nil,nil],
@@ -274,7 +274,7 @@ describe "Yast::OpsTest" do
     end
   end
 
-  #test case format is [value1,value2,result]
+  # test case format is [value1,value2,result]
   SUBTRACT_TESTCASES = [
     [nil,1,nil],
     [1,nil,nil],
@@ -289,7 +289,7 @@ describe "Yast::OpsTest" do
     end
   end
 
-  #test case format is [value1,value2,result]
+  # test case format is [value1,value2,result]
   MULTIPLY_TESTCASES = [
     [nil,1,nil],
     [1,nil,nil],
@@ -304,12 +304,12 @@ describe "Yast::OpsTest" do
     end
   end
 
-  #test case format is [value1,value2,result]
+  # test case format is [value1,value2,result]
   DIVIDE_TESTCASES = [
     [nil,1,nil],
     [1,nil,nil],
     [nil,nil,nil],
-    [2,0,nil], #yes fantastic yast allows division by zero
+    [2,0,nil], # yes fantastic yast allows division by zero
     [2,1,2],
     [3.0,1.5,2.0],
   ]
@@ -320,7 +320,7 @@ describe "Yast::OpsTest" do
     end
   end
 
-  #test case format is [value1,value2,result]
+  # test case format is [value1,value2,result]
   MODULO_TESTCASES = [
     [nil,1,nil],
     [1,nil,nil],
@@ -334,7 +334,7 @@ describe "Yast::OpsTest" do
     end
   end
 
-  #test case format is [value1,value2,result]
+  # test case format is [value1,value2,result]
   BITWISE_AND_TESTCASES = [
     [nil,1,nil],
     [1,nil,nil],
@@ -349,7 +349,7 @@ describe "Yast::OpsTest" do
     end
   end
 
-  #test case format is [value1,value2,result]
+  # test case format is [value1,value2,result]
   BITWISE_OR_TESTCASES = [
     [nil,1,nil],
     [1,nil,nil],
@@ -364,7 +364,7 @@ describe "Yast::OpsTest" do
     end
   end
 
-  #test case format is [value1,value2,result]
+  # test case format is [value1,value2,result]
   BITWISE_XOR_TESTCASES = [
     [nil,1,nil],
     [1,nil,nil],
@@ -379,7 +379,7 @@ describe "Yast::OpsTest" do
     end
   end
 
-  #test case format is [value1,value2,result]
+  # test case format is [value1,value2,result]
   SHIFT_LEFT_TESTCASES = [
     [nil,1,nil],
     [1,nil,nil],
@@ -394,7 +394,7 @@ describe "Yast::OpsTest" do
     end
   end
  
-  #test case format is [value1,value2,result]
+  # test case format is [value1,value2,result]
   SHIFT_RIGHT_TESTCASES = [
     [nil,1,nil],
     [1,nil,nil],
@@ -409,7 +409,7 @@ describe "Yast::OpsTest" do
     end
   end
 
-  #test case format is [value1,value2,result]
+  # test case format is [value1,value2,result]
   LOGICAL_AND_TESTCASES = [
     [nil,true,false],
     [true,nil,false],
@@ -424,7 +424,7 @@ describe "Yast::OpsTest" do
     end
   end
 
-  #test case format is [value1,value2,result]
+  # test case format is [value1,value2,result]
   LOGICAL_OR_TESTCASES = [
     [nil,true,true],
     [true,nil,true],
@@ -439,7 +439,7 @@ describe "Yast::OpsTest" do
     end
   end
 
-  #test case format is [value,result]
+  # test case format is [value,result]
   UNARY_MINUS_TESTCASES = [
     [nil,nil],
     [1,-1],
@@ -452,7 +452,7 @@ describe "Yast::OpsTest" do
     end
   end
 
-  #test case format is [value,result]
+  # test case format is [value,result]
   LOGICAL_NOT_TESTCASES = [
     [nil,nil],
     [true,false],
@@ -465,7 +465,7 @@ describe "Yast::OpsTest" do
     end
   end
 
-  #test case format is [value,result]
+  # test case format is [value,result]
   BITWISE_NOT_TESTCASES = [
     [nil,nil],
     [5,-6],

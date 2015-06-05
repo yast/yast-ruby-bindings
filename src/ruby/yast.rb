@@ -21,7 +21,7 @@
 # Load the native part (.so)
 require 'yastx'
 
-#load global Yast module
+# load global Yast module
 require 'yast/yast'
 
 # load inside moduls

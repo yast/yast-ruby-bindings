@@ -189,7 +189,7 @@ module Yast
         result = eval(code, GLOBAL_WFM_CONTEXT.binding, client)
 
         allowed_types = Ops::TYPES_MAP.values.flatten
-        allowed_types.delete(::Object) #remove generic type for any
+        allowed_types.delete(::Object) # remove generic type for any
 
         # check if response is allowed
         allowed = allowed_types.any? { |t| result.is_a? t }

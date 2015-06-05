@@ -2,7 +2,7 @@ require "yast/yast"
 require "yast/path"
 require "yast/logger"
 
-#predefine term to avoid circular dependency
+# predefine term to avoid circular dependency
 class Yast::Term;end
 class Yast::FunRef;end
 class Yast::YReference;end
@@ -341,7 +341,7 @@ END
     # @deprecated use ruby native operator !
     # @note for nil returns nil to be compatible with ycp implementation
     def self.logical_not value
-      #Yast really do it!!!
+      # Yast really do it!!!
       return nil if value.nil?
 
       return !value
@@ -413,7 +413,7 @@ END
     # Checks if object is given YCP type. There is also shorfcuts for most of types in 
     # format is_<type>
     def self.is (object, type)
-      type = "function" if type =~ /\(.*\)/ #reference to function
+      type = "function" if type =~ /\(.*\)/ # reference to function
       type.gsub!(/<.*>/, "")
       type.gsub!(/\s+/, "")
       classes = TYPES_MAP[type]
@@ -440,7 +440,7 @@ END
       def <=>(second)
         min_size = [@value.size,second.size].min
         0.upto(min_size-1) do |i|
-          #stupid nil handling
+          # stupid nil handling
           fval = @value[i]
           sval = second[i]
           if (sval.nil? && !fval.nil? )
@@ -493,7 +493,7 @@ END
         @value = value
         @localized = localized
       end
-      #ordered classes from low priority to high
+      # ordered classes from low priority to high
       # Only tricky part is Fixnum/Bignum, which is in fact same, so it has special handling in code
       CLASS_ORDER = [ ::NilClass, ::FalseClass, ::TrueClass, ::Fixnum, ::Bignum, ::Float,
                       ::String, Yast::Path, ::Symbol, ::Array, Yast::Term, ::Hash ]
@@ -503,7 +503,7 @@ END
           when ::Array
             return ListComparator.new(@value, @localized) <=> second
           when ::NilClass
-            return 0 #comparison of two nils is equality
+            return 0 # comparison of two nils is equality
           when ::Hash
             return HashComparator.new(@value, @localized) <=> second
           when ::String

@@ -20,7 +20,7 @@ module Yast
     end
 
     res = Builtins.sformat(*args)
-    res.gsub!(/%/,"%%") #reescape all %
+    res.gsub!(/%/,"%%") # reescape all %
     caller[caller_frame] =~ /(.+):(\d+):in `([^']+)'/
     y2_logger(level, "Ruby", $1, $2.to_i, "", res)
 

@@ -1,6 +1,6 @@
 require "yastx"
 
-#predefine term to avoid circular dependency
+# predefine term to avoid circular dependency
 class Yast::Term;end
 class Yast::FunRef;end
 class Yast::YReference;end
@@ -54,11 +54,11 @@ module Yast
   #   end
   def self.deep_copy object, options = {}
     case object
-    when Numeric,TrueClass,FalseClass,NilClass,Symbol #immutable
+    when Numeric,TrueClass,FalseClass,NilClass,Symbol # immutable
       object
-    when ::String, Yast::Path, Yast::Byteblock #immutable in sense of yast buildins
+    when ::String, Yast::Path, Yast::Byteblock # immutable in sense of yast buildins
       options[:full] ? object.clone : object
-    when Yast::FunRef, Yast::ArgRef, Yast::External, Yast::YReference, Yast::YCode #contains only reference somewhere
+    when Yast::FunRef, Yast::ArgRef, Yast::External, Yast::YReference, Yast::YCode # contains only reference somewhere
       object
     when ::Hash
       object.reduce({}) do |acc,kv|
@@ -70,7 +70,7 @@ module Yast
        acc << deep_copy(v)
      end
     else
-      object.clone #deep copy
+      object.clone # deep copy
     end
   end
 

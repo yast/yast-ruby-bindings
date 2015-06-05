@@ -49,7 +49,7 @@ END
       from = options[:from].dup
       to = options[:to].dup
 
-      #ignore whitespaces and specialization in types
+      # ignore whitespaces and specialization in types
       to.gsub!(/<.*>/, "")
       to.gsub!(/\s+/, "")
       from.gsub!(/<.*>/, "")

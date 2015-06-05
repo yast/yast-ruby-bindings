@@ -140,7 +140,7 @@ describe "BuiltinsTest" do
     expect(Yast::Builtins.regexpsub("aaabbb", "(.*ab)", "s_\\1_e")).to eq("s_aaab_e")
     expect(Yast::Builtins.regexpsub("aaabbb", "(.*ba)", "s_\\1_e")).to eq(nil)
 
-    #from sysconfig remove whitespaces
+    # from sysconfig remove whitespaces
     expect(Yast::Builtins.regexpsub(" lest test\tsrst\t", "^[ \t]*(([^ \t]*[ \t]*[^ \t]+)*)[ \t]*$", "\\1")).to eq("lest test\tsrst")
     expect(Yast::Builtins.regexpsub("", "^[ \t]*(([^ \t]*[ \t]*[^ \t]+)*)[ \t]*$", "\\1")).to eq("")
     expect(Yast::Builtins.regexpsub("  \t  ", "^[ \t]*(([^ \t]*[ \t]*[^ \t]+)*)[ \t]*$", "\\1")).to eq("")
@@ -654,7 +654,7 @@ describe "BuiltinsTest" do
     SWAP_TESTDATA.each do |list,offset1,offset2,result|
       list_prev = list.nil? ? nil : list.dup 
       expect(Yast::Builtins::List.swap(list, offset1, offset2)).to eq(result)
-      #check that list is not modified
+      # check that list is not modified
       expect(list).to eq(list_prev)
     end
   end
@@ -674,7 +674,7 @@ describe "BuiltinsTest" do
     PREPEND_TESTDATA.each do |list,element,result|
       list_prev = list.nil? ? nil : list.dup 
       expect(Yast::Builtins.prepend(list, element)).to eq(result)
-      #check that list is not modified
+      # check that list is not modified
       expect(list).to eq(list_prev)
     end 
   end
@@ -691,7 +691,7 @@ describe "BuiltinsTest" do
     SUBLIST_TEST_DATA_WITH_LEN.each do |list,offset,length,result|
       list_prev = list.nil? ? nil : list.dup 
       expect(Yast::Builtins.sublist(list, offset, length)).to eq(result)
-      #check that list is not modified
+      # check that list is not modified
       expect(list).to eq(list_prev)
     end 
   end
@@ -707,7 +707,7 @@ describe "BuiltinsTest" do
     SUBLIST_TEST_DATA_WITHOUT_LEN.each do |list,offset,result|
       list_prev = list.nil? ? nil : list.dup 
       expect(Yast::Builtins.sublist(list, offset)).to eq(result)
-      #check that list is not modified
+      # check that list is not modified
       expect(list).to eq(list_prev)
     end 
   end
