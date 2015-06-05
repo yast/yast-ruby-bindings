@@ -407,7 +407,7 @@ describe "BuiltinsTest" do
     test_hash = {2=>3,3=>4}
     expect(Yast::Builtins.filter(test_hash) {|i,j| next true }).to eq(Hash[2=>3,3=>4])
     expect(Yast::Builtins.filter(test_hash){ |i,j| next i>2 }).to eq(Hash[3=>4])
-    expect(Yast::Builtins.filter(test_hash){ |i,j| next i>4 }).to eq(Hash.new)
+    expect(Yast::Builtins.filter(test_hash){ |i,j| next i>4 }).to eq({})
   end
 
   it "tests each list" do
