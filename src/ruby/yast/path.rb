@@ -55,7 +55,7 @@ module Yast
       return size <=> other.size
     end
 
-  private
+    private
     attr_reader :components
     COMPLEX_CHAR_REGEX = /[^a-zA-Z0-9_-]/
     SIMPLE_CHAR_REGEX = /[a-zA-Z0-9_-]/
