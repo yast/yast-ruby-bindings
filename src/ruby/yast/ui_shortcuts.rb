@@ -79,7 +79,7 @@ module Yast
       :id,
       :item,
       :header,
-      :opt,
+      :opt
     ]
 
     # for each symbol define a util function that will create a term

@@ -21,7 +21,7 @@ describe "BuiltinsTest" do
      Yast::Path.new(".sysconfig"),
      Yast::Path.new(".etc.sysconfig")],
     [Yast::Path.new(".etc"), "sysconfig", Yast::Path.new(".etc.sysconfig")],
-    [Yast::Term.new(:a, :b), :c, Yast::Term.new(:a, :b, :c)],
+    [Yast::Term.new(:a, :b), :c, Yast::Term.new(:a, :b, :c)]
   ]
   it "tests add" do
     ADD_TEST_DATA.each do |object, element, result|
@@ -527,7 +527,7 @@ describe "BuiltinsTest" do
     [[1, 2], [3, 4], [1, 2, 3, 4]],
     [[1, 2, 3, 1], [3, 4], [1, 2, 3, 4]],
     [[1, 2, nil], [3, nil, 4], [1, 2, nil, 3, 4]],
-    [{ 1 => 2, 2 => 3 }, { 2 => 10, 4 => 5 }, { 1 => 2, 2 => 10, 4 => 5 }],
+    [{ 1 => 2, 2 => 3 }, { 2 => 10, 4 => 5 }, { 1 => 2, 2 => 10, 4 => 5 }]
   ]
   it "tests union list" do
     UNION_TESTDATA.each do |first, second, result|
@@ -595,7 +595,7 @@ describe "BuiltinsTest" do
     [[[1, 2], nil], nil],
     [[[1, 2], [3, nil]], [1, 2, 3, nil]],
     [[[0, 1], [2, [3, 4]]], [0, 1, 2, [3, 4]]],
-    [[[0, 1], [2, 3], [3, 4]], [0, 1, 2, 3, 3, 4]],
+    [[[0, 1], [2, 3], [3, 4]], [0, 1, 2, 3, 3, 4]]
   ]
   it "tests flatten" do
     FLATTEN_TESTDATA.each do |value, result|
@@ -648,7 +648,7 @@ describe "BuiltinsTest" do
     [[0, 1, 2, 3], 0, 3, [3, 2, 1, 0]],
     [[0, 1, 2, 3], 0, 2, [2, 1, 0, 3]],
     [[0, 1, 2, 3], 1, 3, [0, 3, 2, 1]],
-    [[0, 1, 2, 3], 2, 2, [0, 1, 2, 3]],
+    [[0, 1, 2, 3], 2, 2, [0, 1, 2, 3]]
   ]
   it "tests list swap" do
     SWAP_TESTDATA.each do |list, offset1, offset2, result|
@@ -668,7 +668,7 @@ describe "BuiltinsTest" do
   PREPEND_TESTDATA = [
     [nil, 5, nil],
     [[0, 1], 5, [5, 0, 1]],
-    [[1, 2], nil, [nil, 1, 2]],
+    [[1, 2], nil, [nil, 1, 2]]
   ]
   it "tests prepend" do
     PREPEND_TESTDATA.each do |list, element, result|
@@ -685,7 +685,7 @@ describe "BuiltinsTest" do
     [[0, 1], 2, 1, nil],
     [[0, 1], 1, 2, nil],
     [[0, 1], 1, 1, [1]],
-    [[0, 1], 1, 0, []],
+    [[0, 1], 1, 0, []]
   ]
   it "tests sublist with len" do
     SUBLIST_TEST_DATA_WITH_LEN.each do |list, offset, length, result|
@@ -701,7 +701,7 @@ describe "BuiltinsTest" do
     [[0, 1], nil, nil],
     [[0, 1], 2, nil],
     [[0, 1], 0, [0, 1]],
-    [[0, 1], 1, [1]],
+    [[0, 1], 1, [1]]
   ]
   it "tests sublist without len" do
     SUBLIST_TEST_DATA_WITHOUT_LEN.each do |list, offset, result|
@@ -861,7 +861,7 @@ describe "BuiltinsTest" do
   EVAL_TEST_DATA = [
     [nil, nil],
     [5, 5],
-    [proc { "15" }, "15"],
+    [proc { "15" }, "15"]
   ]
 
   it "tests eval" do

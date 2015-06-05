@@ -23,7 +23,7 @@ describe "OpsTest" do
     [5, "any", "integer", 5],
     [5.5, "any", "integer", 5],
     [5.9, "any", "integer", 5],
-    [5, "any", "float", 5.0],
+    [5, "any", "float", 5.0]
   ]
 
   it "tests convert" do

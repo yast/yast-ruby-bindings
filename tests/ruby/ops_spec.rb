@@ -265,7 +265,7 @@ describe "Yast::OpsTest" do
     ["s", "c", "sc"],
     ["s", 15, "s15"],
     ["s", :c, "sc"],
-    ["s", Yast::Path.new(".etc"), "s.etc"],
+    ["s", Yast::Path.new(".etc"), "s.etc"]
   ]
 
   it "tests add" do
@@ -280,7 +280,7 @@ describe "Yast::OpsTest" do
     [1, nil, nil],
     [nil, nil, nil],
     [1, 2, -1],
-    [1.1, 1.1, 0.0],
+    [1.1, 1.1, 0.0]
   ]
 
   it "tests subtract" do
@@ -295,7 +295,7 @@ describe "Yast::OpsTest" do
     [1, nil, nil],
     [nil, nil, nil],
     [1, 2, 2],
-    [1.5, 2.0, 3.0],
+    [1.5, 2.0, 3.0]
   ]
 
   it "tests multiply" do
@@ -311,7 +311,7 @@ describe "Yast::OpsTest" do
     [nil, nil, nil],
     [2, 0, nil], # yes fantastic yast allows division by zero
     [2, 1, 2],
-    [3.0, 1.5, 2.0],
+    [3.0, 1.5, 2.0]
   ]
 
   it "tests divide" do
@@ -325,7 +325,7 @@ describe "Yast::OpsTest" do
     [nil, 1, nil],
     [1, nil, nil],
     [nil, nil, nil],
-    [5, 2, 1],
+    [5, 2, 1]
   ]
 
   it "tests modulo" do
@@ -340,7 +340,7 @@ describe "Yast::OpsTest" do
     [1, nil, nil],
     [nil, nil, nil],
     [5, 3, 1],
-    [5, 4, 4],
+    [5, 4, 4]
   ]
 
   it "tests bitwise and" do
@@ -355,7 +355,7 @@ describe "Yast::OpsTest" do
     [1, nil, nil],
     [nil, nil, nil],
     [5, 3, 7],
-    [5, 4, 5],
+    [5, 4, 5]
   ]
 
   it "tests bitwise or" do
@@ -370,7 +370,7 @@ describe "Yast::OpsTest" do
     [1, nil, nil],
     [nil, nil, nil],
     [5, 3, 6],
-    [5, 4, 1],
+    [5, 4, 1]
   ]
 
   it "tests bitwise xor" do
@@ -385,7 +385,7 @@ describe "Yast::OpsTest" do
     [1, nil, nil],
     [nil, nil, nil],
     [1, 2, 4],
-    [2, 2, 8],
+    [2, 2, 8]
   ]
 
   it "tests shift left" do
@@ -400,7 +400,7 @@ describe "Yast::OpsTest" do
     [1, nil, nil],
     [nil, nil, nil],
     [4, 2, 1],
-    [8, 2, 2],
+    [8, 2, 2]
   ]
 
   it "tests shift right" do
@@ -415,7 +415,7 @@ describe "Yast::OpsTest" do
     [true, nil, false],
     [nil, nil, false],
     [true, false, false],
-    [true, true, true],
+    [true, true, true]
   ]
 
   it "tests logical and" do
@@ -430,7 +430,7 @@ describe "Yast::OpsTest" do
     [true, nil, true],
     [nil, nil, false],
     [true, false, true],
-    [true, true, true],
+    [true, true, true]
   ]
 
   it "tests logical or" do
@@ -443,7 +443,7 @@ describe "Yast::OpsTest" do
   UNARY_MINUS_TESTCASES = [
     [nil, nil],
     [1, -1],
-    [5.5, -5.5],
+    [5.5, -5.5]
   ]
 
   it "tests unary minus" do
@@ -456,7 +456,7 @@ describe "Yast::OpsTest" do
   LOGICAL_NOT_TESTCASES = [
     [nil, nil],
     [true, false],
-    [false, true],
+    [false, true]
   ]
 
   it "tests logical not" do
