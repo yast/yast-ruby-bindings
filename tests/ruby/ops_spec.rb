@@ -393,7 +393,7 @@ describe "Yast::OpsTest" do
       expect(Yast::Ops.shift_left(first, second)).to eq(result)
     end
   end
- 
+
   # test case format is [value1,value2,result]
   SHIFT_RIGHT_TESTCASES = [
     [nil, 1, nil],

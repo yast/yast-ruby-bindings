@@ -410,7 +410,7 @@ END
       end"
     end
 
-    # Checks if object is given YCP type. There is also shorfcuts for most of types in 
+    # Checks if object is given YCP type. There is also shorfcuts for most of types in
     # format is_<type>
     def self.is(object, type)
       type = "function" if type =~ /\(.*\)/ # reference to function
@@ -443,7 +443,7 @@ END
           # stupid nil handling
           fval = @value[i]
           sval = second[i]
-          if sval.nil? && !fval.nil? 
+          if sval.nil? && !fval.nil?
             return 1
           end
 

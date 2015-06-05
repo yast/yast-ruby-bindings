@@ -652,7 +652,7 @@ describe "BuiltinsTest" do
   ]
   it "tests list swap" do
     SWAP_TESTDATA.each do |list, offset1, offset2, result|
-      list_prev = list.nil? ? nil : list.dup 
+      list_prev = list.nil? ? nil : list.dup
       expect(Yast::Builtins::List.swap(list, offset1, offset2)).to eq(result)
       # check that list is not modified
       expect(list).to eq(list_prev)
@@ -672,11 +672,11 @@ describe "BuiltinsTest" do
   ]
   it "tests prepend" do
     PREPEND_TESTDATA.each do |list, element, result|
-      list_prev = list.nil? ? nil : list.dup 
+      list_prev = list.nil? ? nil : list.dup
       expect(Yast::Builtins.prepend(list, element)).to eq(result)
       # check that list is not modified
       expect(list).to eq(list_prev)
-    end 
+    end
   end
 
   SUBLIST_TEST_DATA_WITH_LEN = [
@@ -689,11 +689,11 @@ describe "BuiltinsTest" do
   ]
   it "tests sublist with len" do
     SUBLIST_TEST_DATA_WITH_LEN.each do |list, offset, length, result|
-      list_prev = list.nil? ? nil : list.dup 
+      list_prev = list.nil? ? nil : list.dup
       expect(Yast::Builtins.sublist(list, offset, length)).to eq(result)
       # check that list is not modified
       expect(list).to eq(list_prev)
-    end 
+    end
   end
 
   SUBLIST_TEST_DATA_WITHOUT_LEN = [
@@ -705,11 +705,11 @@ describe "BuiltinsTest" do
   ]
   it "tests sublist without len" do
     SUBLIST_TEST_DATA_WITHOUT_LEN.each do |list, offset, result|
-      list_prev = list.nil? ? nil : list.dup 
+      list_prev = list.nil? ? nil : list.dup
       expect(Yast::Builtins.sublist(list, offset)).to eq(result)
       # check that list is not modified
       expect(list).to eq(list_prev)
-    end 
+    end
   end
 
   it "tests mapmap" do
