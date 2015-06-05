@@ -156,9 +156,7 @@ Style/OpMethod:
 Style/SingleLineBlockParams:
   Enabled: false
 
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: ExactNameMatch, AllowPredicates, AllowDSLWriters, Whitelist.
+# Offense count: 1 (@__last_exception)
 Style/TrivialAccessors:
   Enabled: false
 
