@@ -196,5 +196,3 @@ module Yast
     base.const_set(modules.last, m) unless base.constants.include?(modules.last.to_sym)
   end
 end
-
-

@@ -74,4 +74,3 @@ module Yast
     y2_logger_helper(5, args)
   end
 end # module YaST
-
