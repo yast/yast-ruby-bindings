@@ -18,7 +18,7 @@ class MyTestClass
   end
 
   publish function: :test, type: "string(integer,term)"
-  def test(a, b)
+  def test(_a, _b)
     "test"
   end
 end

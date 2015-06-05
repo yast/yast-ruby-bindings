@@ -659,14 +659,14 @@ module Yast
 
     # Log an user-level system message to the y2changes
     # @note do nothing now, concept is quite unclear
-    def self.y2useritem(*args)
+    def self.y2useritem(*_args)
       # TODO implement it
       nil
     end
 
     # Log an user-level addional message to the y2changes
     # @note do nothing now, concept is quite unclear
-    def self.y2usernote(*args)
+    def self.y2usernote(*_args)
       # TODO implement it
       nil
     end

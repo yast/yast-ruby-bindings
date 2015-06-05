@@ -13,7 +13,7 @@ module Yast
     # location of the caller
     CALL_FRAME = 2
 
-    def add(severity, progname = nil, message = nil, &block)
+    def add(severity, _progname = nil, message = nil, &_block)
       message = yield if block_given?
 
       case severity
@@ -34,7 +34,7 @@ module Yast
       end
     end
 
-    def initialize(*args)
+    def initialize(*_args)
       # do not write to any file, the actual logging is implemented in add()
       super(nil)
       # process also debug messages but might not be logged in the end
