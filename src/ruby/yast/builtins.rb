@@ -1055,7 +1055,7 @@ module Yast
         ss1 = set1.sort
         ss2 = set2.sort
         res = []
-        until ss1.empty? || ss2.empty? do
+        until ss1.empty? || ss2.empty?
           i1 = ss1.last
           i2 = ss2.last
           case i1 <=> i2
@@ -1086,7 +1086,7 @@ module Yast
         ss1 = set1.sort
         ss2 = set2.sort
         res = []
-        until ss1.empty? || ss2.empty? do
+        until ss1.empty? || ss2.empty?
           i1 = ss1.last
           i2 = ss2.last
           case i1 <=> i2
@@ -1110,7 +1110,7 @@ module Yast
         ss1 = set1.sort
         ss2 = set2.sort
         res = []
-        until ss1.empty? || ss2.empty? do
+        until ss1.empty? || ss2.empty?
           i1 = ss1.last
           i2 = ss2.last
           case i1 <=> i2

@@ -159,8 +159,3 @@ Style/SingleLineBlockParams:
 # Offense count: 1 (@__last_exception)
 Style/TrivialAccessors:
   Enabled: false
-
-# Offense count: 3
-# Cop supports --auto-correct.
-Style/WhileUntilDo:
-  Enabled: false
