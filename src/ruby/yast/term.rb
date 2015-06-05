@@ -84,7 +84,7 @@ module Yast
     end
 
     def to_s
-      "`#{value} (#{params.map { |p| Yast::Builtins.inside_tostring p }.join ', '})"
+      "`#{value} (#{params.map { |p| Yast::Builtins.inside_tostring p }.join ", "})"
     end
 
     def <=>(other)
