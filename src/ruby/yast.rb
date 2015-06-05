@@ -49,7 +49,7 @@ require "yast/wfm"
 # unshift it in reverse order to keep precedence
 Yast.y2paths.reverse.each do |p|
   dir_path = File.join(p, "lib")
-  if File.exists? dir_path
+  if File.exist? dir_path
     $LOAD_PATH.unshift dir_path
   end
 end
