@@ -348,10 +348,10 @@ module Yast
       def self.reduce *params, &block
         return nil if params.first.nil?
         list = if params.size == 2 #so first is default and second is list
-            return nil if params[1].nil?
-            [params.first].concat(Yast.deep_copy(params[1]))
+                 return nil if params[1].nil?
+                 [params.first].concat(Yast.deep_copy(params[1]))
                else
-            params.first
+                 params.first
           end
         return Yast.deep_copy(list).reduce &block
       end
@@ -433,9 +433,9 @@ module Yast
       return nil if array.nil?
 
       res = if block_given?
-        array.sort { |x,y| block.call(x,y) ? -1 : 1 }
+              array.sort { |x,y| block.call(x,y) ? -1 : 1 }
             else
-        array.sort {|x,y| Yast::Ops.comparable_object(x) <=> y }
+              array.sort {|x,y| Yast::Ops.comparable_object(x) <=> y }
       end
 
       Yast.deep_copy(res)

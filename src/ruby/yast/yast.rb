@@ -66,9 +66,9 @@ module Yast
         acc
       end
     when ::Array
-       object.reduce([]) do |acc,v|
-        acc << deep_copy(v)
-      end
+      object.reduce([]) do |acc,v|
+       acc << deep_copy(v)
+     end
     else
       object.clone #deep copy
     end
@@ -144,9 +144,9 @@ module Yast
     # Handle multilevel modules like YaPI::Network
     modules[0..-2].each do |module_|
       tmp_m = if base.constants.include?(module_.to_sym)
-          base.const_get(module_)
+                base.const_get(module_)
               else
-          base.const_set(module_, ::Module.new)
+                base.const_set(module_, ::Module.new)
         end
       base = tmp_m
     end
@@ -167,9 +167,9 @@ module Yast
     end
 
     m = if base.constants.include?(modules.last.to_sym)
-        base.const_get(modules.last)
+          base.const_get(modules.last)
         else
-        ::Module.new
+          ::Module.new
       end
     symbols(mname).each do |sname,stype|
       next if sname.empty?
