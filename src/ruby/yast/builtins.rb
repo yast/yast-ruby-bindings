@@ -579,7 +579,7 @@ module Yast
           "%"
         when /%([1-9])/
           pos = $1.to_i - 1
-          if (pos < args.size)
+          if pos < args.size
             tostring args[pos]
           else
             Yast.y2warning 1, "sformat: Illegal argument number #{match}, maximum is %#{args.size-1}."
@@ -1055,7 +1055,7 @@ module Yast
         ss1 = set1.sort
         ss2 = set2.sort
         res = []
-        until (ss1.empty? || ss2.empty?) do
+        until ss1.empty? || ss2.empty? do
           i1 = ss1.last
           i2 = ss2.last
           case i1 <=> i2
@@ -1086,7 +1086,7 @@ module Yast
         ss1 = set1.sort
         ss2 = set2.sort
         res = []
-        until (ss1.empty? || ss2.empty?) do
+        until ss1.empty? || ss2.empty? do
           i1 = ss1.last
           i2 = ss2.last
           case i1 <=> i2
@@ -1110,7 +1110,7 @@ module Yast
         ss1 = set1.sort
         ss2 = set2.sort
         res = []
-        until (ss1.empty? || ss2.empty?) do
+        until ss1.empty? || ss2.empty? do
           i1 = ss1.last
           i2 = ss2.last
           case i1 <=> i2

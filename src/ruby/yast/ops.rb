@@ -443,7 +443,7 @@ END
           # stupid nil handling
           fval = @value[i]
           sval = second[i]
-          if (sval.nil? && !fval.nil? )
+          if sval.nil? && !fval.nil? 
             return 1
           end
 

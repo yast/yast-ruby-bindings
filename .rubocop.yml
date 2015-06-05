@@ -151,12 +151,6 @@ Style/Next:
 Style/OpMethod:
   Enabled: false
 
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: AllowSafeAssignment.
-Style/ParenthesesAroundCondition:
-  Enabled: false
-
 # Offense count: 9
 # Cop supports --auto-correct.
 Style/PerlBackrefs:
