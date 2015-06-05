@@ -151,11 +151,6 @@ Style/Next:
 Style/OpMethod:
   Enabled: false
 
-# Offense count: 5
-# Cop supports --auto-correct.
-Style/SelfAssignment:
-  Enabled: false
-
 # Offense count: 3
 # Cop supports --auto-correct.
 # Configuration parameters: AllowAsExpressionSeparator.

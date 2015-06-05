@@ -1073,10 +1073,10 @@ module Yast
           end
         end
         unless ss1.empty?
-          res = res + ss1.reverse
+          res += ss1.reverse
         end
         unless ss2.empty?
-          res = res + ss2.reverse
+          res += ss2.reverse
         end
         Yast.deep_copy(res.reverse)
       end
@@ -1130,10 +1130,10 @@ module Yast
         end
 
         unless ss1.empty?
-          res = res + ss1.reverse
+          res += ss1.reverse
         end
         unless ss2.empty?
-          res = res + ss2.reverse
+          res += ss2.reverse
         end
 
         Yast.deep_copy(res.reverse)

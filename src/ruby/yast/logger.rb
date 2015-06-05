@@ -15,7 +15,7 @@ module Yast
         args.shift
         caller_frame = 2
       else
-        caller_frame = caller_frame + args.shift
+        caller_frame += args.shift
       end
     end
 
