@@ -576,12 +576,12 @@ describe "BuiltinsTest" do
   end
 
   TOFLOAT_TESTDATA = [
-   [ 1, 1.0 ],
-   [ nil, nil],
-   [ "42", 42.0],
-   [ "89.3", 89.3 ],
-   [ "test", 0.0 ],
-   [ :test, nil ]
+    [ 1, 1.0 ],
+    [ nil, nil],
+    [ "42", 42.0],
+    [ "89.3", 89.3 ],
+    [ "test", 0.0 ],
+    [ :test, nil ]
   ]
   it "tests tofloat" do
     TOFLOAT_TESTDATA.each do |value,result|
