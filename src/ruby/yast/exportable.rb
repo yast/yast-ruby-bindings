@@ -36,8 +36,8 @@ module Yast
       raise "Missing signature" unless options[:type]
       # convert type to full specification
       type = options[:type].delete " \t"
-      type = type.gsub(/map([^<]|$)/,'map<any,any>\\1')
-      type = type.gsub(/list([^<]|$)/,'list<any>\\1')
+      type = type.gsub(/map([^<]|$)/, 'map<any,any>\\1')
+      type = type.gsub(/list([^<]|$)/, 'list<any>\\1')
       options[:type] = type
       if options[:function]
         published_functions[options[:function]] = ExportData.new options
@@ -61,7 +61,7 @@ module Yast
 
     # Extend by {ExceptionReporter} to allow exported module report last exception
     def self.extended(mod)
-      mod.send(:include,ExceptionReporter)
+      mod.send(:include, ExceptionReporter)
     end
   end
 end

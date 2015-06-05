@@ -3,10 +3,10 @@ require "yast/path"
 require "yast/logger"
 
 # predefine term to avoid circular dependency
-class Yast::Term;end
-class Yast::FunRef;end
-class Yast::YReference;end
-class Yast::Byteblock;end
+class Yast::Term; end
+class Yast::FunRef; end
+class Yast::YReference; end
+class Yast::Byteblock; end
 
 module Yast
   module Ops
@@ -15,10 +15,10 @@ module Yast
       'any'       => ::Object,
       'nil'       => ::NilClass,
       'void'      => ::NilClass,
-      'boolean'   => [::TrueClass,::FalseClass],
+      'boolean'   => [::TrueClass, ::FalseClass],
       'string'    => ::String,
       'symbol'    => ::Symbol,
-      'integer'   => [::Fixnum,::Bignum],
+      'integer'   => [::Fixnum, ::Bignum],
       'float'     => ::Float,
       'list'      => ::Array,
       'map'       => ::Hash,
@@ -111,7 +111,7 @@ END
     # @return The value in *object* at *indexes*, if it exists.
     #    The *default* value if *object*, *indexes* are nil, have wrong type,
     #    or *indexes* does not exist in *object*.
-    def self.get (object, indexes, default=nil, skip_frames = 0)
+    def self.get(object, indexes, default = nil, skip_frames = 0)
       res = object
       default = Yast.deep_copy(default)
       skip_frames += OUTER_LOOP_FRAME
@@ -121,7 +121,7 @@ END
         case res
         when ::Array, Yast::Term
           if i.is_a? Fixnum
-            if (0..res.size-1).include? i
+            if (0..res.size - 1).include? i
               res = res[i]
             else
               Yast.y2milestone skip_frames, "Index #{i} is out of array size"
@@ -185,7 +185,7 @@ END
     # - *value* may need a deep copy: `object[indexes] = deep_copy(value)`
     #
     # @return [void]
-    def self.set (object, indexes, value)
+    def self.set(object, indexes, value)
       return if indexes.nil? || object.nil?
 
       indexes = [indexes] unless indexes.is_a? ::Array
@@ -196,7 +196,7 @@ END
         case res
         when ::Array, Yast::Term
           if i.is_a? Fixnum
-            if (0..res.size-1).include? i
+            if (0..res.size - 1).include? i
               res = res[i]
             else
               Yast.y2warning OUTER_LOOP_FRAME, "Index #{i} is out of array size"
@@ -412,7 +412,7 @@ END
 
     # Checks if object is given YCP type. There is also shorfcuts for most of types in 
     # format is_<type>
-    def self.is (object, type)
+    def self.is(object, type)
       type = "function" if type =~ /\(.*\)/ # reference to function
       type.gsub!(/<.*>/, "")
       type.gsub!(/\s+/, "")
@@ -438,8 +438,8 @@ END
       end
 
       def <=>(second)
-        min_size = [@value.size,second.size].min
-        0.upto(min_size-1) do |i|
+        min_size = [@value.size, second.size].min
+        0.upto(min_size - 1) do |i|
           # stupid nil handling
           fval = @value[i]
           sval = second[i]
@@ -466,13 +466,13 @@ END
       end
 
       def <=>(second)
-        comparator = proc do |k1,k2|
+        comparator = proc do |k1, k2|
           Ops.comparable_object(k1, @localized) <=> k2
         end
         keys = @value.keys.sort(&comparator)
         other_keys = second.keys.sort(&comparator)
 
-        0.upto(keys.size-1) do |i|
+        0.upto(keys.size - 1) do |i|
           res = Ops.comparable_object(keys[i], @localized) <=> other_keys[i]
           return res if res != 0
 
@@ -495,9 +495,9 @@ END
       end
       # ordered classes from low priority to high
       # Only tricky part is Fixnum/Bignum, which is in fact same, so it has special handling in code
-      CLASS_ORDER = [ ::NilClass, ::FalseClass, ::TrueClass, ::Fixnum, ::Bignum, ::Float,
-                      ::String, Yast::Path, ::Symbol, ::Array, Yast::Term, ::Hash ]
-      def <=> (second)
+      CLASS_ORDER = [::NilClass, ::FalseClass, ::TrueClass, ::Fixnum, ::Bignum, ::Float,
+                     ::String, Yast::Path, ::Symbol, ::Array, Yast::Term, ::Hash]
+      def <=>(second)
         if @value.class == second.class
           case @value
           when ::Array
@@ -508,7 +508,7 @@ END
             return HashComparator.new(@value, @localized) <=> second
           when ::String
             if @localized
-              return Yast.strcoll(@value,second)
+              return Yast.strcoll(@value, second)
             else
               return @value <=> second
             end

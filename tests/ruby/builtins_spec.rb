@@ -14,14 +14,14 @@ require "yast/break"
 
 describe "BuiltinsTest" do
   ADD_TEST_DATA = [
-    [ nil, 5, nil],
-    [ [1,2], 3, [1,2,3]],
-    [ { a: 1, b: 2 },[:c,3],{ a: 1, b: 2, c: 3}],
-    [ Yast::Path.new(".etc"),
-      Yast::Path.new(".sysconfig"),
-      Yast::Path.new(".etc.sysconfig") ],
-    [ Yast::Path.new(".etc"), "sysconfig", Yast::Path.new(".etc.sysconfig")],
-    [ Yast::Term.new(:a, :b), :c, Yast::Term.new(:a, :b, :c)],
+    [nil, 5, nil],
+    [[1, 2], 3, [1, 2, 3]],
+    [{ a: 1, b: 2 }, [:c, 3], { a: 1, b: 2, c: 3 }],
+    [Yast::Path.new(".etc"),
+     Yast::Path.new(".sysconfig"),
+     Yast::Path.new(".etc.sysconfig")],
+    [Yast::Path.new(".etc"), "sysconfig", Yast::Path.new(".etc.sysconfig")],
+    [Yast::Term.new(:a, :b), :c, Yast::Term.new(:a, :b, :c)],
   ]
   it "tests add" do
     ADD_TEST_DATA.each do |object, element, result|
@@ -245,10 +245,10 @@ describe "BuiltinsTest" do
   end
 
   it "tests find list" do
-    test_list = [2,3,4]
-    expect(Yast::Builtins.find(nil) {|i| next true }).to eq(nil)
-    expect(Yast::Builtins.find(test_list) {|i| next true }).to eq(2)
-    expect(Yast::Builtins.find(test_list) {|i| next i>2 }).to eq(3)
+    test_list = [2, 3, 4]
+    expect(Yast::Builtins.find(nil) { |i| next true }).to eq(nil)
+    expect(Yast::Builtins.find(test_list) { |i| next true }).to eq(2)
+    expect(Yast::Builtins.find(test_list) { |i| next i > 2 }).to eq(3)
   end
 
   it "tests contains" do
@@ -283,7 +283,7 @@ describe "BuiltinsTest" do
 
     expect(Yast::Builtins.sort(["10", 1, 2, 10, 20, "15", 200, 5])).to eq([1, 2, 5, 10, 20, 200, "10", "15"])
 
-    expect(Yast::Builtins.sort([10,1,20]){ |x,y| x>y }).to eq([20,10,1])
+    expect(Yast::Builtins.sort([10, 1, 20]) { |x, y| x > y }).to eq([20, 10, 1])
   end
 
   it "tests toset" do
@@ -298,21 +298,21 @@ describe "BuiltinsTest" do
   end
 
   TOSTRING_TEST_DATA = [
-    [ nil, "nil"],
-    [ true, "true"],
-    [ false, "false"],
-    [ "test", "test" ],
-    [ :test, "`test"],
-    [ 1, "1" ],
-    [ 1.453, "1.453" ],
-    [ ["test",:lest], '["test", `lest]'],
-    [ Yast::Path.new(".etc.syconfig.\"-arg\""), ".etc.syconfig.\"-arg\""],
-    [ Yast::Term.new(:id,["test",:lest]), "`id ([\"test\", `lest])"],
-    [ { test: "data" }, "$[`test:\"data\"]"]
+    [nil, "nil"],
+    [true, "true"],
+    [false, "false"],
+    ["test", "test"],
+    [:test, "`test"],
+    [1, "1"],
+    [1.453, "1.453"],
+    [["test", :lest], '["test", `lest]'],
+    [Yast::Path.new(".etc.syconfig.\"-arg\""), ".etc.syconfig.\"-arg\""],
+    [Yast::Term.new(:id, ["test", :lest]), "`id ([\"test\", `lest])"],
+    [{ test: "data" }, "$[`test:\"data\"]"]
   ]
 
   it "tests tostring" do
-    TOSTRING_TEST_DATA.each do |input,result|
+    TOSTRING_TEST_DATA.each do |input, result|
       expect(Yast::Builtins.tostring(input)).to eq(result)
     end
   end
@@ -322,14 +322,14 @@ describe "BuiltinsTest" do
   end
 
   it "tests change" do
-    a = [1,2]
-    expect(Yast::Builtins.change(a,3)).to eq([1,2,3])
-    expect(a).to eq([1,2])
+    a = [1, 2]
+    expect(Yast::Builtins.change(a, 3)).to eq([1, 2, 3])
+    expect(a).to eq([1, 2])
 
     h = { a: 1, b: 2 }
     res = Yast::Builtins.change(h, :c, 3)
     expect(res).to eq(a: 1, b: 2, c: 3)
-    expect(h).to eq(({a: 1, b: 2}))
+    expect(h).to eq(({ a: 1, b: 2 }))
   end
 
   it "tests isempty" do
@@ -385,34 +385,34 @@ describe "BuiltinsTest" do
     expect(Yast::Builtins.haskey(nil, "")).to eq(nil)
 
     expect(Yast::Builtins.haskey({}, "")).to eq(false)
-    expect(Yast::Builtins.haskey({"a" => 1}, "a")).to eq(true)
-    expect(Yast::Builtins.haskey({"a" => 1}, "b")).to eq(false)
+    expect(Yast::Builtins.haskey({ "a" => 1 }, "a")).to eq(true)
+    expect(Yast::Builtins.haskey({ "a" => 1 }, "b")).to eq(false)
   end
 
   it "tests lookup" do
     expect(Yast::Builtins.lookup({}, nil, nil)).to eq(nil)
     expect(Yast::Builtins.lookup({}, "", nil)).to eq(nil)
-    expect(Yast::Builtins.lookup({"a" => 1}, "a", 2)).to eq(1)
-    expect(Yast::Builtins.lookup({"a" => 1}, "b", 2)).to eq(2)
+    expect(Yast::Builtins.lookup({ "a" => 1 }, "a", 2)).to eq(1)
+    expect(Yast::Builtins.lookup({ "a" => 1 }, "b", 2)).to eq(2)
   end
 
   it "tests filter list" do
     expect(Yast::Builtins.filter(nil)).to eq(nil)
-    expect(Yast::Builtins.filter([2,3,4]) {|i| next true }).to eq([2,3,4])
-    expect(Yast::Builtins.filter([2,3,4]){ |i| next i>3 }).to eq([4])
-    expect(Yast::Builtins.filter([2,3,4]){ |i| next i>4 }).to eq([])
+    expect(Yast::Builtins.filter([2, 3, 4]) { |i| next true }).to eq([2, 3, 4])
+    expect(Yast::Builtins.filter([2, 3, 4]) { |i| next i > 3 }).to eq([4])
+    expect(Yast::Builtins.filter([2, 3, 4]) { |i| next i > 4 }).to eq([])
   end
 
   it "tests filter map" do
-    test_hash = {2=>3,3=>4}
-    expect(Yast::Builtins.filter(test_hash) {|i,j| next true }).to eq(Hash[2=>3,3=>4])
-    expect(Yast::Builtins.filter(test_hash){ |i,j| next i>2 }).to eq(Hash[3=>4])
-    expect(Yast::Builtins.filter(test_hash){ |i,j| next i>4 }).to eq({})
+    test_hash = { 2 => 3, 3 => 4 }
+    expect(Yast::Builtins.filter(test_hash) { |i, j| next true }).to eq(Hash[2 => 3, 3 => 4])
+    expect(Yast::Builtins.filter(test_hash) { |i, j| next i > 2 }).to eq(Hash[3 => 4])
+    expect(Yast::Builtins.filter(test_hash) { |i, j| next i > 4 }).to eq({})
   end
 
   it "tests each list" do
-    expect(Yast::Builtins.foreach(nil){|i| next 5}).to eq(nil)
-    list = [2,3,4]
+    expect(Yast::Builtins.foreach(nil) { |i| next 5 }).to eq(nil)
+    list = [2, 3, 4]
     cycle_detect = 0
     res = Yast::Builtins.foreach(list) do |l|
       cycle_detect += 1
@@ -430,45 +430,45 @@ describe "BuiltinsTest" do
     cycle_detect = 0
     res = Yast::Builtins.foreach(list) do |l|
       cycle_detect += 1
-      next l+3
+      next l + 3
     end
     expect(res).to eq(7)
     expect(cycle_detect).to eq(3)
   end
 
   it "tests each map" do
-    map = {2=>3,3=>4}
+    map = { 2 => 3, 3 => 4 }
     cycle_detect = 0
-    res = Yast::Builtins.foreach(map) do |k,v|
+    res = Yast::Builtins.foreach(map) do |k, v|
       cycle_detect += 1
       next k
     end
     expect(res).to eq(3)
     expect(cycle_detect).to eq(2)
     cycle_detect = 0
-    res = Yast::Builtins.foreach(map) do |k,v|
+    res = Yast::Builtins.foreach(map) do |k, v|
       cycle_detect += 1
       raise Yast::Break if k == 2
     end
     expect(res).to eq(nil)
     expect(cycle_detect).to eq(1)
     cycle_detect = 0
-    res = Yast::Builtins.foreach(map) do |k,v|
+    res = Yast::Builtins.foreach(map) do |k, v|
       cycle_detect += 1
-      next v+3
+      next v + 3
     end
     expect(res).to eq(7)
     expect(cycle_detect).to eq(2)
   end
 
   it "tests maplist list" do
-    expect(Yast::Builtins.maplist(nil){|i| next 5}).to eq(nil)
+    expect(Yast::Builtins.maplist(nil) { |i| next 5 }).to eq(nil)
 
-    list = [2,3,4]
+    list = [2, 3, 4]
     res = Yast::Builtins.maplist(list) do |l|
       next l
     end
-    expect(res).to eq([2,3,4])
+    expect(res).to eq([2, 3, 4])
 
     res = Yast::Builtins.maplist(list) do |l|
       raise Yast::Break if l == 3
@@ -478,59 +478,59 @@ describe "BuiltinsTest" do
 
     res = Yast::Builtins.maplist(list) do |l|
       next if l == 3
-      next l+3
+      next l + 3
     end
-    expect(res).to eq([5,nil,7])
+    expect(res).to eq([5, nil, 7])
   end
 
   it "tests remove list" do
-    list = [0,1,2,3]
+    list = [0, 1, 2, 3]
 
-    expect(Yast::Builtins.remove(nil,2)).to eq(nil)
+    expect(Yast::Builtins.remove(nil, 2)).to eq(nil)
 
-    expect(Yast::Builtins.remove(list,2)).to eq([0,1,3])
+    expect(Yast::Builtins.remove(list, 2)).to eq([0, 1, 3])
 
-    expect(Yast::Builtins.remove(list,5)).to eq([0,1,2,3])
-    expect(Yast::Builtins.remove(list,-1)).to eq([0,1,2,3])
+    expect(Yast::Builtins.remove(list, 5)).to eq([0, 1, 2, 3])
+    expect(Yast::Builtins.remove(list, -1)).to eq([0, 1, 2, 3])
   end
 
   it "tests remove map" do
-    list = {0 => 1, 2 => 3}
+    list = { 0 => 1, 2 => 3 }
 
-    expect(Yast::Builtins.remove(nil,2)).to eq(nil)
+    expect(Yast::Builtins.remove(nil, 2)).to eq(nil)
 
-    expect(Yast::Builtins.remove(list,2)).to eq(Hash[0 => 1])
-    expect(list).to eq(Hash[ 0 => 1, 2 => 3])
+    expect(Yast::Builtins.remove(list, 2)).to eq(Hash[0 => 1])
+    expect(list).to eq(Hash[0 => 1, 2 => 3])
 
-    expect(Yast::Builtins.remove(list,5)).to eq(Hash[ 0 => 1, 2 => 3])
+    expect(Yast::Builtins.remove(list, 5)).to eq(Hash[0 => 1, 2 => 3])
   end
 
   it "tests remove term" do
     term = Yast::Term.new :t, :a, :b
 
-    expect(Yast::Builtins.remove(term,2)).to eq(Yast::Term.new(:t,:a))
-    expect(term).to eq(Yast::Term.new(:t,:a,:b))
+    expect(Yast::Builtins.remove(term, 2)).to eq(Yast::Term.new(:t, :a))
+    expect(term).to eq(Yast::Term.new(:t, :a, :b))
 
-    expect(Yast::Builtins.remove(term,5)).to eq(Yast::Term.new(:t,:a,:b))
-    expect(Yast::Builtins.remove(term,-1)).to eq(Yast::Term.new(:t,:a,:b))
+    expect(Yast::Builtins.remove(term, 5)).to eq(Yast::Term.new(:t, :a, :b))
+    expect(Yast::Builtins.remove(term, -1)).to eq(Yast::Term.new(:t, :a, :b))
   end
 
   it "tests select" do
-    list = [0,1,2]
-    expect(Yast::Builtins.select(list,1,-1)).to eq 1
+    list = [0, 1, 2]
+    expect(Yast::Builtins.select(list, 1, -1)).to eq 1
   end
 
   UNION_TESTDATA = [
-    [nil,nil,nil],
-    [nil,[3,4],nil],
-    [[1,2],nil,nil],
-    [[1,2],[3,4],[1,2,3,4]],
-    [[1,2,3,1],[3,4],[1,2,3,4]],
-    [[1,2,nil],[3,nil,4],[1,2,nil,3,4]],
-    [{1=>2,2=>3},{2=>10,4=>5},{1=>2,2=>10,4=>5}],
+    [nil, nil, nil],
+    [nil, [3, 4], nil],
+    [[1, 2], nil, nil],
+    [[1, 2], [3, 4], [1, 2, 3, 4]],
+    [[1, 2, 3, 1], [3, 4], [1, 2, 3, 4]],
+    [[1, 2, nil], [3, nil, 4], [1, 2, nil, 3, 4]],
+    [{ 1 => 2, 2 => 3 }, { 2 => 10, 4 => 5 }, { 1 => 2, 2 => 10, 4 => 5 }],
   ]
   it "tests union list" do
-    UNION_TESTDATA.each do |first,second,result|
+    UNION_TESTDATA.each do |first, second, result|
       expect(Yast::Builtins.union(first, second)).to eq(result)
     end
   end
@@ -560,10 +560,10 @@ describe "BuiltinsTest" do
   end
 
   it "tests float pow" do
-    expect(Yast::Builtins::Float.pow(nil,10.0)).to eq(nil)
+    expect(Yast::Builtins::Float.pow(nil, 10.0)).to eq(nil)
 
-    expect(Yast::Builtins::Float.pow(10.0,3.0)).to eq(1000.0)
-    expect(Yast::Builtins::Float.pow(10.0,3.0).class).to eq(Float)
+    expect(Yast::Builtins::Float.pow(10.0, 3.0)).to eq(1000.0)
+    expect(Yast::Builtins::Float.pow(10.0, 3.0).class).to eq(Float)
   end
 
   it "tests float trunc" do
@@ -576,82 +576,82 @@ describe "BuiltinsTest" do
   end
 
   TOFLOAT_TESTDATA = [
-    [ 1, 1.0 ],
-    [ nil, nil],
-    [ "42", 42.0],
-    [ "89.3", 89.3 ],
-    [ "test", 0.0 ],
-    [ :test, nil ]
+    [1, 1.0],
+    [nil, nil],
+    ["42", 42.0],
+    ["89.3", 89.3],
+    ["test", 0.0],
+    [:test, nil]
   ]
   it "tests tofloat" do
-    TOFLOAT_TESTDATA.each do |value,result|
+    TOFLOAT_TESTDATA.each do |value, result|
       expect(Yast::Builtins.tofloat(value)).to eq(result)
     end
   end
 
   FLATTEN_TESTDATA = [
     [nil, nil],
-    [[nil],nil],
-    [[[1,2],nil],nil],
-    [[[1,2],[3,nil]],[1,2,3,nil]],
-    [[[0,1],[2,[3,4]]],[0,1,2,[3,4]]],
-    [[[0,1],[2,3],[3,4]],[0,1,2,3,3,4]],
+    [[nil], nil],
+    [[[1, 2], nil], nil],
+    [[[1, 2], [3, nil]], [1, 2, 3, nil]],
+    [[[0, 1], [2, [3, 4]]], [0, 1, 2, [3, 4]]],
+    [[[0, 1], [2, 3], [3, 4]], [0, 1, 2, 3, 3, 4]],
   ]
   it "tests flatten" do
-    FLATTEN_TESTDATA.each do |value,result|
+    FLATTEN_TESTDATA.each do |value, result|
       expect(Yast::Builtins.flatten(value)).to eq(result)
     end
   end
 
   it "tests list reduce 1param" do
-    list = [0,1,2,3,2,1,-5]
-    res = Yast::Builtins::List.reduce(list) do |x,y|
-      next x>y ? x : y
+    list = [0, 1, 2, 3, 2, 1, -5]
+    res = Yast::Builtins::List.reduce(list) do |x, y|
+      next x > y ? x : y
     end
 
     expect(res).to eq(3)
 
-    res = Yast::Builtins::List.reduce(list) do |x,y|
+    res = Yast::Builtins::List.reduce(list) do |x, y|
       next x + y
     end
     expect(res).to eq(4)
 
-    expect(Yast::Builtins::List.reduce([]) { |x,y| next x }).to eq(nil)
-    expect(Yast::Builtins::List.reduce(nil) { |x,y| next x }).to eq(nil)
+    expect(Yast::Builtins::List.reduce([]) { |x, y| next x }).to eq(nil)
+    expect(Yast::Builtins::List.reduce(nil) { |x, y| next x }).to eq(nil)
   end
 
   it "tests list reduce 2params" do
-    list = [0,1,2,3,2,1,-5]
-    res = Yast::Builtins::List.reduce(15,list) do |x,y|
-      next x>y ? x : y
+    list = [0, 1, 2, 3, 2, 1, -5]
+    res = Yast::Builtins::List.reduce(15, list) do |x, y|
+      next x > y ? x : y
     end
 
     expect(res).to eq(15)
 
-    res = Yast::Builtins::List.reduce(15,list) do |x,y|
+    res = Yast::Builtins::List.reduce(15, list) do |x, y|
       next x + y
     end
 
     expect(res).to eq(19)
 
-    expect(Yast::Builtins::List.reduce(5,[]) { |x,y| next x }).to eq(5)
-    expect(Yast::Builtins::List.reduce(nil,nil) { |x,y| next x }).to eq(nil)
+    expect(Yast::Builtins::List.reduce(5, []) { |x, y| next x }).to eq(5)
+    expect(Yast::Builtins::List.reduce(nil, nil) { |x, y| next x }).to eq(nil)
   end
 
   SWAP_TESTDATA = [
-    [nil,nil,nil,nil],
-    [[0],nil,0,nil],
-    [[0],0,nil,nil],
-    [[0],0,nil,nil],
-    [[5,6],-1,1,[5,6]],
-    [[5,6],0,2,[5,6]],
-    [[0,1,2,3],0,3,[3,2,1,0]],
-    [[0,1,2,3],0,2,[2,1,0,3]],
-    [[0,1,2,3],1,3,[0,3,2,1]],
-    [[0,1,2,3],2,2,[0,1,2,3]],
+    [nil, nil, nil, nil],
+    [[0], nil, 0, nil],
+    [[0], 0, nil, nil],
+    [[0], 0, nil, nil],
+    [[5, 6], -1, 1, [5, 6]],
+    [[5, 6], 0, 2, [5, 6]],
+    [[0, 1, 2, 3], 0, 3, [3, 2, 1, 0]],
+    [[0, 1, 2, 3], 0, 2, [2, 1, 0, 3]],
+    [[0, 1, 2, 3], 1, 3, [0, 3, 2, 1]],
+    [[0, 1, 2, 3], 2, 2, [0, 1, 2, 3]],
   ]
   it "tests list swap" do
-    SWAP_TESTDATA.each do |list,offset1,offset2,result|
+    SWAP_TESTDATA.each do |list, offset1, offset2, result|
       list_prev = list.nil? ? nil : list.dup 
       expect(Yast::Builtins::List.swap(list, offset1, offset2)).to eq(result)
       # check that list is not modified
@@ -660,18 +660,18 @@ describe "BuiltinsTest" do
   end
 
   it "tests listmap" do
-    expect(Yast::Builtins.listmap(nil) {|i| next {i => i}}).to eq(nil)
+    expect(Yast::Builtins.listmap(nil) { |i| next { i => i } }).to eq(nil)
 
-    expect(Yast::Builtins.listmap([1,2]) {|i| next {i => i}}).to eq(Hash[1=>1,2=>2])
+    expect(Yast::Builtins.listmap([1, 2]) { |i| next { i => i } }).to eq(Hash[1 => 1, 2 => 2])
   end
 
   PREPEND_TESTDATA = [
-    [nil,5,nil],
-    [[0,1],5,[5,0,1]],
-    [[1,2],nil,[nil,1,2]],
+    [nil, 5, nil],
+    [[0, 1], 5, [5, 0, 1]],
+    [[1, 2], nil, [nil, 1, 2]],
   ]
   it "tests prepend" do
-    PREPEND_TESTDATA.each do |list,element,result|
+    PREPEND_TESTDATA.each do |list, element, result|
       list_prev = list.nil? ? nil : list.dup 
       expect(Yast::Builtins.prepend(list, element)).to eq(result)
       # check that list is not modified
@@ -680,15 +680,15 @@ describe "BuiltinsTest" do
   end
 
   SUBLIST_TEST_DATA_WITH_LEN = [
-    [nil,1,1,nil],
-    [[0,1],nil,nil,nil],
-    [[0,1],2,1,nil],
-    [[0,1],1,2,nil],
-    [[0,1],1,1,[1]],
-    [[0,1],1,0,[]],
+    [nil, 1, 1, nil],
+    [[0, 1], nil, nil, nil],
+    [[0, 1], 2, 1, nil],
+    [[0, 1], 1, 2, nil],
+    [[0, 1], 1, 1, [1]],
+    [[0, 1], 1, 0, []],
   ]
   it "tests sublist with len" do
-    SUBLIST_TEST_DATA_WITH_LEN.each do |list,offset,length,result|
+    SUBLIST_TEST_DATA_WITH_LEN.each do |list, offset, length, result|
       list_prev = list.nil? ? nil : list.dup 
       expect(Yast::Builtins.sublist(list, offset, length)).to eq(result)
       # check that list is not modified
@@ -697,14 +697,14 @@ describe "BuiltinsTest" do
   end
 
   SUBLIST_TEST_DATA_WITHOUT_LEN = [
-    [nil,1,nil],
-    [[0,1],nil,nil],
-    [[0,1],2,nil],
-    [[0,1],0,[0,1]],
-    [[0,1],1,[1]],
+    [nil, 1, nil],
+    [[0, 1], nil, nil],
+    [[0, 1], 2, nil],
+    [[0, 1], 0, [0, 1]],
+    [[0, 1], 1, [1]],
   ]
   it "tests sublist without len" do
-    SUBLIST_TEST_DATA_WITHOUT_LEN.each do |list,offset,result|
+    SUBLIST_TEST_DATA_WITHOUT_LEN.each do |list, offset, result|
       list_prev = list.nil? ? nil : list.dup 
       expect(Yast::Builtins.sublist(list, offset)).to eq(result)
       # check that list is not modified
@@ -713,25 +713,25 @@ describe "BuiltinsTest" do
   end
 
   it "tests mapmap" do
-    expect(Yast::Builtins.listmap(nil) {|k,v| next {v => k}}).to eq(nil)
+    expect(Yast::Builtins.listmap(nil) { |k, v| next { v => k } }).to eq(nil)
 
     # bnc#888585: Incorrect input class raises TypeError
     # Only Hash/nil is allowed
-    expect{Yast::Builtins.mapmap(false) {|k,v| {v => k}}}.to raise_error(TypeError)
-    expect{Yast::Builtins.mapmap(['Array']) {|k,v| {v => k}}}.to raise_error(TypeError)
-    expect{Yast::Builtins.mapmap('String') {|k,v| {v => k}}}.to raise_error(TypeError)
-    expect{Yast::Builtins.mapmap(32) {|k,v| {v => k}}}.to raise_error(TypeError)
+    expect { Yast::Builtins.mapmap(false) { |k, v| { v => k } } }.to raise_error(TypeError)
+    expect { Yast::Builtins.mapmap(['Array']) { |k, v| { v => k } } }.to raise_error(TypeError)
+    expect { Yast::Builtins.mapmap('String') { |k, v| { v => k } } }.to raise_error(TypeError)
+    expect { Yast::Builtins.mapmap(32) { |k, v| { v => k } } }.to raise_error(TypeError)
 
-    expect(Yast::Builtins.mapmap(nil) {|k,v| {v => k}}).to eq(nil)
+    expect(Yast::Builtins.mapmap(nil) { |k, v| { v => k } }).to eq(nil)
 
-    expect(Yast::Builtins.mapmap(2=>1,4=>3) {|k,v| next {v => k}}).to eq(Hash[1=>2,3=>4])
+    expect(Yast::Builtins.mapmap(2 => 1, 4 => 3) { |k, v| next { v => k } }).to eq(Hash[1 => 2, 3 => 4])
 
-    res = Yast::Builtins.mapmap(2=>1,4=>3) do |k,v|
+    res = Yast::Builtins.mapmap(2 => 1, 4 => 3) do |k, v|
       raise Yast::Break if k == 4
-      next {v => k}
+      next { v => k }
     end
 
-    expect(res).to eq Hash[1=>2]
+    expect(res).to eq Hash[1 => 2]
   end
 
   it "tests random" do
@@ -756,68 +756,68 @@ describe "BuiltinsTest" do
     expect(Yast::Builtins.sformat(nil)).to eq(nil)
     expect(Yast::Builtins.sformat("test")).to eq("test")
     expect(Yast::Builtins.sformat("test %1")).to eq("test %1")
-    expect(Yast::Builtins.sformat("test%a","lest")).to eq("test")
-    expect(Yast::Builtins.sformat("test%%","lest")).to eq("test%")
-    expect(Yast::Builtins.sformat("test%3%2%1",1,2,3)).to eq("test321")
+    expect(Yast::Builtins.sformat("test%a", "lest")).to eq("test")
+    expect(Yast::Builtins.sformat("test%%", "lest")).to eq("test%")
+    expect(Yast::Builtins.sformat("test%3%2%1", 1, 2, 3)).to eq("test321")
 
-    expect(Yast::Builtins.sformat("test %1","lest")).to eq("test lest")
+    expect(Yast::Builtins.sformat("test %1", "lest")).to eq("test lest")
 
-    expect(Yast::Builtins.sformat("test %1",:lest)).to eq("test `lest")
+    expect(Yast::Builtins.sformat("test %1", :lest)).to eq("test `lest")
   end
 
   FINDFIRSTOF_TESTDATA = [
-    [nil,"ab",nil],
-    ["ab",nil,nil],
-    ["aaaaa","z",nil],
-    ["abcdefg","cxdv",2],
-    ["\s\t\n","\s",0],
-    ["\s\t\n","\n",2]
+    [nil, "ab", nil],
+    ["ab", nil, nil],
+    ["aaaaa", "z", nil],
+    ["abcdefg", "cxdv", 2],
+    ["\s\t\n", "\s", 0],
+    ["\s\t\n", "\n", 2]
   ]
   it "tests findfirstof" do
-    FINDFIRSTOF_TESTDATA.each do |string,chars,result|
-      expect(Yast::Builtins.findfirstof(string,chars)).to eq(result)
+    FINDFIRSTOF_TESTDATA.each do |string, chars, result|
+      expect(Yast::Builtins.findfirstof(string, chars)).to eq(result)
     end
   end
 
   FINDFIRSTNOTOF_TESTDATA = [
-    [nil,"ab",nil],
-    ["ab",nil,nil],
-    ["aaaaa","z",0],
-    ["abcdefg","cxdv",0],
-    ["\s\t\n","\s",1],
-    ["\n\n\t","\n",2]
+    [nil, "ab", nil],
+    ["ab", nil, nil],
+    ["aaaaa", "z", 0],
+    ["abcdefg", "cxdv", 0],
+    ["\s\t\n", "\s", 1],
+    ["\n\n\t", "\n", 2]
   ]
   it "tests findfirstnotof" do
-    FINDFIRSTNOTOF_TESTDATA.each do |string,chars,result|
-      expect(Yast::Builtins.findfirstnotof(string,chars)).to eq(result)
+    FINDFIRSTNOTOF_TESTDATA.each do |string, chars, result|
+      expect(Yast::Builtins.findfirstnotof(string, chars)).to eq(result)
     end
   end
 
   FINDLASTOF_TESTDATA = [
-    [nil,"ab",nil],
-    ["ab",nil,nil],
-    ["aaaaa","z",nil],
-    ["abcdefg","cxdv",3],
-    ["\s\t\n","\s",0],
-    ["\s\t\n","\n",2]
+    [nil, "ab", nil],
+    ["ab", nil, nil],
+    ["aaaaa", "z", nil],
+    ["abcdefg", "cxdv", 3],
+    ["\s\t\n", "\s", 0],
+    ["\s\t\n", "\n", 2]
   ]
   it "tests findlastof" do
-    FINDLASTOF_TESTDATA.each do |string,chars,result|
-      expect(Yast::Builtins.findlastof(string,chars)).to eq(result)
+    FINDLASTOF_TESTDATA.each do |string, chars, result|
+      expect(Yast::Builtins.findlastof(string, chars)).to eq(result)
     end
   end
 
   FINDLASTNOTOF_TESTDATA = [
-    [nil,"ab",nil],
-    ["ab",nil,nil],
-    ["aaaaa","z",4],
-    ["abcdefg","cxdv",6],
-    ["\s\t\s","\s",1],
-    ["\t\n\n","\n",0]
+    [nil, "ab", nil],
+    ["ab", nil, nil],
+    ["aaaaa", "z", 4],
+    ["abcdefg", "cxdv", 6],
+    ["\s\t\s", "\s", 1],
+    ["\t\n\n", "\n", 0]
   ]
   it "tests findlastnotof" do
-    FINDLASTNOTOF_TESTDATA.each do |string,chars,result|
-      expect(Yast::Builtins.findlastnotof(string,chars)).to eq(result)
+    FINDLASTNOTOF_TESTDATA.each do |string, chars, result|
+      expect(Yast::Builtins.findlastnotof(string, chars)).to eq(result)
     end
   end
 
@@ -861,7 +861,7 @@ describe "BuiltinsTest" do
   EVAL_TEST_DATA = [
     [nil, nil],
     [5, 5],
-    [ proc { "15" }, "15"],
+    [proc { "15" }, "15"],
   ]
 
   it "tests eval" do
@@ -871,13 +871,13 @@ describe "BuiltinsTest" do
   end
 
   DELETECHARS_TEST_DATA = [
-    [ nil, nil, nil ],
-    [ "test", nil, nil ],
-    [ nil, "a", nil ],
-    [ "a", "abcdefgh", ""],
-    [ "abc", "cde", "ab"],
-    [ "abc", "a-c", "b"],
-    [ "abc", "^ab", "c"]
+    [nil, nil, nil],
+    ["test", nil, nil],
+    [nil, "a", nil],
+    ["a", "abcdefgh", ""],
+    ["abc", "cde", "ab"],
+    ["abc", "a-c", "b"],
+    ["abc", "^ab", "c"]
   ]
 
   it "tests deletechars" do
@@ -887,13 +887,13 @@ describe "BuiltinsTest" do
   end
 
   FILTERCHARS_TEST_DATA = [
-    [ nil, nil, nil ],
-    [ "test", nil, nil ],
-    [ nil, "a", nil ],
-    [ "a", "abcdefgh", "a"],
-    [ "abc", "cde", "c"],
-    [ "abc", "a-c", "ac"],
-    [ "abc", "^ab", "ab"]
+    [nil, nil, nil],
+    ["test", nil, nil],
+    [nil, "a", nil],
+    ["a", "abcdefgh", "a"],
+    ["abc", "cde", "c"],
+    ["abc", "a-c", "ac"],
+    ["abc", "^ab", "ab"]
   ]
 
   it "tests filterchars" do
@@ -903,10 +903,10 @@ describe "BuiltinsTest" do
   end
 
   TOTERM_TEST_DATA = [
-    [ "test", Yast::Term.new(:test) ],
-    [ :test, Yast::Term.new(:test) ],
-    [ [:test, [:lest, :srst]], Yast::Term.new(:test, :lest, :srst) ],
-    [ [Yast::Term.new(:test)], Yast::Term.new(:test) ]
+    ["test", Yast::Term.new(:test)],
+    [:test, Yast::Term.new(:test)],
+    [[:test, [:lest, :srst]], Yast::Term.new(:test, :lest, :srst)],
+    [[Yast::Term.new(:test)], Yast::Term.new(:test)]
   ]
 
   it "tests toterm" do
@@ -916,43 +916,43 @@ describe "BuiltinsTest" do
   end
 
   it "tests multiset union" do
-    expect(Yast::Builtins::Multiset.union([1,2],[2,3])).to eq([1,2,3])
+    expect(Yast::Builtins::Multiset.union([1, 2], [2, 3])).to eq([1, 2, 3])
   end
 
   it "tests multiset includes" do
-    expect(Yast::Builtins::Multiset.includes([1,2],[2,3])).to eq(false)
-    expect(Yast::Builtins::Multiset.includes([1,2],[2,2])).to eq(false)
-    expect(Yast::Builtins::Multiset.includes([1,2],[2])).to eq(true)
+    expect(Yast::Builtins::Multiset.includes([1, 2], [2, 3])).to eq(false)
+    expect(Yast::Builtins::Multiset.includes([1, 2], [2, 2])).to eq(false)
+    expect(Yast::Builtins::Multiset.includes([1, 2], [2])).to eq(true)
   end
 
   it "tests multiset difference" do
-    expect(Yast::Builtins::Multiset.difference([1,2],[2,3])).to eq([1])
+    expect(Yast::Builtins::Multiset.difference([1, 2], [2, 3])).to eq([1])
   end
 
   it "tests multiset symmetric difference" do
-    expect(Yast::Builtins::Multiset.symmetric_difference([1,2],[2,3])).to eq([1,3])
-    expect(Yast::Builtins::Multiset.symmetric_difference([1,2],[2,2])).to eq([1,2])
-    expect(Yast::Builtins::Multiset.symmetric_difference([1,1,2],[2,2,2])).to eq([1,1,2,2])
+    expect(Yast::Builtins::Multiset.symmetric_difference([1, 2], [2, 3])).to eq([1, 3])
+    expect(Yast::Builtins::Multiset.symmetric_difference([1, 2], [2, 2])).to eq([1, 2])
+    expect(Yast::Builtins::Multiset.symmetric_difference([1, 1, 2], [2, 2, 2])).to eq([1, 1, 2, 2])
   end
 
   it "tests multiset intersection" do
-    expect(Yast::Builtins::Multiset.intersection([1,2],[2,3])).to eq([2])
-    expect(Yast::Builtins::Multiset.intersection([1,2,2],[2,2,3])).to eq([2,2])
+    expect(Yast::Builtins::Multiset.intersection([1, 2], [2, 3])).to eq([2])
+    expect(Yast::Builtins::Multiset.intersection([1, 2, 2], [2, 2, 3])).to eq([2, 2])
   end
 
   it "tests multiset union" do
-    expect(Yast::Builtins::Multiset.union([1,2],[2,3])).to eq([1,2,3])
-    expect(Yast::Builtins::Multiset.union([1,2,2],[2,2,3])).to eq([1,2,2,3])
+    expect(Yast::Builtins::Multiset.union([1, 2], [2, 3])).to eq([1, 2, 3])
+    expect(Yast::Builtins::Multiset.union([1, 2, 2], [2, 2, 3])).to eq([1, 2, 2, 3])
   end
 
   it "tests multiset merge" do
-    expect(Yast::Builtins::Multiset.merge([1,2],[2,3])).to eq([1,2,2,3])
-    expect(Yast::Builtins::Multiset.merge([1,2,2],[2,2,3])).to eq([1,2,2,2,2,3])
-    expect(Yast::Builtins::Multiset.merge([2,1,2],[2,3,2])).to eq([2,1,2,2,3,2])
+    expect(Yast::Builtins::Multiset.merge([1, 2], [2, 3])).to eq([1, 2, 2, 3])
+    expect(Yast::Builtins::Multiset.merge([1, 2, 2], [2, 2, 3])).to eq([1, 2, 2, 2, 2, 3])
+    expect(Yast::Builtins::Multiset.merge([2, 1, 2], [2, 3, 2])).to eq([2, 1, 2, 2, 3, 2])
   end
 
   it "tests deep copy" do
-    a = [[1,2],[2,3]]
+    a = [[1, 2], [2, 3]]
     b = Yast.deep_copy a
     b[0][0] = 10
     expect(a[0][0]).to eq(1)

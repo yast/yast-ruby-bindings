@@ -64,7 +64,7 @@ END
       return nil if object.nil?
       return object if from == to
 
-      if from == "any" && allowed_type(object,to)
+      if from == "any" && allowed_type(object, to)
         return object
       elsif to == "float"
         return nil unless (object.is_a? Fixnum) || (object.is_a? Bignum)
@@ -90,7 +90,7 @@ END
 
       types = [types] unless types.is_a? Array
 
-      types.any? {|t|  object.is_a? t }
+      types.any? { |t|  object.is_a? t }
     end
   end
 end

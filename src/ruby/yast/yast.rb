@@ -1,10 +1,10 @@
 require "yastx"
 
 # predefine term to avoid circular dependency
-class Yast::Term;end
-class Yast::FunRef;end
-class Yast::YReference;end
-class Yast::Path;end
+class Yast::Term; end
+class Yast::FunRef; end
+class Yast::YReference; end
+class Yast::Path; end
 
 module Yast
   # @private used to extract place from backtrace
@@ -54,19 +54,19 @@ module Yast
   #   end
   def self.deep_copy(object, options = {})
     case object
-    when Numeric,TrueClass,FalseClass,NilClass,Symbol # immutable
+    when Numeric, TrueClass, FalseClass, NilClass, Symbol # immutable
       object
     when ::String, Yast::Path, Yast::Byteblock # immutable in sense of yast buildins
       options[:full] ? object.clone : object
     when Yast::FunRef, Yast::ArgRef, Yast::External, Yast::YReference, Yast::YCode # contains only reference somewhere
       object
     when ::Hash
-      object.reduce({}) do |acc,kv|
+      object.reduce({}) do |acc, kv|
         acc[deep_copy(kv[0])] = deep_copy(kv[1])
         acc
       end
     when ::Array
-      object.reduce([]) do |acc,v|
+      object.reduce([]) do |acc, v|
        acc << deep_copy(v)
      end
     else
@@ -94,7 +94,7 @@ module Yast
   # @param target [Class] where include module
   # @deprecated use "lib" directory where you can place common ruby code without any special handling.
   def self.include(target, path)
-    path_without_suffix = path.sub(/\.rb$/,"")
+    path_without_suffix = path.sub(/\.rb$/, "")
     module_name = path_without_suffix
       .gsub(/^./)     { |s| s.upcase }
       .gsub(/\/./)    { |s| s[1].upcase }
@@ -171,7 +171,7 @@ module Yast
         else
           ::Module.new
       end
-    symbols(mname).each do |sname,stype|
+    symbols(mname).each do |sname, stype|
       next if sname.empty?
       if (stype == :function)
         m.module_eval <<-"END"

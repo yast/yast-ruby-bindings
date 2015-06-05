@@ -31,9 +31,9 @@ describe "Yast::Path" do
       sysconfig = Yast::Path.new '.sysconfig'
       expect((etc + sysconfig).to_s).to eq(".etc.sysconfig")
       expect((etc + 'sysconfig').to_s).to eq('.etc."sysconfig"')
-      expect((root+root).to_s).to eq('.')
-      expect((root+etc).to_s).to eq('.etc')
-      expect((etc+root).to_s).to eq('.etc')
+      expect((root + root).to_s).to eq('.')
+      expect((root + etc).to_s).to eq('.etc')
+      expect((etc + root).to_s).to eq('.etc')
     end
   end
 

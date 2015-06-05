@@ -61,7 +61,7 @@ module Yast
     # - Returns position of a substring (-1 if not found)
     # - Searches for the first occurence of a certain element in a list
     # @deprecated use native ruby method find
-    def self.find(object, what=nil, &block)
+    def self.find(object, what = nil, &block)
       return nil if object.nil? || (what.nil? && block.nil?)
 
       case object
@@ -93,7 +93,7 @@ module Yast
         begin
           # sort keys so it behaves same as in Yast
           sort(object.keys).each do |k|
-            res = block.call(k,object[k])
+            res = block.call(k, object[k])
           end
         rescue Yast::Break
           res = nil
@@ -132,7 +132,7 @@ module Yast
         res = []
         begin
           sort(object.keys).each do |k|
-            res << block.call(Yast.deep_copy(k),Yast.deep_copy(object[k]))
+            res << block.call(Yast.deep_copy(k), Yast.deep_copy(object[k]))
           end
         rescue Yast::Break
           # break skips out of each loop, but allow to keep previous results
@@ -163,7 +163,7 @@ module Yast
       when Yast::Term
         return res if element < 1
 
-        res.params.delete_at element-1
+        res.params.delete_at element - 1
       else
         raise "Invalid type passed to remove #{object.class}"
       end
@@ -199,7 +199,7 @@ module Yast
     # Initialize random number generator - srandom(<int>)
     # Get the current random number generator seed - int srandom()
     # @deprecated use ruby native {::Kernel#srand}
-    def self.srandom(param=nil)
+    def self.srandom(param = nil)
       if param.nil?
         # be more secure here, original Yast uses Time.now with second precision
         # for seeding which is not secure enough, calling Ruby srand without
@@ -274,7 +274,7 @@ module Yast
       def self.pow(base, power)
         return nil if base.nil? || power.nil?
 
-        base ** power
+        base**power
       end
 
     	 # round to integer, towards zero
@@ -335,7 +335,7 @@ module Yast
     def self.flatten(value)
       return nil if value.nil?
 
-      value.reduce([]) do |acc,i|
+      value.reduce([]) do |acc, i|
         return nil if i.nil?
         acc.push *Yast.deep_copy(i)
       end
@@ -365,11 +365,11 @@ module Yast
 
         res = []
         if offset1 > 0
-          res.concat list[0..offset1-1]
+          res.concat list[0..offset1 - 1]
         end
         res.concat list[offset1..offset2].reverse!
-        if offset2 < list.size-1
-          res.concat list[offset2+1..-1]
+        if offset2 < list.size - 1
+          res.concat list[offset2 + 1..-1]
         end
         Yast.deep_copy(res)
       end
@@ -433,9 +433,9 @@ module Yast
       return nil if array.nil?
 
       res = if block_given?
-              array.sort { |x,y| block.call(x,y) ? -1 : 1 }
+              array.sort { |x, y| block.call(x, y) ? -1 : 1 }
             else
-              array.sort {|x,y| Yast::Ops.comparable_object(x) <=> y }
+              array.sort { |x, y| Yast::Ops.comparable_object(x) <=> y }
       end
 
       Yast.deep_copy(res)
@@ -458,14 +458,14 @@ module Yast
     # - sublist(<list>, <offset>)
     # - sublist(<list>, <offset>, <length>)
     # @deprecated use {::Array#slice} instead
-    def self.sublist(list, offset, length=DEF_LENGHT)
+    def self.sublist(list, offset, length = DEF_LENGHT)
       return nil if list.nil? || offset.nil? || length.nil?
 
-      length = list.size - offset if length==DEF_LENGHT
+      length = list.size - offset if length == DEF_LENGHT
       return nil if offset < 0 || offset >= list.size
-      return nil if length < 0 || offset+length > list.size
+      return nil if length < 0 || offset + length > list.size
 
-      Yast.deep_copy(list)[offset..offset+length-1]
+      Yast.deep_copy(list)[offset..offset + length - 1]
     end
 
     # Converts a value to a list (deprecated, use (list)VAR).
@@ -479,7 +479,7 @@ module Yast
     # @deprecated use {::Set} type or combination of #{::Array#sort} and #{::Array#uniq}
     def self.toset(array)
       return nil if array.nil?
-      res = array.uniq.sort { |x,y| Yast::Ops.comparable_object(x) <=> y }
+      res = array.uniq.sort { |x, y| Yast::Ops.comparable_object(x) <=> y }
       Yast.deep_copy(res)
     end
 
@@ -512,7 +512,7 @@ module Yast
       res = ::Hash.new
       begin
         sort(map.keys).each do |k|
-          res.merge! block.call(k,map[k])
+          res.merge! block.call(k, map[k])
         end
       rescue Yast::Break
         # break stops adding to hash
@@ -582,7 +582,7 @@ module Yast
           if pos < args.size
             tostring args[pos]
           else
-            Yast.y2warning 1, "sformat: Illegal argument number #{match}, maximum is %#{args.size-1}."
+            Yast.y2warning 1, "sformat: Illegal argument number #{match}, maximum is %#{args.size - 1}."
             ""
           end
         else
@@ -682,7 +682,7 @@ module Yast
       when Yast::Path
         return object
       when ::String
-        object = "."+object unless object.start_with?(".")
+        object = "." + object unless object.start_with?(".")
         return Yast::Path.new(object)
       else
         return nil
@@ -704,7 +704,7 @@ module Yast
 
     extend Yast::I18n
     # Translates the text using the given text domain
-    def self.dgettext (domain, text)
+    def self.dgettext(domain, text)
       old_text_domain = FastGettext.text_domain
       textdomain domain
       return _(text)
@@ -714,7 +714,7 @@ module Yast
     end
 
     # Translates the text using a locale-aware plural form handling
-    def self.dngettext (domain, singular, plural, num)
+    def self.dngettext(domain, singular, plural, num)
       old_text_domain = FastGettext.text_domain
       textdomain domain
       return n_(singular, plural, num)
@@ -724,7 +724,7 @@ module Yast
     end
 
     # Translates the text using the given text domain and path
-    def self.dpgettext (domain, dirname, text)
+    def self.dpgettext(domain, dirname, text)
       old_text_domain = FastGettext.text_domain
 
       # remember the domain => file mapping, the same domain might be
@@ -887,7 +887,7 @@ module Yast
 
     # Converts a value to a string in ycp.
     # @deprecated There is no strong reason to use this instead of inspect
-    def self.tostring(val, width=nil)
+    def self.tostring(val, width = nil)
       if width
         raise "tostring: negative 'width' argument: #{width}" if width < 0
 
@@ -911,8 +911,8 @@ module Yast
            Yast::External,
            Yast::Byteblock
         val.to_s
-      when ::Array then "[#{val.map{|a|inside_tostring(a)}.join(", ")}]"
-      when ::Hash then "$[#{sort(val.keys).map{|k|"#{inside_tostring(k)}:#{inside_tostring(val[k])}"}.join(", ")}]"
+      when ::Array then "[#{val.map { |a| inside_tostring(a) }.join(", ")}]"
+      when ::Hash then "$[#{sort(val.keys).map { |k| "#{inside_tostring(k)}:#{inside_tostring(val[k])}" }.join(", ")}]"
       when Yast::FunRef
         # TODO FIXME: Yast puts also the parameter names,
         # here the signature contains only data type without parameter name:
@@ -1007,17 +1007,17 @@ module Yast
 
     # Converts a value to a term.
     # @deprecated use {Yast::Term} constructor instead
-    def self.toterm(symbol, list=DEF_LENGHT)
+    def self.toterm(symbol, list = DEF_LENGHT)
       return nil if symbol.nil? || list.nil?
 
       case symbol
       when ::String
         return Yast::Term.new(symbol.to_sym)
       when ::Symbol
-        if list==DEF_LENGHT
+        if list == DEF_LENGHT
           return Yast::Term.new(symbol)
         else
-          return Yast::Term.new(symbol,*list)
+          return Yast::Term.new(symbol, *list)
         end
       when Yast::Term
         return symbol

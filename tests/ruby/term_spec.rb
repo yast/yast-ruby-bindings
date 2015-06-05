@@ -125,7 +125,7 @@ describe Yast::Term do
     it "returns nil if it doesn't find any matching object" do
       nested = term(:HBox, term(:InputField, term(:id, "ID")))
 
-      expect(nested.nested_find{ |o| o == 5 }).to be_nil
+      expect(nested.nested_find { |o| o == 5 }).to be_nil
     end
   end
 end

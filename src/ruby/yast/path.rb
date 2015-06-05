@@ -25,11 +25,11 @@ module Yast
       another = self.class.from_string(another) unless another.is_a? Yast::Path
       return another.clone if components.empty?
       return clone if another.empty?
-      Path.new(to_s+another.to_s)
+      Path.new(to_s + another.to_s)
     end
 
     def to_s
-      '.'+components.join('.')
+      '.' + components.join('.')
     end
 
     # gets number of elements
@@ -44,11 +44,11 @@ module Yast
 
     def <=>(other)
       return nil unless other.is_a? self.class
-      0.upto(size-1) do |i|
+      0.upto(size - 1) do |i|
         return 1 unless other.send(:components)[i]
         # we strip enclosing quotes for complex expression
-        our_component = components[i].sub(/\A"(.*)"\Z/,"\\1")
-        other_component = other.send(:components)[i].sub(/\A"(.*)"\Z/,"\\1")
+        our_component = components[i].sub(/\A"(.*)"\Z/, "\\1")
+        other_component = other.send(:components)[i].sub(/\A"(.*)"\Z/, "\\1")
         res = our_component <=> other_component
         return res if res != 0
       end
@@ -61,7 +61,7 @@ module Yast
     COMPLEX_CHAR_REGEX = /[^a-zA-Z0-9_-]/
     SIMPLE_CHAR_REGEX = /[a-zA-Z0-9_-]/
     # Rewritten yast parser
-    def load_components (value)
+    def load_components(value)
       state = :initial
       skip_next = false
       buffer = ""
@@ -129,7 +129,7 @@ module Yast
 
     def modify_buffer(buffer)
       if buffer =~ COMPLEX_CHAR_REGEX # we can get unescaped complex path from topath builtin
-        buffer = buffer.gsub(/"/,"\\\"")
+        buffer = buffer.gsub(/"/, "\\\"")
         buffer = "\"#{buffer}\""
       end
 

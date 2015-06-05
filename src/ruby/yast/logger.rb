@@ -5,7 +5,7 @@ module Yast
   module_function
 
   # @private
-  def y2_logger_helper(level,args)
+  def y2_logger_helper(level, args)
     caller_frame = 1
     backtrace = false
 
@@ -20,13 +20,13 @@ module Yast
     end
 
     res = Builtins.sformat(*args)
-    res.gsub!(/%/,"%%") # reescape all %
+    res.gsub!(/%/, "%%") # reescape all %
     caller[caller_frame] =~ /(.+):(\d+):in `([^']+)'/
     y2_logger(level, "Ruby", Regexp.last_match(1), Regexp.last_match(2).to_i, "", res)
 
     if backtrace
       y2_logger_helper(level, [2, "------------- Backtrace begin -------------"])
-      caller(3).each {|frame| y2_logger_helper(level, [4, frame])}
+      caller(3).each { |frame| y2_logger_helper(level, [4, frame]) }
       y2_logger_helper(level, [2, "------------- Backtrace end ---------------"])
     end
   end

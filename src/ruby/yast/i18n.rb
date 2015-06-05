@@ -26,7 +26,7 @@ module Yast
         available = available_locales
         if FastGettext.available_locales != available
           # reload the translations, a new language is available
-          FastGettext.translation_repositories.keys.each {|dom| FastGettext.add_text_domain(dom, path: LOCALE_DIR)}
+          FastGettext.translation_repositories.keys.each { |dom| FastGettext.add_text_domain(dom, path: LOCALE_DIR) }
           FastGettext.available_locales = available
         end
 
@@ -116,7 +116,7 @@ module Yast
     def available_locales
       # the first item is used as the fallback
       # when the requested locale is not available
-      locales = [ DEFAULT_LOCALE ]
+      locales = [DEFAULT_LOCALE]
 
       Dir["#{LOCALE_DIR}/*"].each do |f|
         locale_name = File.basename f

@@ -3,7 +3,7 @@ module Yast
   #
   # @deprecated Go out of block with standard ruby methods
   class Break < StandardError
-    def initialize(msg="Yast Break in a block")
+    def initialize(msg = "Yast Break in a block")
       super(msg)
     end
   end
