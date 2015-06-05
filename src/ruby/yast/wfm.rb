@@ -204,8 +204,8 @@ module Yast
             e.backtrace
           )
           Yast.import "Report"
-          Report.Error "Internal error. Please report a bug report with logs.\n" +
-            "Details: #{e.message}\n" +
+          Report.Error "Internal error. Please report a bug report with logs.\n" \
+            "Details: #{e.message}\n" \
             "Caller:  #{e.backtrace.first}"
         rescue Exception => e
           Builtins.y2internal("Error reporting failed with '%1' and backtrace %2",
