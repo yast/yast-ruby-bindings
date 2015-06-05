@@ -246,8 +246,8 @@ describe "BuiltinsTest" do
 
   it "tests find list" do
     test_list = [2, 3, 4]
-    expect(Yast::Builtins.find(nil) { |i| next true }).to eq(nil)
-    expect(Yast::Builtins.find(test_list) { |i| next true }).to eq(2)
+    expect(Yast::Builtins.find(nil) { |_i| next true }).to eq(nil)
+    expect(Yast::Builtins.find(test_list) { |_i| next true }).to eq(2)
     expect(Yast::Builtins.find(test_list) { |i| next i > 2 }).to eq(3)
   end
 
@@ -398,20 +398,20 @@ describe "BuiltinsTest" do
 
   it "tests filter list" do
     expect(Yast::Builtins.filter(nil)).to eq(nil)
-    expect(Yast::Builtins.filter([2, 3, 4]) { |i| next true }).to eq([2, 3, 4])
+    expect(Yast::Builtins.filter([2, 3, 4]) { |_i| next true }).to eq([2, 3, 4])
     expect(Yast::Builtins.filter([2, 3, 4]) { |i| next i > 3 }).to eq([4])
     expect(Yast::Builtins.filter([2, 3, 4]) { |i| next i > 4 }).to eq([])
   end
 
   it "tests filter map" do
     test_hash = { 2 => 3, 3 => 4 }
-    expect(Yast::Builtins.filter(test_hash) { |i, j| next true }).to eq(Hash[2 => 3, 3 => 4])
-    expect(Yast::Builtins.filter(test_hash) { |i, j| next i > 2 }).to eq(Hash[3 => 4])
-    expect(Yast::Builtins.filter(test_hash) { |i, j| next i > 4 }).to eq({})
+    expect(Yast::Builtins.filter(test_hash) { |_i, _j| next true }).to eq(Hash[2 => 3, 3 => 4])
+    expect(Yast::Builtins.filter(test_hash) { |i, _j| next i > 2 }).to eq(Hash[3 => 4])
+    expect(Yast::Builtins.filter(test_hash) { |i, _j| next i > 4 }).to eq({})
   end
 
   it "tests each list" do
-    expect(Yast::Builtins.foreach(nil) { |i| next 5 }).to eq(nil)
+    expect(Yast::Builtins.foreach(nil) { |_i| next 5 }).to eq(nil)
     list = [2, 3, 4]
     cycle_detect = 0
     res = Yast::Builtins.foreach(list) do |l|
@@ -439,21 +439,21 @@ describe "BuiltinsTest" do
   it "tests each map" do
     map = { 2 => 3, 3 => 4 }
     cycle_detect = 0
-    res = Yast::Builtins.foreach(map) do |k, v|
+    res = Yast::Builtins.foreach(map) do |k, _v|
       cycle_detect += 1
       next k
     end
     expect(res).to eq(3)
     expect(cycle_detect).to eq(2)
     cycle_detect = 0
-    res = Yast::Builtins.foreach(map) do |k, v|
+    res = Yast::Builtins.foreach(map) do |k, _v|
       cycle_detect += 1
       raise Yast::Break if k == 2
     end
     expect(res).to eq(nil)
     expect(cycle_detect).to eq(1)
     cycle_detect = 0
-    res = Yast::Builtins.foreach(map) do |k, v|
+    res = Yast::Builtins.foreach(map) do |_k, v|
       cycle_detect += 1
       next v + 3
     end
@@ -462,7 +462,7 @@ describe "BuiltinsTest" do
   end
 
   it "tests maplist list" do
-    expect(Yast::Builtins.maplist(nil) { |i| next 5 }).to eq(nil)
+    expect(Yast::Builtins.maplist(nil) { |_i| next 5 }).to eq(nil)
 
     list = [2, 3, 4]
     res = Yast::Builtins.maplist(list) do |l|
@@ -616,8 +616,8 @@ describe "BuiltinsTest" do
     end
     expect(res).to eq(4)
 
-    expect(Yast::Builtins::List.reduce([]) { |x, y| next x }).to eq(nil)
-    expect(Yast::Builtins::List.reduce(nil) { |x, y| next x }).to eq(nil)
+    expect(Yast::Builtins::List.reduce([]) { |x, _y| next x }).to eq(nil)
+    expect(Yast::Builtins::List.reduce(nil) { |x, _y| next x }).to eq(nil)
   end
 
   it "tests list reduce 2params" do
@@ -634,8 +634,8 @@ describe "BuiltinsTest" do
 
     expect(res).to eq(19)
 
-    expect(Yast::Builtins::List.reduce(5, []) { |x, y| next x }).to eq(5)
-    expect(Yast::Builtins::List.reduce(nil, nil) { |x, y| next x }).to eq(nil)
+    expect(Yast::Builtins::List.reduce(5, []) { |x, _y| next x }).to eq(5)
+    expect(Yast::Builtins::List.reduce(nil, nil) { |x, _y| next x }).to eq(nil)
   end
 
   SWAP_TESTDATA = [
