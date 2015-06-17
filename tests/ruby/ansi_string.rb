@@ -6,14 +6,14 @@ require "yast/core_ext"
 
 describe Yast::CoreExt::AnsiString do
   describe "#remove_ansi_sequences" do
-    let(:string) {
-      file = File.join(File.dirname(__FILE__), "data", filename)
-      File.open(file, "rb").read
-    }
-    let(:result) { " Cyan  Bold\n Pink  Normal\n" }
-
     context "using the AnsiString refinement" do
       using Yast::CoreExt::AnsiString
+
+      let(:string) {
+        file = File.join(File.dirname(__FILE__), "data", filename)
+        File.open(file, "rb").read
+      }
+      let(:result) { " Cyan  Bold\n Pink  Normal\n" }
 
       context "when the string contains colors" do
         let(:filename) { "ansi_colors.txt" }
@@ -62,10 +62,8 @@ describe Yast::CoreExt::AnsiString do
     end
 
     context "using the AnsiString refinement" do
-      let(:string) { "whatever" }
-
       it "is not defined" do
-        expect { string.remove_ansi_sequences }
+        expect { "a string".remove_ansi_sequences }
           .to raise_error(NoMethodError, /remove_ansi_sequences/)
       end
     end
