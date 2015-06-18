@@ -1,7 +1,7 @@
 module Yast
   module CoreExt
     module AnsiString
-      refine String do
+      refine ::String do
         # Removes color and cursor escape codes (modifying the string)
         # http://en.wikipedia.org/wiki/ANSI_escape_code
         def remove_ansi_sequences
