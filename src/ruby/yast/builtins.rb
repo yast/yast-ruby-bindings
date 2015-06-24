@@ -450,7 +450,7 @@ module Yast
       return [] if sep.empty?
 
       # the big negative value forces keeping empty values in the list
-      string.split /[#{Regexp.escape sep}]/, -1 * 2**20
+      string.split(/[#{Regexp.escape sep}]/, -1 * 2**20)
     end
 
     # @private we must mark somehow default value for length
@@ -756,7 +756,7 @@ module Yast
     def self.findfirstnotof(string, chars)
       return nil if string.nil? || chars.nil?
 
-      string.index /[^#{Regexp.escape chars}]/
+      string.index(/[^#{Regexp.escape chars}]/)
     end
 
     # Finds position of the first matching characters in string
@@ -764,7 +764,7 @@ module Yast
     def self.findfirstof(string, chars)
       return nil if string.nil? || chars.nil?
 
-      string.index /[#{Regexp.escape chars}]/
+      string.index(/[#{Regexp.escape chars}]/)
     end
 
     # Searches the last element of string that doesn't match
@@ -772,7 +772,7 @@ module Yast
     def self.findlastnotof(string, chars)
       return nil if string.nil? || chars.nil?
 
-      string.rindex /[^#{Regexp.escape chars}]/
+      string.rindex(/[^#{Regexp.escape chars}]/)
     end
 
     # Searches string for the last match
@@ -780,7 +780,7 @@ module Yast
     def self.findlastof(string, chars)
       return nil if string.nil? || chars.nil?
 
-      string.rindex /[#{Regexp.escape chars}]/
+      string.rindex(/[#{Regexp.escape chars}]/)
     end
 
     # issubstring() Yast built-in
@@ -923,7 +923,7 @@ module Yast
         # There is also extra "any" in lists/maps:
         #   Yast:    <YCPRef:list <map> bar (list <map> a)>
         #   Ruby:    <YCPRef:list <map<any,any>> bar (list <map<any,any>>)>
-        val.signature.match /(.*)\((.*)\)/
+        val.signature.match(/(.*)\((.*)\)/)
         "<YCPRef:#{Regexp.last_match(1)}#{val.remote_method.name} (#{Regexp.last_match(2)})>"
       else
         y2warning 1, "tostring builtin called on wrong type #{val.class}"

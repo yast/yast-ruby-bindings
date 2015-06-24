@@ -3,10 +3,6 @@ inherit_from:
   /usr/share/YaST2/data/devtools/data/rubocop_yast_style.yml
 
 
-# Offense count: 6
-Lint/AmbiguousRegexpLiteral:
-  Enabled: false
-
 # Offense count: 4
 # Configuration parameters: AlignWith, SupportedStyles.
 Lint/EndAlignment:
