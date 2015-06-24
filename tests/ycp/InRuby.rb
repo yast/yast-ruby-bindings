@@ -6,8 +6,4 @@ module InRuby
   def self.raising_code
     raise "Wow exception!"
   end
-
-  def self.get_hash
-    { "a" => "b", "b" => "c" }
-  end
 end

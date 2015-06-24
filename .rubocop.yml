@@ -42,10 +42,6 @@ Metrics/MethodLength:
 Metrics/PerceivedComplexity:
   Max: 18
 
-# Offense count: 1
-Style/AccessorMethodName:
-  Enabled: false
-
 # Offense count: 8
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 Style/ClassAndModuleChildren:
