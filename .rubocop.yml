@@ -92,10 +92,13 @@ Style/GuardClause:
 Style/IfUnlessModifier:
   Enabled: false
 
-# Offense count: 27
-# Configuration parameters: EnforcedStyle, SupportedStyles.
+# Yast API: WFM.SetLanguage, SCR.Read
+# i18n: N_, Nn_
 Style/MethodName:
-  Enabled: false
+  Exclude:
+    - src/ruby/yast/i18n.rb
+    - src/ruby/yast/scr.rb
+    - src/ruby/yast/wfm.rb
 
 # Offense count: 1
 # Configuration parameters: EnforcedStyle, MinBodyLength, SupportedStyles.
