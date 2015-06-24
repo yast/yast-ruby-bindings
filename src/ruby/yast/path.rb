@@ -21,11 +21,11 @@ module Yast
     end
 
     # concats path
-    def +(another)
-      another = self.class.from_string(another) unless another.is_a? Yast::Path
-      return another.clone if components.empty?
-      return clone if another.empty?
-      Path.new(to_s + another.to_s)
+    def +(other)
+      other = self.class.from_string(other) unless other.is_a? Yast::Path
+      return other.clone if components.empty?
+      return clone if other.empty?
+      Path.new(to_s + other.to_s)
     end
 
     def to_s

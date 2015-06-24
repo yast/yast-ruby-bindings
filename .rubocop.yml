@@ -106,10 +106,6 @@ Style/Next:
   Enabled: false
 
 # Offense count: 4
-Style/OpMethod:
-  Enabled: false
-
-# Offense count: 4
 # Configuration parameters: Methods.
 Style/SingleLineBlockParams:
   Enabled: false

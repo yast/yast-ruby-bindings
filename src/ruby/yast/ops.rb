@@ -437,12 +437,12 @@ END
         @localized = localized
       end
 
-      def <=>(second)
-        min_size = [@value.size, second.size].min
+      def <=>(other)
+        min_size = [@value.size, other.size].min
         0.upto(min_size - 1) do |i|
           # stupid nil handling
           fval = @value[i]
-          sval = second[i]
+          sval = other[i]
           if sval.nil? && !fval.nil?
             return 1
           end
@@ -452,7 +452,7 @@ END
           return res if res != 0
         end
         # no decision yet
-        @value.size <=> second.size
+        @value.size <=> other.size
       end
     end
 
@@ -465,22 +465,22 @@ END
         @localized = localized
       end
 
-      def <=>(second)
+      def <=>(other)
         comparator = proc do |k1, k2|
           Ops.comparable_object(k1, @localized) <=> k2
         end
         keys = @value.keys.sort(&comparator)
-        other_keys = second.keys.sort(&comparator)
+        other_keys = other.keys.sort(&comparator)
 
         0.upto(keys.size - 1) do |i|
           res = Ops.comparable_object(keys[i], @localized) <=> other_keys[i]
           return res if res != 0
 
-          res = Ops.comparable_object(@value[keys[i]], @localized) <=> second[keys[i]]
+          res = Ops.comparable_object(@value[keys[i]], @localized) <=> other[keys[i]]
           return res if res != 0
         end
 
-        @value.size <=> second.size
+        @value.size <=> other.size
       end
     end
 
@@ -497,30 +497,30 @@ END
       # Only tricky part is Fixnum/Bignum, which is in fact same, so it has special handling in code
       CLASS_ORDER = [::NilClass, ::FalseClass, ::TrueClass, ::Fixnum, ::Bignum, ::Float,
                      ::String, Yast::Path, ::Symbol, ::Array, Yast::Term, ::Hash]
-      def <=>(second)
-        if @value.class == second.class
+      def <=>(other)
+        if @value.class == other.class
           case @value
           when ::Array
-            return ListComparator.new(@value, @localized) <=> second
+            return ListComparator.new(@value, @localized) <=> other
           when ::NilClass
             return 0 # comparison of two nils is equality
           when ::Hash
-            return HashComparator.new(@value, @localized) <=> second
+            return HashComparator.new(@value, @localized) <=> other
           when ::String
             if @localized
-              return Yast.strcoll(@value, second)
+              return Yast.strcoll(@value, other)
             else
-              return @value <=> second
+              return @value <=> other
             end
           else
-            @value <=> second
+            @value <=> other
           end
         else
-          if @value.is_a?(::Numeric) && second.is_a?(::Numeric)
-            return @value <=> second
+          if @value.is_a?(::Numeric) && other.is_a?(::Numeric)
+            return @value <=> other
           end
 
-          CLASS_ORDER.index(@value.class) <=> CLASS_ORDER.index(second.class)
+          CLASS_ORDER.index(@value.class) <=> CLASS_ORDER.index(other.class)
         end
       end
     end
