@@ -147,7 +147,8 @@ module Yast
     # - Removes element from a list
     # - Remove key/value pair from a map
     # - Remove item from term
-    # @deprecated use native ruby method {::Hash#delete},{::Array#delete_at} or {Yast::Term#params} (call delete_at on term params)
+    # @deprecated use native ruby method {::Hash#delete}, {::Array#delete_at}
+    #   or {Yast::Term#params} (call delete_at on term params)
     def self.remove(object, element)
       return nil if object.nil?
 

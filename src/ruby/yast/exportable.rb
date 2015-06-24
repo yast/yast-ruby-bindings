@@ -27,7 +27,8 @@ module Yast
     # Publishes function or variable to component system
     # @param (Hash) options specified parameters
     # @option options [String] :type specified Yast type that allows communication with type languages
-    # @option options [TrueClass,FalseClass] :private (false) id specified then exported only in old testsuite environment
+    # @option options [TrueClass,FalseClass] :private (false)
+    #   if specified then exported only in old testsuite environment
     #   after convert of testsuite all private publish call can be removed
     # @option options [Symbol] :variable exported variable
     # @option options [Symbol] :function exported function

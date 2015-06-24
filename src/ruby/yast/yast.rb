@@ -34,20 +34,25 @@ module Yast
     Path.new *args
   end
 
-  # Makes deep copy of object. Difference to #dup or #clone is that it copy all elements of Array, Hash, Yast::Term.
+  # Makes deep copy of object. Difference to #dup or #clone is
+  # that it copy all elements of Array, Hash, Yast::Term.
   # Immutable classes is just returned.
   # @param [Hash] options modifies behavior
-  # @option options [TrueClass,FalseClass] :full (false) make full copy even for types that is immutable in Yast builtins context
-  # @note String, Yast::Path and Yast::Byteblock is also immutable in sense of Yast because there is no builtin operation for string modify that do not copy it. Use :full option to copy it also.
+  # @option options [TrueClass,FalseClass] :full (false) make full copy
+  #   even for types that is immutable in Yast builtins context
+  # @note String, Yast::Path and Yast::Byteblock is also immutable
+  #   in sense of Yast because there is no builtin operation
+  #   for string modify that do not copy it. Use :full option to copy it also.
   # @example how to refactor generated code
-  #   #old method where a is not need to copy and b is needed, but we plan to use full ruby features to modify strings
+  #   # old method where a is not need to copy
+  #   # and b is needed, but we plan to use full ruby features to modify strings
   #   def old(a, b)
   #     a = copy_arg(a)
   #     b = copy_arg(b)
   #     ...
   #   end
   #
-  #   #refactored method
+  #   # refactored method
   #   def new(a, b)
   #     b = copy_arg b, :full => true
   #     ...
@@ -83,13 +88,18 @@ module Yast
 
   # includes module from include directory.
   # given include must satisfied few restrictions.
-  # 1) file must contain module enclosed in Yast namespace with name constructed from path and its name
-  #    it is constructed that all parts is upcased and also all [-_.] is replaced and next character must be upper case.
+  # 1) file must contain module enclosed in Yast namespace
+  #    with name constructed from path and its name
+  #    it is constructed that all parts is upcased
+  #    and also all [-_.] is replaced and next character must be upper case.
   #    At the end is appended Include string
-  #    example in file network/udev_lan.source.rb must be module Yast::NetworkUdevLanSourceInclude
+  #    example in file network/udev_lan.source.rb
+  #    must be module Yast::NetworkUdevLanSourceInclude
   # 2) initialization of module must be in method with prefix initialize and rest is
-  #    translated path, where all [-./] is replaced by underscore. Method take one parameter that is propagated target param.
-  #    example in file network/udev_lan.source.rb initialization method will be initialize_network_udev_lan_source
+  #    translated path, where all [-./] is replaced by underscore.
+  #    Method take one parameter that is propagated target param.
+  #    example in file network/udev_lan.source.rb
+  #    initialization method will be initialize_network_udev_lan_source
   # @param path [String] relative path to Y2DIR/include path with file suffix
   # @param target [Class] where include module
   # @deprecated use "lib" directory where you can place common ruby code without any special handling.

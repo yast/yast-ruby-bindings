@@ -87,7 +87,8 @@ describe "BuiltinsTest" do
     expect(Yast::Builtins.splitstring("ABC", "abc")).to eq(["ABC"])
 
     expect(Yast::Builtins.splitstring("a   a", " ")).to eq(["a", "", "", "a"])
-    expect(Yast::Builtins.splitstring("text/with:different/separators", "/:")).to eq(["text", "with", "different", "separators"])
+    expect(Yast::Builtins.splitstring("text/with:different/separators", "/:"))
+      .to eq(["text", "with", "different", "separators"])
   end
 
   it "tests mergestring" do
@@ -141,7 +142,9 @@ describe "BuiltinsTest" do
     expect(Yast::Builtins.regexpsub("aaabbb", "(.*ba)", "s_\\1_e")).to eq(nil)
 
     # from sysconfig remove whitespaces
-    expect(Yast::Builtins.regexpsub(" lest test\tsrst\t", "^[ \t]*(([^ \t]*[ \t]*[^ \t]+)*)[ \t]*$", "\\1")).to eq("lest test\tsrst")
+    expect(Yast::Builtins.regexpsub(" lest test\tsrst\t",
+      "^[ \t]*(([^ \t]*[ \t]*[^ \t]+)*)[ \t]*$",
+      "\\1")).to eq("lest test\tsrst")
     expect(Yast::Builtins.regexpsub("", "^[ \t]*(([^ \t]*[ \t]*[^ \t]+)*)[ \t]*$", "\\1")).to eq("")
     expect(Yast::Builtins.regexpsub("  \t  ", "^[ \t]*(([^ \t]*[ \t]*[^ \t]+)*)[ \t]*$", "\\1")).to eq("")
 
@@ -281,7 +284,8 @@ describe "BuiltinsTest" do
     expect(Yast::Builtins.sort(["Z", "A"])).to eq(["A", "Z"])
     expect(Yast::Builtins.sort([3, 2, 1])).to eq([1, 2, 3])
 
-    expect(Yast::Builtins.sort(["10", 1, 2, 10, 20, "15", 200, 5])).to eq([1, 2, 5, 10, 20, 200, "10", "15"])
+    expect(Yast::Builtins.sort(["10", 1, 2, 10, 20, "15", 200, 5]))
+      .to eq([1, 2, 5, 10, 20, 200, "10", "15"])
 
     expect(Yast::Builtins.sort([10, 1, 20]) { |x, y| x > y }).to eq([20, 10, 1])
   end
