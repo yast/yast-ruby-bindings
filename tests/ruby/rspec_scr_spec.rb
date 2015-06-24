@@ -42,13 +42,8 @@ describe Yast::RSpec::SCR do
       end
 
       it "restores the original path after a exception" do
-        begin
-          change_scr_root(chroot) do
-            raise DummyError
-          end
-        rescue DummyError
-          # Just catch the exception
-        end
+        expect { change_scr_root(chroot) { raise DummyError } }
+          .to raise_exception(DummyError)
         expect(root_content).not_to eq(["just_a_file"])
       end
 

@@ -124,7 +124,7 @@ module Yast
           object.each do |i|
             res << block.call(Yast.deep_copy(i))
           end
-        rescue Yast::Break
+        rescue Yast::Break # rubocop:disable Lint/HandleExceptions
           # break skips out of each loop, but allow to keep previous results
         end
         return res
@@ -134,7 +134,7 @@ module Yast
           sort(object.keys).each do |k|
             res << block.call(Yast.deep_copy(k), Yast.deep_copy(object[k]))
           end
-        rescue Yast::Break
+        rescue Yast::Break # rubocop:disable Lint/HandleExceptions
           # break skips out of each loop, but allow to keep previous results
         end
         return res
@@ -386,7 +386,7 @@ module Yast
         Yast.deep_copy(list).each do |i|
           res.merge! block.call(i)
         end
-      rescue Yast::Break
+      rescue Yast::Break # rubocop:disable Lint/HandleExceptions
         # break stops adding to hash
       end
 
@@ -515,7 +515,7 @@ module Yast
         sort(map.keys).each do |k|
           res.merge! block.call(k, map[k])
         end
-      rescue Yast::Break
+      rescue Yast::Break # rubocop:disable Lint/HandleExceptions
         # break stops adding to hash
       end
 

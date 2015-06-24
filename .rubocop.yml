@@ -7,10 +7,6 @@ inherit_from:
 Lint/Eval:
   Enabled: false
 
-# Offense count: 5
-Lint/HandleExceptions:
-  Enabled: false
-
 # Offense count: 2
 Lint/RescueException:
   Enabled: false
