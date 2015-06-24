@@ -42,11 +42,6 @@ Metrics/MethodLength:
 Metrics/PerceivedComplexity:
   Max: 18
 
-# Offense count: 5
-# Configuration parameters: Keywords.
-Style/CommentAnnotation:
-  Enabled: false
-
 # Offense count: 20
 Style/Documentation:
   Enabled: false

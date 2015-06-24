@@ -49,7 +49,7 @@ module Yast
     # - Filter a Map
     # @deprecated use ruby native select method
     def self.filter(object, &block)
-      # TODO investigate break and continue with filter as traverse workflow is different for ruby
+      # TODO: investigate break and continue with filter as traverse workflow is different for ruby
       if object.is_a?(::Array) || object.is_a?(::Hash)
         Yast.deep_copy(object).select(&block)
       else
@@ -661,14 +661,14 @@ module Yast
     # Log an user-level system message to the y2changes
     # @note do nothing now, concept is quite unclear
     def self.y2useritem(*_args)
-      # TODO implement it
+      # TODO: implement it
       nil
     end
 
     # Log an user-level addional message to the y2changes
     # @note do nothing now, concept is quite unclear
     def self.y2usernote(*_args)
-      # TODO implement it
+      # TODO: implement it
       nil
     end
 
@@ -915,7 +915,7 @@ module Yast
       when ::Array then "[#{val.map { |a| inside_tostring(a) }.join(", ")}]"
       when ::Hash then "$[#{sort(val.keys).map { |k| "#{inside_tostring(k)}:#{inside_tostring(val[k])}" }.join(", ")}]"
       when Yast::FunRef
-        # TODO FIXME: Yast puts also the parameter names,
+        # FIXME: Yast puts also the parameter names,
         # here the signature contains only data type without parameter name:
         #   Yast:    <YCPRef:boolean foo (string str, string str2)>
         #   Ruby:    <YCPRef:boolean foo (string, string)>

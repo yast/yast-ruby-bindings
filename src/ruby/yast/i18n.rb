@@ -4,7 +4,7 @@ module Yast
   # Provides translation wrapper.
   module I18n
     # @private
-    # TODO load alternative in development recent translation
+    # TODO: load alternative in development recent translation
     LOCALE_DIR = "/usr/share/YaST2/locale"
     # if every heuristic fails then use the default for locale
     DEFAULT_LOCALE = "en_US"
