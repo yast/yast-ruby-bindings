@@ -827,7 +827,6 @@ describe "BuiltinsTest" do
 
   it "tests float tolstring" do
     old_lang = ENV["LANG"]
-    old_language = ENV["LANGUAGE"]
     lc_all = ENV["LC_ALL"]
     ENV["LANG"] = "cs_CZ.utf-8"
     ENV["LC_ALL"] = "cs_CZ.utf-8"
