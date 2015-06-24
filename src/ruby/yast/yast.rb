@@ -157,7 +157,7 @@ module Yast
                 base.const_get(module_)
               else
                 base.const_set(module_, ::Module.new)
-        end
+              end
       base = tmp_m
     end
 
@@ -180,7 +180,7 @@ module Yast
           base.const_get(modules.last)
         else
           ::Module.new
-      end
+        end
     symbols(mname).each do |sname, stype|
       next if sname.empty?
       if (stype == :function)

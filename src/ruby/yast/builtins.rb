@@ -353,7 +353,7 @@ module Yast
                  [params.first].concat(Yast.deep_copy(params[1]))
                else
                  params.first
-          end
+               end
         Yast.deep_copy(list).reduce(&block)
       end
 
@@ -437,7 +437,7 @@ module Yast
               array.sort { |x, y| block.call(x, y) ? -1 : 1 }
             else
               array.sort { |x, y| Yast::Ops.comparable_object(x) <=> y }
-      end
+            end
 
       Yast.deep_copy(res)
     end

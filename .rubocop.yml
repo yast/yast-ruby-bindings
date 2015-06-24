@@ -3,11 +3,6 @@ inherit_from:
   /usr/share/YaST2/data/devtools/data/rubocop_yast_style.yml
 
 
-# Offense count: 4
-# Configuration parameters: AlignWith, SupportedStyles.
-Lint/EndAlignment:
-  Enabled: false
-
 # Offense count: 3
 Lint/Eval:
   Enabled: false
