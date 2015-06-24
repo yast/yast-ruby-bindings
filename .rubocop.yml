@@ -58,10 +58,11 @@ Style/EachWithObject:
 Style/EmptyElse:
   Enabled: false
 
-# Offense count: 2
-# Configuration parameters: Exclude.
+# legacy tests
 Style/FileName:
-  Enabled: false
+  Exclude:
+  - tests/ycp/InRuby.rb
+  - tests/ycp/URI.rb
 
 # Offense count: 3
 # Configuration parameters: EnforcedStyle, SupportedStyles.
