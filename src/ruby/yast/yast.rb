@@ -1,12 +1,12 @@
 require "yastx"
 
-# predefine term to avoid circular dependency
-class Yast::Term; end
-class Yast::FunRef; end
-class Yast::YReference; end
-class Yast::Path; end
-
 module Yast
+  # predefine term to avoid circular dependency
+  class Term; end
+  class FunRef; end
+  class YReference; end
+  class Path; end
+
   # @private used to extract place from backtrace
   BACKTRACE_REGEXP = /^(.*):(\d+):in `.*'$/
 
