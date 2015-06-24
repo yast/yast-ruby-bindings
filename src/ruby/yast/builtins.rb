@@ -51,7 +51,7 @@ module Yast
     def self.filter(object, &block)
       # TODO investigate break and continue with filter as traverse workflow is different for ruby
       if object.is_a?(::Array) || object.is_a?(::Hash)
-        Yast.deep_copy(object).select &block
+        Yast.deep_copy(object).select(&block)
       else
         return nil
       end
@@ -338,7 +338,7 @@ module Yast
 
       value.reduce([]) do |acc, i|
         return nil if i.nil?
-        acc.push *Yast.deep_copy(i)
+        acc.push(*Yast.deep_copy(i))
       end
     end
 
@@ -354,7 +354,7 @@ module Yast
                else
                  params.first
           end
-        Yast.deep_copy(list).reduce &block
+        Yast.deep_copy(list).reduce(&block)
       end
 
       # Creates new list with swaped elements at offset i1 and i2.
@@ -415,7 +415,7 @@ module Yast
     def self.prepend(list, element)
       return nil if list.nil?
 
-      [Yast.deep_copy(element)].push *Yast.deep_copy(list)
+      [Yast.deep_copy(element)].push(*Yast.deep_copy(list))
     end
 
     # setcontains() Yast built-in
@@ -611,42 +611,42 @@ module Yast
     # @deprecated Use {Yast::Logger} instead
     def self.y2debug(*args)
       shift_frame_number args
-      Yast.y2debug *args
+      Yast.y2debug(*args)
     end
 
     # Log an error to the y2log.
     # @deprecated Use {Yast::Logger} instead
     def self.y2error(*args)
       shift_frame_number args
-      Yast.y2error *args
+      Yast.y2error(*args)
     end
 
     # Log an internal message to the y2log.
     # @deprecated Use {Yast::Logger} instead
     def self.y2internal(*args)
       shift_frame_number args
-      Yast.y2internal *args
+      Yast.y2internal(*args)
     end
 
     # Log a milestone to the y2log.
     # @deprecated Use {Yast::Logger} instead
     def self.y2milestone(*args)
       shift_frame_number args
-      Yast.y2milestone *args
+      Yast.y2milestone(*args)
     end
 
     # Log a security message to the y2log.
     # @deprecated Use {Yast::Logger} instead
     def self.y2security(*args)
       shift_frame_number args
-      Yast.y2security *args
+      Yast.y2security(*args)
     end
 
     # Log a warning to the y2log.
     # @deprecated Use {Yast::Logger} instead
     def self.y2warning(*args)
       shift_frame_number args
-      Yast.y2warning *args
+      Yast.y2warning(*args)
     end
 
     # @private used only internal for frame shifting

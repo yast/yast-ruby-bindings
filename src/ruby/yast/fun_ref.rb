@@ -30,7 +30,7 @@ module Yast
 
     # Forwards call to reference method
     def call(*args)
-      @remote_method.call *args
+      @remote_method.call(*args)
     end
   end
 end

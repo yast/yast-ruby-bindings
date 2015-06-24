@@ -13,25 +13,25 @@ module Yast
   # shortcut to construct new Yast term
   # @see Yast::Term
   def term(*args)
-    Term.new *args
+    Term.new(*args)
   end
 
   # shortcut to construct new function reference
   # @see Yast::FunRef
   def fun_ref(*args)
-    FunRef.new *args
+    FunRef.new(*args)
   end
 
   # shortcut to construct new argument reference
   # @see Yast::ArgRef
   def arg_ref(*args)
-    ArgRef.new *args
+    ArgRef.new(*args)
   end
 
   # shortcut to construct new Yast path
   # @see Yast::Path
   def path(*args)
-    Path.new *args
+    Path.new(*args)
   end
 
   # Makes deep copy of object. Difference to #dup or #clone is

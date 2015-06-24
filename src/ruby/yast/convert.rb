@@ -78,7 +78,7 @@ END
       elsif to == "string" && from == "locale"
         return object
       else
-        Yast.y2warning -1, "Cannot convert #{object.class} from '#{from}' to '#{to}'"
+        Yast.y2warning(-1, "Cannot convert #{object.class} from '#{from}' to '#{to}'")
         return nil
       end
     end
