@@ -106,6 +106,35 @@ content = ButtonBox(
   PushButton(Id(:cancel_button), "Cancel")
 )
 ```
+### Core extensions
+
+The YaST bindings also offers some refinements for standard Ruby classes,
+inspired by [Active Support Core
+Extensions](http://edgeguides.rubyonrails.org/active_support_core_extensions.html)
+but making use of Ruby refinements. Those refinements can be used to temporary
+extend the base classes with handy methods for a variety of uses, like shown in
+the following example.
+
+```ruby
+require "yast"
+require "yast/core_ext"
+
+module Isolated
+  using Yast::CoreExt::AnsiString
+
+  string = File.open("ansi.txt", "rb").read
+  string.remove_ansi_sequences
+  puts "clean string: #{string}"
+end
+
+# Out of the module, thus different scope
+another_string = "whatever"
+another_string.remove_ansi_sequences # => NoMethodError
+```
+The following refinements are currently provided:
+
+* {Yast::CoreExt::AnsiString}: to remove ANSI control sequences from String
+  objects
 
 ### Testing
 

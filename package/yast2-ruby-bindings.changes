@@ -1,4 +1,19 @@
 -------------------------------------------------------------------
+Thu Jun 18 11:41:32 UTC 2015 - ancor@suse.com
+
+- Fixes in the new Yast::CoreExt functionality (part of the fix
+  for bnc#921233)
+- 3.1.36
+
+-------------------------------------------------------------------
+Wed Jun 17 16:45:11 UTC 2015 - ancor@suse.com
+
+- Added Yast::CoreExt, a new mechanism to extend ruby base classes
+- Added extension to clean ANSI characters from strings (part of
+  the fix for bnc#921233)
+- 3.1.35
+
+-------------------------------------------------------------------
 Wed Jun  3 13:01:29 UTC 2015 - mvidner@suse.com
 
 - Fixed "Comparable#== will no more rescue exceptions of #<=>"
