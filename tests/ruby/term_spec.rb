@@ -103,8 +103,8 @@ describe Yast::Term do
 
       nested = term(:HBox, term(:InputField, term(:id, "ID")))
 
-      widget = nested.find do |t|
-        t.include?(term(:id, "ID"))
+      widget = nested.find do |i|
+        i.include?(term(:id, "ID"))
       end
 
       expect(widget.value).to eq :InputField

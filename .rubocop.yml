@@ -16,10 +16,6 @@ Lint/RescueException:
   Enabled: false
 
 # Offense count: 1
-Lint/ShadowingOuterLocalVariable:
-  Enabled: false
-
-# Offense count: 1
 Lint/UselessAssignment:
   Enabled: false
 
