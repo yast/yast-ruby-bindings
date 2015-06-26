@@ -716,6 +716,7 @@ module Yast
       end
       tm
     end
+    private_class_method :time_to_tm
 
     ###########################################################
     # Yast Path Builtins

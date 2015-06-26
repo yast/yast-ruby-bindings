@@ -656,7 +656,7 @@ extern "C" {
     res->tm_isdst = tm_hash_value(hash, "tm_isdst");
   }
 
-#define STRFTIME_MAX_LENGTH 100
+#define STRFTIME_MAX_LENGTH 256
   // a wrapper around strftime() function,
   // needed for formatting using the current locale
   static VALUE
