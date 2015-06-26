@@ -668,6 +668,18 @@ extern "C" {
     Check_Type(format, T_STRING);
     hash_to_tm(time, &timeinfo);
 
+    try
+    {
+      // Since std::put_time is not implemented in GCC4.9, we'll use
+      // locale::global and strftime instead of facets
+      // FIXME: I'm not sure about the implications!!!!
+      std::locale::global(std::locale(""));
+    }
+    catch (const std::runtime_error &error)
+    {
+      y2warning("Cannot set locale (missing glibc-locale package?): %s", error.what());
+    }
+
     if (strftime(res, sizeof(res), RSTRING_PTR(format), &timeinfo)) {
       return yrb_utf8_str_new(string(res));
     } else {
