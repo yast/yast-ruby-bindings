@@ -632,43 +632,47 @@ extern "C" {
     return INT2FIX(strcoll(RSTRING_PTR(str1), RSTRING_PTR(str2)));
   }
 
+  // reads the value of a hash key
+  // used internally by stftime_wrapper
   static int
   tm_hash_value(VALUE hash, const char *key)
   {
     return NUM2INT(rb_hash_aref(hash, ID2SYM(rb_intern(key))));
   }
   
-  static struct tm *
-  hash_to_tm(VALUE hash)
+  // converts a hash to a tm structure
+  // used internally by stftime_wrapper
+  void
+  hash_to_tm(VALUE hash, struct tm *res)
   {
-    static struct tm res;
-
-    res.tm_sec   = tm_hash_value(hash, "tm_sec");
-    res.tm_min   = tm_hash_value(hash, "tm_min");
-    res.tm_hour  = tm_hash_value(hash, "tm_hour");
-    res.tm_mday  = tm_hash_value(hash, "tm_mday");
-    res.tm_mon   = tm_hash_value(hash, "tm_mon");
-    res.tm_year  = tm_hash_value(hash, "tm_year");
-    res.tm_wday  = tm_hash_value(hash, "tm_wday");
-    res.tm_yday  = tm_hash_value(hash, "tm_yday");
-    res.tm_isdst = tm_hash_value(hash, "tm_isdst");
-
-    return &res;
+    res->tm_sec   = tm_hash_value(hash, "tm_sec");
+    res->tm_min   = tm_hash_value(hash, "tm_min");
+    res->tm_hour  = tm_hash_value(hash, "tm_hour");
+    res->tm_mday  = tm_hash_value(hash, "tm_mday");
+    res->tm_mon   = tm_hash_value(hash, "tm_mon");
+    res->tm_year  = tm_hash_value(hash, "tm_year");
+    res->tm_wday  = tm_hash_value(hash, "tm_wday");
+    res->tm_yday  = tm_hash_value(hash, "tm_yday");
+    res->tm_isdst = tm_hash_value(hash, "tm_isdst");
   }
 
+#define STRFTIME_MAX_LENGTH 100
+  // a wrapper around strftime() function,
+  // needed for formatting using the current locale
   static VALUE
   strftime_wrapper(VALUE self, VALUE time, VALUE format)
   {
-    char res[100];
-    struct tm *timeinfo;
+    char res[STRFTIME_MAX_LENGTH];
+    struct tm timeinfo;
 
     Check_Type(format, T_STRING);
-    timeinfo = hash_to_tm(time);
+    hash_to_tm(time, &timeinfo);
 
-    if (strftime(res, sizeof(res), RSTRING_PTR(format), timeinfo)) {
+    if (strftime(res, sizeof(res), RSTRING_PTR(format), &timeinfo)) {
       return yrb_utf8_str_new(string(res));
     } else {
-      return Qnil; // TODO: learn how to raise an exception
+      rb_raise(rb_eRuntimeError, "The result of strftime would be longer than %d characters", STRFTIME_MAX_LENGTH);
+      return Qnil;
     }
   }
 }
@@ -689,7 +693,6 @@ extern "C"
      */
     rb_mYast = rb_define_module("Yast");
     rb_define_singleton_method( rb_mYast, "strcoll", RUBY_METHOD_FUNC(strcoll_wrapper), 2);
-    rb_define_singleton_method( rb_mYast, "strftime_wrapper", RUBY_METHOD_FUNC(strftime_wrapper), 2);
     rb_mSCR = rb_define_module_under(rb_mYast, "SCR");
     rb_define_singleton_method( rb_mSCR, "call_builtin", RUBY_METHOD_FUNC(scr_call_builtin), -1);
     rb_mWFM = rb_define_module_under(rb_mYast, "WFM");
@@ -706,5 +709,6 @@ extern "C"
     rb_define_singleton_method( rb_mBuiltins, "regexppos", RUBY_METHOD_FUNC(regexppos), 2);
     rb_define_singleton_method( rb_mBuiltins, "regexpsub", RUBY_METHOD_FUNC(regexpsub), 3);
     rb_define_singleton_method( rb_mBuiltins, "regexptokenize", RUBY_METHOD_FUNC(regexptokenize), 2);
+    rb_define_singleton_method( rb_mBuiltins, "strftime_wrapper", RUBY_METHOD_FUNC(strftime_wrapper), 2);
   }
 }

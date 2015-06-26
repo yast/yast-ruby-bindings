@@ -197,37 +197,6 @@ module Yast
     base.const_set(modules.last, m) unless base.constants.include?(modules.last.to_sym)
   end
 
-  def self.stftime(time, format)
-    strftime_wrapper(time_to_tm(time), format)
-  end
-
-  # Creates a hash with the same fields that the C++ time structure
-  # http://www.cplusplus.com/reference/ctime/tm/
-  def self.time_to_tm(time)
-    begin
-      tm = {
-        tm_sec:  time.sec,
-        tm_min:  time.min,
-        tm_hour: time.hour,
-        tm_mday: time.mday,
-        tm_mon:  time.mon - 1, # January is 0 in C++
-        tm_year: time.year - 1900, # Another C++ peculiarity
-        tm_wday: time.wday,
-        tm_yday: time.yday - 1 # January 1st is 0 in C++
-      }
-    rescue NoMethodError
-      raise ArgumentError, "First parameter doesn't look like a time: #{time}"
-    end
-    # tm_isdst > 0 -> in effect
-    # tm_isdst = 0 -> not in effect
-    # tm_isdst < 0 -> unknown
-    if time.respond_to?(:isdst)
-      tm[:tm_isdst] = time.isdst ? 1 : 0
-    else
-      tm[:tm_isdst] = -1
-    end
-    tm
-  end
 end
 
 
