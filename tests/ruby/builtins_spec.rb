@@ -12,6 +12,8 @@ require "yast/path"
 require "yast/term"
 require "yast/break"
 
+require 'date'
+
 describe Yast::Builtins do
 
   describe ".add" do
@@ -633,13 +635,64 @@ describe Yast::Builtins do
     end
   end
 
-  describe ".deep copy" do
+  describe ".deep_copy" do
     it "works as expected" do
       a = [[1,2],[2,3]]
       b = Yast.deep_copy a
       b[0][0] = 10
       expect(a[0][0]).to eq(1)
       expect(b[0][0]).to eq(10)
+    end
+  end
+
+  describe ".strftime" do
+    # FIXME: manipulating ENV is useless. It does not affect the C++
+    # implementation of strftime
+    #
+    # Using backticks to do `export LANG=blah` is also useless
+    before(:all) do
+      @original_lang = ENV["LANG"]
+      ENV["LANG"] = "C"
+    end
+
+    after(:all) do
+      ENV["LANG"] = @original_lang
+    end
+
+    let(:time) { Time.new(1980, 2, 29, 12, 13, 14, "+00:00") }
+    let(:datetime) { DateTime.parse("2015-06-26") }
+    let(:date) { time.to_date }
+    let(:format) { "%B - %d - %H:%M:%S" }
+
+    it "raises an exception if the result is too long" do
+      expect { Yast::Builtins.strftime(time, "%B" + " "*300) }.to raise_error(RuntimeError)
+    end
+
+    it "raises an exception when passed an incomplete time" do
+      expect { Yast::Builtins.strftime(date, format) }.to raise_error(ArgumentError)
+    end
+
+    it "returns the formatted time for Time objects" do
+      expect(Yast::Builtins.strftime(time, format)).to eq "February - 29 - 12:13:14"
+    end
+
+    it "returns the formatted time for DateTime objects" do
+      expect(Yast::Builtins.strftime(datetime, format)).to eq "June - 26 - 00:00:00"
+    end
+
+    # This needs the spanish locale to be available in the system
+    context "in a system set to Spanish" do
+      around do |example|
+        # FIXME: this is also useless. See above
+        old_lang = ENV["LANG"]
+        ENV["LANG"] = "es_ES"
+        example.run
+        ENV["LANG"] = old_lang
+      end
+
+      it "returns the localized formatted time" do
+      #  expect(Yast::Builtins.strftime(time, format)).to eq "Febrero - 29 - 12:13:14"
+      end
     end
   end
 end
