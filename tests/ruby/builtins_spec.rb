@@ -646,10 +646,6 @@ describe Yast::Builtins do
   end
 
   describe ".strftime" do
-    # FIXME: manipulating ENV is useless. It does not affect the C++
-    # implementation of strftime
-    #
-    # Using backticks to do `export LANG=blah` is also useless
     before(:all) do
       @original_lang = ENV["LANG"]
       ENV["LANG"] = "C"
@@ -668,7 +664,7 @@ describe Yast::Builtins do
       expect { Yast::Builtins.strftime(time, "%B" + " "*300) }.to raise_error(RuntimeError)
     end
 
-    it "raises an exception when passed an incomplete time" do
+    it "raises an exception for Date objects (incomplete time)" do
       expect { Yast::Builtins.strftime(date, format) }.to raise_error(ArgumentError)
     end
 
@@ -680,10 +676,9 @@ describe Yast::Builtins do
       expect(Yast::Builtins.strftime(datetime, format)).to eq "June - 26 - 00:00:00"
     end
 
-    # This needs the spanish locale to be available in the system
+    # NOTE: this needs the es_ES locale to be available in the system
     context "in a system set to Spanish" do
       around do |example|
-        # FIXME: this is also useless. See above
         old_lang = ENV["LANG"]
         ENV["LANG"] = "es_ES"
         example.run
@@ -691,7 +686,7 @@ describe Yast::Builtins do
       end
 
       it "returns the localized formatted time" do
-      #  expect(Yast::Builtins.strftime(time, format)).to eq "Febrero - 29 - 12:13:14"
+        expect(Yast::Builtins.strftime(time, format)).to eq "febrero - 29 - 12:13:14"
       end
     end
   end
