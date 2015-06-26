@@ -682,7 +682,7 @@ module Yast
     # @param format [String] format string according to C++ strftime
     #    specification
     # @return [String] formatted string
-    def self.stftime(time, format)
+    def self.strftime(time, format)
       strftime_wrapper(time_to_tm(time), format)
     end
 
