@@ -680,13 +680,16 @@ describe Yast::Builtins do
     context "in a system set to Czech" do
       around do |example|
         old_lang = ENV["LANG"]
-        ENV["LANG"] = "cs_CZ"
+        old_lc = ENV["LC_ALL"]
+        ENV["LANG"] = "cs_CZ.utf-8"
+        ENV["LC_ALL"] = "cs_CZ.utf-8"
         example.run
         ENV["LANG"] = old_lang
+        ENV["LC_ALL"] = old_lc
       end
 
       it "returns the localized formatted time" do
-        expect(Yast::Builtins.strftime(time, format)).to eq "\xFAnor - 29 - 12:13:14"
+        expect(Yast::Builtins.strftime(time, format)).to eq "\u00FAnor - 29 - 12:13:14"
       end
     end
   end
