@@ -669,17 +669,9 @@ extern "C" {
     memset(&timeinfo, 0, sizeof timeinfo);
     hash_to_tm(time, &timeinfo);
 
-    try
-    {
-      // Since std::put_time is not implemented in GCC4.9, we'll use
-      // setlocale and strftime instead of facets
-      setlocale(LC_TIME,"");
-    }
-    catch (const std::runtime_error &error)
-    {
-      y2warning("Cannot set locale (missing glibc-locale package?): %s", error.what());
-    }
-
+    // Since std::put_time is not implemented in GCC4.9, we'll use
+    // setlocale and strftime instead of facets
+    setlocale(LC_TIME,""); // Needed to allow locale change at runtime
     if (strftime(res, sizeof(res), RSTRING_PTR(format), &timeinfo)) {
       return yrb_utf8_str_new(string(res));
     } else {
