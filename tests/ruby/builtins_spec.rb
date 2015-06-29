@@ -676,17 +676,17 @@ describe Yast::Builtins do
       expect(Yast::Builtins.strftime(datetime, format)).to eq "June - 26 - 00:00:00"
     end
 
-    # NOTE: this needs the es_ES locale to be available in the system
-    context "in a system set to Spanish" do
+    # NOTE: this needs the cs_CZ locale to be available in the system
+    context "in a system set to Czech" do
       around do |example|
         old_lang = ENV["LANG"]
-        ENV["LANG"] = "es_ES"
+        ENV["LANG"] = "cs_CZ"
         example.run
         ENV["LANG"] = old_lang
       end
 
       it "returns the localized formatted time" do
-        expect(Yast::Builtins.strftime(time, format)).to eq "febrero - 29 - 12:13:14"
+        expect(Yast::Builtins.strftime(time, format)).to eq "\xFAnor - 29 - 12:13:14"
       end
     end
   end

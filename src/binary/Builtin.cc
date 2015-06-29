@@ -666,13 +666,13 @@ extern "C" {
     struct tm timeinfo;
 
     Check_Type(format, T_STRING);
+    memset(&timeinfo, 0, sizeof timeinfo);
     hash_to_tm(time, &timeinfo);
 
     try
     {
       // Since std::put_time is not implemented in GCC4.9, we'll use
       // locale::global and strftime instead of facets
-      // FIXME: I'm not sure about the implications!!!!
       std::locale::global(std::locale(""));
     }
     catch (const std::runtime_error &error)
