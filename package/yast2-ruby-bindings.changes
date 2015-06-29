@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Mon Jun 29 07:59:11 UTC 2015 - ancor@suse.com
+
+- Added Yast::Builtins::strftime with full i18n support
+  (part of fate#318486)
+- 3.1.38
+
+-------------------------------------------------------------------
 Thu Jun 25 06:31:50 UTC 2015 - jreidinger@suse.com
 
 - pass method name to logger (helps with debugging,
