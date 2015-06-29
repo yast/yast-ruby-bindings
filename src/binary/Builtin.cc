@@ -672,8 +672,8 @@ extern "C" {
     try
     {
       // Since std::put_time is not implemented in GCC4.9, we'll use
-      // locale::global and strftime instead of facets
-      std::locale::global(std::locale(""));
+      // setlocale and strftime instead of facets
+      setlocale(LC_TIME,"");
     }
     catch (const std::runtime_error &error)
     {
