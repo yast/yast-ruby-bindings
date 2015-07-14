@@ -672,6 +672,50 @@ module Yast
       nil
     end
 
+    # Wrapper for the C++ version of strftime. Needed because it honors the
+    # system locale settings, something that is not granted by the Ruby version
+    # of strftime.
+    # @see http://www.cplusplus.com/reference/ctime/strftime/
+    # @param time [Time/DateTime] time to format
+    # @param format [String] format string according to C++ strftime
+    #    specification
+    # @return [String] formatted string
+    def self.strftime(time, format)
+      strftime_wrapper(time_to_tm(time), format)
+    end
+
+    # Creates a hash with the same fields that the C++ time structure.
+    # @private used internally by .strftime
+    # @see http://www.cplusplus.com/reference/ctime/tm/
+    # @param time [Time/DateTime] time to convert
+    # @return [Hash] hash with symbols as keys
+    def self.time_to_tm(time)
+      begin
+        tm = {
+          tm_sec:  time.sec,
+          tm_min:  time.min,
+          tm_hour: time.hour,
+          tm_mday: time.mday,
+          tm_mon:  time.mon - 1, # January is 0 in C++
+          tm_year: time.year - 1900, # Another C++ peculiarity
+          tm_wday: time.wday,
+          tm_yday: time.yday - 1 # January 1st is 0 in C++
+        }
+      rescue NoMethodError
+        raise ArgumentError, "This doesn't look like a valid time: #{time}"
+      end
+      # tm_isdst > 0 -> in effect
+      # tm_isdst = 0 -> not in effect
+      # tm_isdst < 0 -> unknown
+      if time.respond_to?(:isdst)
+        tm[:tm_isdst] = time.isdst ? 1 : 0
+      else
+        tm[:tm_isdst] = -1
+      end
+      tm
+    end
+    private_class_method :time_to_tm
+
     ###########################################################
     # Yast Path Builtins
     ###########################################################
