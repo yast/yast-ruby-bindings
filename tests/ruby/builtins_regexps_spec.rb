@@ -42,8 +42,10 @@ describe "Yast::Builtins regular expresion methods" do
       expect(Yast::Builtins.regexpsub("aaabbb", "(.*ab)", "s_\\1_e")).to eq("s_aaab_e")
       expect(Yast::Builtins.regexpsub("aaabbb", "(.*ba)", "s_\\1_e")).to eq(nil)
 
-      #from sysconfig remove whitespaces
-      expect(Yast::Builtins.regexpsub(" lest test\tsrst\t", "^[ \t]*(([^ \t]*[ \t]*[^ \t]+)*)[ \t]*$", "\\1")).to eq("lest test\tsrst")
+      # from sysconfig remove whitespaces
+      expect(Yast::Builtins.regexpsub(" lest test\tsrst\t",
+        "^[ \t]*(([^ \t]*[ \t]*[^ \t]+)*)[ \t]*$",
+        "\\1")).to eq("lest test\tsrst")
       expect(Yast::Builtins.regexpsub("", "^[ \t]*(([^ \t]*[ \t]*[^ \t]+)*)[ \t]*$", "\\1")).to eq("")
       expect(Yast::Builtins.regexpsub("  \t  ", "^[ \t]*(([^ \t]*[ \t]*[^ \t]+)*)[ \t]*$", "\\1")).to eq("")
 

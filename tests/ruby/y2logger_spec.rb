@@ -6,7 +6,6 @@ require "yast/y2logger"
 
 module Yast
   describe Y2Logger do
-
     TEST_MESSAGE = "Testing"
 
     before do
@@ -53,5 +52,4 @@ module Yast
       expect(Test.new.log).to be_kind_of(::Logger)
     end
   end
-
 end

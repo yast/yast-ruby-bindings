@@ -7,19 +7,19 @@
 
 require_relative "test_helper"
 
-require 'yast/exportable'
+require "yast/exportable"
 
 class MyTestClass
   extend Yast::Exportable
-  publish :variable => :complex, :type => "map< string, map<list, map> >"
-  publish :variable => :variable_a, :type => "map"
+  publish variable: :complex, type: "map< string, map<list, map> >"
+  publish variable: :variable_a, type: "map"
   def initialize
-    self.variable_a = { :test => "lest" }
+    self.variable_a = { test: "lest" }
   end
 
-  publish :function => :test, :type => "string(integer,term)"
-  def test(a,b)
-    return "test"
+  publish function: :test, type: "string(integer,term)"
+  def test(_a, _b)
+    "test"
   end
 end
 
@@ -37,12 +37,12 @@ describe "ExportableTest" do
   end
 
   it "tests variable definition" do
-    MyTest.variable_a = ({ :a => 15 })
-    expect(MyTest.variable_a).to eq(({:a => 15}))
+    MyTest.variable_a = ({ a: 15 })
+    expect(MyTest.variable_a).to eq(({ a: 15 }))
   end
 
   it "tests type full specification" do
-    expect(MyTest.class.published_variables[:complex].type).to eq("map<string,map<list<any>,map<any,any>>>")
-
+    expect(MyTest.class.published_variables[:complex].type)
+      .to eq("map<string,map<list<any>,map<any,any>>>")
   end
 end

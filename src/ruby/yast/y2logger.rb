@@ -6,7 +6,6 @@ require "singleton"
 require "yast/logger"
 
 module Yast
-
   # A Ruby Logger which wraps Yast.y2*() calls
   class Y2Logger < ::Logger
     include Singleton
@@ -14,8 +13,8 @@ module Yast
     # location of the caller
     CALL_FRAME = 2
 
-    def add(severity, progname = nil, message = nil, &block)
-      message = yield if block_given?
+    def add(severity, _progname = nil, message = nil, &block)
+      message = block.call if block
 
       case severity
       when DEBUG
@@ -35,7 +34,7 @@ module Yast
       end
     end
 
-    def initialize(*args)
+    def initialize(*_args)
       # do not write to any file, the actual logging is implemented in add()
       super(nil)
       # process also debug messages but might not be logged in the end
@@ -74,5 +73,4 @@ module Yast
       base.extend self
     end
   end
-
 end

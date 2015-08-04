@@ -3,15 +3,14 @@ require "fast_gettext"
 module Yast
   # Provides translation wrapper.
   module I18n
-
     # @private
-    #TODO load alternative in development recent translation
+    # TODO: load alternative in development recent translation
     LOCALE_DIR = "/usr/share/YaST2/locale"
     # if every heuristic fails then use the default for locale
     DEFAULT_LOCALE = "en_US"
 
     # sets new text domain
-    def textdomain domain
+    def textdomain(domain)
       # initialize FastGettext only if the locale directory exists
       return unless File.exist? LOCALE_DIR
 
@@ -27,7 +26,9 @@ module Yast
         available = available_locales
         if FastGettext.available_locales != available
           # reload the translations, a new language is available
-          FastGettext.translation_repositories.keys.each {|dom| FastGettext.add_text_domain(dom, :path => LOCALE_DIR)}
+          FastGettext.translation_repositories.keys.each do |dom|
+            FastGettext.add_text_domain(dom, path: LOCALE_DIR)
+          end
           FastGettext.available_locales = available
         end
 
@@ -35,7 +36,7 @@ module Yast
       end
 
       # add the text domain (only if missing to avoid re-reading translations)
-      FastGettext.add_text_domain(domain, :path => LOCALE_DIR) unless FastGettext::translation_repositories[domain]
+      FastGettext.add_text_domain(domain, path: LOCALE_DIR) unless FastGettext.translation_repositories[domain]
     end
 
     # translates given string
@@ -52,7 +53,7 @@ module Yast
           break if FastGettext.key_exist?(str)
         end
       end
-      FastGettext::Translation::_ str
+      FastGettext::Translation._ str
     end
 
     # No translation, only marks the text to be found by gettext when creating POT file,
@@ -109,7 +110,7 @@ module Yast
           break if FastGettext.cached_plural_find(singular, plural)
         end
       end
-      FastGettext::Translation::n_(singular, plural, num)
+      FastGettext::Translation.n_(singular, plural, num)
     end
 
     private
@@ -117,7 +118,7 @@ module Yast
     def available_locales
       # the first item is used as the fallback
       # when the requested locale is not available
-      locales = [ DEFAULT_LOCALE ]
+      locales = [DEFAULT_LOCALE]
 
       Dir["#{LOCALE_DIR}/*"].each do |f|
         locale_name = File.basename f

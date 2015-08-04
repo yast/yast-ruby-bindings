@@ -27,21 +27,21 @@ describe "Yast::Builtins type casting methods" do
 
   describe ".tostring" do
     TOSTRING_TEST_DATA = [
-      [ nil, "nil"],
-      [ true, "true"],
-      [ false, "false"],
-      [ "test", "test" ],
-      [ :test, "`test"],
-      [ 1, "1" ],
-      [ 1.453, "1.453" ],
-      [ ["test",:lest], '["test", `lest]'],
-      [ Yast::Path.new(".etc.syconfig.\"-arg\""), ".etc.syconfig.\"-arg\""],
-      [ Yast::Term.new(:id,["test",:lest]), "`id ([\"test\", `lest])"],
-      [ { :test => "data" }, "$[`test:\"data\"]"]
+      [nil, "nil"],
+      [true, "true"],
+      [false, "false"],
+      ["test", "test"],
+      [:test, "`test"],
+      [1, "1"],
+      [1.453, "1.453"],
+      [["test", :lest], '["test", `lest]'],
+      [Yast::Path.new(".etc.syconfig.\"-arg\""), ".etc.syconfig.\"-arg\""],
+      [Yast::Term.new(:id, ["test", :lest]), "`id ([\"test\", `lest])"],
+      [{ test: "data" }, "$[`test:\"data\"]"]
     ]
 
     it "works as expected" do
-      TOSTRING_TEST_DATA.each do |input,result|
+      TOSTRING_TEST_DATA.each do |input, result|
         expect(Yast::Builtins.tostring(input)).to eq(result)
       end
     end
@@ -58,7 +58,7 @@ describe "Yast::Builtins type casting methods" do
       expect(Yast::Builtins.tohexstring(0)).to eq("0x0")
       expect(Yast::Builtins.tohexstring(10)).to eq("0xa")
       expect(Yast::Builtins.tohexstring(255)).to eq("0xff")
-      expect(Yast::Builtins.tohexstring(222222)).to eq("0x3640e")
+      expect(Yast::Builtins.tohexstring(222_222)).to eq("0x3640e")
 
       expect(Yast::Builtins.tohexstring(31, 0)).to eq("0x1f")
       expect(Yast::Builtins.tohexstring(31, 1)).to eq("0x1f")
@@ -105,16 +105,16 @@ describe "Yast::Builtins type casting methods" do
 
   describe ".tofloat" do
     TOFLOAT_TESTDATA = [
-     [ 1, 1.0 ],
-     [ nil, nil],
-     [ "42", 42.0],
-     [ "89.3", 89.3 ],
-     [ "test", 0.0 ],
-     [ :test, nil ]
+      [1, 1.0],
+      [nil, nil],
+      ["42", 42.0],
+      ["89.3", 89.3],
+      ["test", 0.0],
+      [:test, nil]
     ]
 
     it "works as expected" do
-      TOFLOAT_TESTDATA.each do |value,result|
+      TOFLOAT_TESTDATA.each do |value, result|
         expect(Yast::Builtins.tofloat(value)).to eq(result)
       end
     end
@@ -135,7 +135,6 @@ describe "Yast::Builtins type casting methods" do
   describe "Float.tolstring" do
     it "works as expected" do
       old_lang = ENV["LANG"]
-      old_language = ENV["LANGUAGE"]
       lc_all = ENV["LC_ALL"]
       ENV["LANG"] = "cs_CZ.utf-8"
       ENV["LC_ALL"] = "cs_CZ.utf-8"
@@ -149,10 +148,10 @@ describe "Yast::Builtins type casting methods" do
 
   describe "toterm" do
     TOTERM_TEST_DATA = [
-      [ "test", Yast::Term.new(:test) ],
-      [ :test, Yast::Term.new(:test) ],
-      [ [:test, [:lest, :srst]], Yast::Term.new(:test, :lest, :srst) ],
-      [ [Yast::Term.new(:test)], Yast::Term.new(:test) ]
+      ["test", Yast::Term.new(:test)],
+      [:test, Yast::Term.new(:test)],
+      [[:test, [:lest, :srst]], Yast::Term.new(:test, :lest, :srst)],
+      [[Yast::Term.new(:test)], Yast::Term.new(:test)]
     ]
 
     it "works as expected" do

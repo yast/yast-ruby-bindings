@@ -16,13 +16,13 @@ describe Yast::RSpec::SCR do
   describe "#change_scr_root" do
     describe "file check" do
       it "raises an exception if the directory does not exist" do
-        expect { change_scr_root("not/found/file") }.
-          to raise_exception(RuntimeError, /not a valid directory/)
+        expect { change_scr_root("not/found/file") }
+          .to raise_exception(RuntimeError, /not a valid directory/)
       end
 
       it "raises an exception if called on a regular file" do
-        expect { change_scr_root(File.join(chroot, "just_a_file")) }.
-          to raise_exception(RuntimeError, /not a valid directory/)
+        expect { change_scr_root(File.join(chroot, "just_a_file")) }
+          .to raise_exception(RuntimeError, /not a valid directory/)
       end
     end
 
@@ -42,20 +42,15 @@ describe Yast::RSpec::SCR do
       end
 
       it "restores the original path after a exception" do
-        begin
-          change_scr_root(chroot) do
-            raise DummyError
-          end
-        rescue DummyError
-          # Just catch the exception
-        end
+        expect { change_scr_root(chroot) { raise DummyError } }
+          .to raise_exception(DummyError)
         expect(root_content).not_to eq(["just_a_file"])
       end
 
       it "raises an exception for nested calls" do
         change_scr_root(chroot) do
-          expect { change_scr_root(chroot) }.
-            to raise_exception(RuntimeError, /reset_scr_root was expected/)
+          expect { change_scr_root(chroot) }
+            .to raise_exception(RuntimeError, /reset_scr_root was expected/)
         end
         expect(root_content).not_to eq(["just_a_file"])
       end
@@ -69,8 +64,8 @@ describe Yast::RSpec::SCR do
       end
 
       it "raises an exception for nested calls" do
-        expect { change_scr_root(chroot) }.
-          to raise_exception(RuntimeError, /reset_scr_root was expected/)
+        expect { change_scr_root(chroot) }
+          .to raise_exception(RuntimeError, /reset_scr_root was expected/)
       end
     end
 
@@ -87,8 +82,8 @@ describe Yast::RSpec::SCR do
 
       it "raises an exception for consecutive calls" do
         change_scr_root(chroot)
-        expect { change_scr_root(chroot) }.
-          to raise_exception(RuntimeError, /reset_scr_root was expected/)
+        expect { change_scr_root(chroot) }
+          .to raise_exception(RuntimeError, /reset_scr_root was expected/)
       end
     end
   end
@@ -101,8 +96,8 @@ describe Yast::RSpec::SCR do
     end
 
     it "raises an exception if #change_scr_root was not called before" do
-      expect { reset_scr_root }.
-        to raise_exception(RuntimeError, /Unable to find a chrooted SCR/)
+      expect { reset_scr_root }
+        .to raise_exception(RuntimeError, /Unable to find a chrooted SCR/)
     end
 
     it "raises an exception if default SCR was modified" do
@@ -113,8 +108,8 @@ describe Yast::RSpec::SCR do
       Yast::WFM.SCRClose(Yast::WFM.SCRGetDefault)
       Yast::WFM.SCRSetDefault(original_handle)
 
-      expect { reset_scr_root }.
-        to raise_exception(RuntimeError, /not the current default/)
+      expect { reset_scr_root }
+        .to raise_exception(RuntimeError, /not the current default/)
     end
   end
 end

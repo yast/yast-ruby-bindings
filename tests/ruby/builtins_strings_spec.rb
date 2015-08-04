@@ -63,7 +63,8 @@ describe "Yast::Builtins string methods" do
       expect(Yast::Builtins.splitstring("ABC", "abc")).to eq(["ABC"])
 
       expect(Yast::Builtins.splitstring("a   a", " ")).to eq(["a", "", "", "a"])
-      expect(Yast::Builtins.splitstring("text/with:different/separators", "/:")).to eq(["text", "with", "different", "separators"])
+      expect(Yast::Builtins.splitstring("text/with:different/separators", "/:"))
+        .to eq(["text", "with", "different", "separators"])
     end
   end
 
@@ -99,8 +100,8 @@ describe "Yast::Builtins string methods" do
       # disabled: system dependent (depends on the current system time zone),
       # fails if the current offset is not UTC+2:00
       # expect(Yast::Builtins.timestring("%c", 1367839796, false)).to eq("Mon May  6 13:29:56 2013")
-      expect(Yast::Builtins.timestring("%c", 1367839796, true)).to eq("Mon May  6 11:29:56 2013")
-      expect(Yast::Builtins.timestring("%Y%m%d", 1367839796, false)).to eq("20130506")
+      expect(Yast::Builtins.timestring("%c", 1_367_839_796, true)).to eq("Mon May  6 11:29:56 2013")
+      expect(Yast::Builtins.timestring("%Y%m%d", 1_367_839_796, false)).to eq("20130506")
     end
   end
 

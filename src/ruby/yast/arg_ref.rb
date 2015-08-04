@@ -12,9 +12,8 @@ module Yast
   class ArgRef
     attr_accessor :value
 
-    def initialize initial=nil
+    def initialize(initial = nil)
       @value = initial
     end
-
   end
 end

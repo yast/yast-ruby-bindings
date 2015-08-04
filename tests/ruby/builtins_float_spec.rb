@@ -42,10 +42,10 @@ describe Yast::Builtins::Float do
 
   describe ".pow" do
     it "works as expected" do
-      expect(Yast::Builtins::Float.pow(nil,10.0)).to eq(nil)
+      expect(Yast::Builtins::Float.pow(nil, 10.0)).to eq(nil)
 
-      expect(Yast::Builtins::Float.pow(10.0,3.0)).to eq(1000.0)
-      expect(Yast::Builtins::Float.pow(10.0,3.0).class).to eq(Float)
+      expect(Yast::Builtins::Float.pow(10.0, 3.0)).to eq(1000.0)
+      expect(Yast::Builtins::Float.pow(10.0, 3.0).class).to eq(Float)
     end
   end
 

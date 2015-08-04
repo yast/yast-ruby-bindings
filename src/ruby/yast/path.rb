@@ -6,14 +6,14 @@ module Yast
   class Path
     include Comparable
 
-    def initialize value
+    def initialize(value)
       @components = []
       load_components value
     end
 
     # Creates path from generic string
-    def self.from_string string
-      self.new ".\"#{string}\""
+    def self.from_string(string)
+      new ".\"#{string}\""
     end
 
     def clone
@@ -21,56 +21,57 @@ module Yast
     end
 
     # concats path
-    def + another
-      another = self.class.from_string(another) unless another.is_a? Yast::Path
-      return another.clone if components.empty?
-      return clone if another.empty?
-      return Path.new(self.to_s+another.to_s)
+    def +(other)
+      other = self.class.from_string(other) unless other.is_a? Yast::Path
+      return other.clone if components.empty?
+      return clone if other.empty?
+      Path.new(to_s + other.to_s)
     end
 
     def to_s
-      '.'+components.join('.')
+      "." + components.join(".")
     end
 
     # gets number of elements
     def size
-      return components.size
+      components.size
     end
 
     # Detect if there is no  elements
     def empty?
-      return components.empty?
+      components.empty?
     end
 
     def <=>(other)
       return nil unless other.is_a? self.class
-      0.upto(size-1) do |i|
+      0.upto(size - 1) do |i|
         return 1 unless other.send(:components)[i]
-        #we strip enclosing quotes for complex expression
-        our_component = components[i].sub(/\A"(.*)"\Z/,"\\1");
-        other_component = other.send(:components)[i].sub(/\A"(.*)"\Z/,"\\1");
+        # we strip enclosing quotes for complex expression
+        our_component = components[i].sub(/\A"(.*)"\Z/, "\\1")
+        other_component = other.send(:components)[i].sub(/\A"(.*)"\Z/, "\\1")
         res = our_component <=> other_component
         return res if res != 0
       end
-      return size <=> other.size
+      size <=> other.size
     end
 
-  private
+    private
+
     attr_reader :components
     COMPLEX_CHAR_REGEX = /[^a-zA-Z0-9_-]/
     SIMPLE_CHAR_REGEX = /[a-zA-Z0-9_-]/
     # Rewritten yast parser
-    def load_components (value)
+    def load_components(value)
       state = :initial
       skip_next = false
       buffer = ""
       value.each_char do |c|
         case state
         when :initial
-          raise "Invalid path '#{value}'" if c != '.'
+          raise "Invalid path '#{value}'" if c != "."
           state = :dot
         when :dot
-          raise "Invalid path '#{value}'" if c == '.'
+          raise "Invalid path '#{value}'" if c == "."
           if c == '"'
             state = :complex
           else
@@ -78,7 +79,7 @@ module Yast
           end
           buffer << c
         when :simple
-          if c == '.'
+          if c == "."
             state = :dot
             return if invalid_buffer?(buffer)
 
@@ -116,7 +117,7 @@ module Yast
       end
     end
 
-    def invalid_buffer? buffer
+    def invalid_buffer?(buffer)
       if buffer.start_with?("-") || buffer.end_with?("-")
         Yast.y2error "Cannot have dash before or after dot '#{value}'"
         @components.clear
@@ -126,9 +127,9 @@ module Yast
       false
     end
 
-    def modify_buffer buffer
+    def modify_buffer(buffer)
       if buffer =~ COMPLEX_CHAR_REGEX # we can get unescaped complex path from topath builtin
-        buffer = buffer.gsub(/"/,"\\\"")
+        buffer = buffer.gsub(/"/, "\\\"")
         buffer = "\"#{buffer}\""
       end
 

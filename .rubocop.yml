@@ -1,0 +1,83 @@
+# use the shared Yast defaults
+inherit_from:
+  /usr/share/YaST2/data/devtools/data/rubocop_yast_style.yml
+
+
+# Offense count: 3
+Lint/Eval:
+  Enabled: false
+
+# Offense count: 2
+Lint/RescueException:
+  Enabled: false
+
+# Offense count: 24
+Metrics/AbcSize:
+  Max: 54
+
+# Offense count: 1
+Metrics/BlockNesting:
+  Max: 4
+
+# Offense count: 1
+# Configuration parameters: CountComments.
+Metrics/ClassLength:
+  Max: 107
+
+# Offense count: 20
+Metrics/CyclomaticComplexity:
+  Max: 17
+
+# Offense count: 149
+# Configuration parameters: AllowURI, URISchemes.
+Metrics/LineLength:
+  Max: 120
+
+# Offense count: 32
+# Configuration parameters: CountComments.
+Metrics/MethodLength:
+  Max: 49
+
+# Offense count: 9
+Metrics/PerceivedComplexity:
+  Max: 18
+
+# Offense count: 20
+Style/Documentation:
+  Enabled: false
+
+# Offense count: 1
+Style/DoubleNegation:
+  Enabled: false
+
+# Offense count: 3
+# Configuration parameters: MinBodyLength.
+Style/GuardClause:
+  Enabled: false
+
+# Offense count: 10
+# Configuration parameters: MaxLineLength.
+Style/IfUnlessModifier:
+  Enabled: false
+
+# Yast API: WFM.SetLanguage, SCR.Read
+# i18n: N_, Nn_
+Style/MethodName:
+  Exclude:
+    - src/ruby/yast/i18n.rb
+    - src/ruby/yast/scr.rb
+    - src/ruby/yast/wfm.rb
+
+# Offense count: 1
+# Configuration parameters: EnforcedStyle, MinBodyLength, SupportedStyles.
+Style/Next:
+  Enabled: false
+
+# Offense count: 4
+# Configuration parameters: Methods.
+Style/SingleLineBlockParams:
+  Enabled: false
+
+# Offense count: 1 (@__last_exception)
+Style/TrivialAccessors:
+  Enabled: false

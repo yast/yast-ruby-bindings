@@ -1,12 +1,11 @@
 require "yastx"
 
-#predefine term to avoid circular dependency
-class Yast::Term;end
-class Yast::FunRef;end
-class Yast::YReference;end
-class Yast::Path;end
-
 module Yast
+  # predefine term to avoid circular dependency
+  class Term; end
+  class FunRef; end
+  class YReference; end
+  class Path; end
 
   # @private used to extract place from backtrace
   BACKTRACE_REGEXP = /^(.*):(\d+):in `.*'$/
@@ -14,92 +13,101 @@ module Yast
   # shortcut to construct new Yast term
   # @see Yast::Term
   def term(*args)
-    return Term.new *args
+    Term.new(*args)
   end
 
   # shortcut to construct new function reference
   # @see Yast::FunRef
   def fun_ref(*args)
-    return FunRef.new *args
+    FunRef.new(*args)
   end
 
   # shortcut to construct new argument reference
   # @see Yast::ArgRef
   def arg_ref(*args)
-    return ArgRef.new *args
+    ArgRef.new(*args)
   end
 
   # shortcut to construct new Yast path
   # @see Yast::Path
   def path(*args)
-    return Path.new *args
+    Path.new(*args)
   end
 
-  # Makes deep copy of object. Difference to #dup or #clone is that it copy all elements of Array, Hash, Yast::Term.
+  # Makes deep copy of object. Difference to #dup or #clone is
+  # that it copy all elements of Array, Hash, Yast::Term.
   # Immutable classes is just returned.
   # @param [Hash] options modifies behavior
-  # @option options [TrueClass,FalseClass] :full (false) make full copy even for types that is immutable in Yast builtins context
-  # @note String, Yast::Path and Yast::Byteblock is also immutable in sense of Yast because there is no builtin operation for string modify that do not copy it. Use :full option to copy it also.
+  # @option options [TrueClass,FalseClass] :full (false) make full copy
+  #   even for types that is immutable in Yast builtins context
+  # @note String, Yast::Path and Yast::Byteblock is also immutable
+  #   in sense of Yast because there is no builtin operation
+  #   for string modify that do not copy it. Use :full option to copy it also.
   # @example how to refactor generated code
-  #   #old method where a is not need to copy and b is needed, but we plan to use full ruby features to modify strings
+  #   # old method where a is not need to copy
+  #   # and b is needed, but we plan to use full ruby features to modify strings
   #   def old(a, b)
   #     a = copy_arg(a)
   #     b = copy_arg(b)
   #     ...
   #   end
   #
-  #   #refactored method
+  #   # refactored method
   #   def new(a, b)
   #     b = copy_arg b, :full => true
   #     ...
   #   end
-  def self.deep_copy object, options = {}
+  def self.deep_copy(object, options = {})
     case object
-    when Numeric,TrueClass,FalseClass,NilClass,Symbol #immutable
+    when Numeric, TrueClass, FalseClass, NilClass, Symbol # immutable
       object
-    when ::String, Yast::Path, Yast::Byteblock #immutable in sense of yast buildins
+    when ::String, Yast::Path, Yast::Byteblock # immutable in sense of yast buildins
       options[:full] ? object.clone : object
-    when Yast::FunRef, Yast::ArgRef, Yast::External, Yast::YReference, Yast::YCode #contains only reference somewhere
+    when Yast::FunRef, Yast::ArgRef, Yast::External, Yast::YReference, Yast::YCode # contains only reference somewhere
       object
     when ::Hash
-      object.reduce({}) do |acc,kv|
+      object.each_with_object({}) do |kv, acc|
         acc[deep_copy(kv[0])] = deep_copy(kv[1])
-        acc
       end
     when ::Array
-       object.reduce([]) do |acc,v|
+      object.each_with_object([]) do |v, acc|
         acc << deep_copy(v)
       end
     else
-      object.clone #deep copy
+      object.clone # deep copy
     end
   end
 
   # Shortcut for Yast::deep_copy
   # @see Yast.deep_copy
-  def deep_copy object
+  def deep_copy(object)
     Yast.deep_copy(object)
   end
   alias_method :copy_arg, :deep_copy
 
   # includes module from include directory.
   # given include must satisfied few restrictions.
-  # 1) file must contain module enclosed in Yast namespace with name constructed from path and its name
-  #    it is constructed that all parts is upcased and also all [-_.] is replaced and next character must be upper case.
+  # 1) file must contain module enclosed in Yast namespace
+  #    with name constructed from path and its name
+  #    it is constructed that all parts is upcased
+  #    and also all [-_.] is replaced and next character must be upper case.
   #    At the end is appended Include string
-  #    example in file network/udev_lan.source.rb must be module Yast::NetworkUdevLanSourceInclude
+  #    example in file network/udev_lan.source.rb
+  #    must be module Yast::NetworkUdevLanSourceInclude
   # 2) initialization of module must be in method with prefix initialize and rest is
-  #    translated path, where all [-./] is replaced by underscore. Method take one parameter that is propagated target param.
-  #    example in file network/udev_lan.source.rb initialization method will be initialize_network_udev_lan_source
+  #    translated path, where all [-./] is replaced by underscore.
+  #    Method take one parameter that is propagated target param.
+  #    example in file network/udev_lan.source.rb
+  #    initialization method will be initialize_network_udev_lan_source
   # @param path [String] relative path to Y2DIR/include path with file suffix
   # @param target [Class] where include module
   # @deprecated use "lib" directory where you can place common ruby code without any special handling.
   def self.include(target, path)
-    path_without_suffix = path.sub(/\.rb$/,"")
-    module_name = path_without_suffix.
-      gsub(/^./)     { |s| s.upcase }.
-      gsub(/\/./)    { |s| s[1].upcase }.
-      gsub(/[-_.]./) { |s| s[1].upcase } +
+    path_without_suffix = path.sub(/\.rb$/, "")
+    module_name = path_without_suffix
+      .gsub(/^./)     { |s| s.upcase }
+      .gsub(/\/./)    { |s| s[1].upcase }
+      .gsub(/[-_.]./) { |s| s[1].upcase } +
       "Include"
 
     loaded = Yast.constants.include? module_name.to_sym
@@ -145,17 +153,17 @@ module Yast
     # Handle multilevel modules like YaPI::Network
     modules[0..-2].each do |module_|
       tmp_m = if base.constants.include?(module_.to_sym)
-          base.const_get(module_)
-        else
-          base.const_set(module_, ::Module.new)
-        end
+                base.const_get(module_)
+              else
+                base.const_set(module_, ::Module.new)
+              end
       base = tmp_m
     end
 
     # do not reimport if already imported and contain some methods
     # ( in case namespace contain some methods )
     if base.constants.include?(modules.last.to_sym) &&
-        !(base.const_get(modules.last).methods - Object.methods()).empty?
+        !(base.const_get(modules.last).methods - Object.methods).empty?
       return
     end
 
@@ -163,16 +171,16 @@ module Yast
 
     # do not create wrapper if module is in ruby and define itself object
     if base.constants.include?(modules.last.to_sym) &&
-        !(base.const_get(modules.last).methods - Object.methods()).empty?
+        !(base.const_get(modules.last).methods - Object.methods).empty?
       return
     end
 
     m = if base.constants.include?(modules.last.to_sym)
-        base.const_get(modules.last)
-      else
-        ::Module.new
-      end
-    symbols(mname).each do |sname,stype|
+          base.const_get(modules.last)
+        else
+          ::Module.new
+        end
+    symbols(mname).each do |sname, stype|
       next if sname.empty?
       if (stype == :function)
         m.module_eval <<-"END"
@@ -196,7 +204,4 @@ module Yast
 
     base.const_set(modules.last, m) unless base.constants.include?(modules.last.to_sym)
   end
-
 end
-
-

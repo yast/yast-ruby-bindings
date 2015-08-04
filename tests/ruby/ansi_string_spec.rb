@@ -9,10 +9,10 @@ describe Yast::CoreExt::AnsiString do
     context "using the AnsiString refinement" do
       using Yast::CoreExt::AnsiString
 
-      let(:string) {
+      let(:string) do
         file = File.join(File.dirname(__FILE__), "data", filename)
         File.open(file, "rb").read
-      }
+      end
       let(:result) { " Cyan  Bold\n Pink  Normal\n" }
 
       context "when the string contains colors" do

@@ -7,7 +7,7 @@ module Yast
 
     # creates external with given payload, binary data must be assigned from C.
     # Constructed only by bindings when given from component system.
-    def initialize (magic)
+    def initialize(magic)
       @magic = magic
     end
 

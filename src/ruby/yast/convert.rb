@@ -49,7 +49,7 @@ END
       from = options[:from].dup
       to = options[:to].dup
 
-      #ignore whitespaces and specialization in types
+      # ignore whitespaces and specialization in types
       to.gsub!(/<.*>/, "")
       to.gsub!(/\s+/, "")
       from.gsub!(/<.*>/, "")
@@ -64,7 +64,7 @@ END
       return nil if object.nil?
       return object if from == to
 
-      if from == "any" && allowed_type(object,to)
+      if from == "any" && allowed_type(object, to)
         return object
       elsif to == "float"
         return nil unless (object.is_a? Fixnum) || (object.is_a? Bignum)
@@ -78,7 +78,7 @@ END
       elsif to == "string" && from == "locale"
         return object
       else
-        Yast.y2warning -1, "Cannot convert #{object.class} from '#{from}' to '#{to}'"
+        Yast.y2warning(-1, "Cannot convert #{object.class} from '#{from}' to '#{to}'")
         return nil
       end
     end
@@ -90,8 +90,7 @@ END
 
       types = [types] unless types.is_a? Array
 
-      return types.any? {|t|  object.is_a? t }
+      types.any? { |t|  object.is_a? t }
     end
   end
 end
-

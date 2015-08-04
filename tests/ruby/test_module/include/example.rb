@@ -1,6 +1,6 @@
 module Yast
   module ExampleInclude
-    def initialize_example target
+    def initialize_example(_target)
       @test = 15
     end
 

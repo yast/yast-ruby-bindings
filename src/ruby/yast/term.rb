@@ -1,8 +1,8 @@
 require "forwardable"
 
-require 'yast/yast'
-require 'yast/builtins'
-require 'yast/ops'
+require "yast/yast"
+require "yast/builtins"
+require "yast/ops"
 
 module Yast
   # Represents YCP type term enhanced by some ruby convenient methods
@@ -41,7 +41,7 @@ module Yast
     # term parameters
     attr_reader :params
 
-    def initialize value, *params
+    def initialize(value, *params)
       @value = value
       @params = params
     end
@@ -84,16 +84,16 @@ module Yast
     end
 
     def to_s
-      "`#{value} (#{params.map{|p| Yast::Builtins.inside_tostring p}.join ', '})"
+      "`#{value} (#{params.map { |p| Yast::Builtins.inside_tostring p }.join ", "})"
     end
 
-    def <=> (other)
+    def <=>(other)
       return nil unless other.is_a? self.class
       res = value <=> other.value
       return res if res != 0
 
       list = Ops.comparable_object(params)
-      return list <=> other.params
+      list <=> other.params
     end
   end
 end
