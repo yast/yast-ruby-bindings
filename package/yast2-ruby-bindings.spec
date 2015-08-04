@@ -68,10 +68,10 @@ make %{?jobs:-j %jobs} VERBOSE=1
 %install
 cd build
 make install DESTDIR=$RPM_BUILD_ROOT
-cd ..
+cd -
 
 %check
-cd build/tests/ruby
+cd build
 make test ARGS=-V
 cd -
 

@@ -50,12 +50,6 @@ Style/Documentation:
 Style/DoubleNegation:
   Enabled: false
 
-# legacy tests
-Style/FileName:
-  Exclude:
-  - tests/ycp/InRuby.rb
-  - tests/ycp/URI.rb
-
 # Offense count: 3
 # Configuration parameters: MinBodyLength.
 Style/GuardClause:
