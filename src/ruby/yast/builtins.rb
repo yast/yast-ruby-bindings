@@ -308,7 +308,7 @@ module Yast
 
       case object
       when ::String
-        # ideally this should be enought: object.scanf("%i").first
+        # ideally this should be enough: object.scanf("%i").first
         # but to be 100% Yast compatible we need to do this,
         # see https://github.com/yast/yast-core/blob/master/libyast/src/YastInteger.cc#L39
         if object[0] == "0"
@@ -318,9 +318,8 @@ module Yast
       # use full qualified ::Float to avoid clash with Yast::Builtins::Float
       when ::Float, ::Fixnum, ::Bignum
         object.to_i
-      else
-        nil
       end
+      # else nil
     end
 
     # contains() Yast built-in
