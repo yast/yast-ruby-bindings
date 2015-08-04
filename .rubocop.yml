@@ -51,10 +51,6 @@ Style/DoubleNegation:
   Enabled: false
 
 # Offense count: 1
-Style/EachWithObject:
-  Enabled: false
-
-# Offense count: 1
 Style/EmptyElse:
   Enabled: false
 

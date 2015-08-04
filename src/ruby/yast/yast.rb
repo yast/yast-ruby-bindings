@@ -66,12 +66,11 @@ module Yast
     when Yast::FunRef, Yast::ArgRef, Yast::External, Yast::YReference, Yast::YCode # contains only reference somewhere
       object
     when ::Hash
-      object.reduce({}) do |acc, kv|
+      object.each_with_object({}) do |kv, acc|
         acc[deep_copy(kv[0])] = deep_copy(kv[1])
-        acc
       end
     when ::Array
-      object.reduce([]) do |acc, v|
+      object.each_with_object([]) do |v, acc|
         acc << deep_copy(v)
       end
     else
