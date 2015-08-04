@@ -124,8 +124,9 @@ module Yast
           object.each do |i|
             res << block.call(Yast.deep_copy(i))
           end
-        rescue Yast::Break # rubocop:disable Lint/HandleExceptions
+        rescue Yast::Break
           # break skips out of each loop, but allow to keep previous results
+          Yast.y2debug(1, "break in maplist(Array)")
         end
         return res
       when ::Hash
@@ -134,8 +135,9 @@ module Yast
           sort(object.keys).each do |k|
             res << block.call(Yast.deep_copy(k), Yast.deep_copy(object[k]))
           end
-        rescue Yast::Break # rubocop:disable Lint/HandleExceptions
+        rescue Yast::Break
           # break skips out of each loop, but allow to keep previous results
+          Yast.y2debug(1, "break in maplist(Hash)")
         end
         return res
       else
@@ -385,8 +387,9 @@ module Yast
         Yast.deep_copy(list).each do |i|
           res.merge! block.call(i)
         end
-      rescue Yast::Break # rubocop:disable Lint/HandleExceptions
+      rescue Yast::Break
         # break stops adding to hash
+        Yast.y2debug(1, "break in listmap")
       end
 
       res
@@ -514,8 +517,9 @@ module Yast
         sort(map.keys).each do |k|
           res.merge! block.call(k, map[k])
         end
-      rescue Yast::Break # rubocop:disable Lint/HandleExceptions
+      rescue Yast::Break
         # break stops adding to hash
+        Yast.y2debug(1, "break in mapmap")
       end
 
       res
