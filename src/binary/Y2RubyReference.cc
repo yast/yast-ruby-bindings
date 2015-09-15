@@ -9,10 +9,14 @@ YCPValue ClientFunction::evaluateCall()
   for (int i = 0; i < m_call.size(); ++i)
   {
     VALUE value = ycpvalue_2_rbvalue(m_call.value(i));
-    RB_GC_GUARD(value);
+    rb_gc_register_address(&value);
     params[i] = value;
   }
   YCPValue res = rbvalue_2_ycpvalue(rb_funcall3(object, rb_intern("call"),m_call.size(), params));
+  for (int i = 0; i < m_call.size(); ++i)
+  {
+    rb_gc_unregister_address(params+i);
+  }
   delete[] params;
   return res;
 }
