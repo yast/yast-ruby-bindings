@@ -190,7 +190,7 @@ YCPValue YRuby::callInner (string module_name, string function,
     YCPValue v = argList->value(i);
     y2debug("Adding argument %d of type %s", i, v->valuetype_str());
     VALUE vr = ycpvalue_2_rbvalue(v);
-    RB_GC_GUARD(vr);
+    rb_gc_register_address(&vr);
     values[i+3] = vr;
   }
 
@@ -198,6 +198,11 @@ YCPValue YRuby::callInner (string module_name, string function,
 
   int error;
   VALUE result = rb_protect(protected_call, (VALUE)values, &error);
+  for (int i = 0 ; i < size; ++i )
+  {
+    rb_gc_unregister_address(values + i + 3);
+  }
+
   if (error)
   {
     VALUE exception = rb_gv_get("$!"); /* get last exception */
