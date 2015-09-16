@@ -30,12 +30,12 @@ if !ENV["TRAVIS"]
       #
       # In addition to not crashing, these messages should be displayed when
       # running RSpec, not sure if it's possible to check that
-      expect {std_puts "tty is free again"}.to_not raise_error
+      expect { std_puts "tty is free again" }.to_not raise_error
     end
 
     it "does not fall apart when stderr is used" do
       Yast::UI.OpenDialog(PushButton("Hello, World!"))
-      expect {std_puts "NCurses is using the tty"}.to_not raise_error
+      expect { std_puts "NCurses is using the tty" }.to_not raise_error
       Yast::UI.CloseDialog
     end
   end
