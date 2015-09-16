@@ -42,6 +42,9 @@ Requires:       yast2-core >= 2.24.0
 BuildRequires:  yast2-core-devel >= 2.24.0
 Requires:       yast2-ycp-ui-bindings       >= 2.21.9
 BuildRequires:  yast2-ycp-ui-bindings-devel >= 2.21.9
+# The test suite includes a regression test (std_streams_spec.rb) for a
+# libyui-ncurses bug fixed in 2.47.3
+BuildRequires:  libyui-ncurses >= 2.47.3
 Requires:       ruby
 Summary:        Ruby bindings for the YaST platform
 License:        GPL-2.0
