@@ -232,8 +232,9 @@ YCPValue YRuby::callClient(const string& path)
 
   VALUE wfm_module = y2ruby_nested_const_get("Yast::WFM");
   VALUE client_path = rb_str_new2(path.c_str());
-  RB_GC_GUARD(client_path);
+  rb_gc_register_address(&client_path);
   VALUE result = rb_funcall(wfm_module, rb_intern("run_client"), 1, client_path);
+  rb_gc_unregister_address(&client_path);
   return rbvalue_2_ycpvalue(result);
 }
 
