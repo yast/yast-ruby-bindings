@@ -190,8 +190,8 @@ YCPValue YRuby::callInner (string module_name, string function,
     YCPValue v = argList->value(i);
     y2debug("Adding argument %d of type %s", i, v->valuetype_str());
     VALUE vr = ycpvalue_2_rbvalue(v);
-    rb_gc_register_address(&vr);
     values[i+3] = vr;
+    rb_gc_register_address(values + i + 3);
   }
 
   y2debug( "Will call function '%s' in module '%s' with '%d' arguments", function.c_str(), module_name.c_str(), size-1);
