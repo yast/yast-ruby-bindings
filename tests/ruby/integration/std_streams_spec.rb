@@ -3,7 +3,7 @@
 # We do not have a proper ncurses in travis at the moment
 exit 0 if ENV["TRAVIS"]
 
-require_relative "test_helper"
+require_relative "../test_helper"
 require "yast/ui_shortcuts"
 
 Yast.import "UI"

@@ -45,6 +45,8 @@ BuildRequires:  yast2-ycp-ui-bindings-devel >= 2.21.9
 # The test suite includes a regression test (std_streams_spec.rb) for a
 # libyui-ncurses bug fixed in 2.47.3
 BuildRequires:  libyui-ncurses >= 2.47.3
+# The mentioned test requires screen in order to be executed in headless systems
+BuildRequires:  screen
 Requires:       ruby
 Summary:        Ruby bindings for the YaST platform
 License:        GPL-2.0
