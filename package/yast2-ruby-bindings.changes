@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Wed Sep 30 07:44:18 UTC 2015 - ancor@suse.com
+
+- Added a regression test for the fix of bnc#943757 implemented
+  in libyui-ncurses 2.47.3
+- 3.1.39
+
+-------------------------------------------------------------------
 Tue Aug  4 15:53:33 UTC 2015 - mvidner@suse.com
 
 - Applied the style guide, with Rubocop.
