@@ -10,6 +10,8 @@ YCPValue ClientFunction::evaluateCall()
   {
     VALUE value = ycpvalue_2_rbvalue(m_call.value(i));
     params[i] = value;
+    // register parameters to avoid its garbage collecting during creation of
+    // other non trivial types. RB_GC_GUARD is not enough. (bnc#945299)
     rb_gc_register_address(params + i);
   }
   YCPValue res = rbvalue_2_ycpvalue(rb_funcall3(object, rb_intern("call"),m_call.size(), params));

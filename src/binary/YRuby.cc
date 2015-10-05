@@ -191,6 +191,8 @@ YCPValue YRuby::callInner (string module_name, string function,
     y2debug("Adding argument %d of type %s", i, v->valuetype_str());
     VALUE vr = ycpvalue_2_rbvalue(v);
     values[i+3] = vr;
+    // register parameters to avoid its garbage collecting during creation of
+    // other non trivial types. RB_GC_GUARD is not enough. (bnc#945299)
     rb_gc_register_address(values + i + 3);
   }
 
@@ -232,6 +234,8 @@ YCPValue YRuby::callClient(const string& path)
 
   VALUE wfm_module = y2ruby_nested_const_get("Yast::WFM");
   VALUE client_path = rb_str_new2(path.c_str());
+  // register parameters to avoid its garbage collecting during creation of
+  // other non trivial types. RB_GC_GUARD is not enough. (bnc#945299)
   rb_gc_register_address(&client_path);
   VALUE result = rb_funcall(wfm_module, rb_intern("run_client"), 1, client_path);
   rb_gc_unregister_address(&client_path);
