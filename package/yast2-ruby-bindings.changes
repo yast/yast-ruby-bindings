@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Mon Oct  5 12:04:35 UTC 2015 - jreidinger@suse.com
+
+- Used rb_gc_register_address to fix 'method to_s called on
+  terminated object' during package installation (bsc#945299)
+- 3.1.24.1
+
+-------------------------------------------------------------------
 Fri Sep 12 12:22:37 UTC 2014 - jreidinger@suse.com
 
 - GC-guard some Ruby values to prevent a crash in slideshow
