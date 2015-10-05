@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Mon Oct  5 12:04:35 UTC 2015 - jreidinger@suse.com
+
+- Used rb_gc_register_address to fix 'method to_s called on
+  terminated object' during package installation (bsc#945299)
+- 3.1.40
+
+-------------------------------------------------------------------
 Wed Sep 30 07:44:18 UTC 2015 - ancor@suse.com
 
 - Added a regression test for the fix of bnc#943757 implemented
