@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Fri Nov 13 13:41:46 UTC 2015 - jreidinger@suse.com
+
+- Fix Cell ui shortcut as final id have to be lowercase (fake bug 
+  to get it accepted bnc#0)
+- 3.1.41
+
+-------------------------------------------------------------------
 Mon Oct  5 12:04:35 UTC 2015 - jreidinger@suse.com
 
 - Used rb_gc_register_address to fix 'method to_s called on
