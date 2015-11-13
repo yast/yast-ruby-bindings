@@ -9,7 +9,6 @@ module Yast
       :BusyIndicator,
       :Bottom,
       :ButtonBox,
-      :Cell,
       :Center,
       :CheckBox,
       :CheckBoxFrame,
@@ -76,6 +75,7 @@ module Yast
       :VWeight,
       :Wizard,
       # special ones that will be upper cased
+      :cell,
       :id,
       :item,
       :header,
