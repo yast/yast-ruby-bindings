@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Tue Dec  1 16:06:11 UTC 2015 - jreidinger@suse.com
+
+- revert last change as it break using cell for quering table cell
+  values (bnc#956380)
+- 3.1.42
+
+-------------------------------------------------------------------
 Fri Nov 13 13:41:46 UTC 2015 - jreidinger@suse.com
 
 - Fix Cell ui shortcut as final id have to be lowercase (fake bug 
