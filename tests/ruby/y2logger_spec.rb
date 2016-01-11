@@ -41,6 +41,21 @@ module Yast
       expect(Yast).to receive(:y2milestone).with(Y2Logger::CALL_FRAME, TEST_MESSAGE)
       @test_logger.info { TEST_MESSAGE }
     end
+
+    it "does not crash when logging an invalid UTF-8 string" do
+      # do not process this string otherwise you'll get an exception :-)
+      invalid_utf8 = "invalid sequence: \xE3\x80"
+      # just make sure it is really an UTF-8 string
+      expect(invalid_utf8.encoding).to eq(Encoding::UTF_8)
+      expect { Yast.y2milestone(invalid_utf8) }.not_to raise_error
+    end
+
+    it "does not crash when logging ASCII string with invalid UTF-8" do
+      # do not process this string otherwise you'll get an exception :-)
+      invalid_ascii = "invalid sequence: \xE3\x80"
+      invalid_ascii.force_encoding(Encoding::ASCII)
+      expect { Yast.y2milestone(invalid_ascii) }.not_to raise_error
+    end
   end
 
   describe Yast::Logger do

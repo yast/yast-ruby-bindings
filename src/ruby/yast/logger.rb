@@ -1,6 +1,10 @@
 require "yastx"
 require "yast/builtins"
 
+# FIXME: a workaround for https://github.com/yast/yast-ruby-bindings/issues/133
+require "enc/encdb.so"
+require "enc/trans/transdb.so"
+
 module Yast
   # @private
   module_function def y2_logger_helper(level, args)
@@ -17,7 +21,20 @@ module Yast
       end
     end
 
-    res = Builtins.sformat(*args)
+    # replace invalid characters by the replacement symbol
+    # see https://en.wikipedia.org/wiki/Specials_(Unicode_block)#Replacement_character
+    safe_args = args.map do |arg|
+      return arg unless arg.is_a?(::String)
+
+      if arg.encoding == Encoding::UTF_8
+        arg.scrub("�")
+      else
+        # broken strings might be passed as e.g. ASCII-8BIT and need to be recoded
+        arg.encode(Encoding::UTF_8, invalid: :replace, undef: :replace, replace: "�")
+      end
+    end
+
+    res = Builtins.sformat(*safe_args)
     res.gsub!(/%/, "%%") # reescape all %
     caller[caller_frame] =~ /(.+):(\d+):in `([^']+)'/
     y2_logger(level, "Ruby", Regexp.last_match(1), Regexp.last_match(2).to_i, Regexp.last_match(3), res)
