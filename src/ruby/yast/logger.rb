@@ -26,11 +26,13 @@ module Yast
     safe_args = args.map do |arg|
       return arg unless arg.is_a?(::String)
 
-      if arg.encoding == Encoding::UTF_8
+      # Be carefull, there is also Yast::Encoding!!
+      if arg.encoding == ::Encoding::UTF_8
         arg.scrub("�")
       else
         # broken strings might be passed as e.g. ASCII-8BIT and need to be recoded
-        arg.encode(Encoding::UTF_8, invalid: :replace, undef: :replace, replace: "�")
+        # Be carefull, there is also Yast::Encoding!!
+        arg.encode(::Encoding::UTF_8, invalid: :replace, undef: :replace, replace: "�")
       end
     end
 
