@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Wed Jan 13 09:36:59 UTC 2016 - jreidinger@suse.com
+
+- Move transdb initialization to C part to keep it together with
+  index initialization (bsc#932014)
+- 3.1.46
+
+-------------------------------------------------------------------
 Wed Jan 13 08:52:21 UTC 2016 - jreidinger@suse.com
 
 - fixed early return from logging method causing failure of old
