@@ -60,7 +60,7 @@ module Yast
     it "processes parameters using Builtins::sformat" do
       expected_log_msg = "test 1 2"
       expect(Yast).to receive(:y2_logger)
-        .with(anything(), "Ruby", anything(), anything(), anything(), expected_log_msg)
+        .with(anything, "Ruby", anything, anything, anything, expected_log_msg)
 
       Yast.y2milestone("test %1 %2", 1, 2)
     end
