@@ -24,7 +24,7 @@ module Yast
     # replace invalid characters by the replacement symbol
     # see https://en.wikipedia.org/wiki/Specials_(Unicode_block)#Replacement_character
     safe_args = args.map do |arg|
-      return arg unless arg.is_a?(::String)
+      next arg unless arg.is_a?(::String)
 
       # Be carefull, there is also Yast::Encoding!!
       if arg.encoding == ::Encoding::UTF_8
