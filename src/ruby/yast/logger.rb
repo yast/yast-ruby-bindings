@@ -1,10 +1,6 @@
 require "yastx"
 require "yast/builtins"
 
-# FIXME: a workaround for https://github.com/yast/yast-ruby-bindings/issues/133
-require "enc/encdb.so"
-require "enc/trans/transdb.so"
-
 module Yast
   # @private
   module_function def y2_logger_helper(level, args)
