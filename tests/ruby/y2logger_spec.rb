@@ -56,6 +56,14 @@ module Yast
       invalid_ascii.force_encoding(Encoding::ASCII)
       expect { Yast.y2milestone(invalid_ascii) }.not_to raise_error
     end
+
+    it "processes parameters using Builtins::sformat" do
+      expected_log_msg = "test 1 2"
+      expect(Yast).to receive(:y2_logger)
+        .with(anything, "Ruby", anything, anything, anything, expected_log_msg)
+
+      Yast.y2milestone("test %1 %2", 1, 2)
+    end
   end
 
   describe Yast::Logger do
