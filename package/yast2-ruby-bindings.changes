@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Wed Jan 13 08:52:21 UTC 2016 - jreidinger@suse.com
+
+- fixed early return from logging method causing failure of old
+  testsuite (bsc#932014)
+- 3.1.45
+
+-------------------------------------------------------------------
 Tue Jan 12 15:05:40 UTC 2016 - lslezak@suse.cz
 
 - Fixed conflict between Yast::Encoding and ::Encoding (another fix
