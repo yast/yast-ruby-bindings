@@ -66,7 +66,7 @@ YRuby::YRuby()
   ruby_init();
   ruby_init_loadpath();
 
-  // FIX for setup gem load path. Embedded ruby initialization mixes up gem 
+  // FIX for setup gem load path. Embedded ruby initialization mixes up gem
   // initialization (which we want) with option processing (which we don't want).
   // Copying only needed parts of `ruby_options` here.
   // See http://subforge.org/blogs/show/1
@@ -74,6 +74,9 @@ YRuby::YRuby()
   rb_define_module("Gem");
   y2_require("rubygems");
 
+  // encoding initialization
+  y2_require("enc/encdb.so");
+  y2_require("enc/trans/transdb.so");
   rb_enc_find_index("encdb");
 
   VALUE ycp_references = Data_Wrap_Struct(rb_cObject, gc_mark, gc_free, & value_references_from_ycp);
