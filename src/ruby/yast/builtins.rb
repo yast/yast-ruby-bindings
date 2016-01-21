@@ -146,9 +146,20 @@ module Yast
       end
     end
 
-    # - Removes element from a list
-    # - Remove key/value pair from a map
-    # - Remove item from term
+    # Remove *element* from a **copy** of *object*.
+    #
+    # @param object [::Hash,::Array,Yast::Term,nil] a container
+    # @param element [Object,Integer,nil]
+    #   Any key for Hash;
+    #   Integer for Array and Term (negative means out of bounds!);
+    #   terms are indexed from 1 (**one**)
+    # @return [Object,nil]
+    #   Always returns a **copy** of *object*.
+    #   The copy is unchanged if either *object* or *element* is
+    #   `nil`, or if an Integer *element* is out of bounds.
+    #   otherwise the key/index *element* is removed from the copy.
+    # @raise [RuntimeError] if *object* has an unexpected type
+    #
     # @deprecated use native ruby method {::Hash#delete}, {::Array#delete_at}
     #   or {Yast::Term#params} (call delete_at on term params)
     def self.remove(object, element)
