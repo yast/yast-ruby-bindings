@@ -1044,6 +1044,29 @@ module Yast
     #
     # In a condition, use `string =~ pattern` which returns integer or nil.
 
+    # @method self.regexpsub(input, pattern, output)
+    #
+    # @param input       [String] a string to search
+    # @param pattern     [String] a regex in the C(!) syntax
+    # @param output      [String] a template for what to return
+    # @return [String, nil] replacement, or no match
+    # @see regexpmatch notes about regex syntax
+    #
+    # Searches a string for a POSIX Extended Regular Expression match
+    # and returns *output* with the matched subexpressions
+    # substituted or `nil` if no match was found.
+    #
+    # If *string* or *pattern* is `nil`, or
+    # if pattern is an invalid regex, `nil` is returned.
+    # If *output* is `nil` or any other non-String, an Exception is raised.
+    #
+    # @example Usage
+    #   Builtins.regexpsub("lose", "(.*)s(.*)", "\\1v\\2")   # -> "love"
+    # @example Usage misunderstood
+    #   Builtins.regexpsub("lose", "s", "v")                 # -> "v"
+    # @example No match
+    #   Builtins.regexpsub("team", "I", "profit")            # -> nil
+
     ###########################################################
     # Yast Term Builtins
     ###########################################################
