@@ -1,7 +1,7 @@
 # Yast2-ruby-bindings
 
-Travis:  [![Build Status](https://travis-ci.org/yast/yast-ruby-bindings.svg?branch=master)](https://travis-ci.org/yast/yast-ruby-bindings)
-Jenkins: [![Jenkins Build](http://img.shields.io/jenkins/s/https/ci.opensuse.org/yast-ruby-bindings-master.svg)](https://ci.opensuse.org/view/Yast/job/yast-ruby-bindings-master/)
+[![Travis Build Status](https://travis-ci.org/yast/yast-ruby-bindings.svg?branch=master)](https://travis-ci.org/yast/yast-ruby-bindings)
+[![Jenkins Build Status](http://ci.opensuse.org/buildStatus/icon?job=yast-ruby-bindings-master)](http://ci.opensuse.org/view/Yast/job/yast-ruby-bindings-master/)
 
 It is part of [YaST](http://yast.github.io) where you can find more information
 about YaST and its component system. The Ruby bindings cover only the connection to
