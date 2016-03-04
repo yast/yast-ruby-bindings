@@ -47,6 +47,14 @@ BuildRequires:  yast2-ycp-ui-bindings-devel >= 2.21.9
 BuildRequires:  libyui-ncurses >= 2.47.3
 # The mentioned test requires screen in order to be executed in headless systems
 BuildRequires:  screen
+
+# Unfortunately we cannot move this to macros.yast,
+# bcond within macros are ignored by osc/OBS.
+%bcond_with yast_run_ci_tests
+%if %{with yast_run_ci_tests}
+BuildRequires: rubygem(yast-rake-ci)
+%endif
+
 Requires:       ruby
 Summary:        Ruby bindings for the YaST platform
 License:        GPL-2.0
@@ -79,6 +87,11 @@ cd -
 cd build
 make test ARGS=-V
 cd -
+
+# run extra CI checks (in Jenkins)
+%if %{with yast_run_ci_tests}
+%yast_ci_check
+%endif
 
 %files
 %defattr (-, root, root)
