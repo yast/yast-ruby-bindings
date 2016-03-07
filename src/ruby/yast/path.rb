@@ -55,7 +55,7 @@ module Yast
       size <=> other.size
     end
 
-    private
+  private
 
     attr_reader :components
     COMPLEX_CHAR_REGEX = /[^a-zA-Z0-9_-]/
@@ -110,11 +110,11 @@ module Yast
         end
       end
 
-      unless buffer.empty?
-        return if invalid_buffer?(buffer)
+      return if buffer.empty?
 
-        @components << modify_buffer(buffer)
-      end
+      return if invalid_buffer?(buffer)
+
+      @components << modify_buffer(buffer)
     end
 
     def invalid_buffer?(buffer)

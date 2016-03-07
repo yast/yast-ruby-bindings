@@ -46,20 +46,6 @@ Metrics/PerceivedComplexity:
 Style/Documentation:
   Enabled: false
 
-# Offense count: 1
-Style/DoubleNegation:
-  Enabled: false
-
-# Offense count: 3
-# Configuration parameters: MinBodyLength.
-Style/GuardClause:
-  Enabled: false
-
-# Offense count: 10
-# Configuration parameters: MaxLineLength.
-Style/IfUnlessModifier:
-  Enabled: false
-
 # Yast API: WFM.SetLanguage, SCR.Read
 # i18n: N_, Nn_
 Style/MethodName:

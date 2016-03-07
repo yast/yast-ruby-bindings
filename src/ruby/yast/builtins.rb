@@ -366,13 +366,11 @@ module Yast
         return Yast.deep_copy(list) if offset1 < 0 || offset2 >= list.size || (offset1 > offset2)
 
         res = []
-        if offset1 > 0
-          res.concat list[0..offset1 - 1]
-        end
-        res.concat list[offset1..offset2].reverse!
-        if offset2 < list.size - 1
-          res.concat list[offset2 + 1..-1]
-        end
+
+        res.concat(list[0..offset1 - 1]) if offset1 > 0
+        res.concat(list[offset1..offset2].reverse!)
+        res.concat(list[offset2 + 1..-1]) if offset2 < list.size - 1
+
         Yast.deep_copy(res)
       end
     end
@@ -571,9 +569,7 @@ module Yast
     # Yast compatible way how to format string with type conversion
     # see tostring for type conversion
     def self.sformat(format, *args)
-      if format.nil? || !format.is_a?(::String)
-        return nil
-      end
+      return nil if format.nil? || !format.is_a?(::String)
 
       return format if args.empty?
 
@@ -1120,12 +1116,10 @@ module Yast
             raise "unknown value from comparison #{i1 <=> u2}"
           end
         end
-        unless ss1.empty?
-          res += ss1.reverse
-        end
-        unless ss2.empty?
-          res += ss2.reverse
-        end
+
+        res += ss1.reverse unless ss1.empty?
+        res += ss2.reverse unless ss2.empty?
+
         Yast.deep_copy(res.reverse)
       end
 
@@ -1177,12 +1171,8 @@ module Yast
           end
         end
 
-        unless ss1.empty?
-          res += ss1.reverse
-        end
-        unless ss2.empty?
-          res += ss2.reverse
-        end
+        res += ss1.reverse unless ss1.empty?
+        res += ss2.reverse unless ss2.empty?
 
         Yast.deep_copy(res.reverse)
       end

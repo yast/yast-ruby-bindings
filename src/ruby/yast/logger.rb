@@ -37,11 +37,11 @@ module Yast
     caller[caller_frame] =~ /(.+):(\d+):in `([^']+)'/
     y2_logger(level, "Ruby", Regexp.last_match(1), Regexp.last_match(2).to_i, Regexp.last_match(3), res)
 
-    if backtrace
-      y2_logger_helper(level, [2, "------------- Backtrace begin -------------"])
-      caller(3).each { |frame| y2_logger_helper(level, [4, frame]) }
-      y2_logger_helper(level, [2, "------------- Backtrace end ---------------"])
-    end
+    return unless backtrace
+
+    y2_logger_helper(level, [2, "------------- Backtrace begin -------------"])
+    caller(3).each { |frame| y2_logger_helper(level, [4, frame]) }
+    y2_logger_helper(level, [2, "------------- Backtrace end ---------------"])
   end
 
   # write to log debug message with arguments formated by {Yast::Builtins.sformat}
