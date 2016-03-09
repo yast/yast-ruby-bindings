@@ -443,9 +443,8 @@ END
           # stupid nil handling
           fval = @value[i]
           sval = other[i]
-          if sval.nil? && !fval.nil?
-            return 1
-          end
+
+          return 1 if sval.nil? && !fval.nil?
 
           # we need to use out builtin, but also we need to
           res = Ops.comparable_object(fval, @localized) <=> sval

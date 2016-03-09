@@ -120,9 +120,7 @@ module Yast
     mod = Yast.const_get module_name
 
     # if never included, then include
-    if !target.class.include? mod
-      target.class.send(:include, mod)
-    end
+    target.class.send(:include, mod) unless target.class.include?(mod)
 
     encoded_name = path_without_suffix.gsub(/[-.\/]/, "_")
     initialized_variable = "@" + encoded_name + "initialized"
@@ -189,8 +187,7 @@ module Yast
             return Yast::call_yast_function("#{mname}", :#{sname}, $1, $2.to_i, *args)
           end
         END
-      end
-      if stype == :variable
+      elsif stype == :variable
         m.module_eval <<-"END"
           def self.#{sname}
             return Yast::call_yast_function("#{mname}", :#{sname})

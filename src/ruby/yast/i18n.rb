@@ -113,7 +113,7 @@ module Yast
       FastGettext::Translation.n_(singular, plural, num)
     end
 
-    private
+  private
 
     def available_locales
       # the first item is used as the fallback
