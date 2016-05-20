@@ -17,7 +17,7 @@
 
 
 Name:           yast2-ruby-bindings
-Version:        3.1.46
+Version:        3.1.47
 Url:            https://github.com/yast/yast-ruby-bindings
 Release:        0
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -47,6 +47,9 @@ BuildRequires:  yast2-ycp-ui-bindings-devel >= 2.21.9
 BuildRequires:  libyui-ncurses >= 2.47.3
 # The mentioned test requires screen in order to be executed in headless systems
 BuildRequires:  screen
+
+# only a soft dependency, the Ruby debugger is optional
+Suggests:       rubygem(%{rb_default_ruby_abi}:byebug)
 
 # Unfortunately we cannot move this to macros.yast,
 # bcond within macros are ignored by osc/OBS.
