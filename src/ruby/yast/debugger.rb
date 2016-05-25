@@ -27,18 +27,7 @@ module Yast
       #   require "byebug"
       #   byebug
       def start(remote: false, port: 3344, start_client: true)
-        begin
-          require "byebug"
-          require "byebug/core"
-        rescue LoadError
-          # catch loading error, the debugger is optional (might not be present)
-          Yast.import "Report"
-          Report.Error(format("Cannot load the Ruby debugger.\n" \
-            "Make sure '%s' Ruby gem is installed.") % "byebug")
-          return
-        end
-
-        popup = false
+        return unless load_debugger
 
         # do not start the server if it is already running
         if Byebug.started?
@@ -46,7 +35,6 @@ module Yast
           log.warn "Skipping the server setup"
         else
           Yast.import "UI"
-          wait = false
           if UI.TextMode || remote || !start_client
             # in textmode or in remote mode ask the user to start
             # the debugger client manually
@@ -55,13 +43,13 @@ module Yast
           else
             # in GUI open an xterm session with the debugger
             start_gui_session(port)
-            # wait a bit to get the server ready (to avoid "Broken pipe" error)
-            # FIXME: looks like a race condition inside byebug itself...
-            wait = true
           end
 
-          # start the server and wait for connection
-          start_server(remote, port, wait)
+          # start the server and wait for connection, add an extra delay
+          # if we start the front end automatically to get the server ready
+          # (to avoid "Broken pipe" error)
+          # FIXME: looks like a race condition inside byebug itself...
+          start_server(remote, port, delay: !popup)
 
           UI.CloseDialog if popup
         end
@@ -85,15 +73,32 @@ module Yast
 
     private
 
-      # starts the debugger server and waits for a cleint connection
+      # load the Ruby debugger, report an error on failure
+      # @return [Boolean] true if the debugger was loaded successfuly,
+      #   false on error
+      def load_debugger
+        require "byebug"
+        require "byebug/core"
+        true
+      rescue LoadError
+        # catch loading error, the debugger is optional (might not be present)
+        Yast.import "Report"
+        Report.Error(format("Cannot load the Ruby debugger.\n" \
+          "Make sure '%s' Ruby gem is installed.", "byebug"))
+        false
+      end
+
+      # starts the debugger server and waits for a client connection
       # @param [Boolean] remote if set to true the server is accesible from network
       # @param [Fixnum] port the port number used by the server
-      def start_server(remote, port, wait)
+      # @param [Boolean] delay add extra delay after starting the server
+      def start_server(remote, port, delay: false)
         Byebug.wait_connection = true
         host = remote ? "0.0.0.0" : "localhost"
         log.info "Starting debugger server (#{host}:#{port}), waiting for connection..."
         Byebug.start_server(host, port)
-        sleep(3) if wait
+        # extra delay if needed
+        sleep(3) if delay
       end
 
       # starts a debugger session in xterm
@@ -117,23 +122,35 @@ module Yast
 
       # compose the popup message describing how to manually connect to
       # the running debugger
+      # @param [Boolean] remote boolean flag indicating whether the debugger
+      #   can be accessed remotely
+      # @param [Fixnum] port the port number used by the debugger
       # @return [String] text
       def debugger_message(remote, port)
-        waiting = "Waiting for the connection..."
         if remote
           # get the local IP addresses
           require "socket"
           remote_ips = Socket.ip_address_list.select { |a| a.ipv4? && !a.ipv4_loopback? }
-          cmds = remote_ips.map { |a| debugger_cmd(a.ip_address, port) }.join("\n")
+          cmd = remote_ips.map { |a| debugger_cmd(a.ip_address, port) }.join("\n")
 
-          "To connect to the debugger from a remote machine use this command:" \
-            "\n\n#{cmds}\n\n#{waiting}"
+          if remote_ips.size > 1
+            prefix = "To connect to the debugger from a remote machine use one of these commands:"
+          else
+            prefix = "To connect to the debugger from a remote machine use this command:"
+          end
         else
-          "To start the debugger switch to another console and run\n\n" \
-            "#{debugger_cmd(nil, port)}\n\n#{waiting}"
+          prefix = "To start the debugger switch to another console and run:"
+          cmd = debugger_cmd(nil, port)
         end
+
+        "#{prefix}\n\n#{cmd}\n\nWaiting for the connection..."
       end
 
+      # construct a debugger command displayed to user in a popup
+      # @param [String,nil] host the machine host name or IP address, nil if
+      #   the debugger can be accessed only locally
+      # @param [Fixnum] port the port number used by the debugger
+      # @return [String] byebug command label
       def debugger_cmd(host, port)
         host_param = host ? "#{host}:" : ""
         "    byebug -R #{host_param}#{port}"
