@@ -181,6 +181,20 @@ module Yast
       call_builtin(Regexp.last_match(1), Regexp.last_match(2).to_i, *args)
     end
 
+    def self.ask_to_run_debugger?
+      Yast.import "Mode"
+
+      !Mode.auto && Debugger.installed?
+    end
+
+    # @param [Exception] e the caught exception
+    # @return [String] human readable exception description
+    def self.internal_error_msg(e)
+      "Internal error. Please report a bug report with logs.\n" \
+        "Details: #{e.message}\n" \
+        "Caller:  #{e.backtrace.first}"
+    end
+
     # @private wrapper to run client in ruby
     def self.run_client(client)
       Builtins.y2milestone "Call client %1", client
@@ -203,10 +217,27 @@ module Yast
             e.message,
             e.backtrace
           )
-          Yast.import "Report"
-          Report.Error "Internal error. Please report a bug report with logs.\n" \
-            "Details: #{e.message}\n" \
-            "Caller:  #{e.backtrace.first}"
+
+          msg = internal_error_msg(e)
+
+          require "yast/debugger"
+          if ask_to_run_debugger?
+            Yast.import "Popup"
+            Yast.import "Label"
+            msg += "\n\nStart the Ruby debugger now and debug the issue?" \
+              " (Experts only!)"
+
+            if Popup.YesNoHeadline(Label.ErrorMsg, msg)
+              Debugger.start
+              # Now you can restart the client and watch it step-by-step with
+              # "next"/"step" commands or you can add some breakpoints into
+              # the code and use "continue".
+              retry
+            end
+          else
+            Yast.import "Report"
+            Report.Error(msg)
+          end
         rescue Exception => e
           Builtins.y2internal("Error reporting failed with '%1' and backtrace %2",
             e.message,

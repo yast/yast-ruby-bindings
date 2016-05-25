@@ -67,3 +67,8 @@ Style/SingleLineBlockParams:
 # Offense count: 1 (@__last_exception)
 Style/TrivialAccessors:
   Enabled: false
+
+# the debugger invocation is deliberate here, it's not a forgotten leftover...
+Lint/Debugger:
+  Exclude:
+    - src/ruby/yast/debugger.rb

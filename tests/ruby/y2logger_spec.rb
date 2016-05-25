@@ -44,15 +44,16 @@ module Yast
 
     it "does not crash when logging an invalid UTF-8 string" do
       # do not process this string otherwise you'll get an exception :-)
-      invalid_utf8 = "invalid sequence: \xE3\x80"
-      # just make sure it is really an UTF-8 string
-      expect(invalid_utf8.encoding).to eq(Encoding::UTF_8)
+      invalid_utf8 = "invalid sequence: " + 0xE3.chr + 0x80.chr
+      # just make sure it is really an invalid UTF-8 string
+      invalid_utf8.force_encoding(Encoding::UTF_8)
+      expect(invalid_utf8.valid_encoding?).to eq(false)
       expect { Yast.y2milestone(invalid_utf8) }.not_to raise_error
     end
 
     it "does not crash when logging ASCII string with invalid UTF-8" do
       # do not process this string otherwise you'll get an exception :-)
-      invalid_ascii = "invalid sequence: \xE3\x80"
+      invalid_ascii = "invalid sequence: " + 0xE3.chr + 0x80.chr
       invalid_ascii.force_encoding(Encoding::ASCII)
       expect { Yast.y2milestone(invalid_ascii) }.not_to raise_error
     end
