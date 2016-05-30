@@ -1,7 +1,6 @@
 require "yast/builtinx"
 require "yast/builtins"
 require "yast/ops"
-require "yast/logger"
 require "yast/debugger"
 
 # @private we need it as clients is called in global contenxt
@@ -204,7 +203,7 @@ module Yast
       Builtins.y2milestone "Call client %1", client
       code = File.read client
       begin
-        debugger_from_env
+        Debugger.start_from_env
         result = eval(code, GLOBAL_WFM_CONTEXT.binding, client)
 
         allowed_types = Ops::TYPES_MAP.values.flatten
@@ -225,7 +224,6 @@ module Yast
 
           msg = internal_error_msg(e)
 
-          require "yast/debugger"
           if ask_to_run_debugger?
             Yast.import "Popup"
             Yast.import "Label"
@@ -251,30 +249,6 @@ module Yast
         end
         return false
       end
-    end
-
-    # start the Ruby debugger if "Y2DEBUGGER" or "y2debugger" environment
-    # variable is set to "1", "remote" or "manual"
-    def self.debugger_from_env
-      # do not start the debugger again for each client started, run it only
-      # once for the very first client
-      return if @debugger_started
-
-      # support both upcase and down case variants, linuxrc
-      # keeps the case and it is case insensitive for the other options
-      debug = ENV["Y2DEBUGGER"] || ENV["y2debugger"]
-      return if debug != "1" && debug != "remote" && debug != "manual"
-
-      # FIXME: the UI.TextMode call is used here just to force the UI
-      # initialization, if it is initialized inside the Debugger module the
-      # ncurses UI segfaults :-(
-      # interestengly, the Qt UI works correctly...
-      Yast.import "UI"
-      log.info "text mode: #{UI.TextMode}"
-
-      log.info "Debugger set to: #{debug}"
-      Debugger.start(remote: debug == "remote", start_client: debug != "manual")
-      @debugger_started = true
     end
   end
 end
