@@ -69,9 +69,7 @@ module Yast
         # once for the very first client
         return if @debugger_started
 
-        # support both upcase and down case variants, linuxrc
-        # keeps the case and it is case insensitive for the other options
-        debug = ENV["Y2DEBUGGER"] || ENV["y2debugger"]
+        debug = read_dbg_env
         return if debug != "1" && debug != "remote" && debug != "manual"
 
         # FIXME: the UI.TextMode call is used here just to force the UI
@@ -96,6 +94,17 @@ module Yast
       end
 
     private
+
+      # read the debugger value from Y2DEBUGGER environment variable,
+      # do case insensitive match
+      # @return [String,nil] environment value or nil if not defined
+      def read_dbg_env
+        # sort the keys to have a deterministic behavior and to prefer Y2DEBUGGER
+        # over the other variants, then do a case insensitive search
+        key = ENV.keys.sort.find { |k| k.match(/\AY2DEBUGGER\z/i) }
+        log.debug "Found debugger key: #{key.inspect}"
+        key ? ENV[key] : nil
+      end
 
       # load the Ruby debugger, report an error on failure
       # @return [Boolean] true if the debugger was loaded successfuly,
