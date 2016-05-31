@@ -62,14 +62,16 @@ module Yast
         # https://github.com/deivid-rodriguez/byebug/blob/master/GUIDE.md
       end
 
-      # start the Ruby debugger if "Y2DEBUGGER" or "y2debugger" environment
-      # variable is set to "1", "remote" or "manual"
+      # start the Ruby debugger if "Y2DEBUGGER" environment
+      # variable is set to "1", "remote" or "manual" (the test is case
+      # insensitive, "y2debugger" variable can be also used)
       def start_from_env
-        # do not start the debugger again for each client started, run it only
-        # once for the very first client
-        return if @debugger_started
+        # do not evaluate the debugger request again for each client started,
+        # run the debugger evaluation only once
+        return if @debugger_handled
+        @debugger_handled = true
 
-        debug = read_dbg_env
+        debug = env_value
         return if debug != "1" && debug != "remote" && debug != "manual"
 
         # FIXME: the UI.TextMode call is used here just to force the UI
@@ -81,7 +83,6 @@ module Yast
 
         log.info "Debugger set to: #{debug}"
         start(remote: debug == "remote", start_client: debug != "manual")
-        @debugger_started = true
       end
 
       # is the Ruby debugger installed and can be loaded?
@@ -98,7 +99,7 @@ module Yast
       # read the debugger value from Y2DEBUGGER environment variable,
       # do case insensitive match
       # @return [String,nil] environment value or nil if not defined
-      def read_dbg_env
+      def env_value
         # sort the keys to have a deterministic behavior and to prefer Y2DEBUGGER
         # over the other variants, then do a case insensitive search
         key = ENV.keys.sort.find { |k| k.match(/\AY2DEBUGGER\z/i) }
