@@ -1,6 +1,7 @@
 require "yast/builtinx"
 require "yast/builtins"
 require "yast/ops"
+require "yast/debugger"
 
 # @private we need it as clients is called in global contenxt
 GLOBAL_WFM_CONTEXT = proc {}
@@ -8,6 +9,8 @@ module Yast
   # Wrapper class for WFM component in Yast
   # See yast documentation for WFM
   module WFM
+    extend Yast::Logger
+
     # Returns list of arguments passed to client or element at given index
     #
     # @example Get all args
@@ -200,6 +203,7 @@ module Yast
       Builtins.y2milestone "Call client %1", client
       code = File.read client
       begin
+        Debugger.start_from_env
         result = eval(code, GLOBAL_WFM_CONTEXT.binding, client)
 
         allowed_types = Ops::TYPES_MAP.values.flatten
@@ -220,7 +224,6 @@ module Yast
 
           msg = internal_error_msg(e)
 
-          require "yast/debugger"
           if ask_to_run_debugger?
             Yast.import "Popup"
             Yast.import "Label"

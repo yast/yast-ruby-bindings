@@ -62,6 +62,29 @@ module Yast
         # https://github.com/deivid-rodriguez/byebug/blob/master/GUIDE.md
       end
 
+      # start the Ruby debugger if "Y2DEBUGGER" environment
+      # variable is set to "1", "remote" or "manual" (the test is case
+      # insensitive, "y2debugger" variable can be also used)
+      def start_from_env
+        # do not evaluate the debugger request again for each client started,
+        # run the debugger evaluation only once
+        return if @debugger_handled
+        @debugger_handled = true
+
+        debug = env_value
+        return if debug != "1" && debug != "remote" && debug != "manual"
+
+        # FIXME: the UI.TextMode call is used here just to force the UI
+        # initialization, if it is initialized inside the start method the
+        # ncurses UI segfaults :-(
+        # interestengly, the Qt UI works correctly...
+        Yast.import "UI"
+        log.info "text mode: #{UI.TextMode}"
+
+        log.info "Debugger set to: #{debug}"
+        start(remote: debug == "remote", start_client: debug != "manual")
+      end
+
       # is the Ruby debugger installed and can be loaded?
       # @return [Boolean] true if the debugger is present
       def installed?
@@ -72,6 +95,17 @@ module Yast
       end
 
     private
+
+      # read the debugger value from Y2DEBUGGER environment variable,
+      # do case insensitive match
+      # @return [String,nil] environment value or nil if not defined
+      def env_value
+        # sort the keys to have a deterministic behavior and to prefer Y2DEBUGGER
+        # over the other variants, then do a case insensitive search
+        key = ENV.keys.sort.find { |k| k.match(/\AY2DEBUGGER\z/i) }
+        log.debug "Found debugger key: #{key.inspect}"
+        key ? ENV[key] : nil
+      end
 
       # load the Ruby debugger, report an error on failure
       # @return [Boolean] true if the debugger was loaded successfuly,
