@@ -2,6 +2,7 @@ require "yast/builtinx"
 require "yast/builtins"
 require "yast/ops"
 require "yast/debugger"
+require "yast/profiler"
 
 # @private we need it as clients is called in global contenxt
 GLOBAL_WFM_CONTEXT = proc {}
@@ -204,6 +205,7 @@ module Yast
       code = File.read client
       begin
         Debugger.start_from_env
+        Profiler.start_from_env
         result = eval(code, GLOBAL_WFM_CONTEXT.binding, client)
 
         allowed_types = Ops::TYPES_MAP.values.flatten
