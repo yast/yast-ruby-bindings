@@ -48,6 +48,9 @@ BuildRequires:  libyui-ncurses >= 2.47.3
 # The mentioned test requires screen in order to be executed in headless systems
 BuildRequires:  screen
 
+# FIXME make it optional
+BuildRequires:  rubygem(%{rb_default_ruby_abi}:ruby-lint)
+
 # only a soft dependency, the Ruby debugger is optional
 Suggests:       rubygem(%{rb_default_ruby_abi}:byebug)
 
@@ -84,7 +87,19 @@ make %{?jobs:-j %jobs} VERBOSE=1
 %install
 cd build
 make install DESTDIR=$RPM_BUILD_ROOT
+
+export RLREQUIRE=yast
+export RLCONST=Yast
+export RLDIR=$RPM_BUILD_ROOT/%{_libdir}/ruby/vendor_ruby/%{rb_ver}/ruby-lint/definitions/rpms/%{name}
+mkdir -p $RLDIR
+ruby -r ruby-lint -r ruby-lint/definition_generator \
+  -I $RPM_BUILD_ROOT/%{_libdir}/ruby/vendor_ruby/%{rb_ver} \
+  -I $RPM_BUILD_ROOT/%{_libdir}/ruby/vendor_ruby/%{rb_ver}/%{rb_arch} \
+  -r $RLREQUIRE \
+  -e 'RubyLint::DefinitionGenerator.new(ENV["RLCONST"], ENV["RLDIR"]).generate'
+
 cd -
+
 
 %check
 cd build
@@ -103,5 +118,10 @@ cd -
 %{_libdir}/ruby/vendor_ruby/%{rb_ver}/yast
 %{_libdir}/ruby/vendor_ruby/%{rb_ver}/%{rb_arch}/*x.so
 %{_libdir}/ruby/vendor_ruby/%{rb_ver}/%{rb_arch}/yast
+%dir %{_libdir}/ruby/vendor_ruby/%{rb_ver}/ruby-lint
+%dir %{_libdir}/ruby/vendor_ruby/%{rb_ver}/ruby-lint/definitions
+%dir %{_libdir}/ruby/vendor_ruby/%{rb_ver}/ruby-lint/definitions/rpms
+%dir %{_libdir}/ruby/vendor_ruby/%{rb_ver}/ruby-lint/definitions/rpms/%{name}
+%{_libdir}/ruby/vendor_ruby/%{rb_ver}/ruby-lint/definitions/rpms/%{name}/*.rb
 
 %changelog
