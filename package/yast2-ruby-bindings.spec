@@ -98,6 +98,9 @@ ruby -r ruby-lint -r ruby-lint/definition_generator \
   -r $RLREQUIRE \
   -e 'RubyLint::DefinitionGenerator.new(ENV["RLCONST"], ENV["RLDIR"]).generate'
 
+# fixup https://github.com/YorickPeterse/ruby-lint/issues/190
+sed -i -e '/define_(/d' $RLDIR/*.rb
+
 # now lint yourself with the help of the definitions just created
 ruby -e '
 File.open("ruby-lint.yml", "w") do |f|
