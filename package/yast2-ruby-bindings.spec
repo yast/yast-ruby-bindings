@@ -98,8 +98,20 @@ ruby -r ruby-lint -r ruby-lint/definition_generator \
   -r $RLREQUIRE \
   -e 'RubyLint::DefinitionGenerator.new(ENV["RLCONST"], ENV["RLDIR"]).generate'
 
-cd -
+# now lint yourself with the help of the definitions just created
+ruby -e '
+File.open("ruby-lint.yml", "w") do |f|
+  f.puts "presenter: emacs"
+  f.puts "requires:"
+  Dir.glob(ENV["RLDIR"] + "/*.rb").each do |r|
+    f.puts "  - #{r}"
+  end
+end
+'
+ruby-lint ../src/ruby | tee /dev/stderr | wc -l
+# the pipe also masks exit codes
 
+cd -
 
 %check
 cd build
