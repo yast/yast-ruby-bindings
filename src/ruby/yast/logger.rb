@@ -34,8 +34,8 @@ module Yast
 
     res = Builtins.sformat(*safe_args)
     res.gsub!(/%/, "%%") # reescape all %
-    caller[caller_frame] =~ /(.+):(\d+):in `([^']+)'/
-    y2_logger(level, "Ruby", Regexp.last_match(1), Regexp.last_match(2).to_i, Regexp.last_match(3), res)
+    matches = caller(caller_frame + 1, 1).first.match(/(.+):(\d+):in `([^']+)'/)
+    y2_logger(level, "Ruby", matches[1], matches[2].to_i, matches[3], res)
 
     return unless backtrace
 

@@ -183,7 +183,7 @@ module Yast
       if (stype == :function)
         m.module_eval <<-"END"
           def self.#{sname}(*args)
-            caller[0].match BACKTRACE_REGEXP
+            caller(1,1).first.match BACKTRACE_REGEXP
             return Yast::call_yast_function("#{mname}", :#{sname}, $1, $2.to_i, *args)
           end
         END

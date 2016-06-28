@@ -180,9 +180,9 @@ module Yast
 
     # @private wrapper to C code
     def self.call_builtin_wrapper(*args)
-      # caller[0] is one of the functions above
-      caller[1].match BACKTRACE_REGEXP
-      call_builtin(Regexp.last_match(1), Regexp.last_match(2).to_i, *args)
+      # caller(1) is one of the functions above
+      res = caller(2, 1).first.match(BACKTRACE_REGEXP)
+      call_builtin(res[1], res[2].to_i, *args)
     end
 
     def self.ask_to_run_debugger?
