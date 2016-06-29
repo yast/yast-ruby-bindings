@@ -111,8 +111,10 @@ File.open("ruby-lint.yml", "w") do |f|
   end
 end
 '
-ruby-lint ../src/ruby | tee /dev/stderr | wc -l
 # the pipe also masks exit codes
+ruby-lint ../src/ruby | tee $RLDIR/report.log
+echo -n "Total ruby-lint reports: "
+wc -l $RLDIR/report.log
 
 cd -
 
@@ -137,6 +139,6 @@ cd -
 %dir %{_libdir}/ruby/vendor_ruby/%{rb_ver}/ruby-lint/definitions
 %dir %{_libdir}/ruby/vendor_ruby/%{rb_ver}/ruby-lint/definitions/rpms
 %dir %{_libdir}/ruby/vendor_ruby/%{rb_ver}/ruby-lint/definitions/rpms/%{name}
-%{_libdir}/ruby/vendor_ruby/%{rb_ver}/ruby-lint/definitions/rpms/%{name}/*.rb
+%{_libdir}/ruby/vendor_ruby/%{rb_ver}/ruby-lint/definitions/rpms/%{name}
 
 %changelog
