@@ -2,6 +2,7 @@ require "yast/builtinx"
 require "yast/builtins"
 require "yast/ops"
 require "yast/debugger"
+require "yast/profiler"
 
 # @private we need it as clients is called in global contenxt
 GLOBAL_WFM_CONTEXT = proc {}
@@ -179,9 +180,9 @@ module Yast
 
     # @private wrapper to C code
     def self.call_builtin_wrapper(*args)
-      # caller[0] is one of the functions above
-      caller[1].match BACKTRACE_REGEXP
-      call_builtin(Regexp.last_match(1), Regexp.last_match(2).to_i, *args)
+      # caller(1) is one of the functions above
+      res = caller(2, 1).first.match(BACKTRACE_REGEXP)
+      call_builtin(res[1], res[2].to_i, *args)
     end
 
     def self.ask_to_run_debugger?
@@ -204,6 +205,7 @@ module Yast
       code = File.read client
       begin
         Debugger.start_from_env
+        Profiler.start_from_env
         result = eval(code, GLOBAL_WFM_CONTEXT.binding, client)
 
         allowed_types = Ops::TYPES_MAP.values.flatten

@@ -110,6 +110,9 @@ YRuby::~YRuby()
     y2milestone( "Shutting down ruby interpreter." );
     //ruby_finalize(); Do not finalize to allow clear work inside ruby
     _y_ruby_finalized = true;
+    // call at_exit methods, it is part of ruby_finalize, which we have to skip,
+    // so use only needed parts
+    rb_exec_end_proc();
 }
 
 
