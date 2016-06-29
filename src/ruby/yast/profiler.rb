@@ -6,7 +6,7 @@ module Yast
     class << self
       include Yast::Logger
 
-      RESULT_PATH = "/tmp/yast_profile.txt"
+      RESULT_PATH = "/var/log/YaST2/profiler_result.txt"
 
       # Start the Ruby Profiler. It start profilling. It also disables ruby VM
       # optimizations, so code execution will be slower.
@@ -16,14 +16,27 @@ module Yast
         @started = true
         require "profiler"
 
-        # turn on tracing and turn of specialized instruction to get complete profilling
+        # turn on tracing and turn off specialized instruction which replace
+        # some core ruby methods with its optimized variant to get complete
+        # profiling. More info in book "Ruby Under a Microscope: Learning Ruby
+        # Internals Through Experiment". Code is taken from ruby/lib/profile.rb
         RubyVM::InstructionSequence.compile_option = {
           trace_instruction:       true,
           specialized_instruction: false
         }
 
-        at_exit { File.open(RESULT_PATH, "w") { |f| Profiler__.print_profile(f) } }
+        at_exit { stop }
         Profiler__.start_profile
+      end
+
+      # stops profiling. If f is nil, then store profiling into RESULT_PATH file.
+      def stop(f = nil)
+        return File.open(RESULT_PATH, "w") { |f| stop(f) } unless f
+
+        Profiler__.print_profile(f)
+
+        RubyVM::InstructionSequence.compile_option = @original_compile_options
+        @started = false
       end
 
       # start the Ruby profiler if "Y2PROFILER" environment
@@ -46,7 +59,7 @@ module Yast
       # do case insensitive match
       # @return [Boolean] true if enabled
       def env_value
-        # sort the keys to have a deterministic behavior and to prefer Y2DEBUGGER
+        # sort the keys to have a deterministic behavior and to prefer Y2PROFILER
         # over the other variants, then do a case insensitive search
         key = ENV.keys.sort.find { |k| k.match(/\AY2PROFILER\z/i) }
         return false unless key
