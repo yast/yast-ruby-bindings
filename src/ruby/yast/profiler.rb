@@ -29,11 +29,12 @@ module Yast
         Profiler__.start_profile
       end
 
-      # stops profiling. If f is nil, then store profiling into RESULT_PATH file.
-      def stop(f = nil)
-        return File.open(RESULT_PATH, "w") { |f| stop(f) } unless f
+      # Stops profiling
+      # @param output [IO] an IO stream to print the profile to; if nil, uses a file at RESULT_PATH
+      def stop(output = nil)
+        return File.open(RESULT_PATH, "w") { |f| stop(f) } unless output
 
-        Profiler__.print_profile(f)
+        Profiler__.print_profile(output)
 
         RubyVM::InstructionSequence.compile_option = @original_compile_options
         @started = false
@@ -64,7 +65,7 @@ module Yast
         key = ENV.keys.sort.find { |k| k.match(/\AY2PROFILER\z/i) }
         return false unless key
 
-        ["1", "true"].include?(ENV[key])
+        "1" == ENV[key]
       end
     end
   end
