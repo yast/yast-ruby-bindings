@@ -1,4 +1,19 @@
 -------------------------------------------------------------------
+Thu Jun 30 09:24:32 UTC 2016 - jreidinger@suse.com
+
+- Fix segfault when running rspec tests caused by added ruby
+  profiler (bnc#986649 comment2)
+- 3.1.50
+
+-------------------------------------------------------------------
+Tue Jun 28 14:21:55 UTC 2016 - jreidinger@suse.com
+
+- Added support for running the Ruby profiler
+- Improve performance of code by specialized `caller` call
+  (bnc#986649)
+- 3.1.49
+
+-------------------------------------------------------------------
 Mon May 30 14:38:02 UTC 2016 - lslezak@suse.cz
 
 - Improve the debugger support - use the same code also at run

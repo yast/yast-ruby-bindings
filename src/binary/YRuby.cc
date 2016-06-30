@@ -53,6 +53,7 @@ void set_last_exception(VALUE& module,const string& message)
 
 YRuby * YRuby::_yRuby = 0;
 bool YRuby::_y_ruby_finalized = false;
+bool YRuby::_y_in_yast = false;
 
 YRuby::YRuby()
 {
@@ -62,22 +63,28 @@ YRuby::YRuby()
   // so the ruby interpreter can set the external string encoding properly
   setlocale (LC_ALL, "");
 
+  // re-init of ruby is not nice, but ruby handle it. We need it for detection if ruby is initialized
+  // as ruby itself currently to not allow to check if VM is initialized
   RUBY_INIT_STACK;
   ruby_init();
   ruby_init_loadpath();
 
-  // FIX for setup gem load path. Embedded ruby initialization mixes up gem
-  // initialization (which we want) with option processing (which we don't want).
-  // Copying only needed parts of `ruby_options` here.
-  // See http://subforge.org/blogs/show/1
-  // Note that the solution is different to not touch internal ruby
-  rb_define_module("Gem");
-  y2_require("rubygems");
+  if (rb_eval_string("defined? Gem") == Qnil) // Dirty hack to recognize we run from YaST and not ruby
+  {
+    _y_in_yast = true;
+    // FIX for setup gem load path. Embedded ruby initialization mixes up gem
+    // initialization (which we want) with option processing (which we don't want).
+    // Copying only needed parts of `ruby_options` here.
+    // See http://subforge.org/blogs/show/1
+    // Note that the solution is different to not touch internal ruby
+    rb_define_module("Gem");
+    y2_require("rubygems");
 
-  // encoding initialization
-  y2_require("enc/encdb.so");
-  y2_require("enc/trans/transdb.so");
-  rb_enc_find_index("encdb");
+    // encoding initialization
+    y2_require("enc/encdb.so");
+    y2_require("enc/trans/transdb.so");
+    rb_enc_find_index("encdb");
+  }
 
   VALUE ycp_references = Data_Wrap_Struct(rb_cObject, gc_mark, gc_free, & value_references_from_ycp);
   rb_global_variable(&ycp_references);
@@ -108,7 +115,10 @@ void YRuby::gc_free(void *object)
 YRuby::~YRuby()
 {
     y2milestone( "Shutting down ruby interpreter." );
-    //ruby_finalize(); Do not finalize to allow clear work inside ruby
+
+    if (_y_in_yast)
+      ruby_finalize(); // finalize only when embedded by yast
+
     _y_ruby_finalized = true;
 }
 
