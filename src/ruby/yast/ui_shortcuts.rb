@@ -80,7 +80,7 @@ module Yast
       :item,
       :header,
       :opt
-    ]
+    ].freeze
 
     # for each symbol define a util function that will create a term
     UI_TERMS.each do |term_name|

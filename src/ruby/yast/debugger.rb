@@ -147,7 +147,7 @@ module Yast
           end
 
           # start the debugger client in an xterm session
-          exec "xterm", "-e", "byebug", "-R", "#{port}"
+          exec "xterm", "-e", "byebug", "-R", port.to_s
         end
 
         # detach the process, we do not wait for it so avoid zombies
@@ -167,10 +167,10 @@ module Yast
           remote_ips = Socket.ip_address_list.select { |a| a.ipv4? && !a.ipv4_loopback? }
           cmd = remote_ips.map { |a| debugger_cmd(a.ip_address, port) }.join("\n")
 
-          if remote_ips.size > 1
-            prefix = "To connect to the debugger from a remote machine use one of these commands:"
+          prefix = if remote_ips.size > 1
+            "To connect to the debugger from a remote machine use one of these commands:"
           else
-            prefix = "To connect to the debugger from a remote machine use this command:"
+            "To connect to the debugger from a remote machine use this command:"
           end
         else
           prefix = "To start the debugger switch to another console and run:"

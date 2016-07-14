@@ -24,7 +24,7 @@ describe "OpsTest" do
     [5.5, "any", "integer", 5],
     [5.9, "any", "integer", 5],
     [5, "any", "float", 5.0]
-  ]
+  ].freeze
 
   it "tests convert" do
     CONVERT_TESTDATA.each do |object, from, to, result|

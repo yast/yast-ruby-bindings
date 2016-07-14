@@ -6,7 +6,7 @@ require "yast/y2logger"
 
 module Yast
   describe Y2Logger do
-    TEST_MESSAGE = "Testing"
+    TEST_MESSAGE = "Testing".freeze
 
     before do
       @test_logger = Y2Logger.instance

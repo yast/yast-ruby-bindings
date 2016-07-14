@@ -27,7 +27,7 @@ module Yast
       "locale"    => ::String,
       "function"  => [Yast::FunRef, Yast::YReference],
       "byteblock" => Yast::Byteblock
-    }
+    }.freeze
 
     # Types for which we generate shortcut methods,
     # e.g. {Yast::Ops.get_string}
@@ -43,7 +43,7 @@ module Yast
       "term",
       "path",
       "locale"
-    ]
+    ].freeze
 
     # @!method                    self.get_boolean(       obj, idx, def )
     #   @return [Boolean, nil] {Convert.to_boolean}({get}(obj, idx, def))
@@ -121,7 +121,7 @@ END
         case res
         when ::Array, Yast::Term
           if i.is_a? Fixnum
-            if (0..res.size - 1).include? i
+            if (0..res.size - 1).cover? i
               res = res[i]
             else
               Yast.y2milestone skip_frames, "Index #{i} is out of array size"
@@ -132,11 +132,9 @@ END
             return block_given? ? yield : default
           end
         when ::Hash
-          if res.key? i
-            res = res[i]
-          else
-            return block_given? ? yield : default
-          end
+          return block_given? ? yield : default unless res.key?(i)
+
+          res = res[i]
         when ::NilClass
           Yast.y2milestone skip_frames, "Ops.get called on nil."
           return block_given? ? yield : default
@@ -192,31 +190,34 @@ END
       last = indexes.pop
       res = object
 
+      # return here is needed for quick exit of method and workaround with any or
+      # all is nasty and decrease readability
+      # rubocop:disable Lint/NonLocalExitFromIterator
       indexes.each do |i|
         case res
         when ::Array, Yast::Term
-          if i.is_a? Fixnum
-            if (0..res.size - 1).include? i
-              res = res[i]
-            else
-              Yast.y2warning OUTER_LOOP_FRAME, "Index #{i} is out of array size"
-              return
-            end
-          else
+          if !i.is_a?(Fixnum)
             Yast.y2warning OUTER_LOOP_FRAME, "Passed #{i.inspect} as index key for array."
             return
           end
-        when ::Hash
-          if res.key? i
-            res = res[i]
-          else
+
+          if !(0..res.size - 1).cover?(i)
+            Yast.y2warning OUTER_LOOP_FRAME, "Index #{i} is out of array size"
             return
           end
+
+          res = res[i]
+        when ::Hash
+          return unless res.key? i
+
+          res = res[i]
         else
           Yast.y2warning OUTER_LOOP_FRAME, "Builtin assign called on wrong type #{res.class}"
           return
         end
       end
+      # rubocop:enable Lint/NonLocalExitFromIterator
+
       case res
       when ::Array, Yast::Term, ::Hash
         res[last] = Yast.deep_copy(value)
@@ -233,17 +234,15 @@ END
 
       case first
       when ::Array
-        if second.is_a? ::Array
-          return Yast.deep_copy(first + second)
-        else
-          return Yast.deep_copy(first).push(Yast.deep_copy(second))
-        end
+        return Yast.deep_copy(first + second) if second.is_a?(::Array)
+
+        Yast.deep_copy(first).push(Yast.deep_copy(second))
       when ::Hash
-        return Yast.deep_copy(first).merge Yast.deep_copy(second)
+        Yast.deep_copy(first).merge(Yast.deep_copy(second))
       when ::String
-        return first + second.to_s
+        first + second.to_s
       else
-        return first + second
+        first + second
       end
     end
 
@@ -495,29 +494,23 @@ END
       # ordered classes from low priority to high
       # Only tricky part is Fixnum/Bignum, which is in fact same, so it has special handling in code
       CLASS_ORDER = [::NilClass, ::FalseClass, ::TrueClass, ::Fixnum, ::Bignum, ::Float,
-                     ::String, Yast::Path, ::Symbol, ::Array, Yast::Term, ::Hash]
+                     ::String, Yast::Path, ::Symbol, ::Array, Yast::Term, ::Hash].freeze
       def <=>(other)
         if @value.class == other.class
           case @value
           when ::Array
-            return ListComparator.new(@value, @localized) <=> other
+            ListComparator.new(@value, @localized) <=> other
           when ::NilClass
-            return 0 # comparison of two nils is equality
+            0 # comparison of two nils is equality
           when ::Hash
-            return HashComparator.new(@value, @localized) <=> other
+            HashComparator.new(@value, @localized) <=> other
           when ::String
-            if @localized
-              return Yast.strcoll(@value, other)
-            else
-              return @value <=> other
-            end
+            @localized ? Yast.strcoll(@value, other) : (@value <=> other)
           else
             @value <=> other
           end
         else
-          if @value.is_a?(::Numeric) && other.is_a?(::Numeric)
-            return @value <=> other
-          end
+          return @value <=> other if @value.is_a?(::Numeric) && other.is_a?(::Numeric)
 
           CLASS_ORDER.index(@value.class) <=> CLASS_ORDER.index(other.class)
         end

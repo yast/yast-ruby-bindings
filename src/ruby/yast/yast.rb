@@ -105,9 +105,9 @@ module Yast
   def self.include(target, path)
     path_without_suffix = path.sub(/\.rb$/, "")
     module_name = path_without_suffix
-      .gsub(/^./)     { |s| s.upcase }
-      .gsub(/\/./)    { |s| s[1].upcase }
-      .gsub(/[-_.]./) { |s| s[1].upcase } +
+                  .gsub(/^./, &:upcase)
+                  .gsub(/\/./)    { |s| s[1].upcase }
+                  .gsub(/[-_.]./) { |s| s[1].upcase } +
       "Include"
 
     loaded = Yast.constants.include? module_name.to_sym
@@ -151,10 +151,10 @@ module Yast
     # Handle multilevel modules like YaPI::Network
     modules[0..-2].each do |module_|
       tmp_m = if base.constants.include?(module_.to_sym)
-                base.const_get(module_)
-              else
-                base.const_set(module_, ::Module.new)
-              end
+        base.const_get(module_)
+      else
+        base.const_set(module_, ::Module.new)
+      end
       base = tmp_m
     end
 
@@ -174,13 +174,13 @@ module Yast
     end
 
     m = if base.constants.include?(modules.last.to_sym)
-          base.const_get(modules.last)
-        else
-          ::Module.new
-        end
+      base.const_get(modules.last)
+    else
+      ::Module.new
+    end
     symbols(mname).each do |sname, stype|
       next if sname.empty?
-      if (stype == :function)
+      if stype == :function
         m.module_eval <<-"END"
           def self.#{sname}(*args)
             caller(1,1).first.match BACKTRACE_REGEXP

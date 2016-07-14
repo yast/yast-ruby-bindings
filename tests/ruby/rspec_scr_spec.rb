@@ -7,7 +7,7 @@ require "yast/rspec"
 describe Yast::RSpec::SCR do
   let(:chroot) { File.join(File.dirname(__FILE__), "chroot") }
 
-  class DummyError < Exception; end
+  class DummyError < RuntimeError; end
 
   def root_content
     Yast::SCR.Read(path(".target.dir"), "/")

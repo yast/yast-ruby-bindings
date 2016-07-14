@@ -38,7 +38,7 @@ describe "Yast::Builtins type casting methods" do
       [Yast::Path.new(".etc.syconfig.\"-arg\""), ".etc.syconfig.\"-arg\""],
       [Yast::Term.new(:id, ["test", :lest]), "`id ([\"test\", `lest])"],
       [{ test: "data" }, "$[`test:\"data\"]"]
-    ]
+    ].freeze
 
     it "works as expected" do
       TOSTRING_TEST_DATA.each do |input, result|
@@ -111,7 +111,7 @@ describe "Yast::Builtins type casting methods" do
       ["89.3", 89.3],
       ["test", 0.0],
       [:test, nil]
-    ]
+    ].freeze
 
     it "works as expected" do
       TOFLOAT_TESTDATA.each do |value, result|
@@ -152,7 +152,7 @@ describe "Yast::Builtins type casting methods" do
       [:test, Yast::Term.new(:test)],
       [[:test, [:lest, :srst]], Yast::Term.new(:test, :lest, :srst)],
       [[Yast::Term.new(:test)], Yast::Term.new(:test)]
-    ]
+    ].freeze
 
     it "works as expected" do
       TOTERM_TEST_DATA.each do |input, res|
