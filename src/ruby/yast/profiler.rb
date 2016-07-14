@@ -6,7 +6,7 @@ module Yast
     class << self
       include Yast::Logger
 
-      RESULT_PATH = "/var/log/YaST2/profiler_result.txt"
+      RESULT_PATH = "/var/log/YaST2/profiler_result.txt".freeze
 
       # Start the Ruby Profiler. It start profilling. It also disables ruby VM
       # optimizations, so code execution will be slower.

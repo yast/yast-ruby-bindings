@@ -9,5 +9,5 @@ if !File.exist? "#{binary_path}/plugin"
   FileUtils.ln_s binary_path, "#{binary_path}/plugin"
 end
 $LOAD_PATH.unshift binary_path # yastx.so
-$LOAD_PATH.unshift "#{ROOT_DIR}/src/ruby"       # yast.rb
+$LOAD_PATH.unshift "#{ROOT_DIR}/src/ruby" # yast.rb
 ENV["Y2DIR"] = binary_path + ":" + File.dirname(__FILE__) + "/test_module"

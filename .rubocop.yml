@@ -24,6 +24,10 @@ Metrics/BlockNesting:
 Metrics/ClassLength:
   Max: 107
 
+# Legacy Ops module is long
+Metrics/ModuleLength:
+  Max: 553
+
 # Offense count: 20
 Metrics/CyclomaticComplexity:
   Max: 17
@@ -72,3 +76,7 @@ Style/TrivialAccessors:
 Lint/Debugger:
   Exclude:
     - src/ruby/yast/debugger.rb
+
+# alias method is more convenient method for method aliasing
+Style/Alias:
+  EnforcedStyle: prefer_alias_method

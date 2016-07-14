@@ -25,7 +25,7 @@ describe Yast::Builtins do
        Yast::Path.new(".etc.sysconfig")],
       [Yast::Path.new(".etc"), "sysconfig", Yast::Path.new(".etc.sysconfig")],
       [Yast::Term.new(:a, :b), :c, Yast::Term.new(:a, :b, :c)]
-    ]
+    ].freeze
 
     it "works as expected" do
       ADD_TEST_DATA.each do |object, element, result|
@@ -137,7 +137,7 @@ describe Yast::Builtins do
       h = { a: 1, b: 2 }
       res = Yast::Builtins.change(h, :c, 3)
       expect(res).to eq(a: 1, b: 2, c: 3)
-      expect(h).to eq(({ a: 1, b: 2 }))
+      expect(h).to eq(a: 1, b: 2)
     end
   end
 
@@ -350,7 +350,7 @@ describe Yast::Builtins do
       [[1, 2, 3, 1], [3, 4], [1, 2, 3, 4]],
       [[1, 2, nil], [3, nil, 4], [1, 2, nil, 3, 4]],
       [{ 1 => 2, 2 => 3 }, { 2 => 10, 4 => 5 }, { 1 => 2, 2 => 10, 4 => 5 }]
-    ]
+    ].freeze
 
     it "works as expected" do
       UNION_TESTDATA.each do |first, second, result|
@@ -367,7 +367,7 @@ describe Yast::Builtins do
       [[[1, 2], [3, nil]], [1, 2, 3, nil]],
       [[[0, 1], [2, [3, 4]]], [0, 1, 2, [3, 4]]],
       [[[0, 1], [2, 3], [3, 4]], [0, 1, 2, 3, 3, 4]]
-    ]
+    ].freeze
 
     it "works as expected" do
       FLATTEN_TESTDATA.each do |value, result|
@@ -389,7 +389,7 @@ describe Yast::Builtins do
       [nil, 5, nil],
       [[0, 1], 5, [5, 0, 1]],
       [[1, 2], nil, [nil, 1, 2]]
-    ]
+    ].freeze
 
     it "works as expected" do
       PREPEND_TESTDATA.each do |list, element, result|
@@ -409,7 +409,7 @@ describe Yast::Builtins do
       [[0, 1], 1, 2, nil],
       [[0, 1], 1, 1, [1]],
       [[0, 1], 1, 0, []]
-    ]
+    ].freeze
 
     SUBLIST_TEST_DATA_WITHOUT_LEN = [
       [nil, 1, nil],
@@ -417,7 +417,7 @@ describe Yast::Builtins do
       [[0, 1], 2, nil],
       [[0, 1], 0, [0, 1]],
       [[0, 1], 1, [1]]
-    ]
+    ].freeze
 
     it "works as expected with len" do
       SUBLIST_TEST_DATA_WITH_LEN.each do |list, offset, length, result|
@@ -496,7 +496,7 @@ describe Yast::Builtins do
       ["abcdefg", "cxdv", 2],
       ["\s\t\n", "\s", 0],
       ["\s\t\n", "\n", 2]
-    ]
+    ].freeze
 
     it "works as expected" do
       FINDFIRSTOF_TESTDATA.each do |string, chars, result|
@@ -513,7 +513,7 @@ describe Yast::Builtins do
       ["abcdefg", "cxdv", 0],
       ["\s\t\n", "\s", 1],
       ["\n\n\t", "\n", 2]
-    ]
+    ].freeze
 
     it "works as expected" do
       FINDFIRSTNOTOF_TESTDATA.each do |string, chars, result|
@@ -530,7 +530,7 @@ describe Yast::Builtins do
       ["abcdefg", "cxdv", 3],
       ["\s\t\n", "\s", 0],
       ["\s\t\n", "\n", 2]
-    ]
+    ].freeze
 
     it "works as expected" do
       FINDLASTOF_TESTDATA.each do |string, chars, result|
@@ -547,7 +547,7 @@ describe Yast::Builtins do
       ["abcdefg", "cxdv", 6],
       ["\s\t\s", "\s", 1],
       ["\t\n\n", "\n", 0]
-    ]
+    ].freeze
 
     it "works as expected" do
       FINDLASTNOTOF_TESTDATA.each do |string, chars, result|
@@ -589,7 +589,7 @@ describe Yast::Builtins do
       [nil, nil],
       [5, 5],
       [proc { "15" }, "15"]
-    ]
+    ].freeze
 
     it "works as expected" do
       EVAL_TEST_DATA.each do |input, result|
@@ -607,7 +607,7 @@ describe Yast::Builtins do
       ["abc", "cde", "ab"],
       ["abc", "a-c", "b"],
       ["abc", "^ab", "c"]
-    ]
+    ].freeze
 
     it "works as expected" do
       DELETECHARS_TEST_DATA.each do |input1, input2, result|
@@ -625,7 +625,7 @@ describe Yast::Builtins do
       ["abc", "cde", "c"],
       ["abc", "a-c", "ac"],
       ["abc", "^ab", "ab"]
-    ]
+    ].freeze
 
     it "works as expected" do
       FILTERCHARS_TEST_DATA.each do |input1, input2, result|

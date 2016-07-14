@@ -43,7 +43,7 @@ describe Yast::Term do
     end
   end
 
-  describe "#<<" do             #  " <- unconfuse Emacs string highlighting
+  describe "#<<" do #  " <- unconfuse Emacs string highlighting
     it "appends parameter to params" do
       t = term(:HBox, 1, 2)
       t << 3

@@ -50,11 +50,7 @@ module Yast
     # @deprecated use ruby native select method
     def self.filter(object, &block)
       # TODO: investigate break and continue with filter as traverse workflow is different for ruby
-      if object.is_a?(::Array) || object.is_a?(::Hash)
-        Yast.deep_copy(object).select(&block)
-      else
-        return nil
-      end
+      (object.is_a?(::Array) || object.is_a?(::Hash)) ? Yast.deep_copy(object).select(&block) : nil
     end
 
     # find() Yast built-in
@@ -350,7 +346,7 @@ module Yast
 
       value.reduce([]) do |acc, i|
         return nil if i.nil?
-        acc.push(*Yast.deep_copy(i))
+        acc.concat(Yast.deep_copy(i))
       end
     end
 
@@ -361,11 +357,11 @@ module Yast
       def self.reduce(*params, &block)
         return nil if params.first.nil?
         list = if params.size == 2 # so first is default and second is list
-                 return nil if params[1].nil?
-                 [params.first].concat(Yast.deep_copy(params[1]))
-               else
-                 params.first
-               end
+          return nil if params[1].nil?
+          [params.first].concat(Yast.deep_copy(params[1]))
+        else
+          params.first
+        end
         Yast.deep_copy(list).reduce(&block)
       end
 
@@ -426,7 +422,7 @@ module Yast
     def self.prepend(list, element)
       return nil if list.nil?
 
-      [Yast.deep_copy(element)].push(*Yast.deep_copy(list))
+      [Yast.deep_copy(element)].concat(Yast.deep_copy(list))
     end
 
     # setcontains() Yast built-in
@@ -445,10 +441,10 @@ module Yast
       return nil if array.nil?
 
       res = if block_given?
-              array.sort { |x, y| block.call(x, y) ? -1 : 1 }
-            else
-              array.sort { |x, y| Yast::Ops.comparable_object(x) <=> y }
-            end
+        array.sort { |x, y| block.call(x, y) ? -1 : 1 }
+      else
+        array.sort { |x, y| Yast::Ops.comparable_object(x) <=> y }
+      end
 
       Yast.deep_copy(res)
     end
@@ -465,7 +461,7 @@ module Yast
     end
 
     # @private we must mark somehow default value for length
-    DEF_LENGHT = "default"
+    DEF_LENGHT = "default".freeze
     # Extracts a sublist
     # - sublist(<list>, <offset>)
     # - sublist(<list>, <offset>, <length>)
@@ -547,11 +543,7 @@ module Yast
     # Evaluate a Yast value.
     # @deprecated for lazy evaluation use builtin lambda or block calls
     def self.eval(object)
-      if object.respond_to? :call
-        return object.call
-      else
-        return Yast.deep_copy(object)
-      end
+      object.respond_to?(:call) ? object.call : Yast.deep_copy(object)
     end
 
     # Change or add an environment variable
@@ -717,10 +709,10 @@ module Yast
       # tm_isdst > 0 -> in effect
       # tm_isdst = 0 -> not in effect
       # tm_isdst < 0 -> unknown
-      if time.respond_to?(:isdst)
-        tm[:tm_isdst] = time.isdst ? 1 : 0
+      tm[:tm_isdst] = if time.respond_to?(:isdst)
+        time.isdst ? 1 : 0
       else
-        tm[:tm_isdst] = -1
+        -1
       end
       tm
     end
@@ -977,7 +969,7 @@ module Yast
         # There is also extra "any" in lists/maps:
         #   Yast:    <YCPRef:list <map> bar (list <map> a)>
         #   Ruby:    <YCPRef:list <map<any,any>> bar (list <map<any,any>>)>
-        val.signature.match(/(.*)\((.*)\)/)
+        val.signature =~ /(.*)\((.*)\)/
         "<YCPRef:#{Regexp.last_match(1)}#{val.remote_method.name} (#{Regexp.last_match(2)})>"
       else
         y2warning 1, "tostring builtin called on wrong type #{val.class}"
@@ -987,11 +979,7 @@ module Yast
 
     # @private string is handled diffent if string is inside other structure
     def self.inside_tostring(val)
-      if val.is_a? ::String
-        return val.inspect
-      else
-        tostring val
-      end
+      val.is_a?(::String) ? val.inspect : tostring(val)
     end
 
     # toupper() Yast built-in
@@ -1090,15 +1078,11 @@ module Yast
 
       case symbol
       when ::String
-        return Yast::Term.new(symbol.to_sym)
+        Yast::Term.new(symbol.to_sym)
       when ::Symbol
-        if list == DEF_LENGHT
-          return Yast::Term.new(symbol)
-        else
-          return Yast::Term.new(symbol, *list)
-        end
+        list == DEF_LENGHT ? Yast::Term.new(symbol) : Yast::Term.new(symbol, *list)
       when Yast::Term
-        return symbol
+        symbol
       end
     end
 

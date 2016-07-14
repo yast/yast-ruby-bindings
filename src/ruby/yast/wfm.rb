@@ -221,8 +221,7 @@ module Yast
         begin
           Builtins.y2error("Client call failed with '%1' and backtrace %2",
             e.message,
-            e.backtrace
-          )
+            e.backtrace)
 
           msg = internal_error_msg(e)
 
@@ -246,8 +245,7 @@ module Yast
         rescue Exception => e
           Builtins.y2internal("Error reporting failed with '%1' and backtrace %2",
             e.message,
-            e.backtrace
-          )
+            e.backtrace)
         end
         return false
       end

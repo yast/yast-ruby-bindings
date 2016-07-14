@@ -72,16 +72,16 @@ module Yast
           state = :dot
         when :dot
           raise "Invalid path '#{value}'" if c == "."
-          if c == '"'
-            state = :complex
+          state = if c == '"'
+            :complex
           else
-            state = :simple
+            :simple
           end
           buffer << c
         when :simple
           if c == "."
             state = :dot
-            return if invalid_buffer?(buffer)
+            break if invalid_buffer?(buffer)
 
             @components << modify_buffer(buffer)
             buffer = ""

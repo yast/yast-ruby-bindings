@@ -64,23 +64,21 @@ END
       return nil if object.nil?
       return object if from == to
 
-      if from == "any" && allowed_type(object, to)
-        return object
-      elsif to == "float"
+      return object if from == "any" && allowed_type(object, to)
+      if to == "float"
         return nil unless (object.is_a? Fixnum) || (object.is_a? Bignum)
         return object.to_f
       elsif to == "integer"
         return nil unless object.is_a? Float
         Yast.y2warning "Conversion from integer to float lead to loose precision."
         return object.to_i
-      elsif to == "locale" && from == "string"
-        return object
-      elsif to == "string" && from == "locale"
-        return object
-      else
-        Yast.y2warning(-1, "Cannot convert #{object.class} from '#{from}' to '#{to}'")
-        return nil
       end
+
+      return object if to == "locale" && from == "string"
+      return object if to == "string" && from == "locale"
+
+      Yast.y2warning(-1, "Cannot convert #{object.class} from '#{from}' to '#{to}'")
+      nil
     end
 
     # @private
@@ -90,7 +88,7 @@ END
 
       types = [types] unless types.is_a? Array
 
-      types.any? { |t|  object.is_a? t }
+      types.any? { |t| object.is_a? t }
     end
   end
 end
