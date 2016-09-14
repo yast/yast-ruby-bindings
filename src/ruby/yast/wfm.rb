@@ -199,7 +199,7 @@ module Yast
       if e.is_a?(ArgumentError) && e.message =~ /invalid byte sequence in UTF-8/
         msg += "A string was encountered that is not valid in UTF-8.\n" \
                "The system encoding is #{Encoding.locale_charmap.inspect}.\n" \
-               "This is a known bug bsc#992821.\n\n"
+               "Refer to https://www.suse.com/support/kb/doc?id=7018056.\n\n"
       end
 
       msg + "Details: #{e.message}\n" \
