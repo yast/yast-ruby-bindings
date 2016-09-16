@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Fri Sep 16 10:28:16 UTC 2016 - mvidner@suse.com
+
+- Rescue "invalid byte sequence in UTF-8", with a custom message
+  (bsc#992821).
+- 3.1.51
+
+-------------------------------------------------------------------
 Thu Jun 30 09:24:32 UTC 2016 - jreidinger@suse.com
 
 - Fix segfault when running rspec tests caused by added ruby
