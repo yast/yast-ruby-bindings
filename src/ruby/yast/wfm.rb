@@ -194,9 +194,16 @@ module Yast
     # @param [Exception] e the caught exception
     # @return [String] human readable exception description
     def self.internal_error_msg(e)
-      "Internal error. Please report a bug report with logs.\n" \
-        "Details: #{e.message}\n" \
-        "Caller:  #{e.backtrace.first}"
+      msg = "Internal error. Please report a bug report with logs.\n"
+
+      if e.is_a?(ArgumentError) && e.message =~ /invalid byte sequence in UTF-8/
+        msg += "A string was encountered that is not valid in UTF-8.\n" \
+               "The system encoding is #{Encoding.locale_charmap.inspect}.\n" \
+               "Refer to https://www.suse.com/support/kb/doc?id=7018056.\n\n"
+      end
+
+      msg + "Details: #{e.message}\n" \
+            "Caller:  #{e.backtrace.first}"
     end
 
     # @private wrapper to run client in ruby
