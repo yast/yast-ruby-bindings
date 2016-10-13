@@ -30,6 +30,12 @@ module Yast
       end
     end
 
+    describe ".call" do
+      it "is aliased to CallFunction" do
+        expect(WFM.call("test_client")).to eq 15
+      end
+    end
+
     describe ".scr_chrooted?" do
       it "returns false for local scr" do
         expect(WFM.scr_chrooted?).to eq false
