@@ -160,23 +160,29 @@ module Yast
       call_builtin_wrapper("Write", path, *args)
     end
 
-    # @deprecated use {CallFunction}
-    def self.call(*args)
-      call_builtin_wrapper("call", *args)
-    end
-
     # calls client of given name with passed args
     #
     # @param client[String] name of client to run without suffix
-    # @param args additional args passed to client, that can be obtained with
+    # @param args[Array] additional args passed to client, that can be obtained with
     #   {WFM.Args}
     # @return response from client
     #
     # @example call inst_moust client living in $Y2DIR/clients/inst_mouse.rb with parameter true
-    #     Yast::WFM.CallFunction("inst_mouse", true)
-    def self.CallFunction(client, *args)
-      call_builtin_wrapper("CallFunction", client, *args)
+    #     Yast::WFM.CallFunction("inst_mouse", [true])
+    def self.CallFunction(client, args = [])
+      if !client.is_a?(::String)
+        raise ArgumentError, "CallFunction first parameter('#{client.inspect}') have to be String."
+      end
+      if !args.is_a?(::Array)
+        raise ArgumentError, "CallFunction second parameter('#{args.inspect}') have to be Array."
+      end
+
+      call_builtin_wrapper("CallFunction", client, args)
     end
+
+    # @!method call(client, arguments = [])
+    #   @deprecated use {CallFunction}
+    singleton_class.send(:alias_method, :call, :CallFunction)
 
     # @private wrapper to C code
     def self.call_builtin_wrapper(*args)

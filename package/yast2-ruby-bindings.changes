@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Thu Oct 13 08:55:07 UTC 2016 - jreidinger@suse.com
+
+- properly document usage of CallFunction and have useful error
+  when misused (bsc#889980)
+- 3.2.0
+
+-------------------------------------------------------------------
 Fri Sep 16 10:28:16 UTC 2016 - mvidner@suse.com
 
 - Rescue "invalid byte sequence in UTF-8", with a custom message

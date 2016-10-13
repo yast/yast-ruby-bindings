@@ -28,6 +28,20 @@ module Yast
         stdout_stderr = `ruby -e "#{script}" 2>&1`
         expect(stdout_stderr).to eq ""
       end
+
+      it "raises error if first parameter is not string" do
+        expect { WFM.CallFunction(:test_client) }.to raise_error(ArgumentError)
+      end
+
+      it "raises error if second parameter is not array" do
+        expect { WFM.CallFunction("test_client", nil) }.to raise_error(ArgumentError)
+      end
+    end
+
+    describe ".call" do
+      it "is aliased to CallFunction" do
+        expect(WFM.call("test_client")).to eq 15
+      end
     end
 
     describe ".scr_chrooted?" do
