@@ -30,11 +30,11 @@ module Yast
       end
 
       it "raises error if first parameter is not string" do
-        expect{WFM.CallFunction(:test_client)}.to raise_error(ArgumentError)
+        expect { WFM.CallFunction(:test_client) }.to raise_error(ArgumentError)
       end
 
       it "raises error if second parameter is not array" do
-        expect{WFM.CallFunction("test_client", nil)}.to raise_error(ArgumentError)
+        expect { WFM.CallFunction("test_client", nil) }.to raise_error(ArgumentError)
       end
     end
 
