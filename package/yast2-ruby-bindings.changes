@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed Oct 26 09:46:54 UTC 2016 - jreidinger@suse.com
+
+- fix crash when references passed between clients (bsc#935385)
+- 3.2.1
+
+-------------------------------------------------------------------
 Thu Oct 13 08:55:07 UTC 2016 - jreidinger@suse.com
 
 - properly document usage of CallFunction and have useful error
