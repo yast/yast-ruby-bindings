@@ -82,6 +82,13 @@ ycp_term_to_rb_term( YCPTerm ycpterm )
   return rb_class_new_instance(RARRAY_LEN(params), RARRAY_PTR(params),cls);
 }
 
+extern "C" void
+rb_ref_free(void *p)
+{
+  SymbolEntry *ref = (SymbolEntry*) p;
+  delete ref;
+}
+
 extern "C" VALUE
 ycp_ref_to_rb_ref( YCPReference ycpref )
 {
@@ -93,7 +100,11 @@ ycp_ref_to_rb_ref( YCPReference ycpref )
 
   VALUE yast = rb_define_module("Yast");
   VALUE cls = rb_const_get(yast, rb_intern("YReference"));
-  return Data_Wrap_Struct(cls, 0, NULL, (void*)&*ycpref->entry());
+  SymbolEntryPtr se = ycpref->entry();
+  // create copy of SE to prevent deallocation as we do not store it in smart pointer in ruby,
+  // so create new copy see bsc#935385
+  SymbolEntry *sec = new SymbolEntry(se->nameSpace(), se->position(), se->name(), se->category(), se->type());
+  return Data_Wrap_Struct(cls, 0, rb_ref_free, (void*)sec);
 }
 
 extern "C" void
