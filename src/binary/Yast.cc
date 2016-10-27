@@ -66,7 +66,15 @@ getNs (const char * ns_name)
   }
   else
   {
-    ns->initialize ();
+    string e_msg;
+    if (ns->getException(e_msg))
+    {
+      rb_raise(rb_eNameError, "y2 exception: %s", e_msg.c_str());
+    }
+    else
+    {
+      ns->initialize ();
+    }
   }
   return ns;
 }

@@ -1,0 +1,29 @@
+title Eating Exceptions across Ruby - YCP - Ruby calls
+
+foo.rb -> YRuby: Yast.import "Bar"
+note right of YRuby: ruby-bindings
+
+YRuby -> YRuby : Yast.import_pure "Bar"
+YRuby -> Yast.cc : ycp_module_import \n("Bar": VALUE)
+
+Yast.cc -> Yast.cc(1) : import_namespace \n("Bar": char*)
+Yast.cc(1) -> Yast.cc(2) : getNs("Bar")
+Yast.cc(2) -> *Import: new("Bar")
+Yast.cc(2) -> Import: nameSpace
+
+Import -> Y2ComponentBroker: getNamespaceComponent("Bar")
+Y2ComponentBroker --> Import : Y2Component
+Import  -> Y2RubyComponent : import("Bar")
+
+Y2RubyComponent -> YRuby(b): loadModule \n("Bar")
+YRuby(b) -> MRI : rb_protect\nrb_require
+note right of YRuby(b): exception\nis only\nlogged
+YRuby(b) --> Y2RubyComponent : YCPValue \n//discarded
+
+note over Y2RubyComponent : other\nprocessing
+Y2RubyComponent --> Import : Y2Namespace
+Import --> Yast.cc(2): Y2Namespace
+destroy Import
+
+Yast.cc(2) --> Yast.cc(1) : Y2Namespace
+note right of Yast.cc(1): if NULL \n  rb_raise "oops Bar"  .
