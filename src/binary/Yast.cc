@@ -34,6 +34,8 @@ as published by the Free Software Foundation; either version
 #include <ycp/YCPValue.h>
 #include <ycp/YCPVoid.h>
 #include <ycp/YCPCode.h>
+#include <ycp/YCPSymbol.h>
+#include <ycp/YCPMap.h>
 #include <ycp/YCPByteblock.h>
 #include <ycp/Import.h>
 #include <ycp/y2log.h>
@@ -166,6 +168,81 @@ void set_ruby_source_location(VALUE file, VALUE lineno)
   YaST::ee.setLinenumber(FIX2INT(lineno));
 }
 
+/**
+ * Is the function name an UI function which returns a symbol?
+ * @param  function_name name of the function
+ * @return true if function_name is one of "UserInput", "TimeoutUserInput"
+ *   or "PollInput"
+ */
+static bool ui_symbol_function(const char *function_name)
+{
+    return strcmp(function_name, "UserInput") == 0  ||
+        strcmp(function_name, "TimeoutUserInput") == 0 ||
+        strcmp(function_name, "PollInput") == 0;
+}
+
+/**
+ * Is the YCP value :debugHotkey symbol?
+ * @param  val YCP value
+ * @return true when val == :debugHotkey
+ */
+static bool is_debug_symbol(YCPValue val)
+{
+    return !val.isNull() && val->isSymbol() &&
+        val->asSymbol()->symbol() == "debugHotkey";
+}
+
+/**
+ * Is the function name an UI function which returns a map?
+ * @param  function_name name of the function
+ * @return true if function_name is "WaitForEvent"
+ */
+static bool ui_hash_function(const char *function_name)
+{
+    return strcmp(function_name, "WaitForEvent") == 0;
+}
+
+/**
+ * Is the YCP value a map containg a debug UI event?
+ * @param  val YCP value
+ * @return true if val is map and map["EventType"] == "DebugEvent" &&
+ *   map["ID"] == :debugHotkey
+ */
+static bool is_debug_event(YCPValue val)
+{
+    // is it a map?
+    if (val.isNull() || !val->isMap())
+        return false;
+
+    YCPMap map = val->asMap();
+
+    YCPValue event_type = map->value(YCPString("EventType"));
+    // is map["EventType"] == "DebugEvent"?
+    if (event_type.isNull() || !event_type->isString() ||
+        event_type->asString()->value() != "DebugEvent")
+        return false;
+
+    YCPValue event_id = map->value(YCPString("ID"));
+    // is map["ID"] == :debugHotkey?
+    return !event_id.isNull() && event_id->isSymbol() &&
+        event_id->asSymbol()->symbol() == "debugHotkey";
+}
+
+/**
+ * Start the Ruby debugger, it calls "Yast::Debugger.start" Ruby code.
+ * See file ../ruby/yast/debugger.rb for more details.
+ */
+static void start_ruby_debugger()
+{
+    y2warning("Starting the Ruby debugger...");
+
+    rb_require("yast/debugger");
+    // call "Yast::Debugger.start"
+    VALUE module = rb_const_get(rb_cObject, rb_intern("Yast"));
+    VALUE klass = rb_const_get(module, rb_intern("Debugger"));
+    rb_funcall(klass, rb_intern("start"), 0);
+}
+
 /*
  * call_ycp_function
  *
@@ -261,6 +338,21 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
       RB_GC_GUARD(val);
       rb_funcall(argv[i->first], rb_intern("value="), 1, val);
     }
+
+    // hack: handle the Shift+Ctrl+Alt+D debugging magic key combination
+    // returned from UI calls, start the Ruby debugger when the magic key is received
+    if (strcmp(namespace_name, "UI") == 0)
+    {
+        if (
+            (ui_symbol_function(function_name) && is_debug_symbol(res)) ||
+            (ui_hash_function(function_name) && is_debug_event(res))
+        )
+        {
+          y2milestone("UI::%s() caught magic debug key: %s", function_name, res->toString().c_str());
+          start_ruby_debugger();
+        }
+    }
+
     return ycpvalue_2_rbvalue(res);
   }
 }
