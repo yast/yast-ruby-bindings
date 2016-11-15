@@ -169,7 +169,7 @@ void set_ruby_source_location(VALUE file, VALUE lineno)
 }
 
 /**
- * Returns true if the function name in an UI user input function which returns
+ * Returns true if the function name is an UI user input function which returns
  * a symbol.
  * @param  function_name name of the function
  * @return true/false
@@ -182,7 +182,7 @@ static bool ui_input_function(const char *function_name)
 }
 
 /**
- * Returns true if the parameter is the :debugHotkey symbol.
+ * Returns true if the input symbol starts debugging.
  * @param  val YCPSymbol returned from an UI input call
  * @return true/false
  */
@@ -193,11 +193,11 @@ static bool is_debug_symbol(YCPValue val)
 }
 
 /**
- * Returns true if the function_name is "WaitForEvent"
+ * Returns true if the function name is an event function returning a map.
  * @param  function_name name of the function
  * @return true/false
  */
-static bool ui_input_event_function(const char *function_name)
+static bool ui_event_function(const char *function_name)
 {
     return strcmp(function_name, "WaitForEvent") == 0;
 }
@@ -344,7 +344,7 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
     {
         if (
             (ui_input_function(function_name) && is_debug_symbol(res)) ||
-            (ui_input_event_function(function_name) && is_debug_event(res))
+            (ui_event_function(function_name) && is_debug_event(res))
         )
         {
           y2milestone("UI::%s() caught magic debug key: %s", function_name, res->toString().c_str());
