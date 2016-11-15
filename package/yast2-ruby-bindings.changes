@@ -4,6 +4,7 @@ Tue Nov 15 10:34:51 UTC 2016 - lslezak@suse.cz
 - Improved debugger support: catch the magic debugging key
   combination (Shift+Ctrl+Alt+D in Qt) returned by UI calls and
   start the Ruby debugger when received (FATE#318421)
+- 3.2.2
 
 -------------------------------------------------------------------
 Wed Oct 26 09:46:54 UTC 2016 - jreidinger@suse.com
