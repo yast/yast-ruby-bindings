@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Tue Nov 15 10:34:51 UTC 2016 - lslezak@suse.cz
+
+- Improved debugger support: catch the magic debugging key
+  combination (Shift+Ctrl+Alt+D in Qt) returned by UI calls and
+  start the Ruby debugger when received (FATE#318421)
+- 3.1.51.1
+
+-------------------------------------------------------------------
 Fri Sep 16 10:28:16 UTC 2016 - mvidner@suse.com
 
 - Rescue "invalid byte sequence in UTF-8", with a custom message
