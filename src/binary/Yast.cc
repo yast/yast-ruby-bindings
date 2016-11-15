@@ -169,12 +169,12 @@ void set_ruby_source_location(VALUE file, VALUE lineno)
 }
 
 /**
- * Is the function name an UI function which returns a symbol?
+ * Returns true if the function name in an UI user input function which returns
+ * a symbol.
  * @param  function_name name of the function
- * @return true if function_name is one of "UserInput", "TimeoutUserInput"
- *   or "PollInput"
+ * @return true/false
  */
-static bool ui_symbol_function(const char *function_name)
+static bool ui_input_function(const char *function_name)
 {
     return strcmp(function_name, "UserInput") == 0  ||
         strcmp(function_name, "TimeoutUserInput") == 0 ||
@@ -182,9 +182,9 @@ static bool ui_symbol_function(const char *function_name)
 }
 
 /**
- * Is the YCP value :debugHotkey symbol?
- * @param  val YCP value
- * @return true when val == :debugHotkey
+ * Returns true if the parameter is the :debugHotkey symbol.
+ * @param  val YCPSymbol returned from an UI input call
+ * @return true/false
  */
 static bool is_debug_symbol(YCPValue val)
 {
@@ -193,20 +193,19 @@ static bool is_debug_symbol(YCPValue val)
 }
 
 /**
- * Is the function name an UI function which returns a map?
+ * Returns true if the function_name is "WaitForEvent"
  * @param  function_name name of the function
- * @return true if function_name is "WaitForEvent"
+ * @return true/false
  */
-static bool ui_hash_function(const char *function_name)
+static bool ui_input_event_function(const char *function_name)
 {
     return strcmp(function_name, "WaitForEvent") == 0;
 }
 
 /**
- * Is the YCP value a map containg a debug UI event?
- * @param  val YCP value
- * @return true if val is map and map["EventType"] == "DebugEvent" &&
- *   map["ID"] == :debugHotkey
+ * Returns true if the input is a debug UI event.
+ * @param  val YCPMap returned from the UI::WaitForEvent call
+ * @return true/false
  */
 static bool is_debug_event(YCPValue val)
 {
@@ -234,7 +233,7 @@ static bool is_debug_event(YCPValue val)
  */
 static void start_ruby_debugger()
 {
-    y2warning("Starting the Ruby debugger...");
+    y2milestone("Starting the Ruby debugger...");
 
     rb_require("yast/debugger");
     // call "Yast::Debugger.start"
@@ -344,8 +343,8 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
     if (strcmp(namespace_name, "UI") == 0)
     {
         if (
-            (ui_symbol_function(function_name) && is_debug_symbol(res)) ||
-            (ui_hash_function(function_name) && is_debug_event(res))
+            (ui_input_function(function_name) && is_debug_symbol(res)) ||
+            (ui_input_event_function(function_name) && is_debug_event(res))
         )
         {
           y2milestone("UI::%s() caught magic debug key: %s", function_name, res->toString().c_str());
