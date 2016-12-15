@@ -1,4 +1,5 @@
 require "fast_gettext"
+require "logger"
 
 module Yast
   # Provides translation wrapper.
@@ -54,10 +55,8 @@ module Yast
       end
       FastGettext::Translation::_ str
     rescue Errno::ENOENT => error
-      if defined?(log) && log.respond_to?(:warn)
-        log.warn("File not found when translating '#{str}' on textdomain #{@my_textdomain}'. "\
-                 "Error: #{error}. Backtrace: #{error.backtrace}")
-      end
+      Yast.y2warning("File not found when translating '#{str}' on textdomain #{@my_textdomain}'. "\
+        "Error: #{error}. Backtrace: #{error.backtrace}")
       str
     end
 
@@ -117,10 +116,8 @@ module Yast
       end
       FastGettext::Translation::n_(singular, plural, num)
     rescue Errno::ENOENT => error
-      if defined?(log) && log.respond_to?(:warn)
-        log.warn("File not found when translating '#{singular}/#{plural}' with '#{num}' "\
-          "on textdomain #{@my_textdomain}'. Error: #{error}. Backtrace: #{error.backtrace}")
-      end
+      Yast.y2warning("File not found when translating '#{singular}/#{plural}' with '#{num}' "\
+        "on textdomain #{@my_textdomain}'. Error: #{error}. Backtrace: #{error.backtrace}")
       fallback_n_(singular, plural, num)
     end
 
