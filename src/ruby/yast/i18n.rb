@@ -53,6 +53,12 @@ module Yast
         end
       end
       FastGettext::Translation::_ str
+    rescue Errno::ENOENT => error
+      if defined?(log) && log.respond_to?(:warn)
+        log.warn("File not found when translating '#{str}' on textdomain #{@my_textdomain}'. "\
+                 "Error: #{error}. Backtrace: #{error.backtrace}")
+      end
+      str
     end
 
     # No translation, only marks the text to be found by gettext when creating POT file,
@@ -97,7 +103,7 @@ module Yast
     # @param (String) plural text for translators for bigger value
     def n_(singular, plural, num)
       # no textdomain configured yet
-      return (num == 1) ? singular : plural unless @my_textdomain
+      return fallback_n_(singular, plural, num) unless @my_textdomain
 
       # Switching textdomain clears gettext caches so avoid it if possible.
       # difference between _ and n_ is hat we need special cache for plural forms
@@ -110,6 +116,12 @@ module Yast
         end
       end
       FastGettext::Translation::n_(singular, plural, num)
+    rescue Errno::ENOENT => error
+      if defined?(log) && log.respond_to?(:warn)
+        log.warn("File not found when translating '#{singular}/#{plural}' with '#{num}' "\
+          "on textdomain #{@my_textdomain}'. Error: #{error}. Backtrace: #{error.backtrace}")
+      end
+      fallback_n_(singular, plural, num)
     end
 
     private
@@ -139,6 +151,10 @@ module Yast
       lang.gsub!(/_.*$/, "") if FastGettext.available_locales.nil? || !FastGettext.available_locales.include?(lang)
 
       lang
+    end
+
+    def fallback_n_(singular, plural, num)
+      (num == 1) ? singular : plural
     end
   end
 end
