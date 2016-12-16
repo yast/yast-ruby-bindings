@@ -44,20 +44,16 @@ module Yast
       # no textdomain configured yet
       return str unless @my_textdomain
 
+      found = true
       # Switching textdomain clears gettext caches so avoid it if possible.
-      if !@my_textdomain.include?(FastGettext.text_domain) ||
-          !FastGettext.key_exist?(str)
+      if !@my_textdomain.include?(FastGettext.text_domain) || !key_exist?(str)
         # Set domain where key is defined.
-        @my_textdomain.each do |domain|
+        found = @my_textdomain.any? do |domain|
           FastGettext.text_domain = domain
-          break if FastGettext.key_exist?(str)
+          key_exist?(str)
         end
       end
-      FastGettext::Translation::_ str
-    rescue Errno::ENOENT => error
-      Yast.y2warning("File not found when translating '#{str}' on textdomain #{@my_textdomain}'. "\
-        "Error: #{error}. Backtrace: #{error.backtrace}")
-      str
+      found ? FastGettext::Translation::_(str) : str
     end
 
     # No translation, only marks the text to be found by gettext when creating POT file,
@@ -106,19 +102,16 @@ module Yast
 
       # Switching textdomain clears gettext caches so avoid it if possible.
       # difference between _ and n_ is hat we need special cache for plural forms
-      if !@my_textdomain.include?(FastGettext.text_domain) ||
-          !FastGettext.cached_plural_find(singular, plural)
+      found = true
+      if !@my_textdomain.include?(FastGettext.text_domain) || !cached_plural_find(singular, plural)
         # Set domain where key is defined.
-        @my_textdomain.each do |domain|
+        found = @my_textdomain.any? do |domain|
           FastGettext.text_domain = domain
-          break if FastGettext.cached_plural_find(singular, plural)
+          cached_plural_find(singular, plural)
         end
       end
-      FastGettext::Translation::n_(singular, plural, num)
-    rescue Errno::ENOENT => error
-      Yast.y2warning("File not found when translating '#{singular}/#{plural}' with '#{num}' "\
-        "on textdomain #{@my_textdomain}'. Error: #{error}. Backtrace: #{error.backtrace}")
-      fallback_n_(singular, plural, num)
+      found ? FastGettext::Translation::n_(singular, plural, num) :
+        fallback_n_(singular, plural, num)
     end
 
     private
@@ -150,6 +143,40 @@ module Yast
       lang
     end
 
+    # Determines whether a key exist in the current textdomain
+    #
+    # It wraps FastGettext.key_exist? and logs Errno::ENOENT errors.
+    #
+    # @return [Boolean] true if it exists; false otherwise.
+    # @see FastGettext.key_exist?
+    def key_exist?(key)
+      FastGettext.key_exist?(key)
+    rescue Errno::ENOENT => error
+      Yast.y2warning("File not found when translating '#{key}' on textdomain #{@my_textdomain}'. "\
+        "Error: #{error}. Backtrace: #{error.backtrace}")
+      false
+    end
+
+
+    # Determines whether a plural is cached in the current textdomain
+    #
+    # It wraps FastGettext.cached_plural_find and logs Errno::ENOENT errors.
+    #
+    # @return [Boolean] true if it exists; false otherwise.
+    # @see FastGettext.cached_plural_find
+    def cached_plural_find(singular, plural)
+      FastGettext.cached_plural_find(singular, plural)
+    rescue Errno::ENOENT => error
+      Yast.y2warning("File not found when translating '#{singular}/#{plural}' "\
+        "on textdomain #{@my_textdomain}'. Error: #{error}. Backtrace: #{error.backtrace}")
+      false
+    end
+
+    # Returns the singular or the plural form depending on a number
+    #
+    # It's used as a fallback to {n_}.
+    #
+    # @return [String] {singular} if {num} == 1; {plural} otherwise.
     def fallback_n_(singular, plural, num)
       (num == 1) ? singular : plural
     end
