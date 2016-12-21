@@ -132,8 +132,7 @@ YRuby::yRuby()
   return _yRuby;
 }
 
-
-YCPValue
+void
 YRuby::destroy()
 {
   if ( _yRuby )
@@ -141,23 +140,18 @@ YRuby::destroy()
     delete _yRuby;
     _yRuby = 0;
   }
-
-  return YCPVoid();
 }
 
 /**
  * Loads a module.
  */
-YCPValue
+bool
 YRuby::loadModule( YCPList argList )
 {
   YRuby::yRuby();
   string module_path = argList->value(1)->asString()->value();
 
-  if (!y2_require(module_path.c_str()))
-    return YCPError( "Ruby::loadModule() / Can't load ruby module '" + module_path + "'" );
-
-  return YCPVoid();
+  return y2_require(module_path.c_str());
 }
 
 // rb_protect-enabled rb_funcall, see below
