@@ -1,8 +1,13 @@
 #
-# CMakeLists.txt for yast2/ruby-bindings/tests
+# CMakeLists.txt for yast2/ruby-bindings/tests/ruby
 #
 
-enable_testing()
+ENABLE_TESTING()
 
-# Ruby -> YaST tests
-add_subdirectory(ruby)
+FILE(GLOB Specs "*_spec.rb")
+
+foreach(test ${Specs})
+    ADD_TEST(${test}   rspec --format doc ${test})
+endforeach(test)
+
+ADD_TEST("integration"  ruby ${CMAKE_CURRENT_SOURCE_DIR}/integration/run.rb)
