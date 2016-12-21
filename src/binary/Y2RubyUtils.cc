@@ -18,9 +18,10 @@ bool y2_require(const char *str)
   rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) str, &error);
   if (error)
   {
-    VALUE exception = rb_gv_get("$!"); /* get last exception */
+    VALUE exception = rb_errinfo(); /* get last exception */
+    // do not clear exception yet, as it can be also processed later
     VALUE reason = rb_funcall(exception, rb_intern("message"), 0 );
-    VALUE trace = rb_gv_get("$@"); /* get last exception trace */
+    VALUE trace = rb_funcall(exception, rb_intern("backtrace"), 0 );
     VALUE backtrace = RARRAY_LEN(trace)>0 ? rb_ary_entry(trace, 0) : rb_str_new2("Unknown");
     y2error("cannot require yast:%s at %s", StringValuePtr(reason),StringValuePtr(backtrace));
     return false;

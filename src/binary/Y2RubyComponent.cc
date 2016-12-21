@@ -86,9 +86,10 @@ Y2Namespace *Y2RubyComponent::import (const char* name)
   }
   else // report more verbose why require failed
   {
-    VALUE exception = rb_gv_get("$!"); /* get last exception */
+    VALUE exception = rb_errinfo(); /* get last exception */
+    rb_set_errinfo(Qnil); // clear exception, so we can recover from it
     VALUE reason = rb_funcall(exception, rb_intern("message"), 0 );
-    VALUE trace = rb_gv_get("$@"); /* get last exception trace */
+    VALUE trace = rb_funcall(exception, rb_intern("backtrace"), 0 );
     VALUE trace_to_s = rb_funcall(trace, rb_intern("join"), 1,  rb_str_new_cstr("\n"));
     string reason_s(StringValuePtr(reason));
     string trace_s(StringValuePtr(trace_to_s));
