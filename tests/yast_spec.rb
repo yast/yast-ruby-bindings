@@ -50,7 +50,7 @@ describe Yast do
   describe ".import" do
     context "target module raises exception" do
       it "raises exception with details from original one" do
-        expect{ Yast.import "RaisingModule" }.to raise_error(/Testing exception/)
+        expect { Yast.import "RaisingModule" }.to raise_error(/Testing exception/)
       end
     end
   end
