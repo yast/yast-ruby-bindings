@@ -111,8 +111,7 @@ module Yast
           cached_plural_find(singular, plural)
         end
       end
-      found ? FastGettext::Translation.n_(singular, plural, num) :
-        fallback_n_(singular, plural, num)
+      found ? FastGettext::Translation.n_(singular, plural, num) : fallback_n_(singular, plural, num)
     end
 
   private
