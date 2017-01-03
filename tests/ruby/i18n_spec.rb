@@ -43,7 +43,7 @@ module Yast
         expect(_(SINGULAR)).to eq(TRANSLATED)
       end
 
-      context "when FastGettext throws an exception" do
+      context "when FastGettext throws an Errno::ENOENT exception" do
         before do
           allow(FastGettext).to receive(:key_exist?)
             .and_raise(Errno::ENOENT)
@@ -76,7 +76,7 @@ module Yast
         expect(n_(SINGULAR, PLURAL, 1)).to eq(TRANSLATED)
       end
 
-      context "when FastGettext throws an exception" do
+      context "when FastGettext throws an Errno::ENOENT exception" do
         before do
           allow(FastGettext).to receive(:cached_plural_find)
             .and_raise(Errno::ENOENT)
