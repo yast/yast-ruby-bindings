@@ -22,6 +22,7 @@ as published by the Free Software Foundation; either version
 #define y2log_component "Y2Ruby"
 #include <ycp/y2log.h>
 #include <ycp/pathsearch.h>
+#include <y2/Y2Namespace.h>
 
 #include "Y2RubyComponent.h"
 #include "YRuby.h"
@@ -75,16 +76,40 @@ Y2Namespace *Y2RubyComponent::import (const char* name)
   args->add (YCPString(/*module*/ name));
   args->add (YCPString(/*module*/ module));
 
-  try {
-    YRuby::loadModule (args);
-    y2debug("Module '%s' loaded", name);
-    // introspect, create data structures for the interpreter
-    Y2Namespace * res = new YRubyNamespace (name);
+  try
+  {
+    if (YRuby::loadModule (args))
+    {
+      y2debug("Module '%s' loaded", name);
+      // introspect, create data structures for the interpreter
+      Y2Namespace * res = new YRubyNamespace (name);
+      namespaces[name] = res;
+      return res;
+    }
+    else // report more verbose why require failed
+    {
+      VALUE exception = rb_errinfo(); /* get last exception */
+      rb_set_errinfo(Qnil); // clear exception, so we can recover from it
+      VALUE reason = rb_funcall(exception, rb_intern("message"), 0 );
+      VALUE trace = rb_funcall(exception, rb_intern("backtrace"), 0 );
+      VALUE trace_to_s = rb_funcall(trace, rb_intern("join"), 1,  rb_str_new_cstr("\n"));
+      string reason_s(StringValuePtr(reason));
+      string trace_s(StringValuePtr(trace_to_s));
+
+      y2error("Reporting runtime error for import of module '%s' message '%s'",
+        name, reason_s.c_str());
+
+      Y2Namespace * res = new Y2ErrorNamespace (reason_s, trace_s);
+      namespaces[name] = res;
+      return res;
+    }
+  } catch (std::exception& e) {
+    y2error("Reporting runtime error for import of module '%s' message '%s'",
+        name, e.what());
+    // use empty trace, as we cannot get location of issue in module
+    Y2Namespace * res = new Y2ErrorNamespace (e.what(), "");
     namespaces[name] = res;
     return res;
-  } catch (exception& e) {
-    y2error("Loading module failed: %s", e.what());
-    return NULL;
   }
 }
 

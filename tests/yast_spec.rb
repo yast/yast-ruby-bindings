@@ -46,4 +46,20 @@ describe Yast do
       expect { Yast.include(Class.new.new, "cyclic_yin.rb") }.not_to raise_error
     end
   end
+
+  describe ".import" do
+    context "target module raises exception" do
+      it "raises exception with details from original one" do
+        expect { Yast.import "RaisingModule" }.to raise_error(/Testing exception/)
+      end
+    end
+
+    context "target module has invalid signature" do
+      it "raises exception with details from original one" do
+        expect { Yast.import "InvalidTypeModule" }.to(
+          raise_error(/Invalid type 'feels_good\(\)' definition for method\/variable: 'a'/)
+        )
+      end
+    end
+  end
 end

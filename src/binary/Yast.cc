@@ -79,6 +79,7 @@ getNs (const char * ns_name)
  *
  * tries to import a namespace
  * throws a NameError if failed
+ * throws a RuntimeError with more defails if import get exception during loading
  *
  */
 static VALUE
@@ -88,6 +89,19 @@ import_namespace( const char *name)
   if (ns == NULL)
   {
     rb_raise( rb_eNameError, "component cannot import namespace '%s'", name );
+    return Qnil;
+  }
+
+  if (isErrorNamespace(ns))
+  {
+    Y2ErrorNamespace* ens = toErrorNamespace(ns);
+    string message("Failed to load Module '");
+    message = message + name + "' due to: " + ens->summary();
+    VALUE exception = rb_exc_new2(rb_eRuntimeError, message.c_str());
+    VALUE backtrace = rb_str_new_cstr(ens->details().c_str());
+    backtrace = rb_funcall(backtrace, rb_intern("split"), 1, rb_str_new_cstr("\n"));
+    rb_funcall(exception, rb_intern("set_backtrace"), 1, backtrace);
+    rb_exc_raise(exception);
     return Qnil;
   }
 

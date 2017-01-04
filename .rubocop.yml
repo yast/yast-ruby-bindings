@@ -77,6 +77,10 @@ Lint/Debugger:
   Exclude:
     - src/ruby/yast/debugger.rb
 
+Style/FileName:
+  Exclude:
+    - tests/test_module/modules/*
+
 # alias method is more convenient method for method aliasing
 Style/Alias:
   EnforcedStyle: prefer_alias_method

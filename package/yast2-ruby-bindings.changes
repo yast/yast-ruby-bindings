@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Wed Jan  4 12:36:06 UTC 2017 - jreidinger@suse.com
+
+- Throw exception with more detailed error specification when
+  loading namespace to component system failed (bsc#932331)
+- 3.2.4
+
+
+-------------------------------------------------------------------
 Thu Dec 15 16:29:13 UTC 2016 - igonzalezsosa@suse.com
 
 - Do not crash when FastGettext is unable to find the empty.mo

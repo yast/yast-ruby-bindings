@@ -17,5 +17,5 @@ script:
     - cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DLIB=lib -DCMAKE_VERBOSE_MAKEFILE=ON
     - make -j 4
     - sudo make install
-    - (cd tests/ruby && make test ARGS=-V)
+    - (cd tests && make test ARGS=-V)
 
