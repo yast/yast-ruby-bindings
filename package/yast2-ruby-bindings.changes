@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Thu Dec 15 16:29:13 UTC 2016 - igonzalezsosa@suse.com
+
+- Do not crash when FastGettext is unable to find the empty.mo
+  file (bsc#1014458)
+- 3.2.3
+
+-------------------------------------------------------------------
 Tue Nov 15 10:34:51 UTC 2016 - lslezak@suse.cz
 
 - Improved debugger support: catch the magic debugging key
