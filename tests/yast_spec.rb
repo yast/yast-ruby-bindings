@@ -53,5 +53,11 @@ describe Yast do
         expect { Yast.import "RaisingModule" }.to raise_error(/Testing exception/)
       end
     end
+
+    context "target module has invalid signature" do
+      it "raises exception with details from original one" do
+        expect { Yast.import "InvalidTypeModule" }.to raise_error(/Invalid type 'feels_good\(\)' definition for method\/variable: 'a'/)
+      end
+    end
   end
 end

@@ -103,7 +103,7 @@ Y2Namespace *Y2RubyComponent::import (const char* name)
       namespaces[name] = res;
       return res;
     }
-  } catch (exception& e) {
+  } catch (std::exception& e) {
     y2error("Reporting runtime error for import of module '%s' message '%s'",
         name, e.what());
     // use empty trace, as we cannot get location of issue in module
