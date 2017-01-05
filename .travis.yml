@@ -1,21 +1,11 @@
-language: cpp
-compiler:
-    - gcc
-before_install:
-    # disable rvm, use system Ruby
-    - rvm reset
-    - wget https://raw.githubusercontent.com/yast/yast-devtools/master/travis-tools/travis_setup.sh
-    - sh ./travis_setup.sh -p "docbook-xsl xsltproc yast2-core-dev yast2-devtools libxcrypt-dev cmake yast2-ycp-ui-bindings-dev ruby2.1 ruby2.1-dev rake ruby-fast-gettext language-pack-en language-pack-cs screen" -g "yast-rake rspec:3.3.0 rubocop:0.41.2"
-script:
-    - rake check:syntax
-    - rubocop
-    # TODO FIXME: hack for Travis build, cmake includes "/usr/include/ruby-2.1.0/x86_64-linux-gnu"
-    # instead of "/usr/include/x86_64-linux-gnu/ruby-2.1.0"
-    - export CXXFLAGS=-I/usr/include/x86_64-linux-gnu/ruby-2.1.0
-    - mkdir build
-    - cd build
-    - cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DLIB=lib -DCMAKE_VERBOSE_MAKEFILE=ON
-    - make -j 4
-    - sudo make install
-    - (cd tests && make test ARGS=-V)
+sudo: required
+language: ruby
+services:
+  - docker
 
+before_install:
+  - docker build -t yast-ruby-bindings-image .
+script:
+  # the "yast-travis-cpp" script is included in the base yastdevel/cpp-tw image
+  # see https://github.com/yast/docker-yast-cpp-tw/blob/master/yast-travis-cpp
+  - docker run -it -e TRAVIS_JOB_ID="$TRAVIS_JOB_ID" yast-ruby-bindings-image yast-travis-cpp
