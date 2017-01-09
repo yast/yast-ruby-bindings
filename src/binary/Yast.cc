@@ -142,6 +142,7 @@ ycp_find_include_file( VALUE self, VALUE path)
  *
  * iterates all symbols in a namespace and yields the
  * symbol name and category
+ * Internal API only for defining methods for given namespace
  *
  * call-seq:
  *   each_symbol("namespace") { |symbol,category| ... }
@@ -402,34 +403,6 @@ yast_y2_logger( int argc, VALUE *argv, VALUE self )
   return Qnil;
 }
 
-/*--------------------------------------------
- * Document-method: add_module_path(path)
- * call-seq:
- *   Yast.add_module_path([String]) -> nil
- *
- * Adds path to module search path. Useful to test modules from specific directory.
- *
- * For testing recomended way is to set properly Y2DIR ENV.
- */
-static VALUE add_module_path( VALUE self, VALUE path )
-{
-  y2debug ("add module path %s", RSTRING_PTR(path));
-  YCPPathSearch::addPath (YCPPathSearch::Module, RSTRING_PTR(path));
-  return Qnil;
-}
-
-/*
- * Adds path to include search path. Useful to test includes from specific directory.
- * For testing recomended way is to set properly Y2DIR ENV.
- */
-static VALUE
-add_include_path( VALUE self, VALUE path )
-{
-  y2debug ("add include path %s", RSTRING_PTR(path));
-  YCPPathSearch::addPath (YCPPathSearch::Include, RSTRING_PTR(path));
-  return Qnil;
-}
-
 static VALUE
 y2dir_paths( VALUE self )
 {
@@ -607,8 +580,6 @@ extern "C"
     rb_define_singleton_method( rb_mYast, "call_yast_function", RUBY_METHOD_FUNC(ycp_module_call_ycp_function), -1);
 
     rb_define_singleton_method( rb_mYast, "symbols", RUBY_METHOD_FUNC(ycp_module_symbols), 1);
-    rb_define_singleton_method( rb_mYast, "add_module_path", RUBY_METHOD_FUNC(add_module_path), 1);
-    rb_define_singleton_method( rb_mYast, "add_include_path", RUBY_METHOD_FUNC(add_include_path), 1);
     rb_define_singleton_method( rb_mYast, "y2paths", RUBY_METHOD_FUNC(y2dir_paths), 0);
 
     rb_define_method( rb_mYast, "y2_logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
