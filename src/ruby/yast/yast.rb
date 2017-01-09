@@ -12,26 +12,36 @@ module Yast
 
   # shortcut to construct new Yast term
   # @see Yast::Term
-  def term(*args)
+  module_function def term(*args)
     Term.new(*args)
   end
 
   # shortcut to construct new function reference
   # @see Yast::FunRef
-  def fun_ref(*args)
+  module_function def fun_ref(*args)
     FunRef.new(*args)
   end
 
   # shortcut to construct new argument reference
   # @see Yast::ArgRef
-  def arg_ref(*args)
+  module_function def arg_ref(*args)
     ArgRef.new(*args)
   end
 
   # shortcut to construct new Yast path
+  # @param value [String, Yast::Path] value of path. If it is path, it will
+  #   return itself. For String it will return new Yast::Path instance
+  #   initialized from it.
   # @see Yast::Path
-  def path(*args)
-    Path.new(*args)
+  module_function def path(value)
+    case value
+    when Yast::Path
+      value
+    when ::String
+      Path.new(value)
+    else
+      raise ArgumentError, "Argument #{value.inspect} is neither a ::String or a Yast::Path"
+    end
   end
 
   # Makes deep copy of object. Difference to #dup or #clone is

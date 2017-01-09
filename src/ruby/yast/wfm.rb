@@ -3,6 +3,7 @@ require "yast/builtins"
 require "yast/ops"
 require "yast/debugger"
 require "yast/profiler"
+require "yast/yast"
 
 # @private we need it as clients is called in global contenxt
 GLOBAL_WFM_CONTEXT = proc {}
@@ -37,7 +38,7 @@ module Yast
 
     # Runs execute on local system agent operating on inst-sys
     #
-    # @param path[Yast::Path] agent path
+    # @param path[Yast::Path, String] agent path
     # @param args arguments to agent
     #
     # @note very limited use-case. It is needed only if installer switched to
@@ -48,8 +49,7 @@ module Yast
     # @example Run command in bash in inst-sys
     #    Yast::WFM.Execute(Yast::Path.new(".local.bash"), "halt -p")
     def self.Execute(path, *args)
-      real_path = ensure_path(path)
-      call_builtin_wrapper("Execute", real_path, *args)
+      call_builtin_wrapper("Execute", Yast.path(path), *args)
     end
 
     # Returns current encoding code as string
@@ -79,7 +79,7 @@ module Yast
 
     # Runs read on local system agent operating on inst-sys
     #
-    # @param path[Yast::Path] agent path
+    # @param path[Yast::Path, String] agent path
     # @param args arguments to agent
     #
     # @note very limited use-case. It is needed only if installer switched to
@@ -90,8 +90,7 @@ module Yast
     # @example Read kernel cmdline
     #    Yast::WFM.Read(path(".local.string"), "/proc/cmdline")
     def self.Read(path, *args)
-      real_path = ensure_path(path)
-      call_builtin_wrapper("Read", real_path, *args)
+      call_builtin_wrapper("Read", Yast.path(path), *args)
     end
 
     # Closes SCR handle obtained via {SCROpen}
@@ -148,7 +147,7 @@ module Yast
 
     # Runs write on local system agent operating on inst-sys
     #
-    # @param path[Yast::Path] agent path
+    # @param path[Yast::Path, String] agent path
     # @param args arguments to agent
     #
     # @note very limited use-case. It is needed only if installer switched to
@@ -159,8 +158,7 @@ module Yast
     # @example Write yast inf file in inst-sys
     #    Yast::WFM.Write(path(".local.string"), "/etc/yast.inf", yast_inf)
     def self.Write(path, *args)
-      real_path = ensure_path(path)
-      call_builtin_wrapper("Write", real_path, *args)
+      call_builtin_wrapper("Write", Yast.path(path), *args)
     end
 
     # calls client of given name with passed args
@@ -265,13 +263,6 @@ module Yast
         end
         return false
       end
-    end
-
-    private_class_method def self.ensure_path(path)
-      return Path.new(path) if path.is_a?(::String)
-      return path if path.is_a?(Yast::Path)
-
-      raise ArgumentError, "argument '#{path.inspect}' is not path or string"
     end
 
   end

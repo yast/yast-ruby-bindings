@@ -7,6 +7,10 @@ module Yast
     include Comparable
 
     def initialize(value)
+      if !value.is_a?(::String)
+        raise ArgumentError, "Yast::Path constructor has to get ::String as " \
+          "argument instead of '#{value.inspect}'"
+      end
       @components = []
       load_components value
     end
