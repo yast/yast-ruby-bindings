@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Mon Jan  9 14:18:30 UTC 2017 - jreidinger@suse.com
+
+- allow in Yast::SCR and Yast::WFM to have string as first
+  argument where Yast::Path is expected
+  (gh#yast/yast-ruby-bindings#82, bsc#1018876)
+- 3.2.5
+
+-------------------------------------------------------------------
 Mon Jan  9 12:15:20 UTC 2017 - jreidinger@suse.com
 
 - drop Yast.add_module_dir and Yast.add_include_dir as the only
