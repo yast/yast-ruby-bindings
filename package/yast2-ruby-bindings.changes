@@ -1,7 +1,7 @@
 -------------------------------------------------------------------
 Mon Jan  9 12:15:20 UTC 2017 - jreidinger@suse.com
 
-- drop Yast.add_module_dir and Yast.add_include_dir as only
+- drop Yast.add_module_dir and Yast.add_include_dir as the only
   reliable way is to use Y2DIR env (gh#yast/yast-ruby-bindings#72)
 
 -------------------------------------------------------------------
