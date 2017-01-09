@@ -48,7 +48,8 @@ module Yast
     # @example Run command in bash in inst-sys
     #    Yast::WFM.Execute(Yast::Path.new(".local.bash"), "halt -p")
     def self.Execute(path, *args)
-      call_builtin_wrapper("Execute", path, *args)
+      real_path = ensure_path(path)
+      call_builtin_wrapper("Execute", real_path, *args)
     end
 
     # Returns current encoding code as string
@@ -89,7 +90,8 @@ module Yast
     # @example Read kernel cmdline
     #    Yast::WFM.Read(path(".local.string"), "/proc/cmdline")
     def self.Read(path, *args)
-      call_builtin_wrapper("Read", path, *args)
+      real_path = ensure_path(path)
+      call_builtin_wrapper("Read", real_path, *args)
     end
 
     # Closes SCR handle obtained via {SCROpen}
@@ -157,7 +159,8 @@ module Yast
     # @example Write yast inf file in inst-sys
     #    Yast::WFM.Write(path(".local.string"), "/etc/yast.inf", yast_inf)
     def self.Write(path, *args)
-      call_builtin_wrapper("Write", path, *args)
+      real_path = ensure_path(path)
+      call_builtin_wrapper("Write", real_path, *args)
     end
 
     # calls client of given name with passed args
@@ -191,7 +194,7 @@ module Yast
       call_builtin(res[1], res[2].to_i, *args)
     end
 
-    def self.ask_to_run_debugger?
+    private_class_method def self.ask_to_run_debugger?
       Yast.import "Mode"
 
       !Mode.auto && Debugger.installed?
@@ -199,7 +202,7 @@ module Yast
 
     # @param [Exception] e the caught exception
     # @return [String] human readable exception description
-    def self.internal_error_msg(e)
+    private_class_method def self.internal_error_msg(e)
       msg = "Internal error. Please report a bug report with logs.\n"
 
       if e.is_a?(ArgumentError) && e.message =~ /invalid byte sequence in UTF-8/
@@ -263,5 +266,13 @@ module Yast
         return false
       end
     end
+
+    private_class_method def self.ensure_path(path)
+      return Path.new(path) if path.is_a?(::String)
+      return path if path.is_a?(Yast::Path)
+
+      raise ArgumentError, "argument '#{path.inspect}' is not path or string"
+    end
+
   end
 end
