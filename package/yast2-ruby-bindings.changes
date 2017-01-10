@@ -4,6 +4,10 @@ Mon Jan  9 14:18:30 UTC 2017 - jreidinger@suse.com
 - allow in Yast::SCR and Yast::WFM to have string as first
   argument where Yast::Path is expected
   (gh#yast/yast-ruby-bindings#82, bsc#1018876)
+- make yast specific class shortcuts available via Yast namespace
+  like Yast.path() or Yast.term()
+- allow path shortcut to get string or path and return always path
+- raise exception if wrong type is passed to path including nil
 - 3.2.5
 
 -------------------------------------------------------------------
