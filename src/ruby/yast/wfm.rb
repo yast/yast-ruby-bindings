@@ -3,6 +3,7 @@ require "yast/builtins"
 require "yast/ops"
 require "yast/debugger"
 require "yast/profiler"
+require "yast/yast"
 
 # @private we need it as clients is called in global contenxt
 GLOBAL_WFM_CONTEXT = proc {}
@@ -37,7 +38,7 @@ module Yast
 
     # Runs execute on local system agent operating on inst-sys
     #
-    # @param path[Yast::Path] agent path
+    # @param path[Yast::Path, String] agent path
     # @param args arguments to agent
     #
     # @note very limited use-case. It is needed only if installer switched to
@@ -48,7 +49,7 @@ module Yast
     # @example Run command in bash in inst-sys
     #    Yast::WFM.Execute(Yast::Path.new(".local.bash"), "halt -p")
     def self.Execute(path, *args)
-      call_builtin_wrapper("Execute", path, *args)
+      call_builtin_wrapper("Execute", Yast.path(path), *args)
     end
 
     # Returns current encoding code as string
@@ -78,7 +79,7 @@ module Yast
 
     # Runs read on local system agent operating on inst-sys
     #
-    # @param path[Yast::Path] agent path
+    # @param path[Yast::Path, String] agent path
     # @param args arguments to agent
     #
     # @note very limited use-case. It is needed only if installer switched to
@@ -89,7 +90,7 @@ module Yast
     # @example Read kernel cmdline
     #    Yast::WFM.Read(path(".local.string"), "/proc/cmdline")
     def self.Read(path, *args)
-      call_builtin_wrapper("Read", path, *args)
+      call_builtin_wrapper("Read", Yast.path(path), *args)
     end
 
     # Closes SCR handle obtained via {SCROpen}
@@ -146,7 +147,7 @@ module Yast
 
     # Runs write on local system agent operating on inst-sys
     #
-    # @param path[Yast::Path] agent path
+    # @param path[Yast::Path, String] agent path
     # @param args arguments to agent
     #
     # @note very limited use-case. It is needed only if installer switched to
@@ -157,7 +158,7 @@ module Yast
     # @example Write yast inf file in inst-sys
     #    Yast::WFM.Write(path(".local.string"), "/etc/yast.inf", yast_inf)
     def self.Write(path, *args)
-      call_builtin_wrapper("Write", path, *args)
+      call_builtin_wrapper("Write", Yast.path(path), *args)
     end
 
     # calls client of given name with passed args
@@ -191,7 +192,7 @@ module Yast
       call_builtin(res[1], res[2].to_i, *args)
     end
 
-    def self.ask_to_run_debugger?
+    private_class_method def self.ask_to_run_debugger?
       Yast.import "Mode"
 
       !Mode.auto && Debugger.installed?
@@ -199,7 +200,7 @@ module Yast
 
     # @param [Exception] e the caught exception
     # @return [String] human readable exception description
-    def self.internal_error_msg(e)
+    private_class_method def self.internal_error_msg(e)
       msg = "Internal error. Please report a bug report with logs.\n"
 
       if e.is_a?(ArgumentError) && e.message =~ /invalid byte sequence in UTF-8/
@@ -263,5 +264,6 @@ module Yast
         return false
       end
     end
+
   end
 end
