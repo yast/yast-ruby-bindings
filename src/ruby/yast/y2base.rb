@@ -44,7 +44,7 @@ module Yast
         when /^\(/
           raise "Only string client parameters supported" unless string_param
 
-          res[:params] << arg[1..-1]
+          res[:params] << arg[1..-2]
         else
           raise "Unknown option #{arg}"
         end
