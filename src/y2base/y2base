@@ -1,0 +1,13 @@
+#! /usr/bin/ruby
+
+# TODO: signal handling
+# TODO: option parsing
+# TODO: umask
+# TODO: pathsearch initialization
+
+require "yast"
+
+Yast.create_ui(ARGV[0],[])
+Yast::WFM.CallFunction(ARGV[1])
+
+0
