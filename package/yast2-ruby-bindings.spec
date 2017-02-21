@@ -99,6 +99,7 @@ cd -
 
 %files
 %defattr (-, root, root)
+%{yast_ybindir}/y2base
 %{_libdir}/YaST2/plugin/libpy2lang_ruby.so
 %{_libdir}/ruby/vendor_ruby/%{rb_ver}/*.rb
 %{_libdir}/ruby/vendor_ruby/%{rb_ver}/yast

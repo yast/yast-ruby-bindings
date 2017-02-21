@@ -2,12 +2,27 @@
 
 # TODO: signal handling
 # TODO: option parsing
+# TODO: help text
+# TODO: user friendly output if client do not exist
 # TODO: umask
 # TODO: pathsearch initialization
 
-require "yast"
+# set env as first part, otherwise dummy UI will be created.
+# for insts-sys it will be overwritten later
+ENV["YAST_IS_RUNNING"] = "yes"
 
-Yast.create_ui(ARGV[0],[])
-Yast::WFM.CallFunction(ARGV[1])
+require "yast"
+require "yast/y2base"
+
+args = Yast::Y2Base.parse_arguments(ARGV.dup)
+
+if (args[:client_name] == "installation" &&
+    args[:client_options][:params].include?("initial"))
+  ENV["YAST_IS_RUNNING"] = "instsys"
+end
+
+
+Yast.ui_create(args[:server_name], args[:server_options])
+Yast::WFM.CallFunction(args[:client_name], args[:client_options][:params])
 
 0
