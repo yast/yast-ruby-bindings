@@ -33,7 +33,7 @@ module Yast
     private_class_method def self.parse_client_options(args)
       res = {}
       string_param = false
-      params = []
+      res[:params] = []
       loop do
         return res unless option?(args.first)
 
@@ -44,17 +44,15 @@ module Yast
         when /^\(/
           raise "Only string client parameters supported" unless string_param
 
-          params << arg[1..-1]
+          res[:params] << arg[1..-1]
         else
           raise "Unknown option #{arg}"
         end
       end
-      res[:params] = params
-
-      res
     end
 
     private_class_method def self.option?(arg)
+      return false unless arg
       return true if arg[0] == "-"
       return true if arg[0] == "(" && arg[-1] == ")"
 
