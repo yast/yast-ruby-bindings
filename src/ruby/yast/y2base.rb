@@ -21,6 +21,30 @@ module Yast
       ret
     end
 
+    def self.help
+      "Usage: y2base [GenericOpts] Client [ClientOpts] Server " \
+      "[Specific ServerOpts]\n" \
+      "\n" \
+      "GenericOptions are:\n" \
+      "    -h --help         : Sprint this help\n" \
+      "\n" \
+      "ClientOptions are:\n" \
+      "    -a --arg          : add argument for client. Can be used multiple times.\n"
+      "\n" \
+      "Specific ServerOptions are any options passed on unevaluated.\n" \
+      "\n" \
+      "Examples:\n" \
+      "y2base installation qt\n" \
+      "    Start binary y2base with intallation.ycp as client and qt as server\n" \
+      "y2base installation -a initial qt\n" \
+      "    Provide parameter initial for client installation\n" \
+      "y2base installation qt -geometry 800x600\n" \
+      "    Provide geometry information as specific server options\n"
+    end
+
+    # so how works signals now in ruby?
+    # it logs what we know about signal and then continue with standard ruby
+    # handler, so raising {SignalException} that can be processed
     def self.setup_signals
       Signal.trap("PIPE", "IGNORE")
 
@@ -30,11 +54,7 @@ module Yast
       end
     end
 
-    def self.signal_handler(name)
-      puts "test"
-      $stderr.puts "test"
-      File.write("/tmp/signal", "handling signal #{name}")
-
+    private_class_method def self.signal_handler(name)
       Signal.trap(name, "IGNORE")
 
       $stderr.puts "YaST got signal #{name}."
@@ -49,7 +69,7 @@ module Yast
 
       system("/usr/lib/YaST2/bin/signal-postmortem")
 
-      Signal.trap(name, "SYSTEM_DEFAULT")
+      Signal.trap(name, "DEFAULT")
       Process.kill(name, Process.pid)
     end
 
@@ -71,25 +91,30 @@ module Yast
       loop do
         return res unless option?(args.first)
 
-        raise "Unknown option #{args.first}"
+
+        arg = args.shift
+        case arg
+        when "-h", "--help"
+          res[:help] = true
+        else
+          raise "Unknown option #{args.first}"
+        end
       end
     end
 
     private_class_method def self.parse_client_options(args)
       res = {}
-      string_param = false
       res[:params] = []
       loop do
         return res unless option?(args.first)
 
         arg = args.shift
         case arg
-        when "-S"
-          string_param = true
-        when /^\(/
-          raise "Only string client parameters supported" unless string_param
+        when "-a", "--arg"
+          param = args.shift
+          raise "Missing argument for --arg" unless param
 
-          res[:params] << arg[1..-2]
+          res[:params] << param
         else
           raise "Unknown option #{arg}"
         end
@@ -99,7 +124,6 @@ module Yast
     private_class_method def self.option?(arg)
       return false unless arg
       return true if arg[0] == "-"
-      return true if arg[0] == "(" && arg[-1] == ")"
 
       return false
     end
