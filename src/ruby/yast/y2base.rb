@@ -21,6 +21,51 @@ module Yast
       ret
     end
 
+    def self.setup_signals
+      Signal.trap("PIPE", "IGNORE")
+
+      # SEGV, ILL and FPE is reserved, so cannot be set
+      ["HUP", "INT", "QUIT", "ABRT", "TERM"].each do |name|
+        Signal.trap(name) { signal_handler(name) }
+      end
+    end
+
+    def self.signal_handler(name)
+      puts "test"
+      $stderr.puts "test"
+      File.write("/tmp/signal", "handling signal #{name}")
+
+      Signal.trap(name, "IGNORE")
+
+      $stderr.puts "YaST got signal #{name}."
+
+      signal_log_open do |f|
+        f.puts "=== #{Time.now} ==="
+        f.puts "YaST got signal #{name}."
+        # TODO: print stored debug logs
+        f.puts "Backtrace (only ruby one):"
+        caller.each { |l| f.puts(l) }
+      end
+
+      system("/usr/lib/YaST2/bin/signal-postmortem")
+
+      Signal.trap(name, "SYSTEM_DEFAULT")
+      Process.kill(name, Process.pid)
+    end
+
+    LOG_LOCATIONS = ["/var/log/YaST2/signal", "y2signal.log"]
+    private_class_method def self.signal_log_open(&block)
+      index = 0
+      begin
+        path = LOG_LOCATIONS[index]
+        return unless path
+        File.open(path, "a") { |f| block.call(f) }
+      rescue IOError, SystemCallError
+        index +=1
+        retry
+      end
+    end
+
     private_class_method def self.parse_generic_options(args)
       res = {}
       loop do

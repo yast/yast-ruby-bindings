@@ -1,6 +1,5 @@
 #! /usr/bin/ruby
 
-# TODO: signal handling
 # TODO: option parsing
 # TODO: help text
 # TODO: user friendly output if client do not exist
@@ -14,11 +13,18 @@ ENV["YAST_IS_RUNNING"] = "yes"
 require "yast"
 require "yast/y2base"
 
+Yast::Y2Base.setup_signals
+
 args = Yast::Y2Base.parse_arguments(ARGV.dup)
 
 if (args[:client_name] == "installation" &&
     args[:client_options][:params].include?("initial"))
   ENV["YAST_IS_RUNNING"] = "instsys"
+end
+
+if !Yast::WFM.ClientExists(args[:client_name])
+  $stderr.puts "No such client module #{args[:client_name]}"
+  exit 1
 end
 
 
