@@ -4,18 +4,18 @@ module Yast
     # Parses ARGV of y2base. it returns map with keys:
     #
     # - :generic_options [Hash]
-    # - :client_name [String, nil]
-    # - :client_options [Hash]
-    # - :server_name [String, nil]
+    # - :client_name [String]
+    # - :client_options [Hash] always contains `params:` with Array of client arguments
+    # - :server_name [String]
     # - :server_options [Array] ( of unparsed options as server parse it on its own)
     # @raise RuntimeError when unknown option appear or used wrongly
     def self.parse_arguments(args)
       ret = {}
 
       ret[:generic_options] = parse_generic_options(args)
-      ret[:client_name] = args.shift
+      ret[:client_name] = args.shift or raise "Missing client name."
       ret[:client_options] = parse_client_options(args)
-      ret[:server_name] = args.shift
+      ret[:server_name] = args.shift or raise "Missing server name."
       ret[:server_options] = args
 
       ret
