@@ -126,7 +126,7 @@ module Yast
       when "scr"
         "/"
       when /chroot=(.*):scr/
-        $1
+        Regexp.last_match(1)
       else
         raise "invalid SCR instance #{SCRGetName(SCRGetDefault())}"
       end
@@ -277,6 +277,5 @@ module Yast
         return false
       end
     end
-
   end
 end
