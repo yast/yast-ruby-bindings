@@ -201,7 +201,7 @@ module Yast
     # @param [Exception] e the caught exception
     # @return [String] human readable exception description
     private_class_method def self.internal_error_msg(e)
-      msg = "Internal error. Please report a bug report with logs.\n"
+      msg = "Internal error. Please report a bug report with logs from save_y2logs script.\n"
 
       if e.is_a?(ArgumentError) && e.message =~ /invalid byte sequence in UTF-8/
         msg += "A string was encountered that is not valid in UTF-8.\n" \
@@ -213,6 +213,61 @@ module Yast
             "Caller:  #{e.backtrace.first}"
     end
 
+    private_class_method def self.handle_signal_exception(e)
+      signame = Signal.signame(e.signo)
+      msg = "YaST receive signal %s and will exit.\n If killing of YaST is " \
+        "not requested then please report a bug report with logs obtained from " \
+        "save_y2logs script." % signame
+
+      Yast.import "Report"
+      Report.Error(msg)
+    rescue Exception => e
+      Builtins.y2internal("Error reporting failed with '%1' and backtrace %2",
+        e.message,
+        e.backtrace)
+    end
+
+    private_class_method def self.handle_exception(e, client)
+      Builtins.y2error("Client call failed with '%1' (%2) and backtrace %3",
+        e.message,
+        e.class,
+        e.backtrace)
+
+      msg = internal_error_msg(e)
+
+      if ask_to_run_debugger?
+        Yast.import "Popup"
+        Yast.import "Label"
+        msg += "\n\nStart the Ruby debugger now and debug the issue?" \
+          " (Experts only!)"
+
+        if Popup.YesNoHeadline(Label.ErrorMsg, msg)
+          Debugger.start
+          # Now you can restart the client and watch it step-by-step with
+          # "next"/"step" commands or you can add some breakpoints into
+          # the code and use "continue".
+          run_client(client)
+        end
+      else
+        Yast.import "Report"
+        Report.Error(msg)
+      end
+    rescue Exception => e
+      Builtins.y2internal("Error reporting failed with '%1' and backtrace %2",
+        e.message,
+        e.backtrace)
+    end
+
+    private_class_method def self.check_type!(result)
+      allowed_types = Ops::TYPES_MAP.values.flatten
+      allowed_types.delete(::Object) # remove generic type for any
+
+      # check if response is allowed
+      allowed = allowed_types.any? { |t| result.is_a? t }
+
+      raise "Invalid type #{result.class} from client #{client}" unless allowed
+    end
+
     # @private wrapper to run client in ruby
     def self.run_client(client)
       Builtins.y2milestone "Call client %1", client
@@ -221,47 +276,17 @@ module Yast
         Debugger.start_from_env
         Profiler.start_from_env
         result = eval(code, GLOBAL_WFM_CONTEXT.binding, client)
-
-        allowed_types = Ops::TYPES_MAP.values.flatten
-        allowed_types.delete(::Object) # remove generic type for any
-
-        # check if response is allowed
-        allowed = allowed_types.any? { |t| result.is_a? t }
-
-        raise "Invalid type #{result.class} from client #{client}" unless allowed
+        check_type!(result)
 
         return result
+      rescue SystemExit =>
+        raise # something call system exit so do not block it
+      rescue SignalException => e
+        handle_signal_exception(e)
+        exit(1)
       rescue Exception => e
-        begin
-          Builtins.y2error("Client call failed with '%1' and backtrace %2",
-            e.message,
-            e.backtrace)
-
-          msg = internal_error_msg(e)
-
-          if ask_to_run_debugger?
-            Yast.import "Popup"
-            Yast.import "Label"
-            msg += "\n\nStart the Ruby debugger now and debug the issue?" \
-              " (Experts only!)"
-
-            if Popup.YesNoHeadline(Label.ErrorMsg, msg)
-              Debugger.start
-              # Now you can restart the client and watch it step-by-step with
-              # "next"/"step" commands or you can add some breakpoints into
-              # the code and use "continue".
-              retry
-            end
-          else
-            Yast.import "Report"
-            Report.Error(msg)
-          end
-        rescue Exception => e
-          Builtins.y2internal("Error reporting failed with '%1' and backtrace %2",
-            e.message,
-            e.backtrace)
-        end
-        return false
+        handle_exception(e, client)
+        false
       end
     end
 
