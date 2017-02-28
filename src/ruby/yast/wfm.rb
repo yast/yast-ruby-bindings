@@ -266,7 +266,7 @@ module Yast
         e.backtrace)
     end
 
-    private_class_method def self.check_type!(result)
+    private_class_method def self.check_client_result_type!(result)
       allowed_types = Ops::TYPES_MAP.values.flatten
       allowed_types.delete(::Object) # remove generic type for any
 
@@ -284,7 +284,7 @@ module Yast
         Debugger.start_from_env
         Profiler.start_from_env
         result = eval(code, GLOBAL_WFM_CONTEXT.binding, client)
-        check_type!(result)
+        check_client_result_type!(result)
 
         return result
       # SystemExit < Exception, raised by Kernel#exit
