@@ -220,7 +220,7 @@ module Yast
       msg = "YaST received a signal %s and will exit.\n" % signame
       # sigterm are often sent by user
       if e.signo == 15
-        msg += "If termination is not send by user then please report a bug report with logs.\n"
+        msg += "If termination is not sent by user then please report a bug report with logs.\n"
       else
         msg += "Please report a bug report with logs.\n"
       end
