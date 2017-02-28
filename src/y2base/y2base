@@ -5,7 +5,7 @@
 ENV["YAST_IS_RUNNING"] = "yes"
 
 require "yast"
-require "yast/y2base"
+require "yast/y2base_helpers"
 
 Yast::Y2Base.setup_signals
 

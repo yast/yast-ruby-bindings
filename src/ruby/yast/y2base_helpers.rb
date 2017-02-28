@@ -1,5 +1,5 @@
 module Yast
-  module Y2Base
+  module Y2BaseHelpers
 
     # Parses ARGV of y2base. it returns map with keys:
     #
@@ -42,9 +42,10 @@ module Yast
       "    Provide geometry information as specific server options\n"
     end
 
-    # so how works signals now in ruby?
-    # it logs what we know about signal and then continue with standard ruby
-    # handler, so raising {SignalException} that can be processed
+    # so how works signals in ruby version?
+    # It logs what we know about signal and then continue with standard ruby
+    # handler, which raises {SignalException} that can be processed. If it is
+    # not catched, it show popup asking for report bug.
     def self.setup_signals
       Signal.trap("PIPE", "IGNORE")
 

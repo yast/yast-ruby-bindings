@@ -1,4 +1,21 @@
 -------------------------------------------------------------------
+Tue Feb 28 14:21:06 UTC 2017 - jreidinger@suse.com
+
+- Add new y2base as ruby script which have several advantages
+  (bsc#1027181):
+-- ruby is no longer bundled to YaST2, so it will make adopting
+   new ruby version much smoother
+-- show popup when signal is received and also allow YaST modules
+   to handle more gracefully when signal is raised
+-- better argument passing to y2base itself e.g.
+   y2base foo -S '(bar)' qt → y2base foo --arg bar qt
+-- ruby infrastructure can be used directly on y2base like debugger
+   or profiler
+-- majority of y2base functionality is covered by unit tests
+   allowing easier and less error-prone future changes
+- 3.2.6
+
+-------------------------------------------------------------------
 Mon Jan  9 14:18:30 UTC 2017 - jreidinger@suse.com
 
 - allow in Yast::SCR and Yast::WFM to have string as first

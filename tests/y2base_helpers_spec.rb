@@ -2,9 +2,9 @@
 # encoding: utf-8
 
 require_relative "test_helper"
-require "yast/y2base"
+require "yast/y2base_helpers"
 
-describe Yast::Y2Base do
+describe Yast::Y2BaseHelpers do
   subject { described_class }
 
   describe ".help" do

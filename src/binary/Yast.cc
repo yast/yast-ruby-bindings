@@ -521,7 +521,9 @@ static VALUE ui_set_component(VALUE self, VALUE name)
 
 static void init_ui()
 {
-  // init_ui is needed only if run via rspec, if y2base is used ENV is initialized
+  // init_ui is needed only for running tests. YaST itself setup UI in y2base
+  // respective its ruby version when this env variable is specified.
+  // So skip initialization here to avoid conflicts.
   if (getenv("YAST_IS_RUNNING") != NULL)
     return;
 

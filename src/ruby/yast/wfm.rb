@@ -201,7 +201,8 @@ module Yast
     # @param [Exception] e the caught exception
     # @return [String] human readable exception description
     private_class_method def self.internal_error_msg(e)
-      msg = "Internal error. Please report a bug report with logs from save_y2logs script.\n"
+      msg = "Internal error. Please report a bug report with logs.\n" \
+        "Run save_y2logs to get complete logs.\n"
 
       if e.is_a?(ArgumentError) && e.message =~ /invalid byte sequence in UTF-8/
         msg += "A string was encountered that is not valid in UTF-8.\n" \
@@ -213,11 +214,17 @@ module Yast
             "Caller:  #{e.backtrace.first}"
     end
 
+    # Handles a SignalExpection
     private_class_method def self.handle_signal_exception(e)
       signame = Signal.signame(e.signo)
-      msg = "YaST receive signal %s and will exit.\n If killing of YaST is " \
-        "not requested then please report a bug report with logs obtained from " \
-        "save_y2logs script." % signame
+      msg = "YaST received a signal %s and will exit.\n" % signame
+      # sigterm are often sent by user
+      if e.signo == 15
+        msg += "If termination is not send by user then please report a bug report with logs.\n"
+      else
+        msg += "Please report a bug report with logs.\n"
+      end
+      msg += "Run save_y2logs to get complete logs."
 
       Yast.import "Report"
       Report.Error(msg)
@@ -227,6 +234,7 @@ module Yast
         e.backtrace)
     end
 
+    # Handles a generic Exception
     private_class_method def self.handle_exception(e, client)
       Builtins.y2error("Client call failed with '%1' (%2) and backtrace %3",
         e.message,
@@ -279,11 +287,13 @@ module Yast
         check_type!(result)
 
         return result
-      rescue SystemExit =>
+      # SystemExit < Exception, raised by Kernel#exit
+      rescue SystemExit
         raise # something call system exit so do not block it
+      # SignalException < Exception
       rescue SignalException => e
         handle_signal_exception(e)
-        exit(1)
+        exit(16)
       rescue Exception => e
         handle_exception(e, client)
         false

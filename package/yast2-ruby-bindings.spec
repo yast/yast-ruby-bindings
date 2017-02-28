@@ -17,7 +17,7 @@
 
 
 Name:           yast2-ruby-bindings
-Version:        3.2.5
+Version:        3.2.6
 Url:            https://github.com/yast/yast-ruby-bindings
 Release:        0
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -39,8 +39,10 @@ Requires:       rubygem(%{rb_default_ruby_abi}:fast_gettext)
 %endif
 BuildRequires:  ruby-devel
 # new ErrorNamespace needed
-Requires:       yast2-core >= 3.2.1
-BuildRequires:  yast2-core-devel >= 3.2.1
+Requires:       yast2-core >= 3.2.3
+BuildRequires:  yast2-core-devel >= 3.2.3
+# replacement of y2base with its ruby implementation
+Conflicts:      yast2-core <= 3.2.2
 Requires:       yast2-ycp-ui-bindings       >= 2.21.9
 BuildRequires:  yast2-ycp-ui-bindings-devel >= 2.21.9
 # The test suite includes a regression test (std_streams_spec.rb) for a
