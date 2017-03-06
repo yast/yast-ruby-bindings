@@ -29,7 +29,7 @@ module Yast
       "    -h --help         : Sprint this help\n" \
       "\n" \
       "ClientOptions are:\n" \
-      "    -a --arg          : add argument for client. Can be used multiple times.\n"
+      "    -a --arg          : add argument for client. Can be used multiple times.\n" \
       "\n" \
       "Specific ServerOptions are any options passed on unevaluated.\n" \
       "\n" \
