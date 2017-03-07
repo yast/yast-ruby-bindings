@@ -119,7 +119,7 @@ module Yast
 
     def invalid_buffer?(buffer)
       if buffer.start_with?("-") || buffer.end_with?("-")
-        Yast.y2error "Cannot have dash before or after dot '#{value}'"
+        Yast.y2error "Cannot have dash before or after dot '#{buffer}'"
         @components.clear
         return true
       end
