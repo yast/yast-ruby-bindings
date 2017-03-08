@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Wed Mar  8 12:55:38 UTC 2017 - jreidinger@suse.com
+
+- Do not crash when invalid path is passed (bsc#1028081)
+
+-------------------------------------------------------------------
 Thu Dec 15 16:29:13 UTC 2016 - igonzalezsosa@suse.com
 
 - Do not crash when FastGettext is unable to find the empty.mo
