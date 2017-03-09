@@ -3,6 +3,7 @@ Thu Mar  9 15:57:00 UTC 2017 - ancor@suse.com
 
 - Display standard output and error channels in case of failure
   running the Ncurses integration tests in a headless system.
+  Needed to debug the error produced by the fix to bsc#1021743
 - 3.2.6
 
 -------------------------------------------------------------------
