@@ -1,4 +1,13 @@
 -------------------------------------------------------------------
+Tue Mar 14 16:25:59 UTC 2017 - ancor@suse.com
+
+- Use tmux instead of screen to run the Ncurses integration test
+  in headless systems (skip the test if tmux is not available).
+  The version of screen introduced to fix bsc#1021743 was causing
+  the test to fail.
+- 3.2.7
+
+-------------------------------------------------------------------
 Thu Mar  9 15:57:00 UTC 2017 - ancor@suse.com
 
 - Display standard output and error channels in case of failure
