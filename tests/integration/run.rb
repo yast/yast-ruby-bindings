@@ -7,6 +7,16 @@
 #   rspec std_streams_spec.rb
 # but headless systems like jenkins need this script to fake the screen
 
+def tmux_available?
+  system "which tmux >/dev/null 2>&1"
+end
+
+# If tmux is not available, just skip this without failing
+if !tmux_available?
+  puts "Test skipped."
+  exit true
+end
+
 RESULT = "/tmp/exit".freeze
 OUTPUT = "/tmp/test_cmd_output".freeze
 
@@ -19,7 +29,7 @@ end
 test = File.dirname(__FILE__) + "/std_streams_spec.rb"
 cmd = "rspec #{test} >#{OUTPUT} 2>&1"
 
-`screen -D -m sh -c '#{cmd}; echo \$? > #{RESULT}'`
+`tmux -c '#{cmd}; echo \$? > #{RESULT}'`
 if File.exist?(RESULT) && File.read(RESULT) == "0\n"
   puts "Test succeeded."
   cleanup
