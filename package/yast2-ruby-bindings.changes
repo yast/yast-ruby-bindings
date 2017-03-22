@@ -1,7 +1,7 @@
 -------------------------------------------------------------------
 Wed Mar 22 14:41:50 UTC 2017 - jreidinger@suse.com
 
-- add method Yast::WFM.scr_root get scr changed root directory
+- add method Yast::WFM.scr_root to get scr changed root directory
   (needed for testing fix for bsc#1023204)
 - 3.2.8
 

@@ -119,7 +119,8 @@ module Yast
       SCRGetName(SCRGetDefault()) != "scr"
     end
 
-    # Returns root on which scr operated e.g. "/" when scr not switched
+    # Returns root on which scr operates.
+    # @return [String] path e.g. "/" when scr not switched
     # or "/mnt" when installation was switched.
     def self.scr_root
       case SCRGetName(SCRGetDefault())
