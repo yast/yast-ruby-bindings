@@ -119,6 +119,20 @@ module Yast
       SCRGetName(SCRGetDefault()) != "scr"
     end
 
+    # Returns root on which scr operates.
+    # @return [String] path e.g. "/" when scr not switched
+    # or "/mnt" when installation was switched.
+    def self.scr_root
+      case SCRGetName(SCRGetDefault())
+      when "scr"
+        "/"
+      when /chroot=(.*):scr/
+        Regexp.last_match(1)
+      else
+        raise "invalid SCR instance #{SCRGetName(SCRGetDefault())}"
+      end
+    end
+
     # Creates new SCR instance
     #
     # It is useful for installation where agents start operation on installed system
@@ -264,6 +278,5 @@ module Yast
         return false
       end
     end
-
   end
 end

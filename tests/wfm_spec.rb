@@ -59,5 +59,19 @@ module Yast
         WFM.SCRSetDefault(old_handle)
       end
     end
+
+    describe ".scr_root" do
+      it "returns root path of scr" do
+        expect(WFM.scr_root).to eq "/"
+
+        old_handle = WFM.SCRGetDefault
+        handle = WFM.SCROpen("chroot=/tmp:scr", false)
+        WFM.SCRSetDefault(handle)
+
+        expect(WFM.scr_root).to eq "/tmp"
+
+        WFM.SCRSetDefault(old_handle)
+      end
+    end
   end
 end
