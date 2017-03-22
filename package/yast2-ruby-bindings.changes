@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Wed Mar 22 14:41:50 UTC 2017 - jreidinger@suse.com
+
+- add method Yast::WFM.scr_root get scr changed root directory
+  (needed for testing fix for bsc#1023204)
+- 3.2.8
+
+-------------------------------------------------------------------
 Tue Mar 14 16:25:59 UTC 2017 - ancor@suse.com
 
 - Use tmux instead of screen to run the Ncurses integration test
