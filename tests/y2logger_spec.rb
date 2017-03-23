@@ -6,7 +6,7 @@ require "yast/y2logger"
 
 module Yast
   describe Y2Logger do
-    TEST_MESSAGE = "Testing"
+    TEST_MESSAGE = "Testing".freeze
 
     before do
       @test_logger = Y2Logger.instance
@@ -40,6 +40,30 @@ module Yast
     it "handles a message passed via block" do
       expect(Yast).to receive(:y2milestone).with(Y2Logger::CALL_FRAME, TEST_MESSAGE)
       @test_logger.info { TEST_MESSAGE }
+    end
+
+    it "does not crash when logging an invalid UTF-8 string" do
+      # do not process this string otherwise you'll get an exception :-)
+      invalid_utf8 = "invalid sequence: " + 0xE3.chr + 0x80.chr
+      # just make sure it is really an invalid UTF-8 string
+      invalid_utf8.force_encoding(Encoding::UTF_8)
+      expect(invalid_utf8.valid_encoding?).to eq(false)
+      expect { Yast.y2milestone(invalid_utf8) }.not_to raise_error
+    end
+
+    it "does not crash when logging ASCII string with invalid UTF-8" do
+      # do not process this string otherwise you'll get an exception :-)
+      invalid_ascii = "invalid sequence: " + 0xE3.chr + 0x80.chr
+      invalid_ascii.force_encoding(Encoding::ASCII)
+      expect { Yast.y2milestone(invalid_ascii) }.not_to raise_error
+    end
+
+    it "processes parameters using Builtins::sformat" do
+      expected_log_msg = "test 1 2"
+      expect(Yast).to receive(:y2_logger)
+        .with(anything, "Ruby", anything, anything, anything, expected_log_msg)
+
+      Yast.y2milestone("test %1 %2", 1, 2)
     end
   end
 

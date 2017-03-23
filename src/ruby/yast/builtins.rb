@@ -50,11 +50,7 @@ module Yast
     # @deprecated use ruby native select method
     def self.filter(object, &block)
       # TODO: investigate break and continue with filter as traverse workflow is different for ruby
-      if object.is_a?(::Array) || object.is_a?(::Hash)
-        Yast.deep_copy(object).select(&block)
-      else
-        return nil
-      end
+      (object.is_a?(::Array) || object.is_a?(::Hash)) ? Yast.deep_copy(object).select(&block) : nil
     end
 
     # find() Yast built-in
@@ -146,9 +142,20 @@ module Yast
       end
     end
 
-    # - Removes element from a list
-    # - Remove key/value pair from a map
-    # - Remove item from term
+    # Remove *element* from a **copy** of *object*.
+    #
+    # @param object [::Hash,::Array,Yast::Term,nil] a container
+    # @param element [Object,Integer,nil]
+    #   Any key for Hash;
+    #   Integer for Array and Term (negative means out of bounds!);
+    #   terms are indexed from 1 (**one**)
+    # @return [Object,nil]
+    #   Always returns a **copy** of *object*.
+    #   The copy is unchanged if either *object* or *element* is
+    #   `nil`, or if an Integer *element* is out of bounds.
+    #   otherwise the key/index *element* is removed from the copy.
+    # @raise [RuntimeError] if *object* has an unexpected type
+    #
     # @deprecated use native ruby method {::Hash#delete}, {::Array#delete_at}
     #   or {Yast::Term#params} (call delete_at on term params)
     def self.remove(object, element)
@@ -339,7 +346,7 @@ module Yast
 
       value.reduce([]) do |acc, i|
         return nil if i.nil?
-        acc.push(*Yast.deep_copy(i))
+        acc.concat(Yast.deep_copy(i))
       end
     end
 
@@ -350,11 +357,11 @@ module Yast
       def self.reduce(*params, &block)
         return nil if params.first.nil?
         list = if params.size == 2 # so first is default and second is list
-                 return nil if params[1].nil?
-                 [params.first].concat(Yast.deep_copy(params[1]))
-               else
-                 params.first
-               end
+          return nil if params[1].nil?
+          [params.first].concat(Yast.deep_copy(params[1]))
+        else
+          params.first
+        end
         Yast.deep_copy(list).reduce(&block)
       end
 
@@ -366,13 +373,11 @@ module Yast
         return Yast.deep_copy(list) if offset1 < 0 || offset2 >= list.size || (offset1 > offset2)
 
         res = []
-        if offset1 > 0
-          res.concat list[0..offset1 - 1]
-        end
-        res.concat list[offset1..offset2].reverse!
-        if offset2 < list.size - 1
-          res.concat list[offset2 + 1..-1]
-        end
+
+        res.concat(list[0..offset1 - 1]) if offset1 > 0
+        res.concat(list[offset1..offset2].reverse!)
+        res.concat(list[offset2 + 1..-1]) if offset2 < list.size - 1
+
         Yast.deep_copy(res)
       end
     end
@@ -417,7 +422,7 @@ module Yast
     def self.prepend(list, element)
       return nil if list.nil?
 
-      [Yast.deep_copy(element)].push(*Yast.deep_copy(list))
+      [Yast.deep_copy(element)].concat(Yast.deep_copy(list))
     end
 
     # setcontains() Yast built-in
@@ -436,10 +441,10 @@ module Yast
       return nil if array.nil?
 
       res = if block_given?
-              array.sort { |x, y| block.call(x, y) ? -1 : 1 }
-            else
-              array.sort { |x, y| Yast::Ops.comparable_object(x) <=> y }
-            end
+        array.sort { |x, y| block.call(x, y) ? -1 : 1 }
+      else
+        array.sort { |x, y| Yast::Ops.comparable_object(x) <=> y }
+      end
 
       Yast.deep_copy(res)
     end
@@ -456,7 +461,7 @@ module Yast
     end
 
     # @private we must mark somehow default value for length
-    DEF_LENGHT = "default"
+    DEF_LENGHT = "default".freeze
     # Extracts a sublist
     # - sublist(<list>, <offset>)
     # - sublist(<list>, <offset>, <length>)
@@ -538,11 +543,7 @@ module Yast
     # Evaluate a Yast value.
     # @deprecated for lazy evaluation use builtin lambda or block calls
     def self.eval(object)
-      if object.respond_to? :call
-        return object.call
-      else
-        return Yast.deep_copy(object)
-      end
+      object.respond_to?(:call) ? object.call : Yast.deep_copy(object)
     end
 
     # Change or add an environment variable
@@ -571,9 +572,7 @@ module Yast
     # Yast compatible way how to format string with type conversion
     # see tostring for type conversion
     def self.sformat(format, *args)
-      if format.nil? || !format.is_a?(::String)
-        return nil
-      end
+      return nil if format.nil? || !format.is_a?(::String)
 
       return format if args.empty?
 
@@ -710,10 +709,10 @@ module Yast
       # tm_isdst > 0 -> in effect
       # tm_isdst = 0 -> not in effect
       # tm_isdst < 0 -> unknown
-      if time.respond_to?(:isdst)
-        tm[:tm_isdst] = time.isdst ? 1 : 0
+      tm[:tm_isdst] = if time.respond_to?(:isdst)
+        time.isdst ? 1 : 0
       else
-        tm[:tm_isdst] = -1
+        -1
       end
       tm
     end
@@ -970,7 +969,7 @@ module Yast
         # There is also extra "any" in lists/maps:
         #   Yast:    <YCPRef:list <map> bar (list <map> a)>
         #   Ruby:    <YCPRef:list <map<any,any>> bar (list <map<any,any>>)>
-        val.signature.match(/(.*)\((.*)\)/)
+        val.signature =~ /(.*)\((.*)\)/
         "<YCPRef:#{Regexp.last_match(1)}#{val.remote_method.name} (#{Regexp.last_match(2)})>"
       else
         y2warning 1, "tostring builtin called on wrong type #{val.class}"
@@ -980,11 +979,7 @@ module Yast
 
     # @private string is handled diffent if string is inside other structure
     def self.inside_tostring(val)
-      if val.is_a? ::String
-        return val.inspect
-      else
-        tostring val
-      end
+      val.is_a?(::String) ? val.inspect : tostring(val)
     end
 
     # toupper() Yast built-in
@@ -1033,6 +1028,29 @@ module Yast
     #
     # In a condition, use `string =~ pattern` which returns integer or nil.
 
+    # @method self.regexpsub(input, pattern, output)
+    #
+    # @param input       [String] a string to search
+    # @param pattern     [String] a regex in the C(!) syntax
+    # @param output      [String] a template for what to return
+    # @return [String, nil] replacement, or no match
+    # @see regexpmatch notes about regex syntax
+    #
+    # Searches a string for a POSIX Extended Regular Expression match
+    # and returns *output* with the matched subexpressions
+    # substituted or `nil` if no match was found.
+    #
+    # If *string* or *pattern* is `nil`, or
+    # if pattern is an invalid regex, `nil` is returned.
+    # If *output* is `nil` or any other non-String, an Exception is raised.
+    #
+    # @example Usage
+    #   Builtins.regexpsub("lose", "(.*)s(.*)", "\\1v\\2")   # -> "love"
+    # @example Usage misunderstood
+    #   Builtins.regexpsub("lose", "s", "v")                 # -> "v"
+    # @example No match
+    #   Builtins.regexpsub("team", "I", "profit")            # -> nil
+
     ###########################################################
     # Yast Term Builtins
     ###########################################################
@@ -1060,15 +1078,11 @@ module Yast
 
       case symbol
       when ::String
-        return Yast::Term.new(symbol.to_sym)
+        Yast::Term.new(symbol.to_sym)
       when ::Symbol
-        if list == DEF_LENGHT
-          return Yast::Term.new(symbol)
-        else
-          return Yast::Term.new(symbol, *list)
-        end
+        list == DEF_LENGHT ? Yast::Term.new(symbol) : Yast::Term.new(symbol, *list)
       when Yast::Term
-        return symbol
+        symbol
       end
     end
 
@@ -1120,12 +1134,10 @@ module Yast
             raise "unknown value from comparison #{i1 <=> u2}"
           end
         end
-        unless ss1.empty?
-          res += ss1.reverse
-        end
-        unless ss2.empty?
-          res += ss2.reverse
-        end
+
+        res += ss1.reverse unless ss1.empty?
+        res += ss2.reverse unless ss2.empty?
+
         Yast.deep_copy(res.reverse)
       end
 
@@ -1177,12 +1189,8 @@ module Yast
           end
         end
 
-        unless ss1.empty?
-          res += ss1.reverse
-        end
-        unless ss2.empty?
-          res += ss2.reverse
-        end
+        res += ss1.reverse unless ss1.empty?
+        res += ss2.reverse unless ss2.empty?
 
         Yast.deep_copy(res.reverse)
       end

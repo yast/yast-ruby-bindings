@@ -35,7 +35,34 @@ describe "Yast::Builtins regular expresion methods" do
   end
 
   describe ".regexpsub" do
-    it "works as expected" do
+    def regexpsub(input, pattern, output)
+      Yast::Builtins.regexpsub(input, pattern, output)
+    end
+
+    it "handles nil in INPUT or PATTERN, returning nil" do
+      expect(regexpsub(nil, "I", "profit")).to eq(nil)
+      expect(regexpsub(nil, "I", nil)).to eq(nil)
+      expect(regexpsub("team", nil, "profit")).to eq(nil)
+      expect(regexpsub("team", nil, nil)).to eq(nil)
+    end
+
+    it "raises TypeError if OUTPUT is nil" do
+      expect { regexpsub("team", "I", nil) }.to raise_error(TypeError)
+    end
+
+    it "returns nil if there's no match" do
+      expect(regexpsub("team", "I", "profit")).to eq(nil)
+    end
+
+    it "returns OUTPUT (not INPUT!) if there is a match" do
+      expect(regexpsub("lose", "s", "v")).to eq("v")
+    end
+
+    it "substitutes match groups in OUTPUT" do
+      expect(regexpsub("lose", "(.*)s(.*)", "\\1v\\2")).to eq("love")
+    end
+
+    it "works on legacy tests" do
       expect(Yast::Builtins.regexpsub(nil, nil, nil)).to eq(nil)
 
       # from Yast documentation
@@ -43,11 +70,11 @@ describe "Yast::Builtins regular expresion methods" do
       expect(Yast::Builtins.regexpsub("aaabbb", "(.*ba)", "s_\\1_e")).to eq(nil)
 
       # from sysconfig remove whitespaces
-      expect(Yast::Builtins.regexpsub(" lest test\tsrst\t",
-        "^[ \t]*(([^ \t]*[ \t]*[^ \t]+)*)[ \t]*$",
-        "\\1")).to eq("lest test\tsrst")
-      expect(Yast::Builtins.regexpsub("", "^[ \t]*(([^ \t]*[ \t]*[^ \t]+)*)[ \t]*$", "\\1")).to eq("")
-      expect(Yast::Builtins.regexpsub("  \t  ", "^[ \t]*(([^ \t]*[ \t]*[^ \t]+)*)[ \t]*$", "\\1")).to eq("")
+      pattern = "^[ \t]*(([^ \t]*[ \t]*[^ \t]+)*)[ \t]*$"
+      expect(Yast::Builtins.regexpsub(" lest test\tsrst\t", pattern, "\\1"))
+        .to eq("lest test\tsrst")
+      expect(Yast::Builtins.regexpsub("", pattern, "\\1")).to eq("")
+      expect(Yast::Builtins.regexpsub("  \t  ", pattern, "\\1")).to eq("")
 
       # the result must be UTF-8 string
       expect(Yast::Builtins.regexpsub("aaabbb", "(.*ab)", "s_\\1_e").encoding).to eq(Encoding::UTF_8)

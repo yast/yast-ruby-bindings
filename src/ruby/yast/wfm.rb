@@ -1,6 +1,9 @@
 require "yast/builtinx"
 require "yast/builtins"
 require "yast/ops"
+require "yast/debugger"
+require "yast/profiler"
+require "yast/yast"
 
 # @private we need it as clients is called in global contenxt
 GLOBAL_WFM_CONTEXT = proc {}
@@ -8,6 +11,8 @@ module Yast
   # Wrapper class for WFM component in Yast
   # See yast documentation for WFM
   module WFM
+    extend Yast::Logger
+
     # Returns list of arguments passed to client or element at given index
     #
     # @example Get all args
@@ -33,7 +38,7 @@ module Yast
 
     # Runs execute on local system agent operating on inst-sys
     #
-    # @param path[Yast::Path] agent path
+    # @param path[Yast::Path, String] agent path
     # @param args arguments to agent
     #
     # @note very limited use-case. It is needed only if installer switched to
@@ -44,7 +49,7 @@ module Yast
     # @example Run command in bash in inst-sys
     #    Yast::WFM.Execute(Yast::Path.new(".local.bash"), "halt -p")
     def self.Execute(path, *args)
-      call_builtin_wrapper("Execute", path, *args)
+      call_builtin_wrapper("Execute", Yast.path(path), *args)
     end
 
     # Returns current encoding code as string
@@ -74,7 +79,7 @@ module Yast
 
     # Runs read on local system agent operating on inst-sys
     #
-    # @param path[Yast::Path] agent path
+    # @param path[Yast::Path, String] agent path
     # @param args arguments to agent
     #
     # @note very limited use-case. It is needed only if installer switched to
@@ -85,7 +90,7 @@ module Yast
     # @example Read kernel cmdline
     #    Yast::WFM.Read(path(".local.string"), "/proc/cmdline")
     def self.Read(path, *args)
-      call_builtin_wrapper("Read", path, *args)
+      call_builtin_wrapper("Read", Yast.path(path), *args)
     end
 
     # Closes SCR handle obtained via {SCROpen}
@@ -112,6 +117,20 @@ module Yast
     # @return [Boolean]
     def self.scr_chrooted?
       SCRGetName(SCRGetDefault()) != "scr"
+    end
+
+    # Returns root on which scr operates.
+    # @return [String] path e.g. "/" when scr not switched
+    # or "/mnt" when installation was switched.
+    def self.scr_root
+      case SCRGetName(SCRGetDefault())
+      when "scr"
+        "/"
+      when /chroot=(.*):scr/
+        Regexp.last_match(1)
+      else
+        raise "invalid SCR instance #{SCRGetName(SCRGetDefault())}"
+      end
     end
 
     # Creates new SCR instance
@@ -142,7 +161,7 @@ module Yast
 
     # Runs write on local system agent operating on inst-sys
     #
-    # @param path[Yast::Path] agent path
+    # @param path[Yast::Path, String] agent path
     # @param args arguments to agent
     #
     # @note very limited use-case. It is needed only if installer switched to
@@ -153,32 +172,59 @@ module Yast
     # @example Write yast inf file in inst-sys
     #    Yast::WFM.Write(path(".local.string"), "/etc/yast.inf", yast_inf)
     def self.Write(path, *args)
-      call_builtin_wrapper("Write", path, *args)
-    end
-
-    # @deprecated use {CallFunction}
-    def self.call(*args)
-      call_builtin_wrapper("call", *args)
+      call_builtin_wrapper("Write", Yast.path(path), *args)
     end
 
     # calls client of given name with passed args
     #
     # @param client[String] name of client to run without suffix
-    # @param args additional args passed to client, that can be obtained with
+    # @param args[Array] additional args passed to client, that can be obtained with
     #   {WFM.Args}
     # @return response from client
     #
     # @example call inst_moust client living in $Y2DIR/clients/inst_mouse.rb with parameter true
-    #     Yast::WFM.CallFunction("inst_mouse", true)
-    def self.CallFunction(client, *args)
-      call_builtin_wrapper("CallFunction", client, *args)
+    #     Yast::WFM.CallFunction("inst_mouse", [true])
+    def self.CallFunction(client, args = [])
+      if !client.is_a?(::String)
+        raise ArgumentError, "CallFunction first parameter('#{client.inspect}') have to be String."
+      end
+      if !args.is_a?(::Array)
+        raise ArgumentError, "CallFunction second parameter('#{args.inspect}') have to be Array."
+      end
+
+      call_builtin_wrapper("CallFunction", client, args)
     end
+
+    # @!method call(client, arguments = [])
+    #   @deprecated use {CallFunction}
+    singleton_class.send(:alias_method, :call, :CallFunction)
 
     # @private wrapper to C code
     def self.call_builtin_wrapper(*args)
-      # caller[0] is one of the functions above
-      caller[1].match BACKTRACE_REGEXP
-      call_builtin(Regexp.last_match(1), Regexp.last_match(2).to_i, *args)
+      # caller(1) is one of the functions above
+      res = caller(2, 1).first.match(BACKTRACE_REGEXP)
+      call_builtin(res[1], res[2].to_i, *args)
+    end
+
+    private_class_method def self.ask_to_run_debugger?
+      Yast.import "Mode"
+
+      !Mode.auto && Debugger.installed?
+    end
+
+    # @param [Exception] e the caught exception
+    # @return [String] human readable exception description
+    private_class_method def self.internal_error_msg(e)
+      msg = "Internal error. Please report a bug report with logs.\n"
+
+      if e.is_a?(ArgumentError) && e.message =~ /invalid byte sequence in UTF-8/
+        msg += "A string was encountered that is not valid in UTF-8.\n" \
+               "The system encoding is #{Encoding.locale_charmap.inspect}.\n" \
+               "Refer to https://www.suse.com/support/kb/doc?id=7018056.\n\n"
+      end
+
+      msg + "Details: #{e.message}\n" \
+            "Caller:  #{e.backtrace.first}"
     end
 
     # @private wrapper to run client in ruby
@@ -186,6 +232,8 @@ module Yast
       Builtins.y2milestone "Call client %1", client
       code = File.read client
       begin
+        Debugger.start_from_env
+        Profiler.start_from_env
         result = eval(code, GLOBAL_WFM_CONTEXT.binding, client)
 
         allowed_types = Ops::TYPES_MAP.values.flatten
@@ -201,17 +249,31 @@ module Yast
         begin
           Builtins.y2error("Client call failed with '%1' and backtrace %2",
             e.message,
-            e.backtrace
-          )
-          Yast.import "Report"
-          Report.Error "Internal error. Please report a bug report with logs.\n" \
-            "Details: #{e.message}\n" \
-            "Caller:  #{e.backtrace.first}"
+            e.backtrace)
+
+          msg = internal_error_msg(e)
+
+          if ask_to_run_debugger?
+            Yast.import "Popup"
+            Yast.import "Label"
+            msg += "\n\nStart the Ruby debugger now and debug the issue?" \
+              " (Experts only!)"
+
+            if Popup.YesNoHeadline(Label.ErrorMsg, msg)
+              Debugger.start
+              # Now you can restart the client and watch it step-by-step with
+              # "next"/"step" commands or you can add some breakpoints into
+              # the code and use "continue".
+              retry
+            end
+          else
+            Yast.import "Report"
+            Report.Error(msg)
+          end
         rescue Exception => e
           Builtins.y2internal("Error reporting failed with '%1' and backtrace %2",
             e.message,
-            e.backtrace
-          )
+            e.backtrace)
         end
         return false
       end

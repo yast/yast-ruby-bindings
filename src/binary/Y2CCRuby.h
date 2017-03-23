@@ -45,7 +45,10 @@ public:
 
     ~Y2CCRuby () {
 	if (cruby)
+        {
 	    delete cruby;
+            cruby = 0;
+        }
     }
 
     /**

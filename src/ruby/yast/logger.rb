@@ -17,16 +17,31 @@ module Yast
       end
     end
 
-    res = Builtins.sformat(*args)
-    res.gsub!(/%/, "%%") # reescape all %
-    caller[caller_frame] =~ /(.+):(\d+):in `([^']+)'/
-    y2_logger(level, "Ruby", Regexp.last_match(1), Regexp.last_match(2).to_i, Regexp.last_match(3), res)
+    # replace invalid characters by the replacement symbol
+    # see https://en.wikipedia.org/wiki/Specials_(Unicode_block)#Replacement_character
+    safe_args = args.map do |arg|
+      next arg unless arg.is_a?(::String)
 
-    if backtrace
-      y2_logger_helper(level, [2, "------------- Backtrace begin -------------"])
-      caller(3).each { |frame| y2_logger_helper(level, [4, frame]) }
-      y2_logger_helper(level, [2, "------------- Backtrace end ---------------"])
+      # Be carefull, there is also Yast::Encoding!!
+      if arg.encoding == ::Encoding::UTF_8
+        arg.scrub("�")
+      else
+        # broken strings might be passed as e.g. ASCII-8BIT and need to be recoded
+        # Be carefull, there is also Yast::Encoding!!
+        arg.encode(::Encoding::UTF_8, invalid: :replace, undef: :replace, replace: "�")
+      end
     end
+
+    res = Builtins.sformat(*safe_args)
+    res.gsub!(/%/, "%%") # reescape all %
+    matches = caller(caller_frame + 1, 1).first.match(/(.+):(\d+):in `([^']+)'/)
+    y2_logger(level, "Ruby", matches[1], matches[2].to_i, matches[3], res)
+
+    return unless backtrace
+
+    y2_logger_helper(level, [2, "------------- Backtrace begin -------------"])
+    caller(3).each { |frame| y2_logger_helper(level, [4, frame]) }
+    y2_logger_helper(level, [2, "------------- Backtrace end ---------------"])
   end
 
   # write to log debug message with arguments formated by {Yast::Builtins.sformat}

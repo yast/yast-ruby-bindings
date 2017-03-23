@@ -514,29 +514,10 @@ extern "C" {
     return list;
   }
 
-
+  // documented in builtins.rb
   static VALUE
   regexpsub (VALUE o, VALUE i, VALUE p, VALUE m)
   {
-      /**
-       * @builtin regexpsub
-       * @short Regex Substitution
-       * @param string INPUT
-       * @param string PATTERN
-       * @param string OUTPUT
-       * @return string
-       *
-       * @description
-       * Searches a string for a POSIX Extended Regular Expression match
-       * and returns <i>OUTPUT</i> with the matched subexpressions
-       * substituted or <b>nil</b> if no match was found.
-       *
-       * @see regex(7)
-       *
-       * @usage regexpsub ("aaabbb", "(.*ab)", "s_\\1_e") -> "s_aaab_e"
-       * @usage regexpsub ("aaabbb", "(.*ba)", "s_\\1_e") -> nil
-       */
-
     if (NIL_P(i) || NIL_P(p))
       return Qnil;
 

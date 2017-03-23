@@ -1,15 +1,173 @@
 -------------------------------------------------------------------
-Wed Mar  8 12:55:38 UTC 2017 - jreidinger@suse.com
+Wed Mar 22 14:45:50 UTC 2017 - jreidinger@suse.com
 
-- Do not crash when an invalid Yast::Path is constructed (one with
-  a component starting or ending with a dash; bsc#1028081)
+- Use more friendly exception when an invalid Yast::Path is
+  constructed (one with a component starting or ending with
+  a dash; bsc#1028081)
+- 3.2.9
+
+-------------------------------------------------------------------
+Wed Mar 22 14:41:50 UTC 2017 - jreidinger@suse.com
+
+- add method Yast::WFM.scr_root to get scr changed root directory
+  (needed for testing fix for bsc#1023204)
+- 3.2.8
+
+-------------------------------------------------------------------
+Tue Mar 14 16:25:59 UTC 2017 - ancor@suse.com
+
+- Use tmux instead of screen to run the Ncurses integration test
+  in headless systems (skip the test if tmux is not available).
+  The version of screen introduced to fix bsc#1021743 was causing
+  the test to fail.
+- 3.2.7
+
+-------------------------------------------------------------------
+Thu Mar  9 15:57:00 UTC 2017 - ancor@suse.com
+
+- Display standard output and error channels in case of failure
+  running the Ncurses integration tests in a headless system.
+  Needed to debug the error produced by the fix to bsc#1021743
+- 3.2.6
+
+-------------------------------------------------------------------
+Mon Jan  9 14:18:30 UTC 2017 - jreidinger@suse.com
+
+- allow in Yast::SCR and Yast::WFM to have string as first
+  argument where Yast::Path is expected
+  (gh#yast/yast-ruby-bindings#82, bsc#1018876)
+- make yast specific class shortcuts available via Yast namespace
+  like Yast.path() or Yast.term()
+- allow path shortcut to get string or path and return always path
+- raise exception if wrong type is passed to path including nil
+- 3.2.5
+
+-------------------------------------------------------------------
+Mon Jan  9 12:15:20 UTC 2017 - jreidinger@suse.com
+
+- drop Yast.add_module_dir and Yast.add_include_dir as the only
+  reliable way is to use Y2DIR env (gh#yast/yast-ruby-bindings#72)
+
+-------------------------------------------------------------------
+Wed Jan  4 12:36:06 UTC 2017 - jreidinger@suse.com
+
+- Throw exception with more detailed error specification when
+  loading namespace to component system failed (bsc#932331)
+- 3.2.4
 
 -------------------------------------------------------------------
 Thu Dec 15 16:29:13 UTC 2016 - igonzalezsosa@suse.com
 
 - Do not crash when FastGettext is unable to find the empty.mo
   file (bsc#1014458)
-- 3.1.40.1
+- 3.2.3
+
+-------------------------------------------------------------------
+Tue Nov 15 10:34:51 UTC 2016 - lslezak@suse.cz
+
+- Improved debugger support: catch the magic debugging key
+  combination (Shift+Ctrl+Alt+D in Qt) returned by UI calls and
+  start the Ruby debugger when received (FATE#318421)
+- 3.2.2
+
+-------------------------------------------------------------------
+Wed Oct 26 09:46:54 UTC 2016 - jreidinger@suse.com
+
+- fix crash when references passed between clients (bsc#935385)
+- 3.2.1
+
+-------------------------------------------------------------------
+Thu Oct 13 08:55:07 UTC 2016 - jreidinger@suse.com
+
+- properly document usage of CallFunction and have useful error
+  when misused (bsc#889980)
+- 3.2.0
+
+-------------------------------------------------------------------
+Fri Sep 16 10:28:16 UTC 2016 - mvidner@suse.com
+
+- Rescue "invalid byte sequence in UTF-8", with a custom message
+  (bsc#992821).
+- 3.1.51
+
+-------------------------------------------------------------------
+Thu Jun 30 09:24:32 UTC 2016 - jreidinger@suse.com
+
+- Fix segfault when running rspec tests caused by added ruby
+  profiler (bnc#986649 comment2)
+- 3.1.50
+
+-------------------------------------------------------------------
+Tue Jun 28 14:21:55 UTC 2016 - jreidinger@suse.com
+
+- Added support for running the Ruby profiler
+- Improve performance of code by specialized `caller` call
+  (bnc#986649)
+- 3.1.49
+
+-------------------------------------------------------------------
+Mon May 30 14:38:02 UTC 2016 - lslezak@suse.cz
+
+- Improve the debugger support - use the same code also at run
+  time, allow using `Y2DEBUGGER` also in installed system
+  (FATE#318421)
+- 3.1.48
+
+-------------------------------------------------------------------
+Mon May 23 12:30:17 UTC 2016 - lslezak@suse.cz
+
+- Added support for running the Ruby debugger (FATE#318421)
+- Allow running the Ruby debugger from the generic crash handler
+  if the debugger is installed
+- 3.1.47
+
+-------------------------------------------------------------------
+Mon Mar  7 16:12:00 UTC 2016 - jreidinger@suse.com
+
+- update code according to updated yast ruby style guide
+
+-------------------------------------------------------------------
+Wed Jan 13 09:36:59 UTC 2016 - jreidinger@suse.com
+
+- Move transdb initialization to C part to keep it together with
+  index initialization (bsc#932014)
+- 3.1.46
+
+-------------------------------------------------------------------
+Wed Jan 13 08:52:21 UTC 2016 - jreidinger@suse.com
+
+- fixed early return from logging method causing failure of old
+  testsuite (bsc#932014)
+- 3.1.45
+
+-------------------------------------------------------------------
+Tue Jan 12 15:05:40 UTC 2016 - lslezak@suse.cz
+
+- Fixed conflict between Yast::Encoding and ::Encoding (another fix
+  for bsc#932014)
+- 3.1.44
+
+-------------------------------------------------------------------
+Mon Jan 11 12:56:37 UTC 2016 - lslezak@suse.cz
+
+- Do not crash when logging an invalid UTF-8 string (bsc#932014)
+- 3.1.43
+
+-------------------------------------------------------------------
+Tue Dec  1 16:06:11 UTC 2015 - jreidinger@suse.com
+
+- Reverted the last change because it broke updating the table in
+  Service Manager
+  (because the distinction between :cell and :Cell was lost)
+  (bnc#956380)
+- 3.1.42
+
+-------------------------------------------------------------------
+Fri Nov 13 13:41:46 UTC 2015 - jreidinger@suse.com
+
+- Fix Cell ui shortcut as final id have to be lowercase (fake bug
+  to get it accepted bnc#0)
+- 3.1.41
 
 -------------------------------------------------------------------
 Mon Oct  5 12:04:35 UTC 2015 - jreidinger@suse.com

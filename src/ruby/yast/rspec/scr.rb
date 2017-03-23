@@ -63,12 +63,12 @@ module Yast
         end
         Yast::WFM.SCRSetDefault(@scr_handle)
 
-        if block_given?
-          begin
-            yield
-          ensure
-            reset_scr_root
-          end
+        return unless block_given?
+
+        begin
+          yield
+        ensure
+          reset_scr_root
         end
       end
 

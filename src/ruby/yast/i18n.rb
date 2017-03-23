@@ -6,9 +6,9 @@ module Yast
   module I18n
     # @private
     # TODO: load alternative in development recent translation
-    LOCALE_DIR = "/usr/share/YaST2/locale"
+    LOCALE_DIR = "/usr/share/YaST2/locale".freeze
     # if every heuristic fails then use the default for locale
-    DEFAULT_LOCALE = "en_US"
+    DEFAULT_LOCALE = "en_US".freeze
 
     # sets new text domain
     def textdomain(domain)
@@ -111,11 +111,10 @@ module Yast
           cached_plural_find(singular, plural)
         end
       end
-      found ? FastGettext::Translation.n_(singular, plural, num) :
-        fallback_n_(singular, plural, num)
+      found ? FastGettext::Translation.n_(singular, plural, num) : fallback_n_(singular, plural, num)
     end
 
-    private
+  private
 
     def available_locales
       # the first item is used as the fallback

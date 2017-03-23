@@ -37,7 +37,7 @@ public:
      *
      * Returns a YCPError on failure, YCPVoid on success.
      **/
-    static YCPValue loadModule( YCPList argList );
+    static bool loadModule( YCPList argList );
 
     /**
      * Access the static (singleton) YRuby object. Create it if it isn't
@@ -50,10 +50,8 @@ public:
     /**
      * Destroy the static (singleton) YRuby object and unload the embedded Ruby
      * interpreter.
-     *
-     * Returns YCPVoid().
      **/
-    static YCPValue destroy();
+    static void destroy();
 
 
 protected:
@@ -97,6 +95,7 @@ private:
 public:
     static YRuby *	_yRuby;
     static bool  _y_ruby_finalized;
+    static bool  _y_in_yast;
     refcount_map_t value_references_from_ycp;
 };
 

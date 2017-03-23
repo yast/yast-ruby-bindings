@@ -6,7 +6,14 @@ module Yast
   class Path
     include Comparable
 
+    # @param value [String] string representation of path
+    # @raise RuntimeError if invalid path is passed. Invalid path is one where
+    # any element starts or ends with dash like ".-etc", ".etc-" or ".e.t-.c"
     def initialize(value)
+      if !value.is_a?(::String)
+        raise ArgumentError, "Yast::Path constructor has to get ::String as " \
+          "argument instead of '#{value.inspect}'"
+      end
       @components = []
       load_components value
     end
@@ -55,7 +62,7 @@ module Yast
       size <=> other.size
     end
 
-    private
+  private
 
     attr_reader :components
     COMPLEX_CHAR_REGEX = /[^a-zA-Z0-9_-]/
@@ -72,16 +79,16 @@ module Yast
           state = :dot
         when :dot
           raise "Invalid path '#{value}'" if c == "."
-          if c == '"'
-            state = :complex
+          state = if c == '"'
+            :complex
           else
-            state = :simple
+            :simple
           end
           buffer << c
         when :simple
           if c == "."
             state = :dot
-            return if invalid_buffer?(buffer)
+            raise "Invalid path '#{value}'" if invalid_buffer?(buffer)
 
             @components << modify_buffer(buffer)
             buffer = ""
@@ -110,17 +117,15 @@ module Yast
         end
       end
 
-      unless buffer.empty?
-        return if invalid_buffer?(buffer)
+      return if buffer.empty?
 
-        @components << modify_buffer(buffer)
-      end
+      raise "Invalid path '#{value}'" if invalid_buffer?(buffer)
+
+      @components << modify_buffer(buffer)
     end
 
     def invalid_buffer?(buffer)
       if buffer.start_with?("-") || buffer.end_with?("-")
-        Yast.y2error "Cannot have dash before or after dot '#{buffer}'"
-        @components.clear
         return true
       end
 

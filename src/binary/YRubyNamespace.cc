@@ -39,7 +39,7 @@ as published by the Free Software Foundation; either version
 /**
  * Exception raised when type signature in ruby class is invalid
  */
-class WrongTypeException: public exception
+class WrongTypeException: public std::exception
 {
 public:
 

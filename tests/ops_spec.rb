@@ -266,7 +266,7 @@ describe "Yast::OpsTest" do
     ["s", 15, "s15"],
     ["s", :c, "sc"],
     ["s", Yast::Path.new(".etc"), "s.etc"]
-  ]
+  ].freeze
 
   it "tests add" do
     ADD_TESTCASES.each do |first, second, result|
@@ -281,7 +281,7 @@ describe "Yast::OpsTest" do
     [nil, nil, nil],
     [1, 2, -1],
     [1.1, 1.1, 0.0]
-  ]
+  ].freeze
 
   it "tests subtract" do
     SUBTRACT_TESTCASES.each do |first, second, result|
@@ -296,7 +296,7 @@ describe "Yast::OpsTest" do
     [nil, nil, nil],
     [1, 2, 2],
     [1.5, 2.0, 3.0]
-  ]
+  ].freeze
 
   it "tests multiply" do
     MULTIPLY_TESTCASES.each do |first, second, result|
@@ -312,7 +312,7 @@ describe "Yast::OpsTest" do
     [2, 0, nil], # yes fantastic yast allows division by zero
     [2, 1, 2],
     [3.0, 1.5, 2.0]
-  ]
+  ].freeze
 
   it "tests divide" do
     DIVIDE_TESTCASES.each do |first, second, result|
@@ -326,7 +326,7 @@ describe "Yast::OpsTest" do
     [1, nil, nil],
     [nil, nil, nil],
     [5, 2, 1]
-  ]
+  ].freeze
 
   it "tests modulo" do
     MODULO_TESTCASES.each do |first, second, result|
@@ -341,7 +341,7 @@ describe "Yast::OpsTest" do
     [nil, nil, nil],
     [5, 3, 1],
     [5, 4, 4]
-  ]
+  ].freeze
 
   it "tests bitwise and" do
     BITWISE_AND_TESTCASES.each do |first, second, result|
@@ -356,7 +356,7 @@ describe "Yast::OpsTest" do
     [nil, nil, nil],
     [5, 3, 7],
     [5, 4, 5]
-  ]
+  ].freeze
 
   it "tests bitwise or" do
     BITWISE_OR_TESTCASES.each do |first, second, result|
@@ -371,7 +371,7 @@ describe "Yast::OpsTest" do
     [nil, nil, nil],
     [5, 3, 6],
     [5, 4, 1]
-  ]
+  ].freeze
 
   it "tests bitwise xor" do
     BITWISE_XOR_TESTCASES.each do |first, second, result|
@@ -386,7 +386,7 @@ describe "Yast::OpsTest" do
     [nil, nil, nil],
     [1, 2, 4],
     [2, 2, 8]
-  ]
+  ].freeze
 
   it "tests shift left" do
     SHIFT_LEFT_TESTCASES.each do |first, second, result|
@@ -401,7 +401,7 @@ describe "Yast::OpsTest" do
     [nil, nil, nil],
     [4, 2, 1],
     [8, 2, 2]
-  ]
+  ].freeze
 
   it "tests shift right" do
     SHIFT_RIGHT_TESTCASES.each do |first, second, result|
@@ -416,7 +416,7 @@ describe "Yast::OpsTest" do
     [nil, nil, false],
     [true, false, false],
     [true, true, true]
-  ]
+  ].freeze
 
   it "tests logical and" do
     LOGICAL_AND_TESTCASES.each do |first, second, result|
@@ -431,7 +431,7 @@ describe "Yast::OpsTest" do
     [nil, nil, false],
     [true, false, true],
     [true, true, true]
-  ]
+  ].freeze
 
   it "tests logical or" do
     LOGICAL_OR_TESTCASES.each do |first, second, result|
@@ -444,7 +444,7 @@ describe "Yast::OpsTest" do
     [nil, nil],
     [1, -1],
     [5.5, -5.5]
-  ]
+  ].freeze
 
   it "tests unary minus" do
     UNARY_MINUS_TESTCASES.each do |value, result|
@@ -457,7 +457,7 @@ describe "Yast::OpsTest" do
     [nil, nil],
     [true, false],
     [false, true]
-  ]
+  ].freeze
 
   it "tests logical not" do
     LOGICAL_NOT_TESTCASES.each do |value, result|
@@ -471,7 +471,7 @@ describe "Yast::OpsTest" do
     [5, -6],
     [8_589_934_592, -8_589_934_593],
     [-558_589_934_592, 558_589_934_591]
-  ]
+  ].freeze
 
   it "tests bitwise not" do
     BITWISE_NOT_TESTCASES.each do |value, result|

@@ -38,7 +38,7 @@ describe "ExportableTest" do
 
   it "tests variable definition" do
     MyTest.variable_a = ({ a: 15 })
-    expect(MyTest.variable_a).to eq(({ a: 15 }))
+    expect(MyTest.variable_a).to eq(a: 15)
   end
 
   it "tests type full specification" do

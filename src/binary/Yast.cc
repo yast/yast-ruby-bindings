@@ -34,6 +34,8 @@ as published by the Free Software Foundation; either version
 #include <ycp/YCPValue.h>
 #include <ycp/YCPVoid.h>
 #include <ycp/YCPCode.h>
+#include <ycp/YCPSymbol.h>
+#include <ycp/YCPMap.h>
 #include <ycp/YCPByteblock.h>
 #include <ycp/Import.h>
 #include <ycp/y2log.h>
@@ -77,6 +79,7 @@ getNs (const char * ns_name)
  *
  * tries to import a namespace
  * throws a NameError if failed
+ * throws a RuntimeError with more defails if import get exception during loading
  *
  */
 static VALUE
@@ -86,6 +89,19 @@ import_namespace( const char *name)
   if (ns == NULL)
   {
     rb_raise( rb_eNameError, "component cannot import namespace '%s'", name );
+    return Qnil;
+  }
+
+  if (isErrorNamespace(ns))
+  {
+    Y2ErrorNamespace* ens = toErrorNamespace(ns);
+    string message("Failed to load Module '");
+    message = message + name + "' due to: " + ens->summary();
+    VALUE exception = rb_exc_new2(rb_eRuntimeError, message.c_str());
+    VALUE backtrace = rb_str_new_cstr(ens->details().c_str());
+    backtrace = rb_funcall(backtrace, rb_intern("split"), 1, rb_str_new_cstr("\n"));
+    rb_funcall(exception, rb_intern("set_backtrace"), 1, backtrace);
+    rb_exc_raise(exception);
     return Qnil;
   }
 
@@ -126,6 +142,7 @@ ycp_find_include_file( VALUE self, VALUE path)
  *
  * iterates all symbols in a namespace and yields the
  * symbol name and category
+ * Internal API only for defining methods for given namespace
  *
  * call-seq:
  *   each_symbol("namespace") { |symbol,category| ... }
@@ -164,6 +181,80 @@ void set_ruby_source_location(VALUE file, VALUE lineno)
 {
   YaST::ee.setFilename(RSTRING_PTR(file));
   YaST::ee.setLinenumber(FIX2INT(lineno));
+}
+
+/**
+ * Returns true if the function name is an UI user input function which returns
+ * a symbol.
+ * @param  function_name name of the function
+ * @return true/false
+ */
+static bool ui_input_function(const char *function_name)
+{
+    return strcmp(function_name, "UserInput") == 0  ||
+        strcmp(function_name, "TimeoutUserInput") == 0 ||
+        strcmp(function_name, "PollInput") == 0;
+}
+
+/**
+ * Returns true if the input symbol starts debugging.
+ * @param  val YCPSymbol returned from an UI input call
+ * @return true/false
+ */
+static bool is_debug_symbol(YCPValue val)
+{
+    return !val.isNull() && val->isSymbol() &&
+        val->asSymbol()->symbol() == "debugHotkey";
+}
+
+/**
+ * Returns true if the function name is an event function returning a map.
+ * @param  function_name name of the function
+ * @return true/false
+ */
+static bool ui_event_function(const char *function_name)
+{
+    return strcmp(function_name, "WaitForEvent") == 0;
+}
+
+/**
+ * Returns true if the input is a debug UI event.
+ * @param  val YCPMap returned from the UI::WaitForEvent call
+ * @return true/false
+ */
+static bool is_debug_event(YCPValue val)
+{
+    // is it a map?
+    if (val.isNull() || !val->isMap())
+        return false;
+
+    YCPMap map = val->asMap();
+
+    YCPValue event_type = map->value(YCPString("EventType"));
+    // is map["EventType"] == "DebugEvent"?
+    if (event_type.isNull() || !event_type->isString() ||
+        event_type->asString()->value() != "DebugEvent")
+        return false;
+
+    YCPValue event_id = map->value(YCPString("ID"));
+    // is map["ID"] == :debugHotkey?
+    return !event_id.isNull() && event_id->isSymbol() &&
+        event_id->asSymbol()->symbol() == "debugHotkey";
+}
+
+/**
+ * Start the Ruby debugger, it calls "Yast::Debugger.start" Ruby code.
+ * See file ../ruby/yast/debugger.rb for more details.
+ */
+static void start_ruby_debugger()
+{
+    y2milestone("Starting the Ruby debugger...");
+
+    rb_require("yast/debugger");
+    // call "Yast::Debugger.start"
+    VALUE module = rb_const_get(rb_cObject, rb_intern("Yast"));
+    VALUE klass = rb_const_get(module, rb_intern("Debugger"));
+    rb_funcall(klass, rb_intern("start"), 0);
 }
 
 /*
@@ -261,6 +352,21 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
       RB_GC_GUARD(val);
       rb_funcall(argv[i->first], rb_intern("value="), 1, val);
     }
+
+    // hack: handle the Shift+Ctrl+Alt+D debugging magic key combination
+    // returned from UI calls, start the Ruby debugger when the magic key is received
+    if (strcmp(namespace_name, "UI") == 0)
+    {
+        if (
+            (ui_input_function(function_name) && is_debug_symbol(res)) ||
+            (ui_event_function(function_name) && is_debug_event(res))
+        )
+        {
+          y2milestone("UI::%s() caught magic debug key: %s", function_name, res->toString().c_str());
+          start_ruby_debugger();
+        }
+    }
+
     return ycpvalue_2_rbvalue(res);
   }
 }
@@ -294,34 +400,6 @@ yast_y2_logger( int argc, VALUE *argv, VALUE self )
     Check_Type(argv[i], T_STRING);
   }
   y2_logger((loglevel_t)FIX2INT(argv[0]),RSTRING_PTR(argv[1]),RSTRING_PTR(argv[2]),FIX2INT(argv[3]),"",RSTRING_PTR(argv[5]));
-  return Qnil;
-}
-
-/*--------------------------------------------
- * Document-method: add_module_path(path)
- * call-seq:
- *   Yast.add_module_path([String]) -> nil
- *
- * Adds path to module search path. Useful to test modules from specific directory.
- *
- * For testing recomended way is to set properly Y2DIR ENV.
- */
-static VALUE add_module_path( VALUE self, VALUE path )
-{
-  y2debug ("add module path %s", RSTRING_PTR(path));
-  YCPPathSearch::addPath (YCPPathSearch::Module, RSTRING_PTR(path));
-  return Qnil;
-}
-
-/*
- * Adds path to include search path. Useful to test includes from specific directory.
- * For testing recomended way is to set properly Y2DIR ENV.
- */
-static VALUE
-add_include_path( VALUE self, VALUE path )
-{
-  y2debug ("add include path %s", RSTRING_PTR(path));
-  YCPPathSearch::addPath (YCPPathSearch::Include, RSTRING_PTR(path));
   return Qnil;
 }
 
@@ -502,8 +580,6 @@ extern "C"
     rb_define_singleton_method( rb_mYast, "call_yast_function", RUBY_METHOD_FUNC(ycp_module_call_ycp_function), -1);
 
     rb_define_singleton_method( rb_mYast, "symbols", RUBY_METHOD_FUNC(ycp_module_symbols), 1);
-    rb_define_singleton_method( rb_mYast, "add_module_path", RUBY_METHOD_FUNC(add_module_path), 1);
-    rb_define_singleton_method( rb_mYast, "add_include_path", RUBY_METHOD_FUNC(add_include_path), 1);
     rb_define_singleton_method( rb_mYast, "y2paths", RUBY_METHOD_FUNC(y2dir_paths), 0);
 
     rb_define_method( rb_mYast, "y2_logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);

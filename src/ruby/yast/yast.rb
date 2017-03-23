@@ -12,26 +12,36 @@ module Yast
 
   # shortcut to construct new Yast term
   # @see Yast::Term
-  def term(*args)
+  module_function def term(*args)
     Term.new(*args)
   end
 
   # shortcut to construct new function reference
   # @see Yast::FunRef
-  def fun_ref(*args)
+  module_function def fun_ref(*args)
     FunRef.new(*args)
   end
 
   # shortcut to construct new argument reference
   # @see Yast::ArgRef
-  def arg_ref(*args)
+  module_function def arg_ref(*args)
     ArgRef.new(*args)
   end
 
   # shortcut to construct new Yast path
+  # @param value [String, Yast::Path] value of path. If it is path, it will
+  #   return itself. For String it will return new Yast::Path instance
+  #   initialized from it.
   # @see Yast::Path
-  def path(*args)
-    Path.new(*args)
+  module_function def path(value)
+    case value
+    when Yast::Path
+      value
+    when ::String
+      Path.new(value)
+    else
+      raise ArgumentError, "Argument #{value.inspect} is neither a ::String or a Yast::Path"
+    end
   end
 
   # Makes deep copy of object. Difference to #dup or #clone is
@@ -105,9 +115,9 @@ module Yast
   def self.include(target, path)
     path_without_suffix = path.sub(/\.rb$/, "")
     module_name = path_without_suffix
-      .gsub(/^./)     { |s| s.upcase }
-      .gsub(/\/./)    { |s| s[1].upcase }
-      .gsub(/[-_.]./) { |s| s[1].upcase } +
+                  .gsub(/^./, &:upcase)
+                  .gsub(/\/./)    { |s| s[1].upcase }
+                  .gsub(/[-_.]./) { |s| s[1].upcase } +
       "Include"
 
     loaded = Yast.constants.include? module_name.to_sym
@@ -120,9 +130,7 @@ module Yast
     mod = Yast.const_get module_name
 
     # if never included, then include
-    if !target.class.include? mod
-      target.class.send(:include, mod)
-    end
+    target.class.send(:include, mod) unless target.class.include?(mod)
 
     encoded_name = path_without_suffix.gsub(/[-.\/]/, "_")
     initialized_variable = "@" + encoded_name + "initialized"
@@ -153,10 +161,10 @@ module Yast
     # Handle multilevel modules like YaPI::Network
     modules[0..-2].each do |module_|
       tmp_m = if base.constants.include?(module_.to_sym)
-                base.const_get(module_)
-              else
-                base.const_set(module_, ::Module.new)
-              end
+        base.const_get(module_)
+      else
+        base.const_set(module_, ::Module.new)
+      end
       base = tmp_m
     end
 
@@ -176,21 +184,20 @@ module Yast
     end
 
     m = if base.constants.include?(modules.last.to_sym)
-          base.const_get(modules.last)
-        else
-          ::Module.new
-        end
+      base.const_get(modules.last)
+    else
+      ::Module.new
+    end
     symbols(mname).each do |sname, stype|
       next if sname.empty?
-      if (stype == :function)
+      if stype == :function
         m.module_eval <<-"END"
           def self.#{sname}(*args)
-            caller[0].match BACKTRACE_REGEXP
+            caller(1,1).first.match BACKTRACE_REGEXP
             return Yast::call_yast_function("#{mname}", :#{sname}, $1, $2.to_i, *args)
           end
         END
-      end
-      if stype == :variable
+      elsif stype == :variable
         m.module_eval <<-"END"
           def self.#{sname}
             return Yast::call_yast_function("#{mname}", :#{sname})
