@@ -10,8 +10,17 @@ describe "Yast::Path" do
     it "works for simple paths" do
       expect(Yast::Path.new(".etc").to_s).to eq(".etc")
     end
+
     it "works for complex paths" do
       expect(Yast::Path.new(".et?c").to_s).to eq('."et?c"')
+    end
+
+    it "raise RuntimeError if path is invalid" do
+      expect{Yast::Path.new(".-etc")}.to raise_error(RuntimeError)
+    end
+
+    it "raise ArgumentError if argument is not String" do
+      expect{Yast::Path.new(nil)}.to raise_error(ArgumentError)
     end
   end
 
@@ -19,6 +28,7 @@ describe "Yast::Path" do
     it "works for simple paths" do
       expect(Yast::Path.from_string("etc").to_s).to eq(".\"etc\"")
     end
+
     it "works for complex paths" do
       expect(Yast::Path.from_string("et?c").to_s).to eq('."et?c"')
     end
