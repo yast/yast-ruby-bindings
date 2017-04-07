@@ -1,0 +1,43 @@
+#! /usr/bin/ruby
+
+# set env as first part, otherwise dummy UI will be created.
+# for insts-sys it will be overwritten later
+ENV["YAST_IS_RUNNING"] = "yes"
+
+require "yast"
+require "yast/y2start_helpers"
+
+Yast::Y2StartHelpers.setup_signals
+
+File.umask(0022)
+
+Yast.y2milestone("y2base called with #{ARGV.inspect}")
+
+begin
+  args = Yast::Y2StartHelpers.parse_arguments(ARGV.dup)
+rescue RuntimeError => e
+  $stderr.puts e
+  $stderr.puts Yast::Y2StartHelpers.help
+  exit 1
+end
+
+if args[:generic_options][:help]
+  $stdout.puts Yast::Y2StartHelpers.help
+  exit 0
+end
+
+if (args[:client_name] == "installation" &&
+    args[:client_options][:params].include?("initial"))
+  ENV["YAST_IS_RUNNING"] = "instsys"
+end
+
+if !Yast::WFM.ClientExists(args[:client_name])
+  $stderr.puts "No such client module #{args[:client_name]}"
+  exit 1
+end
+
+
+Yast.ui_create(args[:server_name], args[:server_options])
+Yast::WFM.CallFunction(args[:client_name], args[:client_options][:params])
+
+0

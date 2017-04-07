@@ -521,6 +521,12 @@ static VALUE ui_set_component(VALUE self, VALUE name)
 
 static void init_ui()
 {
+  // init_ui is needed only for running tests. YaST itself setup UI in y2base
+  // respective its ruby version when this env variable is specified.
+  // So skip initialization here to avoid conflicts.
+  if (getenv("YAST_IS_RUNNING") != NULL)
+    return;
+
   const char *ui_name = "UI";
 
   Y2Component *c = YUIComponent::uiComponent();
@@ -541,6 +547,27 @@ static void init_ui()
   {
     y2debug("UI component already present: %s", c->name ().c_str ());
   }
+}
+
+static VALUE ui_create(VALUE self, VALUE name, VALUE args)
+{
+  Y2ComponentBroker::getNamespaceComponent("UI");
+
+  string name_s = StringValuePtr(name);
+  y2debug("creating UI %s", name_s.c_str());
+  Y2Component *server = Y2ComponentBroker::createServer(name_s.c_str());
+  int argc = RARRAY_LENINT(args);
+  char **argv = new char *[argc+1];
+  for (long i = 0; i < argc; ++i)
+  {
+    VALUE a = rb_ary_entry(args, i);
+    argv[i] = strdup(StringValuePtr(a));
+  }
+  argv[argc] = NULL;
+
+  server->setServerOptions(argc, argv);
+
+  return Qnil;
 }
 
 static VALUE ui_finalizer()
@@ -586,9 +613,10 @@ extern "C"
     rb_define_singleton_method( rb_mYast, "y2_logger", RUBY_METHOD_FUNC(yast_y2_logger), -1);
 
     // UI initialization
+    rb_define_singleton_method( rb_mYast, "ui_create",     RUBY_METHOD_FUNC(ui_create), 2);
     rb_define_singleton_method( rb_mYast, "ui_component",  RUBY_METHOD_FUNC(ui_get_component), 0);
     rb_define_singleton_method( rb_mYast, "ui_component=", RUBY_METHOD_FUNC(ui_set_component), 1);
-    rb_define_singleton_method( rb_mYast, "ui_finalizer",     RUBY_METHOD_FUNC(ui_finalizer), 0);
+    rb_define_singleton_method( rb_mYast, "ui_finalizer",  RUBY_METHOD_FUNC(ui_finalizer), 0);
 
     // Y2 references
     rb_cYReference = rb_define_class_under(rb_mYast, "YReference", rb_cObject);
