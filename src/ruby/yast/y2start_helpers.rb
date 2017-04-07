@@ -13,6 +13,8 @@ module Yast
       ret = {}
 
       ret[:generic_options] = parse_generic_options(args)
+      # for --help early quit as other argument are ignored
+      return ret if ret[:generic_options][:help]
       ret[:client_name] = args.shift or raise "Missing client name."
       ret[:client_options] = parse_client_options(args)
       ret[:server_name] = args.shift or raise "Missing server name."
