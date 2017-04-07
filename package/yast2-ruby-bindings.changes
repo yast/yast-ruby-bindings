@@ -9,7 +9,7 @@ Wed Mar 22 15:45:50 UTC 2017 - jreidinger@suse.com
 -- show popup when signal is received and also allow YaST modules
    to handle more gracefully when signal is raised
 -- better argument passing to y2start itself e.g.
-   y2base foo -S '(bar)' qt → y2start foo --arg bar qt
+   y2base foo -S '(bar)' qt ----> y2start foo --arg bar qt
 -- ruby infrastructure can be used directly on y2start like debugger
    or profiler
 -- majority of y2start functionality is covered by unit tests
