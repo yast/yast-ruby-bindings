@@ -16,7 +16,7 @@ module Yast
         end
 
         it "raises exception if first is not String or Yast::Path" do
-          expect{Yast::SCR.public_send(method, 1, *args)}.to raise_error(ArgumentError)
+          expect { Yast::SCR.public_send(method, 1, *args) }.to raise_error(ArgumentError)
         end
 
         it "passed path arguments with method name prepended to underlayer wrapper" do

@@ -1,5 +1,5 @@
 -------------------------------------------------------------------
-Tue Feb 28 14:21:06 UTC 2017 - jreidinger@suse.com
+Wed Mar 22 15:45:50 UTC 2017 - jreidinger@suse.com
 
 - Add new y2base as ruby script which have several advantages
   (bsc#1027181):
@@ -14,6 +14,39 @@ Tue Feb 28 14:21:06 UTC 2017 - jreidinger@suse.com
    or profiler
 -- majority of y2base functionality is covered by unit tests
    allowing easier and less error-prone future changes
+- 3.2.10
+
+-------------------------------------------------------------------
+Wed Mar 22 14:45:50 UTC 2017 - jreidinger@suse.com
+
+- Use more friendly exception when an invalid Yast::Path is
+  constructed (one with a component starting or ending with
+  a dash; bsc#1028081)
+- 3.2.9
+
+-------------------------------------------------------------------
+Wed Mar 22 14:41:50 UTC 2017 - jreidinger@suse.com
+
+- add method Yast::WFM.scr_root to get scr changed root directory
+  (needed for testing fix for bsc#1023204)
+- 3.2.8
+
+-------------------------------------------------------------------
+Tue Mar 14 16:25:59 UTC 2017 - ancor@suse.com
+
+- Use tmux instead of screen to run the Ncurses integration test
+  in headless systems (skip the test if tmux is not available).
+  The version of screen introduced to fix bsc#1021743 was causing
+  the test to fail.
+- 3.2.7
+
+-------------------------------------------------------------------
+Thu Mar  9 15:57:00 UTC 2017 - ancor@suse.com
+
+- Display standard output and error channels in case of failure
+  running the Ncurses integration tests in a headless system.
+  Needed to debug the error produced by the fix to bsc#1021743
+>>>>>>> origin/master
 - 3.2.6
 
 -------------------------------------------------------------------
@@ -40,7 +73,6 @@ Wed Jan  4 12:36:06 UTC 2017 - jreidinger@suse.com
 - Throw exception with more detailed error specification when
   loading namespace to component system failed (bsc#932331)
 - 3.2.4
-
 
 -------------------------------------------------------------------
 Thu Dec 15 16:29:13 UTC 2016 - igonzalezsosa@suse.com

@@ -17,7 +17,7 @@
 
 
 Name:           yast2-ruby-bindings
-Version:        3.2.6
+Version:        3.2.10
 Url:            https://github.com/yast/yast-ruby-bindings
 Release:        0
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -38,16 +38,16 @@ BuildRequires:  rubygem(%{rb_default_ruby_abi}:rspec)
 Requires:       rubygem(%{rb_default_ruby_abi}:fast_gettext)
 %endif
 BuildRequires:  ruby-devel
-# replacement of y2base with its ruby implementation
-Requires:       yast2-core >= 3.2.3
-BuildRequires:  yast2-core-devel >= 3.2.3
+Requires:       yast2-core >= 3.2.2
+BuildRequires:  yast2-core-devel >= 3.2.2
 Requires:       yast2-ycp-ui-bindings       >= 2.21.9
 BuildRequires:  yast2-ycp-ui-bindings-devel >= 2.21.9
 # The test suite includes a regression test (std_streams_spec.rb) for a
 # libyui-ncurses bug fixed in 2.47.3
 BuildRequires:  libyui-ncurses >= 2.47.3
-# The mentioned test requires screen in order to be executed in headless systems
-BuildRequires:  screen
+# The mentioned test requires to check if tmux is there, because tmux is
+# needed to execute the test in headless systems
+BuildRequires:  which
 
 # only a soft dependency, the Ruby debugger is optional
 Suggests:       rubygem(%{rb_default_ruby_abi}:byebug)
