@@ -24,14 +24,14 @@ describe Yast::Y2StartHelpers do
   describe ".parse_arguments" do
     it "parses passed arguments and returns it as hash" do
       expected_output = {
-        generic_options: { help: true },
+        generic_options: {},
         client_name: "test",
         client_options: {params: ["abc"]},
         server_name: "UI",
         server_options: ["--geometry", "800x600"]
       }
 
-      arguments = ["--help", "test", "--arg", "abc", "UI", "--geometry", "800x600"]
+      arguments = ["test", "--arg", "abc", "UI", "--geometry", "800x600"]
       expect(subject.parse_arguments(arguments)).to eq expected_output
     end
 
