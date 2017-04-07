@@ -1,18 +1,18 @@
 -------------------------------------------------------------------
 Wed Mar 22 15:45:50 UTC 2017 - jreidinger@suse.com
 
-- Add new y2base as ruby script which have several advantages
+- Add new y2start as ruby script which have several advantages
   (bsc#1027181):
 -- Ruby is no longer embedded into YaST (instead we only use binary
    extensions), so there is less chance of things breaking with
    a new Ruby version
 -- show popup when signal is received and also allow YaST modules
    to handle more gracefully when signal is raised
--- better argument passing to y2base itself e.g.
-   y2base foo -S '(bar)' qt → y2base foo --arg bar qt
--- ruby infrastructure can be used directly on y2base like debugger
+-- better argument passing to y2start itself e.g.
+   y2base foo -S '(bar)' qt → y2start foo --arg bar qt
+-- ruby infrastructure can be used directly on y2start like debugger
    or profiler
--- majority of y2base functionality is covered by unit tests
+-- majority of y2start functionality is covered by unit tests
    allowing easier and less error-prone future changes
 - 3.2.10
 
@@ -46,7 +46,6 @@ Thu Mar  9 15:57:00 UTC 2017 - ancor@suse.com
 - Display standard output and error channels in case of failure
   running the Ncurses integration tests in a headless system.
   Needed to debug the error produced by the fix to bsc#1021743
->>>>>>> origin/master
 - 3.2.6
 
 -------------------------------------------------------------------
