@@ -3,4 +3,4 @@ add_subdirectory(binary)
 
 
 
-install(PROGRAMS y2base/y2base DESTINATION lib/YaST2/bin)
+install(PROGRAMS y2start/y2start DESTINATION lib/YaST2/bin)

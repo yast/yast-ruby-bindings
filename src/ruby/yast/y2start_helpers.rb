@@ -1,7 +1,7 @@
 module Yast
-  module Y2BaseHelpers
+  module Y2StartHelpers
 
-    # Parses ARGV of y2base. it returns map with keys:
+    # Parses ARGV of y2start. it returns map with keys:
     #
     # - :generic_options [Hash]
     # - :client_name [String]
@@ -22,7 +22,7 @@ module Yast
     end
 
     def self.help
-      "Usage: y2base [GenericOpts] Client [ClientOpts] Server " \
+      "Usage: y2start [GenericOpts] Client [ClientOpts] Server " \
       "[Specific ServerOpts]\n" \
       "\n" \
       "GenericOptions are:\n" \
@@ -34,11 +34,11 @@ module Yast
       "Specific ServerOptions are any options passed on unevaluated.\n" \
       "\n" \
       "Examples:\n" \
-      "y2base installation qt\n" \
-      "    Start binary y2base with intallation.ycp as client and qt as server\n" \
-      "y2base installation -a initial qt\n" \
+      "y2start installation qt\n" \
+      "    Start binary y2start with intallation.ycp as client and qt as server\n" \
+      "y2start installation -a initial qt\n" \
       "    Provide parameter initial for client installation\n" \
-      "y2base installation qt -geometry 800x600\n" \
+      "y2start installation qt -geometry 800x600\n" \
       "    Provide geometry information as specific server options\n"
     end
 
