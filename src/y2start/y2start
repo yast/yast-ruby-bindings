@@ -4,6 +4,8 @@
 # for insts-sys it will be overwritten later
 ENV["YAST_IS_RUNNING"] = "yes"
 
+require "socket"
+
 require "yast"
 require "yast/y2start_helpers"
 
@@ -38,6 +40,16 @@ end
 
 
 Yast.ui_create(args[:server_name], args[:server_options])
+# set application title bsc#1033161
+Yast.import "UI"
+# do not fail if gethostname failed
+hostname = Socket.gethostname rescue ""
+hostname = "" if hostname == "(none)"
+hostname = " @ #{hostname}" unless hostname.empty?
+
+title = "YaST2 - #{args[:client_name]}#{hostname}"
+Yast::UI.SetApplicationTitle(title)
+
 Yast::WFM.CallFunction(args[:client_name], args[:client_options][:params])
 
 0
