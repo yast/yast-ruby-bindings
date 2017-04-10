@@ -17,7 +17,7 @@
 
 
 Name:           yast2-ruby-bindings
-Version:        3.2.10
+Version:        3.2.11
 Url:            https://github.com/yast/yast-ruby-bindings
 Release:        0
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -40,8 +40,9 @@ Requires:       rubygem(%{rb_default_ruby_abi}:fast_gettext)
 BuildRequires:  ruby-devel
 Requires:       yast2-core >= 3.2.2
 BuildRequires:  yast2-core-devel >= 3.2.2
-Requires:       yast2-ycp-ui-bindings       >= 2.21.9
-BuildRequires:  yast2-ycp-ui-bindings-devel >= 2.21.9
+# UI.SetApplicationTitle
+Requires:       yast2-ycp-ui-bindings       >= 3.2.0
+BuildRequires:  yast2-ycp-ui-bindings-devel >= 3.2.0
 # The test suite includes a regression test (std_streams_spec.rb) for a
 # libyui-ncurses bug fixed in 2.47.3
 BuildRequires:  libyui-ncurses >= 2.47.3
