@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Mon Apr 10 11:50:04 UTC 2017 - jreidinger@suse.com
+
+- Set proper title for YaST2 application (bsc#1033161)
+- 3.2.11
+
+-------------------------------------------------------------------
 Wed Mar 22 15:45:50 UTC 2017 - jreidinger@suse.com
 
 - Add new y2start as ruby script which have several advantages
