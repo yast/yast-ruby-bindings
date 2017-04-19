@@ -50,6 +50,9 @@ BuildRequires:  libyui-ncurses >= 2.47.3
 # needed to execute the test in headless systems
 BuildRequires:  which
 
+# FIXME make it optional
+BuildRequires:  rubygem(%{rb_default_ruby_abi}:ruby-lint)
+
 # only a soft dependency, the Ruby debugger is optional
 Suggests:       rubygem(%{rb_default_ruby_abi}:byebug)
 
@@ -86,6 +89,52 @@ make %{?jobs:-j %jobs} VERBOSE=1
 %install
 cd build
 make install DESTDIR=$RPM_BUILD_ROOT
+
+export RLREQUIRE=yast
+export RLCONST=Yast
+export RLDIR=$RPM_BUILD_ROOT/%{_libdir}/ruby/vendor_ruby/%{rb_ver}/ruby-lint/definitions/rpms/%{name}
+mkdir -p $RLDIR
+ruby -r ruby-lint -r ruby-lint/definition_generator \
+  -I $RPM_BUILD_ROOT/%{_libdir}/ruby/vendor_ruby/%{rb_ver} \
+  -I $RPM_BUILD_ROOT/%{_libdir}/ruby/vendor_ruby/%{rb_ver}/%{rb_arch} \
+  -r $RLREQUIRE \
+  -e 'RubyLint::DefinitionGenerator.new(ENV["RLCONST"], ENV["RLDIR"]).generate'
+
+# fixup https://github.com/YorickPeterse/ruby-lint/issues/190
+sed -i -e '/define_(/d' $RLDIR/*.rb
+
+cat >> $RLDIR/yast.rb <<EOS
+# Fixup definitions created by ruby-lint-2.2.0
+yast_block = RubyLint.registry.get("Yast")
+
+RubyLint.registry.register("Yast") do |defs|
+  yast_block.call(defs)
+
+  klass = defs.lookup(:const, "Yast").lookup(:const, "Module")
+
+  # For some reason, RubyLint defines Yast::Module#publish (instance method)
+  # but in fact we need               Yast::Module.publish (class method)
+  klass.define_method('publish') do |method|
+    method.define_argument('options')
+  end
+end
+EOS
+
+# now lint yourself with the help of the definitions just created
+ruby -e '
+File.open("ruby-lint.yml", "w") do |f|
+  f.puts "presenter: emacs"
+  f.puts "requires:"
+  Dir.glob(ENV["RLDIR"] + "/*.rb").each do |r|
+    f.puts "  - #{r}"
+  end
+end
+'
+# the pipe also masks exit codes
+ruby-lint ../src/ruby | tee $RLDIR/report.log
+echo -n "Total ruby-lint reports: "
+wc -l $RLDIR/report.log
+
 cd -
 
 %check
@@ -106,5 +155,10 @@ cd -
 %{_libdir}/ruby/vendor_ruby/%{rb_ver}/yast
 %{_libdir}/ruby/vendor_ruby/%{rb_ver}/%{rb_arch}/*x.so
 %{_libdir}/ruby/vendor_ruby/%{rb_ver}/%{rb_arch}/yast
+%dir %{_libdir}/ruby/vendor_ruby/%{rb_ver}/ruby-lint
+%dir %{_libdir}/ruby/vendor_ruby/%{rb_ver}/ruby-lint/definitions
+%dir %{_libdir}/ruby/vendor_ruby/%{rb_ver}/ruby-lint/definitions/rpms
+%dir %{_libdir}/ruby/vendor_ruby/%{rb_ver}/ruby-lint/definitions/rpms/%{name}
+%{_libdir}/ruby/vendor_ruby/%{rb_ver}/ruby-lint/definitions/rpms/%{name}
 
 %changelog
