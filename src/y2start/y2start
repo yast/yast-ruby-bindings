@@ -48,7 +48,8 @@ hostname = "" if hostname == "(none)"
 hostname = " @ #{hostname}" unless hostname.empty?
 
 title = "YaST2 - #{args[:client_name]}#{hostname}"
-Yast::UI.SetApplicationTitle(title)
+# set title only if it is not CLI (bsc#1033993)
+Yast::UI.SetApplicationTitle(title) if args[:client_options][:params].empty?
 
 Yast::WFM.CallFunction(args[:client_name], args[:client_options][:params])
 
