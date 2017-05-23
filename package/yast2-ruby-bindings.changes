@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue May 23 15:14:45 UTC 2017 - jreidinger@suse.com
+
+- Set proper title for YaST2 installation (bsc#1037891)
+- 3.2.13
+
+-------------------------------------------------------------------
 Tue May  2 14:03:19 UTC 2017 - jreidinger@suse.com
 
 - fix calling YaST CLI (bsc#1033993)
