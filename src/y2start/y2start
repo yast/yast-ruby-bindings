@@ -39,6 +39,7 @@ if !Yast::WFM.ClientExists(args[:client_name])
 end
 
 
+NO_CLI_CLIENTS = ["installation", "view_anymsg"]
 Yast.ui_create(args[:server_name], args[:server_options])
 # set application title bsc#1033161
 Yast.import "UI"
@@ -50,7 +51,7 @@ hostname = " @ #{hostname}" unless hostname.empty?
 title = "YaST2 - #{args[:client_name]}#{hostname}"
 # set title only if it is not CLI (bsc#1033993)
 # modules do not have CLI arguments, except installation (bsc#1037891)
-set_title = args[:client_options][:params].empty? || args[:client_name] == "installation"
+set_title = args[:client_options][:params].empty? || NO_CLI_CLIENTS.include?(args[:client_name])
 Yast::UI.SetApplicationTitle(title) if set_title
 
 Yast::WFM.CallFunction(args[:client_name], args[:client_options][:params])
