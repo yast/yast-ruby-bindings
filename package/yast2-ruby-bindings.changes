@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Jul  4 09:50:48 UTC 2017 - jreidinger@suse.com
+
+- Set proper title also for YaST2 System Log (bsc#1046153)
+- 3.2.14
+
+-------------------------------------------------------------------
 Tue May 23 15:14:45 UTC 2017 - jreidinger@suse.com
 
 - Set proper title for YaST2 installation (bsc#1037891)
