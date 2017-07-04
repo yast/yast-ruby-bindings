@@ -11,7 +11,7 @@ require "yast/y2start_helpers"
 
 Yast::Y2StartHelpers.setup_signals
 
-File.umask(0022)
+File.umask(0o022)
 
 Yast.y2milestone("y2base called with #{ARGV.inspect}")
 
@@ -28,8 +28,8 @@ if args[:generic_options][:help]
   exit 0
 end
 
-if (args[:client_name] == "installation" &&
-    args[:client_options][:params].include?("initial"))
+if args[:client_name] == "installation" &&
+    args[:client_options][:params].include?("initial")
   ENV["YAST_IS_RUNNING"] = "instsys"
 end
 
@@ -38,8 +38,7 @@ if !Yast::WFM.ClientExists(args[:client_name])
   exit 1
 end
 
-
-NO_CLI_CLIENTS = ["installation", "view_anymsg"]
+NO_CLI_CLIENTS = ["installation", "view_anymsg"].freeze
 Yast.ui_create(args[:server_name], args[:server_options])
 # set application title bsc#1033161
 Yast.import "UI"
