@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Wed Jul 12 07:11:35 UTC 2017 - jreidinger@suse.com
+
+- replace all Fixnum and Bignum with Integer as ruby 2.4 make it
+  deprecated ( ruby2.4 will be default for TW and SLE15 so part
+  of bsc#1044312)
+- 3.3.0
+
+-------------------------------------------------------------------
 Tue Jul  4 09:50:48 UTC 2017 - jreidinger@suse.com
 
 - Set proper title also for YaST2 System Log (bsc#1046153)

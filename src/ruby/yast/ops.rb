@@ -18,7 +18,7 @@ module Yast
       "boolean"   => [::TrueClass, ::FalseClass],
       "string"    => ::String,
       "symbol"    => ::Symbol,
-      "integer"   => [::Fixnum, ::Bignum],
+      "integer"   => ::Integer,
       "float"     => ::Float,
       "list"      => ::Array,
       "map"       => ::Hash,
@@ -120,7 +120,7 @@ END
       indexes.each do |i|
         case res
         when ::Array, Yast::Term
-          if i.is_a? Fixnum
+          if i.is_a?(::Integer)
             if (0..res.size - 1).cover? i
               res = res[i]
             else
@@ -196,7 +196,7 @@ END
       indexes.each do |i|
         case res
         when ::Array, Yast::Term
-          if !i.is_a?(Fixnum)
+          if !i.is_a?(::Integer)
             Yast.y2warning OUTER_LOOP_FRAME, "Passed #{i.inspect} as index key for array."
             return
           end
@@ -492,8 +492,7 @@ END
         @localized = localized
       end
       # ordered classes from low priority to high
-      # Only tricky part is Fixnum/Bignum, which is in fact same, so it has special handling in code
-      CLASS_ORDER = [::NilClass, ::FalseClass, ::TrueClass, ::Fixnum, ::Bignum, ::Float,
+      CLASS_ORDER = [::NilClass, ::FalseClass, ::TrueClass, ::Integer, ::Float,
                      ::String, Yast::Path, ::Symbol, ::Array, Yast::Term, ::Hash].freeze
       def <=>(other)
         if @value.class == other.class
@@ -512,7 +511,11 @@ END
         else
           return @value <=> other if @value.is_a?(::Numeric) && other.is_a?(::Numeric)
 
-          CLASS_ORDER.index(@value.class) <=> CLASS_ORDER.index(other.class)
+          # workaround for older ruby versions which have value.is_a?(Integer) but value.class => Fixnum
+          # No longer problem with ruby 2.4
+          order = CLASS_ORDER.index(@value.class) || CLASS_ORDER.index(::Integer)
+          other_order = CLASS_ORDER.index(other.class) || CLASS_ORDER.index(::Integer)
+          order <=> other_order
         end
       end
     end

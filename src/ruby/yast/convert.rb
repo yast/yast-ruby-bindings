@@ -66,7 +66,7 @@ END
 
       return object if from == "any" && allowed_type(object, to)
       if to == "float"
-        return nil unless (object.is_a? Fixnum) || (object.is_a? Bignum)
+        return nil unless object.is_a?(::Integer)
         return object.to_f
       elsif to == "integer"
         return nil unless object.is_a? Float
