@@ -511,7 +511,11 @@ END
         else
           return @value <=> other if @value.is_a?(::Numeric) && other.is_a?(::Numeric)
 
-          CLASS_ORDER.index(@value.class) <=> CLASS_ORDER.index(other.class)
+          # workaround for older ruby versions which have value.is_a?(Integer) but value.class => Fixnum
+          # No longer problem with ruby 2.4
+          order = CLASS_ORDER.index(@value.class) || CLASS_ORDER.index(::Integer)
+          other_order = CLASS_ORDER.index(other.class) || CLASS_ORDER.index(::Integer)
+          order <=> other_order
         end
       end
     end
