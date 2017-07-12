@@ -16,7 +16,7 @@ module Yast
       #   the debugger! Use only in a trusted network as this is actually
       #   a backdoor to the system! For secure connection use SSH and start
       #   the debugger locally after connecting via SSH.
-      # @param [Fixnum] port the port number where the debugger server will
+      # @param [Integer] port the port number where the debugger server will
       #   listen to
       # @param [Boolean] start_client autostart the debugger client
       #   (ignored in remote debugging)
@@ -124,7 +124,7 @@ module Yast
 
       # starts the debugger server and waits for a client connection
       # @param [Boolean] remote if set to true the server is accesible from network
-      # @param [Fixnum] port the port number used by the server
+      # @param [Integer] port the port number used by the server
       # @param [Boolean] delay add extra delay after starting the server
       def start_server(remote, port, delay: false)
         Byebug.wait_connection = true
@@ -136,7 +136,7 @@ module Yast
       end
 
       # starts a debugger session in xterm
-      # @param [Fixnum] port the port number to connect to
+      # @param [Integer] port the port number to connect to
       def start_gui_session(port)
         job = fork do
           # wait until the main thread starts the debugger and opens the port
@@ -158,7 +158,7 @@ module Yast
       # the running debugger
       # @param [Boolean] remote boolean flag indicating whether the debugger
       #   can be accessed remotely
-      # @param [Fixnum] port the port number used by the debugger
+      # @param [Integer] port the port number used by the debugger
       # @return [String] text
       def debugger_message(remote, port)
         if remote
@@ -183,7 +183,7 @@ module Yast
       # construct a debugger command displayed to user in a popup
       # @param [String,nil] host the machine host name or IP address, nil if
       #   the debugger can be accessed only locally
-      # @param [Fixnum] port the port number used by the debugger
+      # @param [Integer] port the port number used by the debugger
       # @return [String] byebug command label
       def debugger_cmd(host, port)
         host_param = host ? "#{host}:" : ""
@@ -191,7 +191,7 @@ module Yast
       end
 
       # is the target port open?
-      # @param [Fixnum] port the port number
+      # @param [Integer] port the port number
       # @return [Boolean] true if the port is open, false otherwise
       def port_open?(port)
         require "socket"

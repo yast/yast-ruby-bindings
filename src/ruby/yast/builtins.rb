@@ -325,7 +325,7 @@ module Yast
         end
         object.scanf("%d").first
       # use full qualified ::Float to avoid clash with Yast::Builtins::Float
-      when ::Float, ::Fixnum, ::Bignum
+      when ::Float, ::Integer
         object.to_i
       end
       # else nil
@@ -653,7 +653,7 @@ module Yast
 
     # @private used only internal for frame shifting
     def self.shift_frame_number(args)
-      if args.first.is_a? ::Fixnum
+      if args.first.is_a? ::Integer
         args[0] += 1 if args[0] >= 0
       else
         args.unshift 1
@@ -897,7 +897,7 @@ module Yast
     # Converts an integer to a hexadecimal string.
     # - tohexstring(<int>)
     # - tohexstring(<int>, <int>width)
-    # @deprecated use {::Fixnum#to_s} with base 16 instead but note that there is slight differences
+    # @deprecated use {::Integer#to_s} with base 16 instead but note that there is slight differences
     def self.tohexstring(int, width = 0)
       return nil if int.nil? || width.nil?
 
@@ -950,8 +950,7 @@ module Yast
       when ::NilClass then "nil"
       when ::TrueClass then "true"
       when ::FalseClass then "false"
-      when ::Fixnum,
-           ::Bignum,
+      when ::Integer,
            ::Float,
            Yast::Term,
            Yast::Path,
