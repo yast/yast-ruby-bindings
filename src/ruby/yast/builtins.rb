@@ -929,7 +929,9 @@ module Yast
     # @deprecated use {::String#downcase} instead
     def self.tolower(string)
       return nil if string.nil?
-      string.downcase
+      # cannot use String#downcase as it from ruby 2.4 convert also non-ascii so keep backward
+      # compatible
+      string.tr("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")
     end
 
     # Converts a value to a string in ycp.
@@ -986,7 +988,9 @@ module Yast
     # @deprecated use {::String#upcase} instead
     def self.toupper(string)
       return nil if string.nil?
-      string.upcase
+      # cannot use String#upcase as it from ruby 2.4 convert also non-ascii so keep backward
+      # compatible
+      string.tr("abcdefghijklmnopqrstuvwxyz", "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     end
 
     ###########################################################

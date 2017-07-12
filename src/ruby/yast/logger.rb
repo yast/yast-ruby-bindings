@@ -7,7 +7,7 @@ module Yast
     caller_frame = 1
     backtrace = false
 
-    if args.first.is_a?(Integer)
+    if args.first.is_a?(::Integer)
       if args.first < 0
         backtrace = true
         args.shift

@@ -1,4 +1,13 @@
 -------------------------------------------------------------------
+Wed Jul 12 09:33:56 UTC 2017 - jreidinger@suse.com
+
+- Always use ::Integer to avoid collision with Yast::Integer
+  (bsc#1044312)
+- make Builtins.toupper/tolower strictly backward compatible
+  in ruby 2.4 (bsc#1044312)
+- 3.3.1
+
+-------------------------------------------------------------------
 Wed Jul 12 07:11:35 UTC 2017 - jreidinger@suse.com
 
 - replace all Fixnum and Bignum with Integer as ruby 2.4 make it
