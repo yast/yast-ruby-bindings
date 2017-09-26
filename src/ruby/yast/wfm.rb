@@ -243,17 +243,17 @@ module Yast
       Yast.import "Report"
       Report.Error(msg)
     rescue Exception => e
-      Builtins.y2internal("Error reporting failed with '%1' and backtrace %2",
+      Builtins.y2internal("Error reporting failed with '%1'.\n Backtrace:\n%2",
         e.message,
-        e.backtrace)
+        e.backtrace.join("\n"))
     end
 
     # Handles a generic Exception
     private_class_method def self.handle_exception(e, client)
-      Builtins.y2error("Client call failed with '%1' (%2) and backtrace %3",
+      Builtins.y2error("Client call failed with '%1' (%2).\nBacktrace:\n%3",
         e.message,
         e.class,
-        e.backtrace)
+        e.backtrace.join("\n"))
 
       msg = internal_error_msg(e)
 
@@ -275,9 +275,9 @@ module Yast
         Report.Error(msg)
       end
     rescue Exception => e
-      Builtins.y2internal("Error reporting failed with '%1' and backtrace %2",
+      Builtins.y2internal("Error reporting failed with '%1'.Backtrace:\n%2",
         e.message,
-        e.backtrace)
+        e.backtrace.join("\n"))
     end
 
     private_class_method def self.check_client_result_type!(result)

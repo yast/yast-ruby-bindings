@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Tue Sep 26 13:20:14 UTC 2017 - jreidinger@suse.com
+
+- Nicer backtrace output in log for internal errors (help for
+  debuggging bugs like bsc#1044312)
+- 4.0.0
+
+-------------------------------------------------------------------
 Wed Jul 12 09:33:56 UTC 2017 - jreidinger@suse.com
 
 - Always use ::Integer to avoid collision with Yast::Integer
