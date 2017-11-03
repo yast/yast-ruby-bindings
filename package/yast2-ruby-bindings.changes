@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Fri Nov  3 14:26:14 UTC 2017 - mvidner@suse.com
+
+- Better backtrace for 'eval' (bsc#1066290)
+- 4.0.1
+
+-------------------------------------------------------------------
 Tue Sep 26 13:20:14 UTC 2017 - jreidinger@suse.com
 
 - Nicer backtrace output in log for internal errors (help for
