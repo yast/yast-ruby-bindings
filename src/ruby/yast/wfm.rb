@@ -250,7 +250,8 @@ module Yast
 
     # Handles a generic Exception
     private_class_method def self.handle_exception(e, client)
-      Builtins.y2error("Client call failed with '%1' (%2).\nBacktrace:\n%3",
+      Builtins.y2error("Client %1 failed with '%2' (%3).\nBacktrace:\n%4",
+        client,
         e.message,
         e.class,
         e.backtrace.join("\n"))

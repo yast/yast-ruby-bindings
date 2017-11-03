@@ -404,9 +404,11 @@ END
     end
 
     TYPES_MAP.keys.each do |type|
-      class_eval "def self.is_#{type}? (object)
-        Ops.is(object, \"#{type}\")
-      end"
+      class_eval <<END, __FILE__, __LINE__ + 1
+        def self.is_#{type}?(object)
+          Ops.is(object, "#{type}")
+        end
+END
     end
 
     # Checks if object is given YCP type. There is also shorfcuts for most of types in

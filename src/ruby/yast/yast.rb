@@ -191,14 +191,14 @@ module Yast
     symbols(mname).each do |sname, stype|
       next if sname.empty?
       if stype == :function
-        m.module_eval <<-"END"
+        m.module_eval <<-"END", __FILE__, __LINE__ + 1
           def self.#{sname}(*args)
             caller(1,1).first.match BACKTRACE_REGEXP
             return Yast::call_yast_function("#{mname}", :#{sname}, $1, $2.to_i, *args)
           end
         END
       elsif stype == :variable
-        m.module_eval <<-"END"
+        m.module_eval <<-"END", __FILE__, __LINE__ + 1
           def self.#{sname}
             return Yast::call_yast_function("#{mname}", :#{sname})
           end

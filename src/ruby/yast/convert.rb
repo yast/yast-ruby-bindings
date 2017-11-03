@@ -37,7 +37,7 @@ module Yast
     # @!method  self.to_locale(        object )
     #   @return        [String, nil]  *object*, or `nil` if it is not a String
     Ops::SHORTCUT_TYPES.each do |type|
-      eval <<END
+      eval <<END, binding, __FILE__, __LINE__ + 1
         def self.to_#{type}(object)
           convert object, :from => "any", :to => "#{type}"
         end
