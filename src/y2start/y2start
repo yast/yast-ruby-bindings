@@ -23,6 +23,17 @@ rescue RuntimeError => e
   exit 1
 end
 
+if ENV["COVERAGE"]
+  begin
+    require "simplecov"
+    SimpleCov.start
+    # use unique test suite to avoid overwriting the other runs
+    SimpleCov.command_name "test:integration:#{args[:client_name]}:#{$$}"
+  rescue LoadError
+    $stderr.puts "Missing simplecov gem, cannot report code coverage"
+  end
+end
+
 if args[:generic_options][:help]
   $stdout.puts Yast::Y2StartHelpers.help
   exit 0
