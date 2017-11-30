@@ -201,7 +201,15 @@ describe "Yast::OpsTest" do
       expect(Yast::Ops.get_integer(list, 0, "n")).to eq(nil)
     end
 
-    it "works with block for default" do
+    it "returns nil for index out of range" do
+      expect(Yast::Ops.get_string(list, 5)).to eq(nil)
+    end
+
+    it "returns the specified default" do
+      expect(Yast::Ops.get_string(list, 5, "c")).to eq("c")
+    end
+
+    it "returns the block-specified default" do
       expect(Yast::Ops.get_string(list, 5){"n"}).to eq("n")
     end
 
