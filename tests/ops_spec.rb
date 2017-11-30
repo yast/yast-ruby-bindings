@@ -201,6 +201,10 @@ describe "Yast::OpsTest" do
       expect(Yast::Ops.get_integer(list, 0, "n")).to eq(nil)
     end
 
+    it "works with block for default" do
+      expect(Yast::Ops.get_string(list, 5){"n"}).to eq("n")
+    end
+
     it "warns when the container is nil" do
       any_frame = kind_of(Integer)
       expect(Yast).to receive(:y2milestone).with(any_frame, /called on nil/)
