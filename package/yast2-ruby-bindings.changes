@@ -1,7 +1,14 @@
 -------------------------------------------------------------------
-Fri Nov  3 14:26:14 UTC 2017 - mvidner@suse.com
+Fri Nov 24 14:26:14 UTC 2017 - mvidner@suse.com
 
-- Better backtrace for 'eval' (bsc#1066290)
+- Better backtrace for dynamically defined methods (bsc#1066290)
+- 4.0.2
+
+-------------------------------------------------------------------
+Thu Nov 23 09:45:04 UTC 2017 - lslezak@suse.cz
+
+- Hardcode the Ruby version in the y2start script to always use
+  the Ruby version used at the build time (bsc#1068863)
 - 4.0.1
 
 -------------------------------------------------------------------

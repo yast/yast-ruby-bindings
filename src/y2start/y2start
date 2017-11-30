@@ -1,4 +1,6 @@
 #! /usr/bin/ruby
+# Note: The ruby interpreter path above is replaced at the installation
+# to use a hardcoded versioned path.
 
 # set env as first part, otherwise dummy UI will be created.
 # for insts-sys it will be overwritten later
