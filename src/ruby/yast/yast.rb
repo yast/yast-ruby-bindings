@@ -191,21 +191,17 @@ module Yast
     symbols(mname).each do |sname, stype|
       next if sname.empty?
       if stype == :function
-        m.module_eval <<-"END"
-          def self.#{sname}(*args)
-            caller(1,1).first.match BACKTRACE_REGEXP
-            return Yast::call_yast_function("#{mname}", :#{sname}, $1, $2.to_i, *args)
-          end
-        END
+        m.define_singleton_method(sname) do |*args|
+          caller(1,1).first.match BACKTRACE_REGEXP
+          next Yast::call_yast_function(mname, :"#{sname}", $1, $2.to_i, *args)
+        end
       elsif stype == :variable
-        m.module_eval <<-"END"
-          def self.#{sname}
-            return Yast::call_yast_function("#{mname}", :#{sname})
-          end
-          def self.#{sname}= (value)
-            return Yast::call_yast_function("#{mname}", :#{sname}, value)
-          end
-        END
+        m.define_singleton_method(sname) do
+          Yast::call_yast_function(mname, :"#{sname}")
+        end
+        m.define_method("#{sname}=") do |value|
+          Yast::call_yast_function(mname, :"#{sname}", value)
+        end
       end
     end
 

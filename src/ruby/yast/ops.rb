@@ -66,11 +66,9 @@ module Yast
     # @!method                     self.get_locale(       obj, idx, def )
     #   @return [String, nil]   {Convert.to_locale}({get}(obj, idx, def))
     Ops::SHORTCUT_TYPES.each do |type|
-      eval <<END, binding, __FILE__, __LINE__ + 1
-        def self.get_#{type}(object, indexes, default=nil, &block)
-          Yast::Convert.to_#{type} get(object, indexes, default, 1, &block)
-        end
-END
+      define_singleton_method("get_#{type}") do |object, indexes, default=nil, &block|
+        Yast::Convert.public_send("to_#{type}", get(object, indexes, default, 1, &block))
+      end
     end
 
     # To log the caller frame we need to skip 3 frames as 1 is method itself
@@ -404,17 +402,17 @@ END
     end
 
     TYPES_MAP.keys.each do |type|
-      class_eval "def self.is_#{type}? (object)
-        Ops.is(object, \"#{type}\")
-      end"
+      define_singleton_method("is_#{type}?") do |object|
+        Ops.is(object, type)
+      end
     end
 
     # Checks if object is given YCP type. There is also shorfcuts for most of types in
     # format is_<type>
     def self.is(object, type)
       type = "function" if type =~ /\(.*\)/ # reference to function
-      type.gsub!(/<.*>/, "")
-      type.gsub!(/\s+/, "")
+      type = type.gsub(/<.*>/, "")
+      type = type.gsub(/\s+/, "")
       classes = TYPES_MAP[type]
       raise "Invalid type to detect in is '#{type}'" unless classes
       classes = [classes] unless classes.is_a? ::Array

@@ -37,11 +37,9 @@ module Yast
     # @!method  self.to_locale(        object )
     #   @return        [String, nil]  *object*, or `nil` if it is not a String
     Ops::SHORTCUT_TYPES.each do |type|
-      eval <<END
-        def self.to_#{type}(object)
-          convert object, :from => "any", :to => "#{type}"
-        end
-END
+      define_singleton_method("to_#{type}") do |object|
+        convert object, :from => "any", :to => type
+      end
     end
 
     # Converts object from given type to target one.

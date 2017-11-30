@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Fri Nov 24 14:26:14 UTC 2017 - mvidner@suse.com
+
+- Better backtrace for dynamically defined methods (bsc#1066290)
+- 4.0.2
+
+-------------------------------------------------------------------
 Thu Nov 23 09:45:04 UTC 2017 - lslezak@suse.cz
 
 - Hardcode the Ruby version in the y2start script to always use
