@@ -38,7 +38,7 @@ module Yast
     #   @return        [String, nil]  *object*, or `nil` if it is not a String
     Ops::SHORTCUT_TYPES.each do |type|
       define_singleton_method("to_#{type}") do |object|
-        convert object, :from => "any", :to => "#{type}"
+        convert object, :from => "any", :to => type
       end
     end
 
