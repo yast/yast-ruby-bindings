@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Dec  5 15:57:34 UTC 2017 - jreidinger@suse.com
+
+- Set proper title also for YaST2 Firstboot (bsc#1070583)
+- 3.2.15
+
+-------------------------------------------------------------------
 Tue Jul  4 09:50:48 UTC 2017 - jreidinger@suse.com
 
 - Set proper title also for YaST2 System Log (bsc#1046153)
