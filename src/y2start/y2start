@@ -38,7 +38,7 @@ if !Yast::WFM.ClientExists(args[:client_name])
   exit 1
 end
 
-NO_CLI_CLIENTS = ["installation", "view_anymsg"].freeze
+NO_CLI_CLIENTS = ["installation", "view_anymsg", "firstboot"].freeze
 Yast.ui_create(args[:server_name], args[:server_options])
 # set application title bsc#1033161
 Yast.import "UI"
