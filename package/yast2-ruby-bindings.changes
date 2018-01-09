@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Jan  9 14:41:33 UTC 2018 - jreidinger@suse.com
+
+- Set proper title also for YaST2 scc (bsc#1075164)
+- 4.0.4
+
+-------------------------------------------------------------------
 Tue Dec  5 15:57:34 UTC 2017 - jreidinger@suse.com
 
 - Set proper title also for YaST2 Firstboot (bsc#1070583)
