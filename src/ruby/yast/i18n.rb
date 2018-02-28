@@ -1,6 +1,11 @@
 require "fast_gettext"
 require "logger"
 
+# just to make the y2makepot script happy
+'
+textdomain "example"
+'
+
 module Yast
   # Provides translation wrapper.
   module I18n
