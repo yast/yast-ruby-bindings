@@ -181,3 +181,8 @@ module Yast
     end
   end
 end
+
+# just to make the y2makepot script happy
+=begin
+textdomain "example"
+=end
