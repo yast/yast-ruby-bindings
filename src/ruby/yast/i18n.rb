@@ -43,7 +43,11 @@ module Yast
     # translates given string
     def _(str)
       # no textdomain configured yet
-      return str unless @my_textdomain
+      if !@my_textdomain
+        Yast.y2warning("No textdomain configured, cannot translate #{str.inspect}")
+        Yast.y2warning("Called from: #{::Kernel.caller(1).first}")
+        return str
+      end
 
       found = true
       # Switching textdomain clears gettext caches so avoid it if possible.
@@ -99,7 +103,12 @@ module Yast
     # @param (String) plural text for translators for bigger value
     def n_(singular, plural, num)
       # no textdomain configured yet
-      return fallback_n_(singular, plural, num) unless @my_textdomain
+      if !@my_textdomain
+        # it's enough to log just the singular form
+        Yast.y2warning("No textdomain configured, cannot translate text #{singular.inspect}")
+        Yast.y2warning("Called from: #{::Kernel.caller(1).first}")
+        return fallback_n_(singular, plural, num)
+      end
 
       # Switching textdomain clears gettext caches so avoid it if possible.
       # difference between _ and n_ is hat we need special cache for plural forms

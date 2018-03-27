@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Tue Mar 27 12:52:27 UTC 2018 - lslezak@suse.cz
+
+- Log a warning if no text domain is configured for translations,
+  this helps with debugging (improved as a part of bsc#1081466)
+- 4.0.5
+
+-------------------------------------------------------------------
 Tue Jan  9 14:41:33 UTC 2018 - jreidinger@suse.com
 
 - Set proper title also for YaST2 scc (bsc#1075164)
