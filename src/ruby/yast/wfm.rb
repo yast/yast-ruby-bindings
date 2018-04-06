@@ -281,6 +281,17 @@ module Yast
         e.backtrace.join("\n"))
     end
 
+    # Handles exception to abort the process
+    #
+    # In some cases, user can request to directly abort the process (e.g., when
+    # it is not possible to acquire a lock). In that situations, the general
+    # exception handler should be avoid to not bother the user.
+    #
+    # @param e [Yast::AbortException]
+    private_class_method def self.handle_abort_exception(e)
+      log.info "To abort the process was requested: #{e.class}: #{e.message}"
+    end
+
     private_class_method def self.check_client_result_type!(result)
       allowed_types = Ops::TYPES_MAP.values.flatten
       allowed_types.delete(::Object) # remove generic type for any
@@ -309,6 +320,10 @@ module Yast
       rescue SignalException => e
         handle_signal_exception(e)
         exit(16)
+      rescue AbortException => e
+        # Abort was requested
+        handle_abort_exception(e, client)
+        exit
       rescue Exception => e
         handle_exception(e, client)
         false
