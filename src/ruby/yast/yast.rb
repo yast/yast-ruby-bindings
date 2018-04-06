@@ -7,6 +7,14 @@ module Yast
   class YReference; end
   class Path; end
 
+  # Custom exception class to indicate the process should abort
+  # without any more user interaction.
+  #
+  # It avoids to show the dialog to handle a general exception
+  # with options as to launch a debugger.
+  class AbortException < RuntimeError
+  end
+
   # @private used to extract place from backtrace
   BACKTRACE_REGEXP = /^(.*):(\d+):in `.*'$/
 
