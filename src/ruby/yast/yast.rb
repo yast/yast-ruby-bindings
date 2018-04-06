@@ -11,7 +11,7 @@ module Yast
   # without any more user interaction.
   #
   # It avoids to show the dialog to handle a general exception
-  # with options as to lauch a debugger.
+  # with options as to launch a debugger.
   class AbortException < RuntimeError
   end
 

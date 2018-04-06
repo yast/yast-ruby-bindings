@@ -285,11 +285,12 @@ module Yast
     #
     # In some cases, user can request to directly abort the process (e.g., when
     # it is not possible to acquire a lock). In that situations, the general
-    # exception handler should be avoid to not bother the user.
+    # exception handler should be avoided to not bother the user.
     #
     # @param e [Yast::AbortException]
-    private_class_method def self.handle_abort_exception(e)
-      log.info "To abort the process was requested: #{e.class}: #{e.message}"
+    # @param client [String]
+    private_class_method def self.handle_abort_exception(e, client)
+      log.info "To abort the process was requested from client #{client}: #{e.class}: #{e.message}"
     end
 
     private_class_method def self.check_client_result_type!(result)
