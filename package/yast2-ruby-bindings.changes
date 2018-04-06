@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Fri Apr  6 15:46:50 UTC 2018 - jlopez@suse.com
+
+- Allow to directly abort the process (needed for fate#318196).
+- 4.0.6
+
+-------------------------------------------------------------------
 Tue Mar 27 12:52:27 UTC 2018 - lslezak@suse.cz
 
 - Log a warning if no text domain is configured for translations,
