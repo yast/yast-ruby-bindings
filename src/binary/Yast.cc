@@ -399,7 +399,8 @@ yast_y2_logger( int argc, VALUE *argv, VALUE self )
   {
     Check_Type(argv[i], T_STRING);
   }
-  y2_logger((loglevel_t)FIX2INT(argv[0]),RSTRING_PTR(argv[1]),RSTRING_PTR(argv[2]),FIX2INT(argv[3]),"",RSTRING_PTR(argv[5]));
+  y2_logger((loglevel_t)FIX2INT(argv[0]), RSTRING_PTR(argv[1]), RSTRING_PTR(argv[2]),
+    FIX2INT(argv[3]), RSTRING_PTR(argv[4]), RSTRING_PTR(argv[5]));
   return Qnil;
 }
 
