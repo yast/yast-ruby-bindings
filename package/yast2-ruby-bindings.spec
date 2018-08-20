@@ -62,7 +62,7 @@ BuildRequires: rubygem(yast-rake-ci)
 
 Requires:       ruby
 Summary:        Ruby bindings for the YaST platform
-License:        GPL-2.0
+License:        GPL-2.0-only
 Group:          System/YaST
 
 %description
