@@ -687,8 +687,9 @@ describe Yast::Builtins do
         ENV["LC_ALL"] = old_lc
       end
 
+      # glibc changed the translations (see bsc #1107953) so just match both
       it "returns the localized formatted time" do
-        expect(Yast::Builtins.strftime(time, format)).to eq "\u00FAnor - 29 - 12:13:14"
+        expect(Yast::Builtins.strftime(time, format)).to match "(\u00FAnor|\u00FAnora) - 29 - 12:13:14"
       end
     end
   end
