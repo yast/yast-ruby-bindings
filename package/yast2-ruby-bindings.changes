@@ -3,7 +3,7 @@ Tue Oct 23 09:52:53 UTC 2018 - jreidinger@suse.com
 
 - Fix crash caused by reading external files in ASCII encoding
   (bsc#1111367)
-- 3.3.0
+- 3.2.16
 
 -------------------------------------------------------------------
 Tue Dec  5 15:57:34 UTC 2017 - jreidinger@suse.com
