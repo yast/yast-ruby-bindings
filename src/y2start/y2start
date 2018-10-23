@@ -1,4 +1,4 @@
-#! /usr/bin/ruby
+#! /usr/bin/ruby --encoding=utf-8
 # Note: The ruby interpreter path above is replaced at the installation
 # to use a hardcoded versioned path.
 
