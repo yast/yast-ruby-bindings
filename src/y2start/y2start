@@ -1,4 +1,4 @@
-#! /usr/bin/ruby
+#! /usr/bin/ruby --encoding=utf-8
 
 # set env as first part, otherwise dummy UI will be created.
 # for insts-sys it will be overwritten later
