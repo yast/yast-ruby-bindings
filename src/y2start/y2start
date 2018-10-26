@@ -55,4 +55,7 @@ title = "YaST2 - #{args[:client_name]}#{hostname}"
 set_title = args[:client_options][:params].empty? || NO_CLI_CLIENTS.include?(args[:client_name])
 Yast::UI.SetApplicationTitle(title) if set_title
 
-Yast::WFM.CallFunction(args[:client_name], args[:client_options][:params])
+ret = Yast::WFM.CallFunction(args[:client_name], args[:client_options][:params])
+if ret == false
+  exit 16
+end
