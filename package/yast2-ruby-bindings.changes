@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Tue Dec 18 15:30:14 UTC 2018 - jlopez@suse.com
+
+- Configure $PATH environment variable to execute external commands
+  only from safe paths (part of bsc#1118291).
+- 4.1.1
+
+-------------------------------------------------------------------
 Tue Oct 23 09:52:53 UTC 2018 - jreidinger@suse.com
 
 - Fix encoding-related problems by assuming that file contents is
