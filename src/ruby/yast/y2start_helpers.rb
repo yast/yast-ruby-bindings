@@ -1,5 +1,17 @@
 module Yast
   module Y2StartHelpers
+    # Configure global environment for YaST
+    #
+    # Currently it only sets values for $PATH.
+    #
+    # By configuring $PATH, it ensures that correct external programs are executed when
+    # relative paths are given, so possible CVEs are avoided when running YaST.
+    #
+    # Note that forked processes will inherit the environment configuration, for example
+    # when executing commands via SCR or Cheetah.
+    def self.config_env
+      ENV["PATH"] = "/sbin:/usr/sbin:/usr/bin:/bin"
+    end
 
     # Parses ARGV of y2start. it returns map with keys:
     #
