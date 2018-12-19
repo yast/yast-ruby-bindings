@@ -13,6 +13,10 @@ require "yast/y2start_helpers"
 
 Yast::Y2StartHelpers.setup_signals
 
+# Configure global YaST environment. For example, it sets $PATH to ensure that
+# external commands are only executed from safe paths.
+Yast::Y2StartHelpers.config_env
+
 File.umask(0o022)
 
 Yast.y2milestone("y2base called with #{ARGV.inspect}")
