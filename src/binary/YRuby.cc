@@ -203,7 +203,7 @@ YCPValue YRuby::callInner (string module_name, string function,
     rb_gc_register_address(values + i + 3);
   }
 
-  y2debug( "Will call function '%s' in module '%s' with '%d' arguments", function.c_str(), module_name.c_str(), size-1);
+  y2debug( "Will call function '%s' in module '%s' with %d arguments", function.c_str(), module_name.c_str(), size);
 
   int error;
   VALUE result = rb_protect(protected_call, (VALUE)values, &error);
