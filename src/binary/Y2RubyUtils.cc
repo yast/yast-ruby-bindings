@@ -12,18 +12,28 @@
 
 using namespace std;
 
+pair<string, string> exception_message_and_backtrace()
+{
+  VALUE exception = rb_errinfo(); /* get last exception */
+
+  VALUE reason = rb_funcall(exception, rb_intern("message"), 0 );
+  string reason_s(StringValuePtr(reason));
+
+  VALUE trace = rb_funcall(exception, rb_intern("backtrace"), 0 );
+  VALUE trace_to_s = rb_funcall(trace, rb_intern("join"), 1,  rb_str_new_cstr("\n"));
+  string trace_s(StringValuePtr(trace_to_s));
+
+  return make_pair(reason_s, trace_s);
+}
+
 bool y2_require(const char *str)
 {
   int error;
   rb_protect( (VALUE (*)(VALUE))rb_require, (VALUE) str, &error);
   if (error)
   {
-    VALUE exception = rb_errinfo(); /* get last exception */
-    // do not clear exception yet, as it can be also processed later
-    VALUE reason = rb_funcall(exception, rb_intern("message"), 0 );
-    VALUE trace = rb_funcall(exception, rb_intern("backtrace"), 0 );
-    VALUE backtrace = RARRAY_LEN(trace)>0 ? rb_ary_entry(trace, 0) : rb_str_new2("Unknown");
-    y2error("cannot require yast:%s at %s", StringValuePtr(reason),StringValuePtr(backtrace));
+    pair<string, string> exc = exception_message_and_backtrace();
+    y2error("cannot require yast:%s at %s", exc.first.c_str(), exc.second.c_str());
     return false;
   }
 

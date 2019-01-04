@@ -32,6 +32,11 @@ as published by the Free Software Foundation; either version
 VALUE y2ruby_nested_const_get(const std::string &name);
 
 /**
+ * call rb_errinfo and return its .message and .backtrace.join("\n")
+ */
+std::pair<std::string, std::string> exception_message_and_backtrace();
+
+/**
  * safe variant of rb_require: if an exception happens then log it
  */
 bool y2_require(const char *str);

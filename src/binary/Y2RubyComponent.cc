@@ -27,6 +27,8 @@ as published by the Free Software Foundation; either version
 #include "Y2RubyComponent.h"
 #include "YRuby.h"
 #include "YRubyNamespace.h"
+#include "Y2RubyUtils.h"
+
 using std::string;
 using std::map;
 
@@ -88,18 +90,13 @@ Y2Namespace *Y2RubyComponent::import (const char* name)
     }
     else // report more verbose why require failed
     {
-      VALUE exception = rb_errinfo(); /* get last exception */
+      pair<string, string> exc = exception_message_and_backtrace();
       rb_set_errinfo(Qnil); // clear exception, so we can recover from it
-      VALUE reason = rb_funcall(exception, rb_intern("message"), 0 );
-      VALUE trace = rb_funcall(exception, rb_intern("backtrace"), 0 );
-      VALUE trace_to_s = rb_funcall(trace, rb_intern("join"), 1,  rb_str_new_cstr("\n"));
-      string reason_s(StringValuePtr(reason));
-      string trace_s(StringValuePtr(trace_to_s));
 
       y2error("Reporting runtime error for import of module '%s' message '%s'",
-        name, reason_s.c_str());
+        name, exc.first.c_str());
 
-      Y2Namespace * res = new Y2ErrorNamespace (reason_s, trace_s);
+      Y2Namespace * res = new Y2ErrorNamespace (exc.first, exc.second);
       namespaces[name] = res;
       return res;
     }
