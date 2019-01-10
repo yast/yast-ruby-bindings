@@ -220,6 +220,14 @@ YCPValue YRuby::callInner (string module_name, string function,
       return YCPString(reason);
     }
     set_last_exception(module, reason);
+
+    VALUE exhash = rb_hash_new();
+    rb_hash_aset(exhash, rb_str_new2("message"), rb_str_new2(exc.first.c_str()));
+    rb_hash_aset(exhash, rb_str_new2("backtrace"), rb_str_new2(exc.second.c_str()));
+    VALUE yast_module = y2ruby_nested_const_get("Yast");
+    rb_funcall(yast_module, rb_intern("call_yast_function"), 3,
+               rb_str_new2("Y2Exception"), rb_str_new2("exception"), exhash);
+
     return YCPVoid();
   }
   else
