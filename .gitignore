@@ -2,3 +2,4 @@
 /build
 /.yardoc
 /package/*.tar.*
+*.pot
