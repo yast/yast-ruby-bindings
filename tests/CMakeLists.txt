@@ -11,3 +11,4 @@ foreach(test ${Specs})
 endforeach(test)
 
 ADD_TEST("integration"  ruby ${CMAKE_CURRENT_SOURCE_DIR}/integration/run.rb)
+ADD_TEST("translations" rspec --format doc ${CMAKE_CURRENT_SOURCE_DIR}/integration/translations_spec.rb)
