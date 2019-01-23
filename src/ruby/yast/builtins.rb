@@ -784,7 +784,7 @@ module Yast
         @textdomain_mapping[domain.dup] = dirname.dup
       end
       FastGettext.text_domain = domain
-      return FastGettext::Translation._(text)
+      return Translation._(text)
     ensure
       FastGettext.text_domain = old_text_domain
     end

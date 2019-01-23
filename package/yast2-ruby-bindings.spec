@@ -17,7 +17,7 @@
 
 
 Name:           yast2-ruby-bindings
-Version:        4.1.1
+Version:        4.1.2
 Url:            https://github.com/yast/yast-ruby-bindings
 Release:        0
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -29,13 +29,13 @@ BuildRequires:  gcc-c++
 BuildRequires:  yast2-core-devel
 BuildRequires:  yast2-devtools >= 3.1.10
 %if 0%{suse_version} == 1310
-BuildRequires:  rubygem-fast_gettext
+BuildRequires:  rubygem-fast_gettext < 3.0
 BuildRequires:  rubygem-rspec
-Requires:       rubygem-fast_gettext
+Requires:       rubygem-fast_gettext < 3.0
 %else
-BuildRequires:  rubygem(%{rb_default_ruby_abi}:fast_gettext)
+BuildRequires:  rubygem(%{rb_default_ruby_abi}:fast_gettext) < 3.0
 BuildRequires:  rubygem(%{rb_default_ruby_abi}:rspec)
-Requires:       rubygem(%{rb_default_ruby_abi}:fast_gettext)
+Requires:       rubygem(%{rb_default_ruby_abi}:fast_gettext) < 3.0
 %endif
 BuildRequires:  ruby-devel
 Requires:       yast2-core >= 3.2.2
