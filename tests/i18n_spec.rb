@@ -38,7 +38,7 @@ module Yast
 
       it "returns the translated string" do
         allow(FastGettext).to receive(:key_exist?).and_return(true)
-        expect(FastGettext::Translation).to receive(:_).with(SINGULAR)
+        expect(Yast::Translation).to receive(:_).with(SINGULAR)
           .and_return(TRANSLATED)
         expect(_(SINGULAR)).to eq(TRANSLATED)
       end
@@ -71,7 +71,7 @@ module Yast
       it "returns the translated string" do
         allow(FastGettext).to receive(:cached_plural_find)
           .and_return(true)
-        expect(FastGettext::Translation).to receive(:n_)
+        expect(Yast::Translation).to receive(:n_)
           .with(SINGULAR, PLURAL, 1).and_return(TRANSLATED)
         expect(n_(SINGULAR, PLURAL, 1)).to eq(TRANSLATED)
       end

@@ -1,6 +1,8 @@
 require "fast_gettext"
 require "logger"
 
+require "yast/translation"
+
 module Yast
   # Provides translation wrapper.
   module I18n
@@ -58,7 +60,7 @@ module Yast
           key_exist?(str)
         end
       end
-      found ? FastGettext::Translation._(str) : str
+      found ? Translation._(str) : str
     end
 
     # No translation, only marks the text to be found by gettext when creating POT file,
@@ -120,7 +122,7 @@ module Yast
           cached_plural_find(singular, plural)
         end
       end
-      found ? FastGettext::Translation.n_(singular, plural, num) : fallback_n_(singular, plural, num)
+      found ? Translation.n_(singular, plural, num) : fallback_n_(singular, plural, num)
     end
 
   private
