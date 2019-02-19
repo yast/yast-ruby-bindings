@@ -10,8 +10,11 @@ require "socket"
 
 require "yast"
 require "yast/y2start_helpers"
+require "yast/y2tracer"
 
 Yast::Y2StartHelpers.setup_signals
+
+Yast::Y2Tracer.instance.enable if ENV["Y2RUBYTRACER"] == "1"
 
 # Configure global YaST environment. For example, it sets $PATH to ensure that
 # external commands are only executed from safe paths.
