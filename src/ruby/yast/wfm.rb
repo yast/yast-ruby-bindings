@@ -224,8 +224,8 @@ module Yast
                "Refer to https://www.suse.com/support/kb/doc?id=7018056.\n\n"
       end
 
-      msg + "Details: #{e.message}\n\n" \
-            "Caller:  #{e.backtrace.first}"
+       msg + "Caller:  #{e.backtrace.first}\n\n" \
+             "Details: #{e.message}"
     end
 
     # Handles a SignalExpection
@@ -273,7 +273,12 @@ module Yast
         end
       else
         Yast.import "Report"
-        Report.LongError(msg.gsub(/\n/, '<br />')
+        # Pure approximation here
+        # 50 is for usable text area width, +6 is for additional lines like
+        # button line, Error caption and so. Whole dialog is at most 20 lines
+        # high to fit into screen
+        height = [msg.size / 50 + 6, 20].min
+        Report.LongError(msg.gsub(/\n/, '<br />'), height:height)
       end
     rescue Exception => e
       Builtins.y2internal("Error reporting failed with '%1'.Backtrace:\n%2",
