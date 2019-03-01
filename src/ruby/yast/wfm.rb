@@ -216,7 +216,7 @@ module Yast
     # @return [String] human readable exception description
     private_class_method def self.internal_error_msg(e)
       msg = "Internal error. Please report a bug report with logs.\n" \
-        "Run save_y2logs to get complete logs.\n"
+        "Run save_y2logs to get complete logs.\n\n"
 
       if e.is_a?(ArgumentError) && e.message =~ /invalid byte sequence in UTF-8/
         msg += "A string was encountered that is not valid in UTF-8.\n" \
@@ -224,7 +224,7 @@ module Yast
                "Refer to https://www.suse.com/support/kb/doc?id=7018056.\n\n"
       end
 
-      msg + "Details: #{e.message}\n" \
+      msg + "Details: #{e.message}\n\n" \
             "Caller:  #{e.backtrace.first}"
     end
 
@@ -273,7 +273,7 @@ module Yast
         end
       else
         Yast.import "Report"
-        Report.Error(msg)
+        Report.LongError(msg.gsub(/\n/, '<br />')
       end
     rescue Exception => e
       Builtins.y2internal("Error reporting failed with '%1'.Backtrace:\n%2",
