@@ -43,12 +43,19 @@ module Yast
     end
 
     # translates given string
+    # @param str [String] the string to translate
+    # @return [String] the translated string, if the translation is not found then
+    #   the original text is returned. **The returned String is frozen!**
+    # @note **⚠ The translated string is frozen and cannot be modified. To provide
+    #   consistent results the original (not translated) string is also frozen.
+    #   This means this function modifies the passed argument! If you do not want this
+    #   behavior then pass a duplicate, e.g. `_(text.dup)`. ⚠**
     def _(str)
       # no textdomain configured yet
       if !@my_textdomain
         Yast.y2warning("No textdomain configured, cannot translate #{str.inspect}")
         Yast.y2warning("Called from: #{::Kernel.caller(1).first}")
-        return str
+        return str.freeze
       end
 
       found = true
@@ -60,7 +67,7 @@ module Yast
           key_exist?(str)
         end
       end
-      found ? Translation._(str) : str
+      found ? Translation._(str) : str.freeze
     end
 
     # No translation, only marks the text to be found by gettext when creating POT file,
@@ -101,8 +108,16 @@ module Yast
     end
 
     # Gets translation based on number.
-    # @param (String) singular text for translators for single value
-    # @param (String) plural text for translators for bigger value
+    # @param [String] singular text for translators for single value
+    # @param [String] plural text for translators for bigger value
+    # @param [String] num the actual number, used for evaluating the correct plural form
+    # @return [String] the translated string, if the translation is not found then
+    #   the original text is returned (either the plural or the singular version,
+    #   depending on the `num` parameter). **The returned String is frozen!**
+    # @note **⚠ The translated string is frozen and cannot be modified. To provide
+    #   consistent results the original (not translated) strings are also frozen.
+    #   This means this function modifies the passed argument! If you do not want this
+    #   behavior then pass a duplicate, e.g. `n_(singular.dup, plural.dup, n)`. ⚠**
     def n_(singular, plural, num)
       # no textdomain configured yet
       if !@my_textdomain
@@ -188,6 +203,10 @@ module Yast
     #
     # @return [String] {singular} if {num} == 1; {plural} otherwise.
     def fallback_n_(singular, plural, num)
+      # always freeze both strings to have consistent results
+      singular.freeze
+      plural.freeze
+
       (num == 1) ? singular : plural
     end
   end

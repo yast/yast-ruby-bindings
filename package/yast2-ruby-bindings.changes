@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Tue Mar  5 14:23:29 UTC 2019 - Ladislav Slezák <lslezak@suse.cz>
+
+- Always return frozen strings from the translation functions,
+  make the results unified (related to bsc#1125006)
+- 4.1.4
+
+-------------------------------------------------------------------
 Mon Mar  4 09:11:50 UTC 2019 - Michal Filka <mfilka@suse.com>
 
 - bnc#1127685
