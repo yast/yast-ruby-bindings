@@ -8,6 +8,12 @@ include Yast::I18n
 
 module Yast
   describe I18n do
+
+    before do
+      # do not read the real translations from the system
+      allow(FastGettext).to receive(:add_text_domain)
+    end
+
     describe ".N_" do
       it "returns the original parameter" do
         input = "INPUT TEST"
@@ -41,6 +47,20 @@ module Yast
         expect(Yast::Translation).to receive(:_).with(SINGULAR)
           .and_return(TRANSLATED)
         expect(_(SINGULAR)).to eq(TRANSLATED)
+      end
+
+      context "translation is not found" do
+        it "returns a frozen string if the translation is not found" do
+          allow(FastGettext).to receive(:key_exist?).and_return(false)
+          expect(_("foo")).to be_frozen
+        end
+
+        it "freezes the passed argument string if the translation is not found" do
+          allow(FastGettext).to receive(:key_exist?).and_return(false)
+          text = "foo"
+          _(text)
+          expect(text).to be_frozen
+        end
       end
 
       context "when FastGettext throws an Errno::ENOENT exception" do
