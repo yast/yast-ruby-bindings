@@ -53,8 +53,10 @@ module Yast
     def _(str)
       # no textdomain configured yet
       if !@my_textdomain
-        Yast.y2warning("No textdomain configured, cannot translate #{str.inspect}")
-        Yast.y2warning("Called from: #{::Kernel.caller(1).first}")
+        msg = "No textdomain configured in #{self.class}, " \
+              "cannot translate #{str.inspect}"
+        raise msg if ENV["Y2STRICTTEXTDOMAIN"]
+        Yast.y2warning(1, "%1", msg) # skip 1 frame
         return str.freeze
       end
 
@@ -122,8 +124,10 @@ module Yast
       # no textdomain configured yet
       if !@my_textdomain
         # it's enough to log just the singular form
-        Yast.y2warning("No textdomain configured, cannot translate text #{singular.inspect}")
-        Yast.y2warning("Called from: #{::Kernel.caller(1).first}")
+        msg = "No textdomain configured in #{self.class}, " \
+              "cannot translate #{singular.inspect}"
+        raise msg if ENV["Y2STRICTTEXTDOMAIN"]
+        Yast.y2warning(1, "%1", msg) # skip 1 frame
         return fallback_n_(singular, plural, num)
       end
 
