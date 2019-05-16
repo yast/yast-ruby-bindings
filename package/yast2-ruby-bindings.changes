@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Thu May 16 12:19:59 UTC 2019 - mvidner@suse.com
+
+- Raise (an Internal Error) if no textdomain is declared for
+  a translatable text and Y2STRICTTEXTDOMAIN is in the environment
+  (bsc#1130822)
+- 4.2.0
+
+-------------------------------------------------------------------
 Tue Mar  5 14:23:29 UTC 2019 - Ladislav Slezák <lslezak@suse.cz>
 
 - Always return frozen strings from the translation functions,
