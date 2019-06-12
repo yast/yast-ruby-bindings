@@ -484,6 +484,20 @@ class Bundler::Installer
   def self.install(root, definition, options=T.unsafe(nil)); end
 end
 
+class Bundler::LockfileGenerator
+  def definition(); end
+
+  def generate!(); end
+
+  def initialize(definition); end
+
+  def out(); end
+end
+
+class Bundler::LockfileGenerator
+  def self.generate(definition); end
+end
+
 module Bundler::MatchPlatform
   extend ::T::Sig
 end
@@ -2046,6 +2060,47 @@ class FalseClass
 end
 
 class FalseClass
+  extend ::T::Sig
+end
+
+module FastGettext
+  LOCALE_REX = ::T.let(nil, ::T.untyped)
+  NAMESPACE_SEPARATOR = ::T.let(nil, ::T.untyped)
+  VERSION = ::T.let(nil, ::T.untyped)
+  Version = ::T.let(nil, ::T.untyped)
+end
+
+class FastGettext::GetText::MOFile
+  HASHWORDBITS = ::T.let(nil, ::T.untyped)
+  MAGIC_BIG_ENDIAN = ::T.let(nil, ::T.untyped)
+  MAGIC_LITTLE_ENDIAN = ::T.let(nil, ::T.untyped)
+end
+
+module FastGettext::GetText
+  extend ::T::Sig
+end
+
+class FastGettext::MoFile
+  PLURAL_SEPERATOR = ::T.let(nil, ::T.untyped)
+end
+
+module FastGettext::Storage
+  extend ::T::Sig
+end
+
+module FastGettext::Translation
+  extend ::T::Sig
+end
+
+module FastGettext::TranslationMultidomain
+  extend ::T::Sig
+end
+
+module FastGettext::TranslationRepository
+  extend ::T::Sig
+end
+
+module FastGettext
   extend ::T::Sig
 end
 
@@ -6808,12 +6863,20 @@ class Integer
 
   def pow(*_); end
 
+  def prime?(); end
+
+  def prime_division(generator=T.unsafe(nil)); end
+
   def to_bn(); end
 
 end
 
 class Integer
   extend ::T::Sig
+  def self.each_prime(ubound, &block); end
+
+  def self.from_prime_division(pd); end
+
   def self.sqrt(_); end
 end
 
@@ -7336,6 +7399,7 @@ class Object
   BINARY_PATH = ::T.let(nil, ::T.untyped)
   CROSS_COMPILING = ::T.let(nil, ::T.untyped)
   ENV = ::T.let(nil, ::T.untyped)
+  GLOBAL_WFM_CONTEXT = ::T.let(nil, ::T.untyped)
   ROOT_DIR = ::T.let(nil, ::T.untyped)
   RUBY_COPYRIGHT = ::T.let(nil, ::T.untyped)
   RUBY_DESCRIPTION = ::T.let(nil, ::T.untyped)
@@ -7433,6 +7497,107 @@ end
 
 class Pathname
   extend ::T::Sig
+end
+
+class Prime
+  include ::Enumerable
+  include ::Singleton
+  def each(ubound=T.unsafe(nil), generator=T.unsafe(nil), &block); end
+
+  def int_from_prime_division(pd); end
+
+  def prime?(value, generator=T.unsafe(nil)); end
+
+  def prime_division(value, generator=T.unsafe(nil)); end
+end
+
+class Prime::EratosthenesGenerator
+  def initialize(); end
+end
+
+class Prime::EratosthenesGenerator
+end
+
+class Prime::EratosthenesSieve
+  include ::Singleton
+  def get_nth_prime(n); end
+end
+
+class Prime::EratosthenesSieve
+  extend ::Singleton::SingletonClassMethods
+  def self.instance(); end
+end
+
+class Prime::Generator23
+  def initialize(); end
+end
+
+class Prime::Generator23
+end
+
+class Prime::PseudoPrimeGenerator
+  include ::Enumerable
+  def each(); end
+
+  def initialize(ubound=T.unsafe(nil)); end
+
+  def next(); end
+
+  def rewind(); end
+
+  def size(); end
+
+  def succ(); end
+
+  def upper_bound(); end
+
+  def upper_bound=(ubound); end
+
+  def with_index(offset=T.unsafe(nil)); end
+
+  def with_object(obj); end
+end
+
+class Prime::PseudoPrimeGenerator
+end
+
+class Prime::TrialDivision
+  include ::Singleton
+  def [](index); end
+
+  def cache(); end
+
+  def primes(); end
+
+  def primes_so_far(); end
+end
+
+class Prime::TrialDivision
+  extend ::Singleton::SingletonClassMethods
+  def self.instance(); end
+end
+
+class Prime::TrialDivisionGenerator
+  def initialize(); end
+end
+
+class Prime::TrialDivisionGenerator
+end
+
+class Prime
+  extend ::Singleton::SingletonClassMethods
+  extend ::Enumerable
+  def self.each(*args, &block); end
+
+  def self.instance(); end
+
+  def self.int_from_prime_division(*args, &block); end
+
+  def self.method_added(method); end
+
+  def self.prime?(*args, &block); end
+
+  def self.prime_division(*args, &block); end
 end
 
 class Proc
@@ -9037,6 +9202,14 @@ module Yast::Builtins::Float
   def self.tolstring(_, _1); end
 end
 
+module Yast::Builtins::List
+  extend ::T::Sig
+end
+
+module Yast::Builtins::Multiset
+  extend ::T::Sig
+end
+
 module Yast::Builtins
   extend ::T::Sig
   def self.crypt(_); end
@@ -9060,6 +9233,29 @@ module Yast::Builtins
   def self.strftime_wrapper(_, _1); end
 end
 
+module Yast::Convert
+  extend ::T::Sig
+  def self.to_boolean(object); end
+
+  def self.to_float(object); end
+
+  def self.to_integer(object); end
+
+  def self.to_list(object); end
+
+  def self.to_locale(object); end
+
+  def self.to_map(object); end
+
+  def self.to_path(object); end
+
+  def self.to_string(object); end
+
+  def self.to_symbol(object); end
+
+  def self.to_term(object); end
+end
+
 module Yast::CoreExt::AnsiString
   extend ::T::Sig
 end
@@ -9076,6 +9272,19 @@ module Yast::CyclicYinInclude
   extend ::T::Sig
 end
 
+class Yast::Debugger
+end
+
+class Yast::Debugger
+  extend ::Yast::Logger
+  extend ::Yast::UIShortcuts
+  def self.installed?(); end
+
+  def self.start(remote: T.unsafe(nil), port: T.unsafe(nil), start_client: T.unsafe(nil)); end
+
+  def self.start_from_env(); end
+end
+
 module Yast::ExampleInclude
   extend ::T::Sig
 end
@@ -9088,18 +9297,277 @@ module Yast::Exportable
   extend ::T::Sig
 end
 
+module Yast::I18n
+  extend ::T::Sig
+end
+
+module Yast::Logger
+  extend ::T::Sig
+end
+
+class Yast::Module
+  include ::Yast::Exportable::ExceptionReporter
+end
+
+module Yast::Ops
+  extend ::T::Sig
+  def self.get_boolean(object, indexes, default=T.unsafe(nil), &block); end
+
+  def self.get_float(object, indexes, default=T.unsafe(nil), &block); end
+
+  def self.get_integer(object, indexes, default=T.unsafe(nil), &block); end
+
+  def self.get_list(object, indexes, default=T.unsafe(nil), &block); end
+
+  def self.get_locale(object, indexes, default=T.unsafe(nil), &block); end
+
+  def self.get_map(object, indexes, default=T.unsafe(nil), &block); end
+
+  def self.get_path(object, indexes, default=T.unsafe(nil), &block); end
+
+  def self.get_string(object, indexes, default=T.unsafe(nil), &block); end
+
+  def self.get_symbol(object, indexes, default=T.unsafe(nil), &block); end
+
+  def self.get_term(object, indexes, default=T.unsafe(nil), &block); end
+
+  def self.is_any?(object); end
+
+  def self.is_boolean?(object); end
+
+  def self.is_byteblock?(object); end
+
+  def self.is_float?(object); end
+
+  def self.is_function?(object); end
+
+  def self.is_integer?(object); end
+
+  def self.is_list?(object); end
+
+  def self.is_locale?(object); end
+
+  def self.is_map?(object); end
+
+  def self.is_nil?(object); end
+
+  def self.is_path?(object); end
+
+  def self.is_string?(object); end
+
+  def self.is_symbol?(object); end
+
+  def self.is_term?(object); end
+
+  def self.is_void?(object); end
+end
+
+class Yast::Profiler
+end
+
+class Yast::Profiler
+  extend ::Yast::Logger
+  def self.start(); end
+
+  def self.start_from_env(); end
+
+  def self.stop(output=T.unsafe(nil)); end
+end
+
 module Yast::SCR
   extend ::T::Sig
   def self.call_builtin(*_); end
+end
+
+class Yast::Term
+  def <<(*args, &block); end
+
+  def [](*args, &block); end
+
+  def []=(*args, &block); end
+
+  def each(*args, &block); end
+
+  def empty?(*args, &block); end
+
+  def size(*args, &block); end
 end
 
 class Yast::TestClient
   include ::Yast::ExampleInclude
 end
 
+module Yast::Translation
+end
+
+module Yast::Translation
+  extend ::FastGettext::Translation
+  extend ::T::Sig
+end
+
+module Yast::UIShortcuts
+  def BarGraph(*args); end
+
+  def Bottom(*args); end
+
+  def BusyIndicator(*args); end
+
+  def ButtonBox(*args); end
+
+  def Cell(*args); end
+
+  def Center(*args); end
+
+  def CheckBox(*args); end
+
+  def CheckBoxFrame(*args); end
+
+  def ColoredLabel(*args); end
+
+  def ComboBox(*args); end
+
+  def DateField(*args); end
+
+  def DownloadProgress(*args); end
+
+  def DumbTab(*args); end
+
+  def Dummy(*args); end
+
+  def DummySpecialWidget(*args); end
+
+  def Empty(*args); end
+
+  def Frame(*args); end
+
+  def HBox(*args); end
+
+  def HCenter(*args); end
+
+  def HMultiProgressMeter(*args); end
+
+  def HSpacing(*args); end
+
+  def HSquash(*args); end
+
+  def HStretch(*args); end
+
+  def HVCenter(*args); end
+
+  def HVSquash(*args); end
+
+  def HVStretch(*args); end
+
+  def HWeight(*args); end
+
+  def Header(*args); end
+
+  def Heading(*args); end
+
+  def IconButton(*args); end
+
+  def Id(*args); end
+
+  def Image(*args); end
+
+  def InputField(*args); end
+
+  def IntField(*args); end
+
+  def Item(*args); end
+
+  def Label(*args); end
+
+  def Left(*args); end
+
+  def LogView(*args); end
+
+  def MarginBox(*args); end
+
+  def MenuButton(*args); end
+
+  def MinHeight(*args); end
+
+  def MinSize(*args); end
+
+  def MinWidth(*args); end
+
+  def MultiLineEdit(*args); end
+
+  def MultiSelectionBox(*args); end
+
+  def Opt(*args); end
+
+  def PackageSelector(*args); end
+
+  def PartitionSplitter(*args); end
+
+  def Password(*args); end
+
+  def PatternSelector(*args); end
+
+  def PkgSpecial(*args); end
+
+  def ProgressBar(*args); end
+
+  def PushButton(*args); end
+
+  def RadioButton(*args); end
+
+  def RadioButtonGroup(*args); end
+
+  def ReplacePoint(*args); end
+
+  def RichText(*args); end
+
+  def Right(*args); end
+
+  def SelectionBox(*args); end
+
+  def Slider(*args); end
+
+  def Table(*args); end
+
+  def TextEntry(*args); end
+
+  def TimeField(*args); end
+
+  def TimezoneSelector(*args); end
+
+  def Top(*args); end
+
+  def Tree(*args); end
+
+  def VBox(*args); end
+
+  def VCenter(*args); end
+
+  def VMultiProgressMeter(*args); end
+
+  def VSpacing(*args); end
+
+  def VSquash(*args); end
+
+  def VStretch(*args); end
+
+  def VWeight(*args); end
+
+  def Wizard(*args); end
+end
+
+module Yast::UIShortcuts
+  extend ::T::Sig
+end
+
 module Yast::WFM
   extend ::T::Sig
+  def self.call(client, args=T.unsafe(nil)); end
+
   def self.call_builtin(*_); end
+end
+
+class Yast::Y2Logger
+  def self.instance(); end
 end
 
 module Yast::Y2StartHelpers

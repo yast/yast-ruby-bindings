@@ -1,4 +1,4 @@
-# typed: true
+# typed: ignore
 module Yast
   class InvalidTypeModuleClass < Module
     def a

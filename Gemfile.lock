@@ -1,10 +1,12 @@
 GEM
   specs:
+    fast_gettext (1.7.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  fast_gettext
 
 BUNDLED WITH
    1.16.3

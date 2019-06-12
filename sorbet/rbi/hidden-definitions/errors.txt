@@ -458,6 +458,12 @@
 # wrong constant name ambiguous_gems
 # wrong constant name ambiguous_gems=
 # wrong constant name install
+# wrong constant name definition
+# wrong constant name generate!
+# wrong constant name initialize
+# wrong constant name out
+# wrong constant name <static-init>
+# wrong constant name generate
 # wrong constant name ==
 # wrong constant name app_cache_dirname
 # wrong constant name app_cache_path
@@ -3105,9 +3111,13 @@
 # wrong constant name inspect$1
 # wrong constant name nobits?
 # wrong constant name pow
+# wrong constant name prime?
+# wrong constant name prime_division
 # wrong constant name rationalize$2
 # wrong constant name to_bn
 # wrong constant name to_s$1
+# wrong constant name each_prime
+# wrong constant name from_prime_division
 # wrong constant name sqrt
 # wrong constant name <Class:Generator>
 # wrong constant name <Class:Parser>
@@ -3480,6 +3490,55 @@
 # wrong constant name glob$1
 # uninitialized constant PrettyPrint
 # uninitialized constant PrettyPrint
+# uninitialized constant Prime::Elem
+# wrong constant name <Class:EratosthenesGenerator>
+# wrong constant name <Class:EratosthenesSieve>
+# wrong constant name <Class:Generator23>
+# wrong constant name <Class:PseudoPrimeGenerator>
+# wrong constant name <Class:TrialDivision>
+# wrong constant name <Class:TrialDivisionGenerator>
+# wrong constant name each
+# wrong constant name int_from_prime_division
+# wrong constant name prime?
+# wrong constant name prime_division
+# uninitialized constant Prime::EratosthenesGenerator::Elem
+# wrong constant name initialize
+# wrong constant name <static-init>
+# wrong constant name get_nth_prime
+# wrong constant name <static-init>
+# wrong constant name instance
+# uninitialized constant Prime::Generator23::Elem
+# wrong constant name initialize
+# wrong constant name <static-init>
+# uninitialized constant Prime::PseudoPrimeGenerator::Elem
+# wrong constant name each
+# wrong constant name initialize
+# wrong constant name next
+# wrong constant name rewind
+# wrong constant name size
+# wrong constant name succ
+# wrong constant name upper_bound
+# wrong constant name upper_bound=
+# wrong constant name with_index
+# wrong constant name with_object
+# wrong constant name <static-init>
+# wrong constant name []
+# wrong constant name cache
+# wrong constant name primes
+# wrong constant name primes_so_far
+# wrong constant name <static-init>
+# wrong constant name instance
+# uninitialized constant Prime::TrialDivisionGenerator::Elem
+# wrong constant name initialize
+# wrong constant name <static-init>
+# wrong constant name <static-init>
+# uninitialized constant Prime::Elem
+# wrong constant name each
+# wrong constant name instance
+# wrong constant name int_from_prime_division
+# wrong constant name method_added
+# wrong constant name prime?
+# wrong constant name prime_division
 # undefined method `curry$1' for class `Proc'
 # wrong constant name ===
 # wrong constant name []
@@ -3852,6 +3911,7 @@
 # wrong constant name initialize
 # wrong constant name setup
 # wrong constant name result
+# undefined method `%$1' for class `String'
 # undefined method `[]$2' for class `String'
 # undefined method `byteslice$2' for class `String'
 # undefined method `capitalize$1' for class `String'
@@ -3896,6 +3956,7 @@
 # undefined method `upcase$1' for class `String'
 # undefined method `upcase!$1' for class `String'
 # undefined method `upto$2' for class `String'
+# wrong constant name %$1
 # wrong constant name +@
 # wrong constant name -@
 # wrong constant name []$2
@@ -4243,6 +4304,9 @@
 # uninitialized constant WEBrick
 # uninitialized constant WEBrick
 # wrong constant name warn
+# wrong constant name <Class:Debugger>
+# wrong constant name <Class:Profiler>
+# wrong constant name <Class:Translation>
 # wrong constant name <Class:YCode>
 # wrong constant name y2_logger
 # wrong constant name tolstring
@@ -4256,8 +4320,147 @@
 # wrong constant name regexpsub
 # wrong constant name regexptokenize
 # wrong constant name strftime_wrapper
+# wrong constant name to_boolean
+# wrong constant name to_float
+# wrong constant name to_integer
+# wrong constant name to_list
+# wrong constant name to_locale
+# wrong constant name to_map
+# wrong constant name to_path
+# wrong constant name to_string
+# wrong constant name to_symbol
+# wrong constant name to_term
+# wrong constant name <static-init>
+# wrong constant name installed?
+# wrong constant name start
+# wrong constant name start_from_env
+# uninitialized constant Yast::Module::BACKTRACE_REGEXP
+# Did you mean?  Yast::Module::BACKTRACE_REGEXP
+#                Yast::BACKTRACE_REGEXP
+# uninitialized constant Yast::Module::DEFAULT_LOCALE
+# Did you mean?  Yast::Module::DEFAULT_LOCALE
+# uninitialized constant Yast::Module::LOCALE_DIR
+# Did you mean?  Yast::Module::LOCALE_DIR
+# uninitialized constant Yast::Module::UI_TERMS
+# Did you mean?  Yast::Module::UI_TERMS
+# wrong constant name get_boolean
+# wrong constant name get_float
+# wrong constant name get_integer
+# wrong constant name get_list
+# wrong constant name get_locale
+# wrong constant name get_map
+# wrong constant name get_path
+# wrong constant name get_string
+# wrong constant name get_symbol
+# wrong constant name get_term
+# wrong constant name is_any?
+# wrong constant name is_boolean?
+# wrong constant name is_byteblock?
+# wrong constant name is_float?
+# wrong constant name is_function?
+# wrong constant name is_integer?
+# wrong constant name is_list?
+# wrong constant name is_locale?
+# wrong constant name is_map?
+# wrong constant name is_nil?
+# wrong constant name is_path?
+# wrong constant name is_string?
+# wrong constant name is_symbol?
+# wrong constant name is_term?
+# wrong constant name is_void?
+# wrong constant name <static-init>
+# wrong constant name start
+# wrong constant name start_from_env
+# wrong constant name stop
 # wrong constant name call_builtin
+# wrong constant name <<
+# wrong constant name []
+# wrong constant name []=
+# wrong constant name each
+# wrong constant name empty?
+# wrong constant name size
+# wrong constant name <static-init>
+# uninitialized constant Yast::UIShortcuts::BarGraph
+# uninitialized constant Yast::UIShortcuts::Bottom
+# uninitialized constant Yast::UIShortcuts::BusyIndicator
+# uninitialized constant Yast::UIShortcuts::ButtonBox
+# uninitialized constant Yast::UIShortcuts::Cell
+# uninitialized constant Yast::UIShortcuts::Center
+# uninitialized constant Yast::UIShortcuts::CheckBox
+# uninitialized constant Yast::UIShortcuts::CheckBoxFrame
+# uninitialized constant Yast::UIShortcuts::ColoredLabel
+# uninitialized constant Yast::UIShortcuts::ComboBox
+# uninitialized constant Yast::UIShortcuts::DateField
+# Did you mean?  DateTime
+# uninitialized constant Yast::UIShortcuts::DownloadProgress
+# uninitialized constant Yast::UIShortcuts::DumbTab
+# uninitialized constant Yast::UIShortcuts::Dummy
+# uninitialized constant Yast::UIShortcuts::DummySpecialWidget
+# uninitialized constant Yast::UIShortcuts::Empty
+# uninitialized constant Yast::UIShortcuts::Frame
+# uninitialized constant Yast::UIShortcuts::HBox
+# uninitialized constant Yast::UIShortcuts::HCenter
+# uninitialized constant Yast::UIShortcuts::HMultiProgressMeter
+# uninitialized constant Yast::UIShortcuts::HSpacing
+# uninitialized constant Yast::UIShortcuts::HSquash
+# uninitialized constant Yast::UIShortcuts::HStretch
+# uninitialized constant Yast::UIShortcuts::HVCenter
+# uninitialized constant Yast::UIShortcuts::HVSquash
+# uninitialized constant Yast::UIShortcuts::HVStretch
+# uninitialized constant Yast::UIShortcuts::HWeight
+# uninitialized constant Yast::UIShortcuts::Header
+# uninitialized constant Yast::UIShortcuts::Heading
+# uninitialized constant Yast::UIShortcuts::IconButton
+# uninitialized constant Yast::UIShortcuts::Id
+# uninitialized constant Yast::UIShortcuts::Image
+# uninitialized constant Yast::UIShortcuts::InputField
+# uninitialized constant Yast::UIShortcuts::IntField
+# uninitialized constant Yast::UIShortcuts::Item
+# uninitialized constant Yast::UIShortcuts::Label
+# uninitialized constant Yast::UIShortcuts::Left
+# uninitialized constant Yast::UIShortcuts::LogView
+# uninitialized constant Yast::UIShortcuts::MarginBox
+# uninitialized constant Yast::UIShortcuts::MenuButton
+# uninitialized constant Yast::UIShortcuts::MinHeight
+# uninitialized constant Yast::UIShortcuts::MinSize
+# uninitialized constant Yast::UIShortcuts::MinWidth
+# uninitialized constant Yast::UIShortcuts::MultiLineEdit
+# uninitialized constant Yast::UIShortcuts::MultiSelectionBox
+# uninitialized constant Yast::UIShortcuts::Opt
+# Did you mean?  Yast::Ops
+# uninitialized constant Yast::UIShortcuts::PackageSelector
+# uninitialized constant Yast::UIShortcuts::PartitionSplitter
+# uninitialized constant Yast::UIShortcuts::Password
+# uninitialized constant Yast::UIShortcuts::PatternSelector
+# uninitialized constant Yast::UIShortcuts::PkgSpecial
+# uninitialized constant Yast::UIShortcuts::ProgressBar
+# Did you mean?  Process
+# uninitialized constant Yast::UIShortcuts::PushButton
+# uninitialized constant Yast::UIShortcuts::RadioButton
+# uninitialized constant Yast::UIShortcuts::RadioButtonGroup
+# uninitialized constant Yast::UIShortcuts::ReplacePoint
+# uninitialized constant Yast::UIShortcuts::RichText
+# uninitialized constant Yast::UIShortcuts::Right
+# uninitialized constant Yast::UIShortcuts::SelectionBox
+# uninitialized constant Yast::UIShortcuts::Slider
+# uninitialized constant Yast::UIShortcuts::Table
+# uninitialized constant Yast::UIShortcuts::TextEntry
+# uninitialized constant Yast::UIShortcuts::TimeField
+# uninitialized constant Yast::UIShortcuts::TimezoneSelector
+# uninitialized constant Yast::UIShortcuts::Top
+# uninitialized constant Yast::UIShortcuts::Tree
+# Did you mean?  TRUE
+# uninitialized constant Yast::UIShortcuts::VBox
+# uninitialized constant Yast::UIShortcuts::VCenter
+# uninitialized constant Yast::UIShortcuts::VMultiProgressMeter
+# uninitialized constant Yast::UIShortcuts::VSpacing
+# uninitialized constant Yast::UIShortcuts::VSquash
+# uninitialized constant Yast::UIShortcuts::VStretch
+# uninitialized constant Yast::UIShortcuts::VWeight
+# uninitialized constant Yast::UIShortcuts::Wizard
+# wrong constant name call
 # wrong constant name call_builtin
+# wrong constant name instance
 # wrong constant name call
 # wrong constant name <static-init>
 # wrong constant name call
