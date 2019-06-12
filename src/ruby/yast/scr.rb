@@ -1,3 +1,4 @@
+# typed: false
 require "yast/builtinx"
 require "yast/yast"
 

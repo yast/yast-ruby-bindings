@@ -1,3 +1,4 @@
+# typed: true
 module Yast
   module ExampleInclude
     def initialize_example(_target)

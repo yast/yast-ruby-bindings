@@ -1,3 +1,4 @@
+# typed: true
 module Yast
   class TestClient
     A_CONSTANT = 1

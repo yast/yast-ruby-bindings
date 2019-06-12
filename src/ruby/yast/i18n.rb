@@ -1,3 +1,4 @@
+# typed: false
 require "fast_gettext"
 require "logger"
 

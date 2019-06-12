@@ -1,3 +1,4 @@
+# typed: false
 require "yast/yast"
 require "yast/path"
 require "yast/logger"

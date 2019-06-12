@@ -1,3 +1,4 @@
+# typed: true
 ROOT_DIR = File.expand_path("../..", __FILE__)
 BINARY_PATH = "#{ROOT_DIR}/build/src/binary"
 RUBY_INC_PATH = "#{ROOT_DIR}/src/ruby"

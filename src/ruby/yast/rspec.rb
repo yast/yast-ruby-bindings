@@ -1,3 +1,4 @@
+# typed: false
 require "yast/rspec/scr"
 require "yast/rspec/shortcuts"
 require "yast/rspec/matchers"

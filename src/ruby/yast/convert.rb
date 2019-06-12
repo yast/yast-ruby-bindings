@@ -1,3 +1,4 @@
+# typed: true
 require "yast/ops"
 require "yast/path"
 require "yast/term"

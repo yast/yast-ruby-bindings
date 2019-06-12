@@ -1,3 +1,4 @@
+# typed: false
 module Yast
   # Represents paths like it is in ycp. It is path elements separated by dot.
   # Elements can be simple or complex. Simple can contain only ascii characters [a-zA-Z0-9].

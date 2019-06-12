@@ -1,3 +1,4 @@
+# typed: true
 module Yast
   class InvalidTypeModuleClass < Module
     def a

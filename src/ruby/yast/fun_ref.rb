@@ -1,3 +1,4 @@
+# typed: true
 module Yast
   # Provides wrapper to pass reference to function.
   # It is used by component system to allow passing reference to function.
