@@ -1,4 +1,4 @@
-# typed: ignore
+# typed: strong
 require "fast_gettext"
 
 module Yast

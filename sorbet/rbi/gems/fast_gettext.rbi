@@ -172,9 +172,6 @@ class String
 end
 module Yast
 end
-class Yast::InvalidTypeModuleClass < Module
-  def a; end
-end
 class Yast::TestClient
   def main; end
 end

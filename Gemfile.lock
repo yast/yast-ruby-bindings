@@ -1,11 +1,13 @@
 GEM
   specs:
+    byebug (10.0.2)
     fast_gettext (1.7.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  byebug
   fast_gettext
 
 BUNDLED WITH
