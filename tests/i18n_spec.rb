@@ -5,10 +5,12 @@ require_relative "test_helper"
 
 require "yast"
 
-include Yast::I18n
 
-module Yast
-  describe I18n do
+
+describe Yast do
+  describe Yast::I18n do
+    include Yast::I18n
+    extend Yast::I18n
 
     before do
       # do not read the real translations from the system
