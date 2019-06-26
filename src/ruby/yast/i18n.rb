@@ -1,4 +1,4 @@
-# typed: false
+# typed: true
 require "fast_gettext"
 require "logger"
 
@@ -7,6 +7,8 @@ require "yast/translation"
 module Yast
   # Provides translation wrapper.
   module I18n
+    include Kernel
+
     # @private
     # TODO: load alternative in development recent translation
     LOCALE_DIR = "/usr/share/YaST2/locale".freeze
