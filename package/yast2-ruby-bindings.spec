@@ -109,6 +109,9 @@ cd -
 %{_libdir}/ruby/vendor_ruby/%{rb_ver}/yast
 %{_libdir}/ruby/vendor_ruby/%{rb_ver}/%{rb_arch}/*x.so
 %{_libdir}/ruby/vendor_ruby/%{rb_ver}/%{rb_arch}/yast
+%dir %{_datadir}/YaST2/rbi/
+%dir %{_datadir}/YaST2/rbi/yast/
+%{_datadir}/YaST2/rbi/yast/*.rbi
 %license COPYING
 
 %changelog
