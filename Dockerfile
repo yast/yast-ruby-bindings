@@ -1,4 +1,5 @@
-FROM yastdevel/cpp:sle12-sp4
+FROM yastdevel/cpp:sle12-sp5
+
 
 # Install tmux to make sure the libyui+YaST integration tests are run
 RUN zypper --non-interactive in tmux
