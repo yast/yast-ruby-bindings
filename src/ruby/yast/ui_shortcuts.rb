@@ -15,6 +15,7 @@ module Yast
       :CheckBoxFrame,
       :ColoredLabel,
       :ComboBox,
+      :CustomStatusItemSelector,
       :DateField,
       :DownloadProgress,
       :DumbTab,
@@ -78,6 +79,7 @@ module Yast
       :VWeight,
       :Wizard,
       # special ones that will be upper cased
+      :icon,
       :id,
       :item,
       :header,
