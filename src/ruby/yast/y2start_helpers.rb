@@ -1,4 +1,3 @@
-require "yast2/execute"
 
 module Yast
   module Y2StartHelpers
@@ -79,8 +78,12 @@ module Yast
       hostname = " @ #{hostname}" unless hostname.empty?
       if is_s390
         # e.g. stdout "2964 = z13 IBM z13" transfered into "IBM z13"
-        architecture = Yast::Execute.on_target!(
-          "/usr/bin/read_values", "-c").split("=")[1].strip rescue ""
+        arch_array = read_values.split("=")
+        if arch_array.size > 1
+          architecture = arch_array[1].strip
+        else
+          architecture = arch_array[0]
+        end
         arch_array = architecture.split(' ')
         arch_array.shift if arch_array.size > 1
         architecture = arch_array.join(' ')
@@ -98,8 +101,15 @@ module Yast
       left_title + architecture.rjust(80-left_title.size)
     end
 
+    private_class_method def self.read_values
+      arch = `/usr/bin/read_values -c`.strip
+      return "" unless $?.success?
+      arch
+    end 
+
     private_class_method def self.is_s390
-      arch = Yast::Execute.on_target!("/usr/bin/arch").strip rescue ""
+      arch = `/usr/bin/arch`.strip
+      return false unless $?.success?
       ["s390_64", "s390_32"].include?(arch)
     end
 
