@@ -79,14 +79,12 @@ module Yast
       if is_s390
         # e.g. stdout "2964 = z13 IBM z13" transfered into "IBM z13"
         arch_array = read_values.split("=")
-        if arch_array.size > 1
-          architecture = arch_array[1].strip
-        else
-          architecture = arch_array[0]
-        end
+        arch_array.shift if arch_array.size > 1
+        architecture = arch_array.join(' ').strip
         arch_array = architecture.split(' ')
         arch_array.shift if arch_array.size > 1
         architecture = arch_array.join(' ')
+
         if !Yast::UI.TextMode
           # Show the S390 architecutue in the QT banner only.
           # The environment variable YAST_BANNER will be read and shown
