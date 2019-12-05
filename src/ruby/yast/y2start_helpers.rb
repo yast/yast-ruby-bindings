@@ -77,7 +77,7 @@ module Yast
       hostname = Socket.gethostname rescue ""
       hostname = "" if hostname == "(none)"
       hostname = " @ #{hostname}" unless hostname.empty?
-      if Yast::Arch.s390
+      if is_s390
         # e.g. stdout "2964 = z13 IBM z13" transfered into "IBM z13"
         architecture = Yast::Execute.on_target!(
           "/usr/bin/read_values", "-c").split("=")[1].strip rescue ""
@@ -96,6 +96,11 @@ module Yast
       end
       left_title = "YaST2 - #{client_name}#{hostname}"
       left_title + architecture.rjust(80-left_title.size)
+    end
+
+    private_class_method def self.is_s390
+      arch = Yast::Execute.on_target!("/usr/bin/arch").strip rescue ""
+      ["s390_64", "s390_32"].include?(arch)
     end
 
     private_class_method def self.signal_handler(name)

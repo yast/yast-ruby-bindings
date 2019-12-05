@@ -48,7 +48,6 @@ NO_CLI_CLIENTS = ["installation", "view_anymsg", "firstboot", "scc"].freeze
 Yast.ui_create(args[:server_name], args[:server_options])
 # set application title bsc#1033161
 Yast.import "UI"
-Yast.import "Arch"
 
 # set title only if it is not CLI (bsc#1033993)
 # modules do not have CLI arguments, except installation (bsc#1037891)
