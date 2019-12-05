@@ -108,7 +108,7 @@ module Yast
     private_class_method def self.is_s390
       arch = `/usr/bin/arch`.strip
       return false unless $?.success?
-      ["s390_64", "s390_32"].include?(arch)
+      arch.start_with?("s390")
     end
 
     private_class_method def self.signal_handler(name)
