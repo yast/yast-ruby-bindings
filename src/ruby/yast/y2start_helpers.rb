@@ -1,3 +1,5 @@
+require "yast2/execute"
+
 module Yast
   module Y2StartHelpers
     # Configure global environment for YaST
@@ -67,6 +69,33 @@ module Yast
       ["HUP", "INT", "QUIT", "ABRT", "TERM"].each do |name|
         Signal.trap(name) { signal_handler(name) }
       end
+    end
+
+    # Returns application title string
+    def self.application_title(client_name)
+      # do not fail if gethostname failed
+      hostname = Socket.gethostname rescue ""
+      hostname = "" if hostname == "(none)"
+      hostname = " @ #{hostname}" unless hostname.empty?
+      if Yast::Arch.s390
+        # e.g. stdout "2964 = z13 IBM z13" transfered into "IBM z13"
+        architecture = Yast::Execute.on_target!(
+          "/usr/bin/read_values", "-c").split("=")[1].strip rescue ""
+        arch_array = architecture.split(' ')
+        arch_array.shift if arch_array.size > 1
+        architecture = arch_array.join(' ')
+        if !Yast::UI.TextMode
+          # Show the S390 architecutue in the QT banner only.
+          # The environment variable YAST_BANNER will be read and shown
+          # in libyui-qt.
+          ENV["YAST_BANNER"] = architecture
+          architecture = ""
+        end
+      else
+        architecture = ""
+      end
+      left_title = "YaST2 - #{client_name}#{hostname}"
+      left_title + architecture.rjust(80-left_title.size)
     end
 
     private_class_method def self.signal_handler(name)
