@@ -47,4 +47,64 @@ describe Yast::Y2StartHelpers do
       end
     end
   end
+
+  describe ".application_title" do
+    before do
+      stub_const("Yast::UI", double("Yast::UI"))
+    end
+
+    context "s390 architecture" do
+      before do
+        allow(subject).to receive(:is_s390).and_return(true)
+      end
+
+      context "is in text mode" do
+        it "returns s390 architecture" do
+          expect(subject).to receive(:read_values).and_return("2964 = z13 IBM z13")
+          expect(Yast::UI).to receive(:TextMode).and_return(true)
+          expect(subject.application_title("client_name")).to match(/IBM z13/)
+        end
+      end
+
+      context "is in QT mode" do
+        it "sets environment variable YAST_BANNER" do
+          expect(subject).to receive(:read_values).and_return("2964 = z13 IBM z13")
+          expect(Yast::UI).to receive(:TextMode).and_return(false)
+          expect(subject.application_title("client_name")).not_to match(/IBM z13/)
+          expect(ENV["YAST_BANNER"]).to eq("IBM z13")
+          # unset YAST_BANNER for further tests
+          ENV["YAST_BANNER"] = ""
+        end
+      end
+
+      context "read_values returns empty string" do
+        it "returns client name only" do
+          expect(subject).to receive(:read_values).and_return("")
+          expect(Yast::UI).to receive(:TextMode).and_return(true)
+          expect(subject.application_title("client_name").strip).to eq("YaST2 - client_name")
+        end
+      end
+    end
+
+    context "x86_64 archtecture" do
+      before do
+        allow(subject).to receive(:is_s390).and_return(false)
+        expect(subject).not_to receive(:read_values)
+      end
+
+      context "is in text mode" do
+        it "returns client name only" do
+          expect(subject.application_title("client_name").strip).to eq("YaST2 - client_name")
+        end
+      end
+
+      context "is in QT mode" do
+        it "does not set environment variable YAST_BANNER" do
+          expect(subject.application_title("client_name").strip).to eq("YaST2 - client_name")
+          expect(ENV["YAST_BANNER"]).to eq("")
+        end
+      end
+    end
+  end
+
 end
