@@ -98,6 +98,30 @@ module Yast
       left_title + architecture.rjust(80-left_title.size)
     end
 
+
+    # client returned special result, this is used as offset (or as generic error)
+    RES_CLIENT_RESULT = 16
+    # yast succeed
+    RES_OK = 0
+    # Symbols representing failure
+    FAILED_SYMBOLS = [:abort, :cancel]
+    # transform various ruby objects to exit code. Useful to detection if YaST process failed
+    # and in CLI
+    def self.generate_exit_code(value)
+      case value
+      when nil, true
+        RES_OK
+      when false
+        RES_CLIENT_RESULT
+      when Integer
+        RES_CLIENT_RESULT + value
+      when Symbol
+        FAILED_SYMBOLS.include?(value) ? RES_CLIENT_RESULT : RES_OK
+      else
+        RES_OK
+      end
+    end
+
     private_class_method def self.read_values
       arch = `/usr/bin/read_values -c`.strip
       return "" unless $?.success?

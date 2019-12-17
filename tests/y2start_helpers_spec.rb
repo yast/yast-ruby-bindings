@@ -107,4 +107,34 @@ describe Yast::Y2StartHelpers do
     end
   end
 
+  describe ".generate_exit_code" do
+    it "returns 0 for nil" do
+      expect(subject.generate_exit_code(nil)).to eq 0
+    end
+
+    it "returns 0 for true" do
+      expect(subject.generate_exit_code(true)).to eq 0
+    end
+
+    it "returns 16 for false" do
+      expect(subject.generate_exit_code(false)).to eq 16
+    end
+
+    it "returns 16 for `:abort`" do
+      expect(subject.generate_exit_code(:abort)).to eq 16
+    end
+
+    it "returns 16 for `:cancel`" do
+      expect(subject.generate_exit_code(:cancel)).to eq 16
+    end
+
+    it "returns 0 for other symbols" do
+      expect(subject.generate_exit_code(:test)).to eq 0
+    end
+
+    it "returns 16+number for number" do
+      expect(subject.generate_exit_code(1)).to eq 17
+      expect(subject.generate_exit_code(3)).to eq 19
+    end
+  end
 end

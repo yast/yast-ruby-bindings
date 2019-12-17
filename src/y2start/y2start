@@ -55,6 +55,7 @@ set_title = args[:client_options][:params].empty? || NO_CLI_CLIENTS.include?(arg
 Yast::UI.SetApplicationTitle(
   Yast::Y2StartHelpers.application_title(args[:client_name])) if set_title
 
-Yast::WFM.CallFunction(args[:client_name], args[:client_options][:params])
 
-0
+Yast::Y2StartHelpers.generate_exit_code(
+  Yast::WFM.CallFunction(args[:client_name], args[:client_options][:params])
+)
