@@ -36,6 +36,7 @@ if File.exist?(RESULT) && File.read(RESULT) == "0\n"
   exit true
 else
   puts "Test failed: '#{cmd}'."
+  puts "result: #{File.exist?(RESULT) ? "'#{File.read(RESULT)}'" : "file not exist"}"
   if File.exist?(OUTPUT)
     puts "Output was:"
     puts File.read(OUTPUT)
