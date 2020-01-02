@@ -10,8 +10,22 @@ endif()
 
 project(yast2-ruby-bindings)
 set(PACKAGE "yast2-ruby-bindings")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x -g -O3 -Wall -Woverloaded-virtual")
-set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -std=gnu++0x -g -O3 -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x -g3 -O3 -Wall -Woverloaded-virtual")
+set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -std=gnu++0x -g3 -O3 -Wall")
+
+#
+# Where is Ruby ?
+#
+
+find_package(Ruby REQUIRED)
+if(NOT RUBY_EXECUTABLE)
+  message(FATAL_ERROR "Ruby not found.")
+endif()
+
+# RUBY_BIN_PATH contains the full path including the version suffix,
+# e.g. /usr/bin/ruby.ruby2.5
+EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print RbConfig.ruby"
+  OUTPUT_VARIABLE RUBY_BIN_PATH)
 
 #
 # Where is YaST ?
@@ -24,15 +38,6 @@ endif()
 
 if(NOT YAST_PLUGIN_UI_LIBRARY)
   message(FATAL_ERROR "YAST_PLUGIN_UI_LIBRARY not set, please install yast2-ycp-ui-bindings-devel.")
-endif()
-
-#
-# Where is Ruby ?
-#
-
-find_package(Ruby REQUIRED)
-if(NOT RUBY_EXECUTABLE)
-  message(FATAL_ERROR "Ruby not found.")
 endif()
 
 #

@@ -173,11 +173,8 @@ YCPValue YRuby::callInner (string module_name, string function,
   if (module == Qnil)
   {
     y2error ("The Ruby module '%s' is not loaded.", full_name.c_str());
-    VALUE exception = rb_gv_get("$!"); /* get last exception */
-    VALUE reason = rb_funcall(exception, rb_intern("message"), 0 );
-    VALUE trace = rb_gv_get("$@"); /* get last exception trace */
-    VALUE backtrace = RARRAY_LEN(trace)>0 ? rb_ary_entry(trace, 0) : rb_str_new2("Unknown");
-    y2error("%s load failed:%s at %s", full_name.c_str(), StringValuePtr(reason), StringValuePtr(backtrace));
+    pair<string, string> exc = exception_message_and_backtrace();
+    y2error("%s load failed:%s at %s", full_name.c_str(), exc.first.c_str(), exc.second.c_str());
     return YCPVoid();
   }
 
@@ -203,7 +200,7 @@ YCPValue YRuby::callInner (string module_name, string function,
     rb_gc_register_address(values + i + 3);
   }
 
-  y2debug( "Will call function '%s' in module '%s' with '%d' arguments", function.c_str(), module_name.c_str(), size-1);
+  y2debug( "Will call function '%s' in module '%s' with %d arguments", function.c_str(), module_name.c_str(), size);
 
   int error;
   VALUE result = rb_protect(protected_call, (VALUE)values, &error);
@@ -214,17 +211,23 @@ YCPValue YRuby::callInner (string module_name, string function,
 
   if (error)
   {
-    VALUE exception = rb_gv_get("$!"); /* get last exception */
-    VALUE reason = rb_funcall(exception, rb_intern("message"), 0 );
-    VALUE trace = rb_gv_get("$@"); /* get last exception trace */
-    VALUE backtrace = RARRAY_LEN(trace)>0 ? rb_ary_entry(trace, 0) : rb_str_new2("Unknown");
-    y2error("%s.%s failed:%s at %s", module_name.c_str(), function.c_str(), StringValuePtr(reason),StringValuePtr(backtrace));
+    pair<string, string> exc = exception_message_and_backtrace();
+    const string& reason = exc.first;
+    y2error("%s.%s failed:%s at %s", module_name.c_str(), function.c_str(), reason.c_str(), exc.second.c_str());
     //workaround if last_exception failed, then return always string with message
     if(function == "last_exception") //TODO constantify last_exception
     {
-      return YCPString(StringValuePtr(reason));
+      return YCPString(reason);
     }
-    set_last_exception(module,StringValuePtr(reason));
+    set_last_exception(module, reason);
+
+    VALUE exhash = rb_hash_new();
+    rb_hash_aset(exhash, rb_str_new2("message"), rb_str_new2(exc.first.c_str()));
+    rb_hash_aset(exhash, rb_str_new2("backtrace"), rb_str_new2(exc.second.c_str()));
+    VALUE yast_module = y2ruby_nested_const_get("Yast");
+    rb_funcall(yast_module, rb_intern("call_yast_function"), 3,
+               rb_str_new2("Y2Exception"), rb_str_new2("exception"), exhash);
+
     return YCPVoid();
   }
   else
