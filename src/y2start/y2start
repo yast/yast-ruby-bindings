@@ -56,6 +56,6 @@ Yast::UI.SetApplicationTitle(
   Yast::Y2StartHelpers.application_title(args[:client_name])) if set_title
 
 
-Yast::Y2StartHelpers.generate_exit_code(
+exit Yast::Y2StartHelpers.generate_exit_code(
   Yast::WFM.CallFunction(args[:client_name], args[:client_options][:params])
 )
