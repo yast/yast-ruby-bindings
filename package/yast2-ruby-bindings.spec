@@ -17,7 +17,7 @@
 
 
 Name:           yast2-ruby-bindings
-Version:        4.2.6
+Version:        4.2.7
 Url:            https://github.com/yast/yast-ruby-bindings
 Release:        0
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
