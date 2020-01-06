@@ -331,6 +331,9 @@ module Yast
         handle_abort_exception(e, client)
         exit
       rescue Exception => e
+        # Don't interfere with RSpec, such as RSpec::Mocks::MockExpectationError
+        raise e if e.class.to_s.start_with?("RSpec::")
+
         handle_exception(e, client)
         false
       end
