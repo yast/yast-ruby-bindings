@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed Feb 26 19:46:00 UTC 2020 - besser82@fedoraproject.org
+
+- Fixes for gensalt handling with libxcrypt
+- 4.2.9
+
+-------------------------------------------------------------------
 Wed Jan 22 15:04:11 UTC 2020 - Ancor Gonzalez Sosa <ancor@suse.com>
 
 - Added a COPYING file with the GPL license (bsc#1161470)
