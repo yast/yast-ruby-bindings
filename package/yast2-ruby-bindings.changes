@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Jun  2 15:21:20 UTC 2020 - Josef Reidinger <jreidinger@suse.com>
+
+- fix gems loading with updated ruby (bsc#1172275)
+- 3.1.53
+
+-------------------------------------------------------------------
 Thu Dec 15 16:29:13 UTC 2016 - igonzalezsosa@suse.com
 
 - Do not crash when FastGettext is unable to find the empty.mo
