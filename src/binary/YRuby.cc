@@ -74,6 +74,8 @@ YRuby::YRuby()
     _y_in_yast = true;
     // encoding initialization
     rb_enc_find_index("encdb");
+    // set in ruby script name (bsc#1172275)
+    ruby_set_script_name(rb_str_new2("yast2"));
 
     // FIX for setup gem load path. Embedded ruby initialization mixes up gem
     // initialization (which we want) with option processing (which we don't want).
