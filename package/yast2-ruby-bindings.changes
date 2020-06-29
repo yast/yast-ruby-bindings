@@ -1,7 +1,7 @@
 -------------------------------------------------------------------
-Thu Jun 25 12:40:48 UTC 2020 - Stefan Hundhammer <shundhammer@suse.com>
+Mon Jun 29 09:59:33 UTC 2020 - Stefan Hundhammer <shundhammer@suse.com>
 
-- Backported jreidinger's patches to SLE-12-SP4 (bsc#1172848):
+- Backported jreidinger's patches to SLE-12-SP5 (bsc#1172848):
   - PR#242: Fix enc loading
     (fix gems loading with updated ruby (bsc#1172275))
   - PR#243: set also script name
