@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Jun  2 15:21:20 UTC 2020 - Josef Reidinger <jreidinger@suse.com>
+
+- fix gems loading with updated ruby (bsc#1172275)
+- 3.2.16
+
+-------------------------------------------------------------------
 Tue Dec  5 15:57:34 UTC 2017 - jreidinger@suse.com
 
 - Set proper title also for YaST2 Firstboot (bsc#1070583)
