@@ -1,7 +1,8 @@
 -------------------------------------------------------------------
-Tue Jun  2 15:21:20 UTC 2020 - Josef Reidinger <jreidinger@suse.com>
+Tue Aug  4 12:09:58 UTC 2020 - Ancor Gonzalez Sosa <ancor@suse.com>
 
-- fix gems loading with updated ruby (bsc#1172275)
+- Ported jreidinger's patches from SLE-12-SP2: fix gems loading
+  with updated ruby (bsc#1172275, bsc#1172848)
 - 3.2.16
 
 -------------------------------------------------------------------
