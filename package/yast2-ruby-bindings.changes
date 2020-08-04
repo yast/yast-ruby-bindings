@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Tue Aug  4 12:09:58 UTC 2020 - Ancor Gonzalez Sosa <ancor@suse.com>
+
+- Ported jreidinger's patches from SLE-12-SP2: fix gems loading
+  with updated ruby (bsc#1172275, bsc#1172848)
+- 3.2.16
+
+-------------------------------------------------------------------
 Tue Dec  5 15:57:34 UTC 2017 - jreidinger@suse.com
 
 - Set proper title also for YaST2 Firstboot (bsc#1070583)
