@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed Aug 12 12:33:13 UTC 2020 - Stefan Hundhammer <shundhammer@suse.com>
+
+- Fixed yast-ycp-ui-bindings dependency (bsc#1175115)
+- 4.3.2 
+
+-------------------------------------------------------------------
 Wed Aug 12 11:53:05 UTC 2020 - Stefan Hundhammer <shundhammer@suse.com>
 
 - Added new UI terms: MenuBar(), Menu() (bsc#1175115)
