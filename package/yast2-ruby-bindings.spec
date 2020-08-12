@@ -17,7 +17,7 @@
 
 
 Name:           yast2-ruby-bindings
-Version:        4.3.0
+Version:        4.3.1
 Url:            https://github.com/yast/yast-ruby-bindings
 Release:        0
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -40,9 +40,9 @@ Requires:       rubygem(%{rb_default_ruby_abi}:fast_gettext) < 3.0
 BuildRequires:  ruby-devel
 Requires:       yast2-core >= 3.2.2
 BuildRequires:  yast2-core-devel >= 3.2.2
-# UI.SetApplicationTitle
-Requires:       yast2-ycp-ui-bindings       >= 4.2.2
-BuildRequires:  yast2-ycp-ui-bindings-devel >= 4.2.2
+# MenuBar widget
+Requires:       yast2-ycp-ui-bindings       >= 4.3.11
+BuildRequires:  yast2-ycp-ui-bindings-devel >= 4.3.11
 # The test suite includes a regression test (std_streams_spec.rb) for a
 # libyui-ncurses bug fixed in 2.47.3
 BuildRequires:  libyui-ncurses >= 2.47.3
