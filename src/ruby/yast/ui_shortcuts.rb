@@ -4,6 +4,7 @@ module Yast
   # Module that provides shortcuts for known UI terms, so UI can be constructed in nice way.
   module UIShortcuts
     # Define symbols for the UI
+    # See https://github.com/libyui/libyui/blob/master/src/YUISymbols.h
     UI_TERMS = [
       :BarGraph,
       :BusyIndicator,
@@ -42,6 +43,7 @@ module Yast
       :Left,
       :LogView,
       :MarginBox,
+      :MenuBar,
       :MenuButton,
       :MinHeight,
       :MinSize,
@@ -83,6 +85,7 @@ module Yast
       :id,
       :item,
       :header,
+      :menu,
       :opt
     ].freeze
 
