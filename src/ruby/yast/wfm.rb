@@ -212,6 +212,24 @@ module Yast
       !Mode.auto && Debugger.installed?
     end
 
+    # @param [CFA::AugeasParsingError] e the caught exception
+    # @return [String] human readable exception description
+    private_class_method def self.parsing_error_msg(e)
+      msg = "Parse error while reading file #{e.file}\n" \
+            "YaST cannot continue and will quit.\n" \
+            "\n" \
+            "Possible causes and remedies:\n" \
+            "1. You made a mistake when changing the file by hand,\n" \
+            "   the syntax is invalid. Try reverting the changes.\n" \
+            "2. The syntax is in fact valid but YaST does not recognize it.\n" \
+            "   Please report a YaST bug.\n" \
+            "3. YaST made a mistake and wrote invalid syntax earlier.\n" \
+            "   Please report a YaST bug.\n\n"
+
+      msg + "Caller:  #{e.backtrace.first}\n\n" \
+            "Details: #{e.message}"
+    end
+
     # @param [Exception] e the caught exception
     # @return [String] human readable exception description
     private_class_method def self.internal_error_msg(e)
@@ -253,10 +271,14 @@ module Yast
       Builtins.y2error("Client %1 failed with '%2' (%3).\nBacktrace:\n%4",
         client,
         e.message,
-        e.class,
+        e.class.to_s,
         e.backtrace.join("\n"))
 
-      msg = internal_error_msg(e)
+      if e.class.to_s == "CFA::AugeasParsingError"
+        msg = parsing_error_msg(e)
+      else
+        msg = internal_error_msg(e)
+      end
 
       if ask_to_run_debugger?
         Yast.import "Popup"
