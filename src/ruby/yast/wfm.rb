@@ -209,7 +209,7 @@ module Yast
     private_class_method def self.ask_to_run_debugger?
       Yast.import "Mode"
 
-      !Mode.auto && Debugger.installed?
+      !Mode.auto && !Debugger.unwanted? && Debugger.installed?
     end
 
     # @param [CFA::AugeasParsingError] e the caught exception
