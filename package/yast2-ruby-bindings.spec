@@ -1,7 +1,7 @@
 #
 # spec file for package yast2-ruby-bindings
 #
-# Copyright (c) 2014 SUSE LINUX Products GmbH, Nuernberg, Germany.
+# Copyright (c) 2020 SUSE LLC
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
@@ -12,14 +12,14 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
-# Please submit bugfixes or comments via http://bugs.opensuse.org/
+# Please submit bugfixes or comments via https://bugs.opensuse.org/
 #
 
 
 Name:           yast2-ruby-bindings
-Version:        4.3.2
-Url:            https://github.com/yast/yast-ruby-bindings
+Version:        4.3.3
 Release:        0
+URL:            https://github.com/yast/yast-ruby-bindings
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Source0:        yast2-ruby-bindings-%{version}.tar.bz2
 Prefix:         /usr
@@ -57,7 +57,7 @@ Suggests:       rubygem(%{rb_default_ruby_abi}:byebug)
 # bcond within macros are ignored by osc/OBS.
 %bcond_with yast_run_ci_tests
 %if %{with yast_run_ci_tests}
-BuildRequires: rubygem(%{rb_default_ruby_abi}:yast-rake-ci)
+BuildRequires:  rubygem(%{rb_default_ruby_abi}:yast-rake-ci)
 %endif
 
 Requires:       ruby

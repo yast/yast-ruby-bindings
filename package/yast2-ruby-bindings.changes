@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Wed Sep 23 12:00:57 UTC 2020 - Josef Reidinger <jreidinger@suse.com>
+
+- Improve logger to log also method name in ruby (useful for any
+  debug like bsc#1144351)
+- 4.3.3
+
+-------------------------------------------------------------------
 Wed Aug 12 12:33:13 UTC 2020 - Stefan Hundhammer <shundhammer@suse.com>
 
 - Fixed yast-ycp-ui-bindings dependency (bsc#1175115)
