@@ -216,7 +216,7 @@ module Yast
     # @return [String] human readable exception description
     private_class_method def self.internal_error_msg(e)
       msg = "Internal error. Please report a bug report with logs.\n" \
-        "Run save_y2logs to get complete logs.\n"
+        "Run save_y2logs to get complete logs.\n\n"
 
       if e.is_a?(ArgumentError) && e.message =~ /invalid byte sequence in UTF-8/
         msg += "A string was encountered that is not valid in UTF-8.\n" \
@@ -224,8 +224,8 @@ module Yast
                "Refer to https://www.suse.com/support/kb/doc?id=7018056.\n\n"
       end
 
-      msg + "Details: #{e.message}\n" \
-            "Caller:  #{e.backtrace.first}"
+       msg + "Caller:  #{e.backtrace.first}\n\n" \
+             "Details: #{e.message}"
     end
 
     # Handles a SignalExpection
@@ -273,7 +273,12 @@ module Yast
         end
       else
         Yast.import "Report"
-        Report.Error(msg)
+        # Pure approximation here
+        # 50 is for usable text area width, +6 is for additional lines like
+        # button line, Error caption and so. Whole dialog is at most 20 lines
+        # high to fit into screen
+        height = [msg.size / 50 + 6, 20].min
+        Report.LongError(msg.gsub(/\n/, '<br />'), height:height)
       end
     rescue Exception => e
       Builtins.y2internal("Error reporting failed with '%1'.Backtrace:\n%2",
@@ -326,6 +331,9 @@ module Yast
         handle_abort_exception(e, client)
         exit
       rescue Exception => e
+        # Don't interfere with RSpec, such as RSpec::Mocks::MockExpectationError
+        raise e if e.class.to_s.start_with?("RSpec::")
+
         handle_exception(e, client)
         false
       end

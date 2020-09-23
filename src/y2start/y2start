@@ -1,4 +1,4 @@
-#! /usr/bin/ruby
+#! /usr/bin/ruby --encoding=utf-8
 # Note: The ruby interpreter path above is replaced at the installation
 # to use a hardcoded versioned path.
 
@@ -12,6 +12,10 @@ require "yast"
 require "yast/y2start_helpers"
 
 Yast::Y2StartHelpers.setup_signals
+
+# Configure global YaST environment. For example, it sets $PATH to ensure that
+# external commands are only executed from safe paths.
+Yast::Y2StartHelpers.config_env
 
 File.umask(0o022)
 
@@ -44,17 +48,14 @@ NO_CLI_CLIENTS = ["installation", "view_anymsg", "firstboot", "scc"].freeze
 Yast.ui_create(args[:server_name], args[:server_options])
 # set application title bsc#1033161
 Yast.import "UI"
-# do not fail if gethostname failed
-hostname = Socket.gethostname rescue ""
-hostname = "" if hostname == "(none)"
-hostname = " @ #{hostname}" unless hostname.empty?
 
-title = "YaST2 - #{args[:client_name]}#{hostname}"
 # set title only if it is not CLI (bsc#1033993)
 # modules do not have CLI arguments, except installation (bsc#1037891)
 set_title = args[:client_options][:params].empty? || NO_CLI_CLIENTS.include?(args[:client_name])
-Yast::UI.SetApplicationTitle(title) if set_title
+Yast::UI.SetApplicationTitle(
+  Yast::Y2StartHelpers.application_title(args[:client_name])) if set_title
 
-Yast::WFM.CallFunction(args[:client_name], args[:client_options][:params])
 
-0
+exit Yast::Y2StartHelpers.generate_exit_code(
+  Yast::WFM.CallFunction(args[:client_name], args[:client_options][:params])
+)

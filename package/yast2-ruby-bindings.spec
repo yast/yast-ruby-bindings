@@ -17,7 +17,7 @@
 
 
 Name:           yast2-ruby-bindings
-Version:        4.0.6
+Version:        4.3.2
 Url:            https://github.com/yast/yast-ruby-bindings
 Release:        0
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -29,20 +29,20 @@ BuildRequires:  gcc-c++
 BuildRequires:  yast2-core-devel
 BuildRequires:  yast2-devtools >= 3.1.10
 %if 0%{suse_version} == 1310
-BuildRequires:  rubygem-fast_gettext
+BuildRequires:  rubygem-fast_gettext < 3.0
 BuildRequires:  rubygem-rspec
-Requires:       rubygem-fast_gettext
+Requires:       rubygem-fast_gettext < 3.0
 %else
-BuildRequires:  rubygem(%{rb_default_ruby_abi}:fast_gettext)
+BuildRequires:  rubygem(%{rb_default_ruby_abi}:fast_gettext) < 3.0
 BuildRequires:  rubygem(%{rb_default_ruby_abi}:rspec)
-Requires:       rubygem(%{rb_default_ruby_abi}:fast_gettext)
+Requires:       rubygem(%{rb_default_ruby_abi}:fast_gettext) < 3.0
 %endif
 BuildRequires:  ruby-devel
 Requires:       yast2-core >= 3.2.2
 BuildRequires:  yast2-core-devel >= 3.2.2
-# UI.SetApplicationTitle
-Requires:       yast2-ycp-ui-bindings       >= 3.2.0
-BuildRequires:  yast2-ycp-ui-bindings-devel >= 3.2.0
+# MenuBar widget
+Requires:       yast2-ycp-ui-bindings       >= 4.3.1
+BuildRequires:  yast2-ycp-ui-bindings-devel >= 4.3.1
 # The test suite includes a regression test (std_streams_spec.rb) for a
 # libyui-ncurses bug fixed in 2.47.3
 BuildRequires:  libyui-ncurses >= 2.47.3
@@ -57,12 +57,12 @@ Suggests:       rubygem(%{rb_default_ruby_abi}:byebug)
 # bcond within macros are ignored by osc/OBS.
 %bcond_with yast_run_ci_tests
 %if %{with yast_run_ci_tests}
-BuildRequires: rubygem(yast-rake-ci)
+BuildRequires: rubygem(%{rb_default_ruby_abi}:yast-rake-ci)
 %endif
 
 Requires:       ruby
 Summary:        Ruby bindings for the YaST platform
-License:        GPL-2.0
+License:        GPL-2.0-only
 Group:          System/YaST
 
 %description
@@ -106,5 +106,6 @@ cd -
 %{_libdir}/ruby/vendor_ruby/%{rb_ver}/yast
 %{_libdir}/ruby/vendor_ruby/%{rb_ver}/%{rb_arch}/*x.so
 %{_libdir}/ruby/vendor_ruby/%{rb_ver}/%{rb_arch}/yast
+%license COPYING
 
 %changelog

@@ -1,5 +1,17 @@
 module Yast
   module Y2StartHelpers
+    # Configure global environment for YaST
+    #
+    # Currently it only sets values for $PATH.
+    #
+    # By configuring $PATH, it ensures that correct external programs are executed when
+    # relative paths are given, so possible CVEs are avoided when running YaST.
+    #
+    # Note that forked processes will inherit the environment configuration, for example
+    # when executing commands via SCR or Cheetah.
+    def self.config_env
+      ENV["PATH"] = "/sbin:/usr/sbin:/usr/bin:/bin"
+    end
 
     # Parses ARGV of y2start. it returns map with keys:
     #
@@ -55,6 +67,71 @@ module Yast
       ["HUP", "INT", "QUIT", "ABRT", "TERM"].each do |name|
         Signal.trap(name) { signal_handler(name) }
       end
+    end
+
+    # Returns application title string
+    def self.application_title(client_name)
+      # do not fail if gethostname failed
+      hostname = Socket.gethostname rescue ""
+      hostname = "" if hostname == "(none)"
+      hostname = " @ #{hostname}" unless hostname.empty?
+      if is_s390
+        # e.g. stdout "2964 = z13 IBM z13" transfered into "IBM z13"
+        arch_array = read_values.split("=")
+        arch_array.shift if arch_array.size > 1
+        architecture = arch_array.join(' ').strip
+        arch_array = architecture.split(' ')
+        arch_array.shift if arch_array.size > 1
+        architecture = arch_array.join(' ')
+
+        if !Yast::UI.TextMode
+          # Show the S390 architecutue in the QT banner only.
+          # The environment variable YAST_BANNER will be read and shown
+          # in libyui-qt.
+          ENV["YAST_BANNER"] = architecture
+          architecture = ""
+        end
+      else
+        architecture = ""
+      end
+      left_title = "YaST2 - #{client_name}#{hostname}"
+      left_title + architecture.rjust(80-left_title.size)
+    end
+
+
+    # client returned special result, this is used as offset (or as generic error)
+    RES_CLIENT_RESULT = 16
+    # yast succeed
+    RES_OK = 0
+    # Symbols representing failure
+    FAILED_SYMBOLS = [:abort, :cancel]
+    # transform various ruby objects to exit code. Useful to detection if YaST process failed
+    # and in CLI
+    def self.generate_exit_code(value)
+      case value
+      when nil, true
+        RES_OK
+      when false
+        RES_CLIENT_RESULT
+      when Integer
+        RES_CLIENT_RESULT + value
+      when Symbol
+        FAILED_SYMBOLS.include?(value) ? RES_CLIENT_RESULT : RES_OK
+      else
+        RES_OK
+      end
+    end
+
+    private_class_method def self.read_values
+      arch = `/usr/bin/read_values -c`.strip
+      return "" unless $?.success?
+      arch
+    end 
+
+    private_class_method def self.is_s390
+      arch = `/usr/bin/arch`.strip
+      return false unless $?.success?
+      arch.start_with?("s390")
     end
 
     private_class_method def self.signal_handler(name)

@@ -1,4 +1,133 @@
 -------------------------------------------------------------------
+Wed Aug 12 12:33:13 UTC 2020 - Stefan Hundhammer <shundhammer@suse.com>
+
+- Fixed yast-ycp-ui-bindings dependency (bsc#1175115)
+- 4.3.2 
+
+-------------------------------------------------------------------
+Wed Aug 12 11:53:05 UTC 2020 - Stefan Hundhammer <shundhammer@suse.com>
+
+- Added new UI terms: MenuBar(), Menu() (bsc#1175115)
+- 4.3.1
+
+-------------------------------------------------------------------
+Wed Apr 22 06:48:52 UTC 2020 - Josef Reidinger <jreidinger@suse.com>
+
+- reimplement Builtins#tointeger to not use scanf removed from ruby
+  2.7 (bsc#1169442)
+- 4.3.0
+
+-------------------------------------------------------------------
+Wed Jan 22 15:04:11 UTC 2020 - Ancor Gonzalez Sosa <ancor@suse.com>
+
+- Added a COPYING file with the GPL license (bsc#1161470)
+- 4.2.8
+
+-------------------------------------------------------------------
+Fri Jan  3 15:02:24 UTC 2020 - Josef Reidinger <jreidinger@suse.com>
+
+- Fix previous fix to really set exit code in ruby wrapper
+  (bsc#1144351)
+- 4.2.7
+
+-------------------------------------------------------------------
+Tue Dec 17 14:48:01 UTC 2019 - Josef Reidinger <jreidinger@suse.com>
+
+- Fix returning error codes from y2start start point. Helps with
+  CLI exit codes and also with failed installation (helps e.g. with
+  bsc#1144351 and yast lan CLI)
+- 4.2.6
+
+-------------------------------------------------------------------
+Thu Dec  5 10:37:29 CET 2019 - schubi@suse.de
+
+- S390: Evaluating an architecture specific string which will be
+  shown in the title bar (ncurses) or in the banner (qt)
+  (jsc#SLE-9424).
+- 4.2.5
+
+-------------------------------------------------------------------
+Wed Nov  6 11:32:29 UTC 2019 - Stefan Hundhammer <shundhammer@suse.com>
+
+- Added symbol for new UI CustomStatusItemSelector widget
+  (bsc#1084674)
+- Added symbol for UI icon term
+- 4.2.4
+
+-------------------------------------------------------------------
+Mon Sep 23 12:13:53 UTC 2019 - Stefan Hundhammer <shundhammer@suse.com>
+
+- Added symbols for new UI ItemSelector widget (bsc#1084674)
+- 4.2.3
+
+-------------------------------------------------------------------
+Thu Aug 22 16:19:20 CEST 2019 - schubi@suse.de
+
+- Using rb_default_ruby_abi tag in the spec file in order to
+  handle several ruby versions (bsc#1146403).
+- 4.2.2
+
+-------------------------------------------------------------------
+Mon May 20 09:09:14 UTC 2019 - mvidner@suse.com
+
+- Fixup the textdomain change so that yast2.rpm builds (bsc#1130822)
+- 4.2.1
+
+-------------------------------------------------------------------
+Thu May 16 12:19:59 UTC 2019 - mvidner@suse.com
+
+- Raise (an Internal Error) if no textdomain is declared for
+  a translatable text and Y2STRICTTEXTDOMAIN is in the environment
+  (bsc#1130822)
+- 4.2.0
+
+-------------------------------------------------------------------
+Tue Mar  5 14:23:29 UTC 2019 - Ladislav Slezák <lslezak@suse.cz>
+
+- Always return frozen strings from the translation functions,
+  make the results unified (related to bsc#1125006)
+- 4.1.4
+
+-------------------------------------------------------------------
+Mon Mar  4 09:11:50 UTC 2019 - Michal Filka <mfilka@suse.com>
+
+- bnc#1127685
+  - Internal error message popup is scaled according to its content
+- 4.1.3
+
+-------------------------------------------------------------------
+Tue Jan 22 17:58:53 UTC 2019 - lslezak@suse.cz
+
+- Support for FastGettext 2.0 (still works with FastGettext 1.6)
+  (bsc#1121865)
+- 4.1.2
+
+-------------------------------------------------------------------
+Tue Dec 18 15:30:14 UTC 2018 - jlopez@suse.com
+
+- Configure $PATH environment variable to execute external commands
+  only from safe paths (part of bsc#1118291).
+- 4.1.1
+
+-------------------------------------------------------------------
+Tue Oct 23 09:52:53 UTC 2018 - jreidinger@suse.com
+
+- Fix encoding-related problems by assuming that file contents is
+  always UTF-8. (bsc#1111367)
+- 4.1.0
+
+-------------------------------------------------------------------
+Tue Sep 11 11:11:34 CEST 2018 - aschnell@suse.com
+
+- adapted testsuite to glibc translation change (bsc#1107953)
+- 4.0.7
+
+-------------------------------------------------------------------
+Mon Aug 20 11:08:40 CEST 2018 - schubi@suse.de
+
+- Switched license in spec file from SPDX2 to SPDX3 format.
+
+-------------------------------------------------------------------
 Fri Apr  6 15:46:50 UTC 2018 - jlopez@suse.com
 
 - Allow to directly abort the process (needed for fate#318196).

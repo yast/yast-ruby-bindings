@@ -35,6 +35,10 @@ if(NOT RUBY_EXECUTABLE)
   message(FATAL_ERROR "Ruby not found.")
 endif()
 
+if(NOT RUBY_INCLUDE_PATH)
+  message(FATAL_ERROR "ruby-devel not found.")
+endif()
+
 #
 # crypt.h or xcrypt.h ?
 #

@@ -4,6 +4,7 @@ module Yast
   # Module that provides shortcuts for known UI terms, so UI can be constructed in nice way.
   module UIShortcuts
     # Define symbols for the UI
+    # See https://github.com/libyui/libyui/blob/master/src/YUISymbols.h
     UI_TERMS = [
       :BarGraph,
       :BusyIndicator,
@@ -15,6 +16,7 @@ module Yast
       :CheckBoxFrame,
       :ColoredLabel,
       :ComboBox,
+      :CustomStatusItemSelector,
       :DateField,
       :DownloadProgress,
       :DumbTab,
@@ -41,10 +43,12 @@ module Yast
       :Left,
       :LogView,
       :MarginBox,
+      :MenuBar,
       :MenuButton,
       :MinHeight,
       :MinSize,
       :MinWidth,
+      :MultiItemSelector,
       :MultiLineEdit,
       :MultiSelectionBox,
       :PackageSelector,
@@ -60,6 +64,7 @@ module Yast
       :RichText,
       :Right,
       :SelectionBox,
+      :SingleItemSelector,
       :Slider,
       :Table,
       :TextEntry,
@@ -76,9 +81,11 @@ module Yast
       :VWeight,
       :Wizard,
       # special ones that will be upper cased
+      :icon,
       :id,
       :item,
       :header,
+      :menu,
       :opt
     ].freeze
 
