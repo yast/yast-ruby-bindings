@@ -560,11 +560,6 @@ describe Yast::Builtins do
     it "works as expected" do
       suffixes = ["", "md5", "blowfish", "sha256", "sha512"]
 
-      # FIXME: Travis hack: skip some tests, only standard crypt and MD5 algorithms
-      # work in Ubuntu, it uses a different cprypto setup in glibc,
-      # cannot be easily fixed :-(
-      suffixes = suffixes[0, 2] if ENV["TRAVIS"]
-
       suffixes.each do |suffix|
         res = Yast::Builtins.send(:"crypt#{suffix}", "test")
         # crypt result is salted and cannot be reproduced

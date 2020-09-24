@@ -187,8 +187,6 @@ extern "C" {
     return yrb_utf8_str_new(utf_res);
   }
 
-  // crypt part taken from y2crypt from yast core
-  // TODO refactor to use sharedddd functionality
   // TODO move to own module, it is stupid to have it as builtin
   enum crypt_ybuiltin_t { CRYPT, MD5, BLOWFISH, SHA256, SHA512 };
 
@@ -223,35 +221,13 @@ extern "C" {
   static char*
   make_crypt_salt (const char* crypt_prefix, int crypt_rounds)
   {
-#define CRYPT_GENSALT_OUTPUT_SIZE (7 + 22 + 1)
-
-#ifndef RANDOM_DEVICE
-#define RANDOM_DEVICE "/dev/urandom"
-#endif
-
-    int fd = open (RANDOM_DEVICE, O_RDONLY);
-    if (fd < 0)
-    {
-      y2error ("Can't open %s for reading: %s\n", RANDOM_DEVICE,
-        strerror (errno));
-      return 0;
-    }
-
-    char entropy[16];
-    if (read_loop (fd, entropy, sizeof(entropy)) != sizeof(entropy))
-    {
-      close (fd);
-      y2error ("Unable to obtain entropy from %s\n", RANDOM_DEVICE);
-      return 0;
-    }
-
-    close (fd);
+    // use gensalt own auto entropy
+    const char *entropy = NULL;
+    const size_t entropy_len = 0;
 
     char output[CRYPT_GENSALT_OUTPUT_SIZE];
     char* retval = crypt_gensalt_rn (crypt_prefix, crypt_rounds, entropy,
-      sizeof(entropy), output, sizeof(output));
-
-    memset (entropy, 0, sizeof (entropy));
+      entropy_len, output, sizeof(output));
 
     if (!retval)
     {
@@ -261,6 +237,7 @@ extern "C" {
 
     return strdup (retval);
   }
+
 
   // the return value should be free'd
   char *
@@ -316,7 +293,7 @@ extern "C" {
     y2debug ("encrypted %s", newencrypted);
 
     //data lives on stack so dup it
-    return strdup(newencrypted); 
+    return strdup(newencrypted);
   }
 
   VALUE crypt_internal(crypt_ybuiltin_t type, VALUE unencrypted)
