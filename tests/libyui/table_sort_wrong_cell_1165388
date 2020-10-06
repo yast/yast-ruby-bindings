@@ -1,0 +1,19 @@
+#!/bin/sh
+set -u                          # unset variables are an error
+. ../examples/screenshots-tui/scripts/tmux-uitest.sh
+BASE=table_sort_wrong_cell_1165388
+
+tmux_new_session /usr/sbin/yast ./"$BASE".rb || exit
+tmux_await "Table sorting test" || exit
+sleep 0.1                       # draw the rest of the screen
+
+tmux_send_keys Enter            # activate first table row
+
+if ! tmux_grep "name-aaa.VALUE-AAA"; then
+    echo "The wrong cell was displayed, bug boo#1165388 exists"
+    tmux_send_keys M-C          # &Close
+    exit 1
+fi
+
+tmux_send_keys M-C              # &Close
+exit 0
