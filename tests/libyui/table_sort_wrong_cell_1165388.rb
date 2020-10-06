@@ -1,4 +1,14 @@
-#!/usr/sbin/yast
+#! /usr/bin/env ruby
+
+# See table_sort_wrong_cell_1165388.test
+
+require_relative "../test_helper"
+require "yast"
+
+if Yast.ui_component == ""
+  Yast.ui_component = ARGV[0] || "ncurses"
+end
+
 module Yast
   class TableCellClient < Client
     def main

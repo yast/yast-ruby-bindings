@@ -1,5 +1,8 @@
+#!/bin/bash
+# tmux-uitest.sh - a shell library to test Text User Interface using tmux
+
 SESSION=uitest
-: ${VERBOSE=false}
+: "${VERBOSE=false}"
 
 # $@ commands
 tmux_new_session() {
@@ -18,15 +21,15 @@ tmux_new_session() {
 tmux_grep() {
     local REGEX="$1"
     tmux capture-pane -t "$SESSION" -p | grep -E --quiet "$REGEX"
-    RESULT=(${PIPESTATUS[@]})
+    RESULT=("${PIPESTATUS[@]}")
 
-    if [ ${RESULT[0]} != 0 ]; then
+    if [ "${RESULT[0]}" != 0 ]; then
         # capturing the pane failed; the session may have exited already
         return 2
     fi
     
     # capturing went fine, pass on the grep result
-    test ${RESULT[1]} = 0
+    test "${RESULT[1]}" = 0
 }
 
 # $1 regex (POSIX ERE) to find in captured pane
@@ -68,7 +71,13 @@ tmux_send_keys() {
     tmux send-keys -t "$SESSION" "$1"
 }
 
-# $1 session name
+# usage: trap tmux_cleanup EXIT
+tmux_cleanup() {
+    if tmux_has_session; then
+        tmux_kill_session
+    fi
+}
+
 # ret code: true or false
 tmux_has_session() {
     if $VERBOSE; then
@@ -79,7 +88,6 @@ tmux_has_session() {
 }
 
 
-# $1 session name
 tmux_kill_session() {
     if $VERBOSE; then
         echo Killing the session

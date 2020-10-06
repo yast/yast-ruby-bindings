@@ -1,9 +1,17 @@
 #!/bin/sh
+
+# Verify that changing a value in a sorted table works correctly.
+# See https://bugzilla.opensuse.org/show_bug.cgi?id=1165388
+
 set -u                          # unset variables are an error
-. ../examples/screenshots-tui/scripts/tmux-uitest.sh
+MYDIR=$(dirname "$0")
+# shellcheck source=/dev/null # that file is checked separately
+. "$MYDIR"/tmux-uitest.sh
 BASE=table_sort_wrong_cell_1165388
 
-tmux_new_session /usr/sbin/yast ./"$BASE".rb || exit
+tmux_new_session "$MYDIR"/"$BASE".rb || exit
+trap tmux_cleanup EXIT
+
 tmux_await "Table sorting test" || exit
 sleep 0.1                       # draw the rest of the screen
 
