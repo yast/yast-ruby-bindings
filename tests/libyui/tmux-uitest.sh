@@ -4,7 +4,7 @@
 SESSION=uitest
 : "${VERBOSE=false}"
 
-# $@ commands
+# $1 shell command for sh -c
 tmux_new_session() {
     if $VERBOSE; then
         echo Starting session
@@ -12,7 +12,8 @@ tmux_new_session() {
     # -s session name
     # -x width -y height,
     # -d detached
-    tmux new-session -s "$SESSION" -x 80 -y 24 -d "$@"
+    # FIXME: sleep to be able to see errors when running $1
+    tmux new-session -s "$SESSION" -x 80 -y 24 -d sh -c "$1; sleep 9999"
 }
 
 # A --quiet grep
@@ -47,10 +48,15 @@ tmux_await() {
     false
 }
 
+# capture the session to stdout
+tmux_capture_pane() {
+    tmux capture-pane -t "$SESSION" -p
+}
+
 # $1
 # $1.txt plain text
 # $1.esc text with escape sequences for colors
-tmux_capture_pane() {
+tmux_capture_pane_to() {
     local OUT="$1"
 
     # -t target-pane, -p to stdout,
@@ -74,6 +80,9 @@ tmux_send_keys() {
 # usage: trap tmux_cleanup EXIT
 tmux_cleanup() {
     if tmux_has_session; then
+        echo "SCREEN BEGIN (non-empty lines only)"
+        tmux_capture_pane | grep .
+        echo "SCREEN END"
         tmux_kill_session
     fi
 }
