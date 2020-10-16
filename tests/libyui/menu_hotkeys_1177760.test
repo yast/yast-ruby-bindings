@@ -10,7 +10,7 @@ MYDIR=$(dirname "$0")
 BUG=1177760
 BASE=menu_hotkeys_$BUG
 
-tmux_new_session "/usr/sbin/yast /usr/share/doc/packages/yast2-ycp-ui-bindings/examples/MenuBar1.rb" || exit
+tmux_new_session "${MYDIR}/yast_ncurses /usr/share/doc/packages/yast2-ycp-ui-bindings/examples/MenuBar1.rb" || exit
 trap tmux_cleanup EXIT
 
 tmux_await "File.*Edit.*View" || exit
