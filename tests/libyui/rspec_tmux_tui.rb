@@ -39,8 +39,8 @@ class TmuxTui
   def capture_pane_to(filename)
     txt = capture_pane(color: false)
     esc = capture_pane(color: true)
-    File.write("#{filename}.txt", txt)
-    File.write("#{filename}.esc", esc)
+    File.write("#{filename}.out.txt", txt)
+    File.write("#{filename}.out.esc", esc)
   end
 
   def await(pattern)
