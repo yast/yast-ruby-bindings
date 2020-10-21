@@ -22,8 +22,3 @@ file(GLOB libyui_specs "libyui/*_spec.rb")
 foreach(test ${libyui_specs})
     ADD_TEST(${test}   rspec --format doc ${test})
 endforeach(test)
-
-file(GLOB libyui_tests "libyui/*.test")
-foreach(test ${libyui_tests})
-    ADD_TEST(${test} ${test})
-endforeach()
