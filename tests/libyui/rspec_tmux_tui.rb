@@ -10,19 +10,31 @@ class TmuxTui
 
   attr_reader :session_name
 
-  def initialize(shell_command, x: 80, y: 24, detach: true, session_name: nil)
+  def initialize(shell_command,
+    xy: [80, 24], detach: true, remain_on_exit: true, session_name: nil)
+
     @shell_command = shell_command
-    @x = x
-    @y = y
+    @x, @y = xy
     @detach = detach
     @session_name = session_name || new_session_name
 
-    system "tmux", "new-session",
-           "-s", @session_name,
-           "-x", @x.to_s,
-           "-y", @y.to_s,
-           *(@detach ? ["-d"] : [] ),
-           "sh", "-c", "#{@shell_command}; sleep 9999"
+    detach_args = @detach ? ["-d"] : []
+    # "remain-on-exit" is useful if shell_command may unexpectedly fail quickly.
+    # In that case we can still capture the pane and read the error messages.
+    remain_on_exit_args = if remain_on_exit
+      ["set-hook", "-g", "session-created", "set remain-on-exit on", ";"]
+    else
+      []
+    end
+
+    system "tmux",
+      * remain_on_exit_args,
+      "new-session",
+      "-s", @session_name,
+      "-x", @x.to_s,
+      "-y", @y.to_s,
+      * detach_args,
+      "sh", "-c", shell_command
   end
 
   def new_session_name
