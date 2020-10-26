@@ -7,10 +7,10 @@ describe "Table" do
       @base = "table_sort"
       @tui = TmuxTui.new_session "#{yast_ncurses} #{__dir__}/#{@base}.rb change-current-item"
       ex.run
-      @tui.kill_session if @tui.has_session?
+      @tui.ensure_no_session
     end
 
-    bug = "1165388"
+    bug = "1165388" # https://bugzilla.suse.com/show_bug.cgi?id=1165388
     it "ChangeWidget(_, Cell(row, col)) changes the correct cell, boo##{bug}" do
       base = @base + "_cell"
       @tui.await(/Table sorting test/)
@@ -27,9 +27,9 @@ describe "Table" do
       @tui.send_keys "M-C"      # &Close
     end
 
-    bug = "1177145"
+    bug = "1177145" # https://bugzilla.suse.com/show_bug.cgi?id=1177145
     it "ChangeWidget(_, :CurrentItem) activates the correct line, boo##{bug}" do
-      skip "not fixed yet"
+      pending "not fixed yet"
 
       base = @base + "_current_item"
       @tui.await(/Table sorting test/)

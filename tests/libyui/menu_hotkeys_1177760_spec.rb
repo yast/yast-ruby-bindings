@@ -1,7 +1,7 @@
 require_relative "rspec_tmux_tui"
 
 describe "Menu Item" do
-  bug = "1177760"
+  bug = "1177760" # https://bugzilla.suse.com/show_bug.cgi?id=1177760
   around(:each) do |ex|
     @base = "menu_hotkeys_#{bug}"
 
@@ -11,9 +11,7 @@ describe "Menu Item" do
 
     ex.run
 
-    if @tui.has_session?
-      @tui.kill_session
-    end    
+    @tui.ensure_no_session
   end
 
   it "has hotkeys in menu items, boo##{bug}" do

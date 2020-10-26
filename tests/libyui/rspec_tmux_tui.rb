@@ -50,8 +50,8 @@ class TmuxTui
       txt = capture_pane
       case txt
       when pattern
-        sleep 0.1               # draw the rest of the screen
-        return
+        sleep 0.1 # draw the rest of the screen
+        return nil
       else
         sleep sl
       end
@@ -65,12 +65,17 @@ class TmuxTui
   def send_keys(keys)
     system "tmux", "send-keys", "-t", session_name, keys
   end
-    
-  def has_session?
+
+  def has_session? # rubocop:disable Style/PredicateName
+    # the method name mimics the tmux command
     system "tmux", "has-session", "-t", session_name
   end
 
   def kill_session
     system "tmux", "kill-session", "-t", session_name
+  end
+
+  def ensure_no_session
+    kill_session if has_session?
   end
 end
