@@ -70,13 +70,18 @@ class TmuxTui
     File.write("#{filename}.out.esc", esc)
   end
 
+  # Wait about 10 seconds for *pattern* to appear.
+  # @param pattern [String,Regexp] a literal String or a regular expression
+  # @raise [Error] if it does not appear
+  # @return [void]
   def await(pattern)
+    pattern = Regexp.new(Regexp.quote(pattern)) if pattern.is_a? String
+
     sleeps = [0.1, 0.2, 0.2, 0.5, 1, 2, 2, 5]
     txt = ""
     sleeps.each do |sl|
       txt = capture_pane
-      case txt
-      when pattern
+      if txt =~ pattern
         sleep 0.1 # draw the rest of the screen
         return nil
       else
