@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Oct 13 14:42:52 UTC 2020 - Martin Vidner <mvidner@suse.com>
+
+- Add automatic TUI (ncurses) tests using tmux (bsc#1165388).
+- 4.3.5
+
+-------------------------------------------------------------------
 Thu Sep 24 19:46:00 UTC 2020 - besser82@fedoraproject.org
 
 - Fixes for gensalt handling with libxcrypt (bsc#1176924)
