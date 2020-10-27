@@ -5,9 +5,10 @@ describe "Table" do
     around(:each) do |ex|
       yast_ncurses = "#{__dir__}/yast_ncurses"
       @base = "table_sort"
-      @tui = TmuxTui.new_session "#{yast_ncurses} #{__dir__}/#{@base}.rb change-current-item"
-      ex.run
-      @tui.ensure_no_session
+      @tui = TmuxTui.new
+      @tui.new_session "#{yast_ncurses} #{__dir__}/#{@base}.rb change-current-item" do
+        ex.run
+      end
     end
 
     bug = "1165388" # https://bugzilla.suse.com/show_bug.cgi?id=1165388

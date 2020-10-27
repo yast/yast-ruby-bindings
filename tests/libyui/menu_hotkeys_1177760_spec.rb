@@ -4,14 +4,10 @@ describe "Menu Item" do
   bug = "1177760" # https://bugzilla.suse.com/show_bug.cgi?id=1177760
   around(:each) do |ex|
     @base = "menu_hotkeys_#{bug}"
-
-    yast_ncurses = "#{__dir__}/yast_ncurses"
-    example_dir = "/usr/share/doc/packages/yast2-ycp-ui-bindings/examples"
-    @tui = TmuxTui.new_session "#{yast_ncurses} #{example_dir}/MenuBar1.rb"
-
-    ex.run
-
-    @tui.ensure_no_session
+    @tui = YastTui.new
+    @tui.example("MenuBar1") do
+      ex.run
+    end
   end
 
   it "has hotkeys in menu items, boo##{bug}" do

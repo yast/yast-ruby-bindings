@@ -1,5 +1,7 @@
 require "shellwords"
 
+# Drive interactive TUI (textual user interface) with tmux.
+# https://github.com/tmux/tmux
 class TmuxTui
   class Error < RuntimeError
   end
@@ -10,24 +12,32 @@ class TmuxTui
 
   attr_reader :session_name
 
-  def initialize(shell_command,
-    xy: [80, 24], detach: true, remain_on_exit: true, session_name: nil)
+  # @param session_name [String]
+  def initialize(session_name: nil)
+    @session_name = session_name || new_session_name
+  end
+
+  # @param shell_command [String]
+  # @param xy [(Integer, Integer)]
+  # @param detach [Boolean]
+  # @param remain_on_exit [Boolean] useful if shell_command may unexpectedly
+  #   fail quickly. In that case we can still capture the pane
+  #   and read the error messages.
+  def new_session(shell_command,
+    xy: [80, 24], detach: true, remain_on_exit: true)
 
     @shell_command = shell_command
     @x, @y = xy
     @detach = detach
-    @session_name = session_name || new_session_name
 
     detach_args = @detach ? ["-d"] : []
-    # "remain-on-exit" is useful if shell_command may unexpectedly fail quickly.
-    # In that case we can still capture the pane and read the error messages.
     remain_on_exit_args = if remain_on_exit
       ["set-hook", "-g", "session-created", "set remain-on-exit on", ";"]
     else
       []
     end
 
-    system "tmux",
+    tmux_ret = system "tmux",
       * remain_on_exit_args,
       "new-session",
       "-s", @session_name,
@@ -35,6 +45,11 @@ class TmuxTui
       "-y", @y.to_s,
       * detach_args,
       "sh", "-c", shell_command
+
+    return tmux_ret unless block_given?
+
+    yield
+    ensure_no_session
   end
 
   def new_session_name
@@ -89,5 +104,15 @@ class TmuxTui
 
   def ensure_no_session
     kill_session if has_session?
+  end
+end
+
+class YastTui < TmuxTui
+  def example(basename, &block)
+    basename += ".rb" unless basename.end_with? ".rb"
+    yast_ncurses = "#{__dir__}/yast_ncurses"
+    example_dir = "/usr/share/doc/packages/yast2-ycp-ui-bindings/examples"
+
+    new_session("#{yast_ncurses} #{example_dir}/#{basename}", &block)
   end
 end
