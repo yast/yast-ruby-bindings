@@ -3,3 +3,6 @@
 /.yardoc
 /package/*.tar.*
 *.pot
+# screen captures from the libyui tests
+*.out.txt
+*.out.esc
