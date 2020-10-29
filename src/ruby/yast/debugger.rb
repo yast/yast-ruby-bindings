@@ -2,6 +2,18 @@
 require "yast"
 
 module Yast
+  # Interface to a Ruby debugger (byebug)
+  #
+  # `Y2DEBUGGER` environment variable (or install boot option)
+  #
+  # - 1: start the debugger when YaST starts;
+  #       in GUI, run an xterm with the debugger client;
+  #       in TUI, tell the user to run the debugger client
+  # - manual: like "1" but always tell the user instead of starting the client
+  # - remote: tell the user to connect from a remote machine. INSECURE!
+  # - 0: do not start the debugger, don't even ask if an exception is raised
+  #
+  # See also https://yastgithubio.readthedocs.io/en/latest/debugging/
   class Debugger
     class << self
       include Yast::Logger
@@ -83,6 +95,11 @@ module Yast
 
         log.info "Debugger set to: #{debug}"
         start(remote: debug == "remote", start_client: debug != "manual")
+      end
+
+      # @return [Boolean] Is the debugger explicitly unwanted even if available
+      def unwanted?
+        env_value == "0"
       end
 
       # is the Ruby debugger installed and can be loaded?
