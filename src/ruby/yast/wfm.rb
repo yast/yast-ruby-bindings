@@ -211,13 +211,14 @@ module Yast
       !Mode.auto && !Debugger.unwanted? && Debugger.installed?
     end
 
+    private_class_method def self.escape_angle_brackets(str)
+      ret.gsub!(/</, "&lt;")
+      ret.gsub(/>/, "&gt;")
+    end
+
     # @param [CFA::AugeasParsingError] e the caught exception
     # @return [String] human readable exception description
     private_class_method def self.parsing_error_msg(e)
-      augeas_message = e.message.dup
-      augeas_message.gsub!(/</, "&lt;")
-      augeas_message.gsub!(/>/, "&gt;")
-
       msg = "Parse error while reading file #{e.file}<br>" \
             "YaST cannot continue and will quit.<br>" \
             "<br>" \
@@ -228,8 +229,8 @@ module Yast
             "   Please report a YaST bug.<br>" \
             "3. YaST made a mistake and wrote invalid syntax earlier.<br>" \
             "   Please report a YaST bug.<br><br>"
-      msg + "Caller:  #{e.backtrace.first}<br><br>" \
-            "Details: #{augeas_message}"
+      msg + "Caller:  #{escape_angle_brackets(e.backtrace.first)}<br><br>" \
+            "Details: #{escape_angle_brackets(e.message)}"
     end
 
     # @param [Exception] e the caught exception
@@ -244,8 +245,8 @@ module Yast
                "Refer to https://www.suse.com/support/kb/doc?id=7018056.<br><br>"
       end
 
-      msg + "Caller:  #{e.backtrace.first}<br><br>" \
-            "Details: #{e.message}"
+      msg + "Caller:  #{escape_angle_brackets(e.backtrace.first)}<br><br>" \
+            "Details: #{escape_angle_brackets(e.message)}"
     end
 
     # Handles a SignalExpection
