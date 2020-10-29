@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Thu Oct 29 11:30:49 UTC 2020 - schubi <schubi@localhost>
+
+- Reporting augeas parsing errors and displaying them in rich-text
+  format (bsc#1174198).
+- 4.3.6
+
+-------------------------------------------------------------------
 Tue Oct 13 14:42:52 UTC 2020 - Martin Vidner <mvidner@suse.com>
 
 - Add automatic TUI (ncurses) tests using tmux (bsc#1165388).
