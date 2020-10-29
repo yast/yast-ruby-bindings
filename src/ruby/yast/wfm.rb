@@ -4,6 +4,9 @@ require "yast/ops"
 require "yast/debugger"
 require "yast/profiler"
 require "yast/yast"
+require "cgi"
+
+include CGI::Escape
 
 # @private we need it as clients is called in global contenxt
 GLOBAL_WFM_CONTEXT = proc {}
@@ -211,27 +214,23 @@ module Yast
       !Mode.auto && !Debugger.unwanted? && Debugger.installed?
     end
 
-    private_class_method def self.escape_angle_brackets(str)
-      ret = str.dup
-      ret.gsub!(/</, "&lt;")
-      ret.gsub(/>/, "&gt;")
-    end
-
     # @param [CFA::AugeasParsingError] e the caught exception
     # @return [String] human readable exception description
     private_class_method def self.parsing_error_msg(e)
       msg = "Parse error while reading file #{e.file}<br>" \
             "YaST cannot continue and will quit.<br>" \
             "<br>" \
-            "Possible causes and remedies:<br>" \
-            "1. You made a mistake when changing the file by hand,<br>" \
-            "   the syntax is invalid. Try reverting the changes.<br>" \
-            "2. The syntax is in fact valid but YaST does not recognize it.<br>" \
-            "   Please report a YaST bug.<br>" \
-            "3. YaST made a mistake and wrote invalid syntax earlier.<br>" \
-            "   Please report a YaST bug.<br><br>"
-      msg + "Caller:  #{escape_angle_brackets(e.backtrace.first)}<br><br>" \
-            "Details: #{escape_angle_brackets(e.message)}"
+            "Possible causes and remedies:" \
+            "<ol>" \
+            "<li>You made a mistake when changing the file by hand," \
+            " the syntax is invalid. Try reverting the changes.</li>" \
+            "<li>The syntax is in fact valid but YaST does not recognize it." \
+            "  Please report a YaST bug.</li>" \
+            "<li>YaST made a mistake and wrote invalid syntax earlier." \
+            " Please report a YaST bug.</li>" \
+            "</ol>"
+      msg + "Caller:  #{escapeHTML(e.backtrace.first)}<br><br>" \
+            "Details: #{escapeHTML(e.message)}"
     end
 
     # @param [Exception] e the caught exception
@@ -246,8 +245,8 @@ module Yast
                "Refer to https://www.suse.com/support/kb/doc?id=7018056.<br><br>"
       end
 
-      msg + "Caller:  #{escape_angle_brackets(e.backtrace.first)}<br><br>" \
-            "Details: #{escape_angle_brackets(e.message)}"
+      msg + "Caller:  #{escapeHTML(e.backtrace.first)}<br><br>" \
+            "Details: #{escapeHTML(e.message)}"
     end
 
     # Handles a SignalExpection

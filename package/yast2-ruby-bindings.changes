@@ -1,5 +1,5 @@
 -------------------------------------------------------------------
-Thu Oct 29 11:30:49 UTC 2020 - schubi <schubi@localhost>
+Thu Oct 29 11:30:49 UTC 2020 - Stefan Schubert <schubi@suse.com>
 
 - Reporting augeas parsing errors and displaying them in rich-text
   format (bsc#1174198).
