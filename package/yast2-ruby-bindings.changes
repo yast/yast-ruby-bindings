@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Thu Oct 29 17:26:31 UTC 2020 - Stefan Hundhammer <shundhammer@suse.com>
+
+- Added unit tests for NCMultiSelectionBox (bsc#1177985)
+- 4.3.6
+
+-------------------------------------------------------------------
 Tue Oct 13 14:42:52 UTC 2020 - Martin Vidner <mvidner@suse.com>
 
 - Add automatic TUI (ncurses) tests using tmux (bsc#1165388).
