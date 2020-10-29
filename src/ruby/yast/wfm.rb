@@ -212,6 +212,7 @@ module Yast
     end
 
     private_class_method def self.escape_angle_brackets(str)
+      ret = str.dup
       ret.gsub!(/</, "&lt;")
       ret.gsub(/>/, "&gt;")
     end
