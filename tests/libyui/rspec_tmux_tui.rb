@@ -67,7 +67,15 @@ class TmuxTui
     `tmux capture-pane -t #{session_name.shellescape} -p #{esc}`
   end
 
+  # Capture the pane to filename.out.txt (plain)
+  # and filename.out.esc (color using terminal escapes)
+  # @param filename [String]
+  # @return [void]
   def capture_pane_to(filename)
+    # FIXME: two separate captures could end up with different screen content.
+    # If that ends up being a problem we will need to produce plain text
+    # by filtering the color version
+
     txt = capture_pane(color: false)
     esc = capture_pane(color: true, sleep_s: 0)
     File.write("#{filename}.out.txt", txt)
