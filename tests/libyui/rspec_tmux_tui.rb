@@ -56,8 +56,12 @@ class TmuxTui
     "tmux-tui-#{rand 10000}"
   end
 
+  # @param color [Boolean] include escape sequences to reproduce the colors
+  # @param sleep [Numeric] in seconds; by default it is useful to wait a bit
+  #   to give the program time to react to user input
   # @return [String]
-  def capture_pane(color: false)
+  def capture_pane(color: false, sleep_s: 0.3)
+    sleep(sleep_s)
     esc = color ? "-e" : ""
     # FIXME: failure of the command?
     `tmux capture-pane -t #{session_name.shellescape} -p #{esc}`
@@ -65,7 +69,7 @@ class TmuxTui
 
   def capture_pane_to(filename)
     txt = capture_pane(color: false)
-    esc = capture_pane(color: true)
+    esc = capture_pane(color: true, sleep_s: 0)
     File.write("#{filename}.out.txt", txt)
     File.write("#{filename}.out.esc", esc)
   end
