@@ -105,10 +105,6 @@ describe "MultiSelectionBox" do
       @tui.await(/Current:.*:mushrooms/)
       @tui.capture_pane_to("#{@base}-#{@bug}")
 
-      # FIXME: The UI example also selects :mushrooms, but that does not appear
-      # in this rspec environment. Display sync problem? Even a tactical
-      # sleep() does not help, and @tui.await(/Selected.*mushrooms/) times out.
-      # For now, only expecting a non-nil value here.
       expect(@tui.capture_pane).to match(/Selected:.*:cheese, :tomatoes/)
     end
   end
