@@ -6,8 +6,6 @@ require "yast/profiler"
 require "yast/yast"
 require "cgi"
 
-include CGI::Escape
-
 # @private we need it as clients is called in global contenxt
 GLOBAL_WFM_CONTEXT = proc {}
 module Yast
@@ -229,8 +227,8 @@ module Yast
             "<li>YaST made a mistake and wrote invalid syntax earlier." \
             " Please report a YaST bug.</li>" \
             "</ol>"
-      msg + "Caller:  #{escapeHTML(e.backtrace.first)}<br><br>" \
-            "Details: #{escapeHTML(e.message)}"
+      msg + "Caller:  #{CGI::escapeHTML(e.backtrace.first)}<br><br>" \
+            "Details: #{CGI::escapeHTML(e.message)}"
     end
 
     # @param [Exception] e the caught exception
@@ -245,8 +243,8 @@ module Yast
                "Refer to https://www.suse.com/support/kb/doc?id=7018056.<br><br>"
       end
 
-      msg + "Caller:  #{escapeHTML(e.backtrace.first)}<br><br>" \
-            "Details: #{escapeHTML(e.message)}"
+      msg + "Caller:  #{CGI::escapeHTML(e.backtrace.first)}<br><br>" \
+            "Details: #{CGI::escapeHTML(e.message)}"
     end
 
     # Handles a SignalExpection
