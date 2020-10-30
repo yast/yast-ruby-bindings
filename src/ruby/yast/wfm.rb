@@ -305,7 +305,7 @@ module Yast
         end
       else
         Yast.import "Report"
-        Report.LongError(msg, height: height)
+        Report.LongError(msg)
       end
     rescue Exception => e
       Builtins.y2internal("Error reporting failed with '%1' and backtrace %2",
