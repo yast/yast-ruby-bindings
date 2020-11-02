@@ -29,8 +29,8 @@ end
 test = File.dirname(__FILE__) + "/std_streams_spec.rb"
 cmd = "rspec #{test} >#{OUTPUT} 2>&1"
 
-tmux_out = `tmux -c '#{cmd}; echo \$? > #{RESULT}'`
-puts "Tmux output:"
+tmux_out = `TERM=screen tmux -c '#{cmd}; echo \$? > #{RESULT}'`
+puts "Outside tmux output:"
 puts tmux_out
 if File.exist?(RESULT) && File.read(RESULT) == "0\n"
   puts "Test succeeded."
