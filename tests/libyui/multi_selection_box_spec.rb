@@ -21,8 +21,13 @@ describe "MultiSelectionBox" do
       end
 
       it "Visually selects the right items initially" do
-        expect(@tui.capture_pane).to include("[x] Cheese", "[x] Tomatoes",
-                                             "[ ] Mushrooms", "[ ] Onions", "[ ] Salami", "[ ] Ham")
+        expect(@tui.capture_pane).to include(
+          "[x] Cheese",
+          "[x] Tomatoes",
+          "[ ] Mushrooms",
+          "[ ] Onions",
+          "[ ] Salami",
+          "[ ] Ham")
       end
     end
 
@@ -69,18 +74,18 @@ describe "MultiSelectionBox" do
       it "Replacing all items works" do
         expect(@tui.capture_pane).to include("[ ] Vegetarian")
         @tui.send_keys "M-V"      # &Vegetarian
-        @tui.send_keys "Space"    # toggle combo box
         @tui.await(/Current:.*:mushrooms/)
         expect(@tui.capture_pane).to include("[x] Vegetarian")
         expect(@tui.capture_pane).not_to include("Salami")
         expect(@tui.capture_pane).not_to include("Ham")
+        expect(@tui.capture_pane).to match(/Selected:.*:cheese, :tomatoes, :mushrooms/)
 
         @tui.send_keys "M-V"      # &Vegetarian
-        @tui.send_keys "Space"    # toggle combo box
         @tui.await("Salami")
         expect(@tui.capture_pane).to include("[ ] Vegetarian")
         expect(@tui.capture_pane).to include("Salami")
         expect(@tui.capture_pane).to include("Ham")
+        expect(@tui.capture_pane).to match(/Selected:.*:cheese, :tomatoes, :salami/)
       end
     end
   end
@@ -101,11 +106,10 @@ describe "MultiSelectionBox" do
       @bug = "1177985"       # https://bugzilla.suse.com/show_bug.cgi?id=1177985
 
       @tui.send_keys "M-V"      # &Vegetarian
-      @tui.send_keys "Space"    # toggle combo box (this will replace all items)
       @tui.await(/Current:.*:mushrooms/)
       @tui.capture_pane_to("#{@base}-#{@bug}")
 
-      expect(@tui.capture_pane).to match(/Selected:.*:cheese, :tomatoes/)
+      expect(@tui.capture_pane).to match(/Selected:.*:cheese, :tomatoes, :mushrooms/)
     end
   end
 end
