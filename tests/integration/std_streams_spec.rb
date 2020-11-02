@@ -3,12 +3,14 @@
 require_relative "../test_helper"
 require "yast/ui_shortcuts"
 
-Yast.import "UI"
-
 def std_puts(message)
   $stdout.puts "stdout: #{message}"
   $stderr.puts "stderr: #{message}"
 end
+
+std_puts "tty before importing UI"
+std_puts "TERM=#{ENV['TERM']}"
+Yast.import "UI"
 
 # Regression test for the fix of bnc#943757 implemented
 # in libyui-ncurses 2.47.3
