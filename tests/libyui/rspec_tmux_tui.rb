@@ -56,27 +56,44 @@ class TmuxTui
     "tmux-tui-#{rand 10000}"
   end
 
+  # @param color [Boolean] include escape sequences to reproduce the colors
+  # @param sleep [Numeric] in seconds; by default it is useful to wait a bit
+  #   to give the program time to react to user input
   # @return [String]
-  def capture_pane(color: false)
+  def capture_pane(color: false, sleep_s: 0.3)
+    sleep(sleep_s)
     esc = color ? "-e" : ""
     # FIXME: failure of the command?
     `tmux capture-pane -t #{session_name.shellescape} -p #{esc}`
   end
 
+  # Capture the pane to filename.out.txt (plain)
+  # and filename.out.esc (color using terminal escapes)
+  # @param filename [String]
+  # @return [void]
   def capture_pane_to(filename)
+    # FIXME: two separate captures could end up with different screen content.
+    # If that ends up being a problem we will need to produce plain text
+    # by filtering the color version
+
     txt = capture_pane(color: false)
-    esc = capture_pane(color: true)
+    esc = capture_pane(color: true, sleep_s: 0)
     File.write("#{filename}.out.txt", txt)
     File.write("#{filename}.out.esc", esc)
   end
 
+  # Wait about 10 seconds for *pattern* to appear.
+  # @param pattern [String,Regexp] a literal String or a regular expression
+  # @raise [Error] if it does not appear
+  # @return [void]
   def await(pattern)
+    pattern = Regexp.new(Regexp.quote(pattern)) if pattern.is_a? String
+
     sleeps = [0.1, 0.2, 0.2, 0.5, 1, 2, 2, 5]
     txt = ""
     sleeps.each do |sl|
       txt = capture_pane
-      case txt
-      when pattern
+      if txt =~ pattern
         sleep 0.1 # draw the rest of the screen
         return nil
       else
