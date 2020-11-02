@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Thu Oct 29 11:30:49 UTC 2020 - Stefan Schubert <schubi@suse.com>
+
+- Reporting augeas parsing errors and displaying them in rich-text
+  format (bsc#1174198).
+- 3.2.18
+
+-------------------------------------------------------------------
 Mon Jun 29 09:59:33 UTC 2020 - Stefan Hundhammer <shundhammer@suse.com>
 
 - Backported jreidinger's patches to SLE-12-SP5 (bsc#1172848):
