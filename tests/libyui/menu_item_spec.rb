@@ -1,16 +1,16 @@
 require_relative "rspec_tmux_tui"
 
 describe "Menu Item" do
-  bug = "1177760" # https://bugzilla.suse.com/show_bug.cgi?id=1177760
   around(:each) do |ex|
-    @base = "menu_hotkeys_#{bug}"
     @tui = YastTui.new
-    @tui.example("MenuBar1") do
+    @tui.example("MenuBar-shortcuts-test") do
       ex.run
     end
   end
 
+  bug = "1177760" # https://bugzilla.suse.com/show_bug.cgi?id=1177760
   it "has hotkeys in menu items, boo##{bug}" do
+    @base = "menu_hotkeys_#{bug}"
     @tui.await(/File.*Edit.*View/)
     @tui.capture_pane_to("#{@base}-1-initial")
 
