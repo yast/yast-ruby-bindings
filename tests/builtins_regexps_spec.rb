@@ -83,13 +83,13 @@ describe "Yast::Builtins regular expresion methods" do
 
   describe ".regexptokenize" do
     it "works as expected" do
-      expect(Yast::Builtins.regexptokenize("aaabbBb", "(.*[A-Z]).*")).to eq(["aaabbB"])
+      expect(Yast::Builtins.regexptokenize("aaabb7b", "(.*[0-9]).*")).to eq(["aaabb7"])
       expect(Yast::Builtins.regexptokenize("aaabbb", "(.*ab)(.*)")).to eq(["aaab", "bb"])
       expect(Yast::Builtins.regexptokenize("aaabbb", "(.*ba).*")).to eq([])
       expect(Yast::Builtins.regexptokenize("aaabbb", "(.*ba).*(")).to eq(nil)
 
       # the result must be UTF-8 string
-      expect(Yast::Builtins.regexptokenize("aaabbBb", "(.*[A-Z]).*").first.encoding).to eq(Encoding::UTF_8)
+      expect(Yast::Builtins.regexptokenize("aaabb7b", "(.*[0-9]).*").first.encoding).to eq(Encoding::UTF_8)
     end
   end
 end
