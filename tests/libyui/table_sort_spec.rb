@@ -5,7 +5,7 @@ describe "Table" do
     around(:each) do |ex|
       y2start = "ruby -r #{__dir__}/../test_helper #{__dir__}/../../src/y2start/y2start"
       @base = "table_sort"
-      @tui = TmuxTui.new
+      @tui = ScreenTui.new
       @tui.new_session "#{y2start} #{__dir__}/#{@base}.rb -a change-current-item ncurses" do
         ex.run
       end

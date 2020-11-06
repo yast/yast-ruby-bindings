@@ -2,7 +2,7 @@ require "shellwords"
 
 # Drive interactive TUI (textual user interface) with tmux.
 # https://github.com/tmux/tmux
-class TmuxTui
+class TerminalTui
   class Error < RuntimeError
   end
 
@@ -17,6 +17,98 @@ class TmuxTui
     @session_name = session_name || new_session_name
   end
 
+  def new_session_name
+    "tui-#{rand 10000}"
+  end
+
+  # Wait about 10 seconds for *pattern* to appear.
+  # @param pattern [String,Regexp] a literal String or a regular expression
+  # @raise [Error] if it does not appear
+  # @return [void]
+  def await(pattern)
+    pattern = Regexp.new(Regexp.quote(pattern)) if pattern.is_a? String
+
+    sleeps = [0.1, 0.2, 0.2, 0.5, 1, 2, 2, 5]
+    txt = ""
+    sleeps.each do |sl|
+      txt = capture_pane
+      if txt =~ pattern
+        sleep 0.1 # draw the rest of the screen
+        return nil
+      else
+        sleep sl
+      end
+    end
+    raise Error, "Timed out waiting for #{pattern.inspect}. Seen:\n#{txt}"
+  end
+
+
+end
+
+class ScreenTui < TerminalTui
+  def new_session(shell_command,
+    xy: [80, 24], detach: true, remain_on_exit: true)
+    raise ArgumentError unless block_given?
+
+    # FIXME insecure
+    @capture_fifo = "/tmp/#{@session_name}.fifo"
+    out = `mkfifo #{@capture_fifo.shellescape}`
+    raise out unless $?.success?
+
+    @shell_command = shell_command
+    @x, @y = xy
+    @detach = detach
+
+    detach_args = @detach ? ["-d", "-m"] : []
+    remain_on_exit_args = if remain_on_exit
+                            []
+      # ["set-hook", "-g", "session-created", "set remain-on-exit on", ";"]
+    else
+      []
+    end
+
+    tmux_ret = system "screen",
+                      "-c", "#{__dir__}/myscreenrc",
+      * remain_on_exit_args,
+      "-S", @session_name,
+      * detach_args,
+      "sh", "-c", shell_command
+    raise "oops #{tmux_ret}" unless tmux_ret
+
+    system "screen", "-ls"
+
+    yield
+    ensure_no_session
+  end
+
+  def capture_pane(color: false, sleep_s: 0.3)
+    sleep(sleep_s)
+    # FIXME: failure of the command?
+    `screen -S #{session_name.shellescape} -X hardcopy #{@capture_fifo.shellescape}; cat #{@capture_fifo.shellescape}`
+  end
+
+  def capture_pane_to(filename)
+    mux_command "hardcopy", "#{filename}.out.txt"
+  end
+
+  def kill_session
+    mux_command "quit"
+  end
+
+  def ensure_no_session
+    kill_session
+    File.delete @capture_fifo
+  end
+
+  private
+
+  def mux_command(*commands)
+    system "screen", "-S", session_name, "-X", *commands
+  end
+  
+end
+
+class TmuxTui < TerminalTui
   # @param shell_command [String]
   # @param xy [(Integer, Integer)]
   # @param detach [Boolean]
@@ -52,10 +144,6 @@ class TmuxTui
     ensure_no_session
   end
 
-  def new_session_name
-    "tmux-tui-#{rand 10000}"
-  end
-
   # @param color [Boolean] include escape sequences to reproduce the colors
   # @param sleep [Numeric] in seconds; by default it is useful to wait a bit
   #   to give the program time to react to user input
@@ -80,27 +168,6 @@ class TmuxTui
     esc = capture_pane(color: true, sleep_s: 0)
     File.write("#{filename}.out.txt", txt)
     File.write("#{filename}.out.esc", esc)
-  end
-
-  # Wait about 10 seconds for *pattern* to appear.
-  # @param pattern [String,Regexp] a literal String or a regular expression
-  # @raise [Error] if it does not appear
-  # @return [void]
-  def await(pattern)
-    pattern = Regexp.new(Regexp.quote(pattern)) if pattern.is_a? String
-
-    sleeps = [0.1, 0.2, 0.2, 0.5, 1, 2, 2, 5]
-    txt = ""
-    sleeps.each do |sl|
-      txt = capture_pane
-      if txt =~ pattern
-        sleep 0.1 # draw the rest of the screen
-        return nil
-      else
-        sleep sl
-      end
-    end
-    raise Error, "Timed out waiting for #{pattern.inspect}. Seen:\n#{txt}"
   end
 
   # @param keys [String] "C-X" for Ctrl-X, "M-X" for Alt-X, think "Meta";
