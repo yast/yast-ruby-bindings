@@ -46,6 +46,55 @@ class TerminalTui
 end
 
 class ScreenTui < TerminalTui
+
+  # Keys as understood by terminals (and terminal emulators)
+  class Key
+    attr_reader :terminfo_capname
+
+    def initialize(terminfo_capname)
+      @terminfo_capname = terminfo_capname
+      @value = nil
+    end
+
+    def value
+      @value ||= init_value
+    end
+
+    private
+
+    # @return [String]
+    def init_value
+      # -T $TERM ?
+      `tput #{terminfo_capname}`
+    end
+
+    K_LEFT   = Key.new "kcub1"
+    K_DOWN   = Key.new "kcud1"
+    K_UP     = Key.new "kcuu1"
+    K_RIGHT  = Key.new "kcuf1"
+    K_HOME   = Key.new "khome"
+    K_END    = Key.new "kend"
+
+    K_PGUP   = K_PAGEUP = Key.new "kpp"
+    K_PGDN   = K_PAGEDOWN = Key.new "knp"
+
+    K_INSERT = Key.new "kich1"
+    K_DELETE = Key.new "kdch1"
+
+    K_F1     = Key.new "kf1"
+    K_F2     = Key.new "kf2"
+    K_F3     = Key.new "kf3"
+    K_F4     = Key.new "kf4"
+    K_F5     = Key.new "kf5"
+    K_F6     = Key.new "kf6"
+    K_F7     = Key.new "kf7"
+    K_F8     = Key.new "kf8"
+    K_F9     = Key.new "kf9"
+    K_F10    = Key.new "kf10"
+    K_F11    = Key.new "kf11"
+    K_F12    = Key.new "kf12"
+  end
+
   def new_session(shell_command,
     xy: [80, 24], detach: true, remain_on_exit: true)
     raise ArgumentError unless block_given?
@@ -91,6 +140,23 @@ class ScreenTui < TerminalTui
     mux_command "hardcopy", "#{filename}.out.txt"
   end
 
+  # @param key [Key]
+  def send_keys(key)
+    if key.is_a? Key
+      stuff_string = key.value
+    elsif key.start_with? "C-"
+      stuff_string = "^" + key[2]
+    elsif key.start_with? "M-"
+      stuff_string = "^[" + key[2]
+    elsif key == "Enter"
+      stuff_string = "^m"
+    else
+      raise ArgumentError
+    end
+
+    mux_command "stuff", stuff_string
+  end
+
   def kill_session
     mux_command "quit"
   end
@@ -105,7 +171,6 @@ class ScreenTui < TerminalTui
   def mux_command(*commands)
     system "screen", "-S", session_name, "-X", *commands
   end
-  
 end
 
 class TmuxTui < TerminalTui

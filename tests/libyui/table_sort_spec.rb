@@ -17,7 +17,7 @@ describe "Table" do
       @tui.await(/Table sorting test/)
       @tui.capture_pane_to("#{base}-1-initial")
 
-      @tui.send_keys "Home"     # go to first table row
+      @tui.send_keys ScreenTui::Key::K_HOME     # go to first table row
       @tui.capture_pane_to("#{base}-2-first-row-selected")
 
       @tui.send_keys "Enter"    # activate first table row
