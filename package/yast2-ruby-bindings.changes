@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Thu Nov 12 10:20:58 UTC 2020 - Martin Vidner <mvidner@suse.com>
+
+- Build fix for "error creating /run/tmux/399" (bsc#1178394)
+- 4.3.9
+
+-------------------------------------------------------------------
 Tue Nov  3 17:39:19 UTC 2020 - Martin Vidner <mvidner@suse.com>
 
 - Test: menu items remain disabled after hotkeys are recomputed
