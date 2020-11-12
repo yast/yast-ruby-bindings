@@ -17,7 +17,7 @@
 
 
 Name:           yast2-ruby-bindings
-Version:        4.3.8
+Version:        4.3.9
 Release:        0
 URL:            https://github.com/yast/yast-ruby-bindings
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -89,6 +89,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 cd -
 
 %check
+# Build workers are set up without systemd so the default /run/tmux dir
+# will not be present (unless clamav pulls systemd in, on SLE)
+export TMUX_TMPDIR=/tmp
 cd build
 make test ARGS=-V
 cd -
