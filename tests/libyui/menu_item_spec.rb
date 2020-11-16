@@ -42,8 +42,7 @@ describe "Menu Item" do
     @tui.capture_pane_to("#{@base}-3-copy-item-activated")
     expect(@tui.capture_pane).to include("Last Event:", "copy")
 
-    # This changes the shortcuts!
-    @tui.send_keys "M-B"        # Extra &Buttons
+    @tui.send_keys "M-E"        # Extra &Buttons
     @tui.capture_pane_to("#{@base}-4-extra-buttons-activated")
 
     @tui.send_keys "M-T"        # Edi&t
