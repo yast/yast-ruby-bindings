@@ -43,9 +43,6 @@ BuildRequires:  yast2-core-devel >= 3.2.2
 # MenuBar-shortcuts-test.rb
 Requires:       yast2-ycp-ui-bindings       >= 4.3.7
 BuildRequires:  yast2-ycp-ui-bindings-devel >= 4.3.7
-# Higher priority for toplevel menu shortcuts
-Requires:	libyui >= 3.12.2
-BuildRequires:	libyui >= 3.12.2
 # The test suite includes a regression test (std_streams_spec.rb) for a
 # libyui-ncurses bug fixed in 2.47.3
 BuildRequires:  libyui-ncurses >= 2.47.3
