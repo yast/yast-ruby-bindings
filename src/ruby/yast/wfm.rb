@@ -308,6 +308,11 @@ module Yast
         Yast.import "Report"
         Report.LongError(msg, height: height)
       end
+
+      # Logging all information about the product evaluation
+      Yast.import "ProductEvaluation"
+      ProductEvaluation.write("internal_error")
+
     rescue Exception => e
       Builtins.y2internal("Error reporting failed with '%1'.Backtrace:\n%2",
         e.message,
