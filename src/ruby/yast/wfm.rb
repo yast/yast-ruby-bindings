@@ -310,8 +310,10 @@ module Yast
       end
 
       # Logging all information about the product evaluation
-      Yast.import "ProductEvaluation"
-      ProductEvaluation.write("internal_error")
+      require "installation/installation_info"
+      ::Installation::InstallationInfo.instance.write(
+        "internal_error", { error: "Exception raised in #{client}",
+        error_details: msg, error_backtrace: e.backtrace })
 
     rescue Exception => e
       Builtins.y2internal("Error reporting failed with '%1'.Backtrace:\n%2",
