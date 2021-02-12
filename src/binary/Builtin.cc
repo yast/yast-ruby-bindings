@@ -225,17 +225,14 @@ extern "C" {
     const char *entropy = NULL;
     const size_t entropy_len = 0;
 
-    char output[CRYPT_GENSALT_OUTPUT_SIZE];
-    char* retval = crypt_gensalt_rn (crypt_prefix, crypt_rounds, entropy,
-      entropy_len, output, sizeof(output));
+    char* retval = crypt_gensalt_ra (crypt_prefix, crypt_rounds, entropy, entropy_len);
 
     if (!retval)
     {
       y2error ("Unable to generate a salt, check your crypt settings.\n");
-      return 0;
     }
 
-    return strdup (retval);
+    return retval;
   }
 
 
@@ -273,7 +270,7 @@ extern "C" {
     }
     if (!salt)
     {
-      y2error ("Cannot create salt for sha512 crypt");
+      y2error ("Cannot create salt for crypt type %d", use_crypt);
       return 0;
     }
 
