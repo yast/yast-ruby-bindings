@@ -306,7 +306,7 @@ static VALUE rescue_require_console(...)
 }
 
 /**
- * Start the configuration console, it calls "Installation::Console.run" Ruby code.
+ * Start the configuration console, it calls "Installation::Console::Menu.run" Ruby code.
  */
 static void start_config_console()
 {
