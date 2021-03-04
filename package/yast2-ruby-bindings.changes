@@ -1,4 +1,13 @@
 -------------------------------------------------------------------
+Thu Mar  4 14:44:36 UTC 2021 - Ladislav Slezák <lslezak@suse.cz>
+
+- Change the special keybard shortcut to start a graphical
+  menu instead of a low level command line console,
+- The command line console can be started from there as well
+- Related to jsc#PM-1895, jsc#SLE-16263
+- 4.3.13
+
+-------------------------------------------------------------------
 Mon Feb 15 17:44:17 UTC 2021 - Ladislav Slezák <lslezak@suse.cz>
 
 - Handle a special keyboard shortcut for starting the installation

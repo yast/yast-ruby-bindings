@@ -295,7 +295,7 @@ static void start_ruby_debugger()
 
 static VALUE require_console(...)
 {
-  rb_require("installation/console");
+  rb_require("installation/console/menu");
   return Qtrue;
 }
 
@@ -319,10 +319,11 @@ static void start_config_console()
     // LoadError caught
     if (success == Qfalse) return;
 
-    // call "Installation::Console.run"
+    // call "Installation::Console::Menu.run"
     VALUE installation = rb_const_get(rb_cObject, rb_intern("Installation"));
     VALUE console = rb_const_get(installation, rb_intern("Console"));
-    rb_funcall(console, rb_intern("run"), 0);
+    VALUE menu = rb_const_get(console, rb_intern("Menu"));
+    rb_funcall(menu, rb_intern("run"), 0);
 }
 
 /*
