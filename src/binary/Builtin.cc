@@ -225,7 +225,7 @@ extern "C" {
     char* retval = crypt_gensalt_ra (crypt_prefix, crypt_rounds, NULL, 0);
 
     // auto entropy might not be supported in some older systems (15.2 and older),
-    // if we get the "Invalid argument" error then read some entropy from
+    // if we get the EINVAL "Invalid argument" error then read some entropy from
     // /dev/urandom and try again
     if (!retval && errno == EINVAL)
     {
@@ -240,9 +240,11 @@ extern "C" {
 
       char entropy[16];
       const size_t entropy_len = sizeof(entropy);
-      if (read_loop (fd, entropy, entropy_len) != entropy_len)
+      int read_size = read_loop (fd, entropy, entropy_len);
+      close (fd);
+
+      if (read_size != entropy_len)
       {
-        close (fd);
         y2error ("Unable to obtain entropy from %s\n", device);
         return 0;
       }
