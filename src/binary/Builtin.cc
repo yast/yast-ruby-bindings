@@ -222,15 +222,38 @@ extern "C" {
   make_crypt_salt (const char* crypt_prefix, int crypt_rounds)
   {
     // use gensalt own auto entropy
-    const char *entropy = NULL;
-    const size_t entropy_len = 0;
+    char* retval = crypt_gensalt_ra (crypt_prefix, crypt_rounds, NULL, 0);
 
-    char* retval = crypt_gensalt_ra (crypt_prefix, crypt_rounds, entropy, entropy_len);
+    // auto entropy might not be supported in some older systems (15.2 and older),
+    // if we get the EINVAL "Invalid argument" error then read some entropy from
+    // /dev/urandom and try again
+    if (!retval && errno == EINVAL)
+    {
+      const char* device = "/dev/urandom";
+
+      int fd = open (device, O_RDONLY);
+      if (fd < 0)
+      {
+        y2error ("Can't open %s for reading: %s\n", device, strerror (errno));
+        return 0;
+      }
+
+      char entropy[16];
+      const size_t entropy_len = sizeof(entropy);
+      int read_size = read_loop (fd, entropy, entropy_len);
+      close (fd);
+
+      if (read_size != entropy_len)
+      {
+        y2error ("Unable to obtain entropy from %s\n", device);
+        return 0;
+      }
+
+      retval = crypt_gensalt_ra (crypt_prefix, crypt_rounds, entropy, entropy_len);
+    }
 
     if (!retval)
-    {
-      y2error ("Unable to generate a salt, check your crypt settings.\n");
-    }
+      y2error ("Unable to generate a salt, check your crypt settings: %s.\n", strerror(errno));
 
     return retval;
   }
