@@ -17,4 +17,10 @@ module Yast::UI
     ).returns(T.untyped)
   end
   def self.QueryWidget(widget_id, property); end
+
+  sig do
+    returns(T::Boolean)
+  end
+  def self.TextMode; end
+
 end
