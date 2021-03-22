@@ -1,4 +1,4 @@
-# typed: strong
+# typed: ignore
 module Yast::WFM
   class NoParameter; end
   YCPAny = T.type_alias(

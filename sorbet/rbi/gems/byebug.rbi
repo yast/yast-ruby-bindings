@@ -7,7 +7,8 @@
 #
 #   https://github.com/sorbet/sorbet-typed/new/master?filename=lib/byebug/all/byebug.rbi
 #
-# byebug-10.0.2
+# byebug-11.1.3
+
 module Byebug
   def add_catchpoint(arg0); end
   def breakpoints; end
@@ -135,7 +136,7 @@ class Byebug::Context
   include Byebug::Helpers::FileHelper
 end
 class Byebug::DebugThread < Thread
-  def self.inherited(arg0); end
+  def self.inherited; end
 end
 class Byebug::Breakpoint
   def enabled=(arg0); end
@@ -303,6 +304,7 @@ class Byebug::LocalInterface < Byebug::Interface
   def initialize; end
   def readline(prompt); end
   def with_repl_like_sigint; end
+  def without_readline_completion; end
 end
 class Byebug::ScriptInterface < Byebug::Interface
   def close; end
@@ -437,9 +439,12 @@ class Byebug::ConditionCommand < Byebug::Command
 end
 class Byebug::ContinueCommand < Byebug::Command
   def execute; end
+  def modifier; end
   def self.description; end
   def self.regexp; end
   def self.short_description; end
+  def unconditionally?; end
+  def until_line?; end
   include Byebug::Helpers::ParseHelper
 end
 class Byebug::DebugCommand < Byebug::Command
@@ -749,6 +754,24 @@ class Byebug::ShowCommand < Byebug::Command
   def self.regexp; end
   def self.short_description; end
 end
+class Byebug::SkipCommand < Byebug::Command
+  def auto_run; end
+  def execute; end
+  def initialize_attributes; end
+  def keep_execution; end
+  def reset_attributes; end
+  def self.description; end
+  def self.file_line; end
+  def self.file_line=(arg0); end
+  def self.file_path; end
+  def self.file_path=(arg0); end
+  def self.previous_autolist; end
+  def self.regexp; end
+  def self.restore_autolist; end
+  def self.setup_autolist(value); end
+  def self.short_description; end
+  include Byebug::Helpers::ParseHelper
+end
 class Byebug::SourceCommand < Byebug::Command
   def execute; end
   def self.description; end
@@ -948,16 +971,11 @@ class Byebug::Printers::Plain < Byebug::Printers::Base
   def print_collection(path, collection, &block); end
   def print_variables(variables, *_unused); end
 end
-class Byebug::AutolistSetting < Byebug::Setting
+class Byebug::ListsizeSetting < Byebug::Setting
   def banner; end
-  def initialize; end
-  def value; end
-  def value=(val); end
+  def to_s; end
 end
-class Byebug::FullpathSetting < Byebug::Setting
-  def banner; end
-end
-class Byebug::StackOnErrorSetting < Byebug::Setting
+class Byebug::AutosaveSetting < Byebug::Setting
   def banner; end
 end
 class Byebug::AutoirbSetting < Byebug::Setting
@@ -966,20 +984,32 @@ class Byebug::AutoirbSetting < Byebug::Setting
   def value; end
   def value=(val); end
 end
-class Byebug::AutosaveSetting < Byebug::Setting
+class Byebug::FullpathSetting < Byebug::Setting
   def banner; end
 end
-class Byebug::HistfileSetting < Byebug::Setting
+class Byebug::LinetraceSetting < Byebug::Setting
   def banner; end
-  def to_s; end
+  def value; end
+  def value=(val); end
+end
+class Byebug::AutoprySetting < Byebug::Setting
+  def banner; end
+  def initialize; end
+  def value; end
+  def value=(val); end
 end
 class Byebug::SavefileSetting < Byebug::Setting
   def banner; end
   def to_s; end
 end
-class Byebug::CallstyleSetting < Byebug::Setting
+class Byebug::StackOnErrorSetting < Byebug::Setting
   def banner; end
-  def to_s; end
+end
+class Byebug::AutolistSetting < Byebug::Setting
+  def banner; end
+  def initialize; end
+  def value; end
+  def value=(val); end
 end
 class Byebug::HistsizeSetting < Byebug::Setting
   def banner; end
@@ -991,22 +1021,15 @@ class Byebug::PostMortemSetting < Byebug::Setting
   def value; end
   def value=(val); end
 end
+class Byebug::CallstyleSetting < Byebug::Setting
+  def banner; end
+  def to_s; end
+end
 class Byebug::WidthSetting < Byebug::Setting
   def banner; end
   def to_s; end
 end
-class Byebug::AutoprySetting < Byebug::Setting
-  def banner; end
-  def initialize; end
-  def value; end
-  def value=(val); end
-end
-class Byebug::LinetraceSetting < Byebug::Setting
-  def banner; end
-  def value; end
-  def value=(val); end
-end
-class Byebug::ListsizeSetting < Byebug::Setting
+class Byebug::HistfileSetting < Byebug::Setting
   def banner; end
   def to_s; end
 end

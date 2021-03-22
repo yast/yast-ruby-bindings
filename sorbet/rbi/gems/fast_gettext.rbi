@@ -7,18 +7,14 @@
 #
 #   https://github.com/sorbet/sorbet-typed/new/master?filename=lib/fast_gettext/all/fast_gettext.rbi
 #
-# fast_gettext-1.7.0
+# fast_gettext-2.0.3
+
 module FastGettext
-  def N_(*args); end
-  def Nn_(*args); end
-  def _(*args); end
-  def add_text_domain(name, options); end
-  def locale_path; end
-  def n_(*args); end
-  def ns_(*args); end
-  def s_(*args); end
-  extend FastGettext
-  include FastGettext::Storage
+  def self.add_text_domain(name, options); end
+  def self.locale_path; end
+  def self.with_domain(domain); end
+  extend FastGettext::Storage
+  extend FastGettext::Translation
 end
 module FastGettext::GetText
 end
@@ -143,35 +139,40 @@ end
 module FastGettext::Translation
   def N_(translate); end
   def Nn_(*keys); end
-  def _(key, &block); end
-  def n_(*keys, &block); end
-  def ns_(*args, &block); end
-  def s_(key, separator = nil, &block); end
-  def self.included(klas); end
-  extend FastGettext::Translation
+  def _(key); end
+  def n_(*keys, count); end
+  def np_(context, plural_one, *args, separator: nil); end
+  def ns_(*args); end
+  def p_(namespace, key, separator = nil); end
+  def s_(key, separator = nil); end
+end
+module FastGettext::TranslationAliased
+  def gettext(key); end
+  def ngettext(*keys, count); end
+  def npgettext(context, plural_one, *args, separator: nil); end
+  def nsgettext(*args); end
+  def pgettext(namespace, key, separator = nil); end
+  def sgettext(key, separator = nil); end
+  include FastGettext::Translation
 end
 module FastGettext::TranslationMultidomain
-  def D_(key); end
-  def Dn_(*keys); end
-  def Dns_(*keys); end
-  def Ds_(key, separator = nil); end
-  def _in_domain(domain); end
-  def d_(domain, key, &block); end
-  def dn_(domain, *keys, &block); end
-  def dns_(domain, *keys, &block); end
-  def ds_(domain, key, separator = nil, &block); end
-  def self.included(klas); end
-  extend FastGettext::TranslationMultidomain
+  def D_(*args, &block); end
+  def Dn_(*args, &block); end
+  def Dnp_(*args, &block); end
+  def Dns_(*args, &block); end
+  def Dp_(*args, &block); end
+  def Ds_(*args, &block); end
+  def d_(domain, *args, &block); end
+  def dn_(domain, *args, &block); end
+  def dnp_(domain, *args, &block); end
+  def dns_(domain, *args, &block); end
+  def dp_(domain, *args, &block); end
+  def ds_(domain, *args, &block); end
+  include FastGettext::Translation
 end
 module FastGettext::TranslationRepository
-  def build(name, options); end
-  extend FastGettext::TranslationRepository
+  def self.build(name, options); end
 end
 class String
   def _fast_gettext_old_format_m(arg0); end
-end
-module Yast
-end
-class Yast::TestClient
-  def main; end
 end

@@ -1,4 +1,4 @@
-# typed: strong
+# typed: true
 
 module Yast::Convert
   sig { params(object: T.untyped).returns(T.nilable(T::Boolean)) }

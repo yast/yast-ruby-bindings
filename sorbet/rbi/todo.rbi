@@ -3,10 +3,7 @@
 
 # typed: strong
 module ::RSpec; end
-module Yast::UI; end
-module Yast::UI; end
-module Yast::UI; end
-module Yast::UI; end
 module Yast::WFM::Label; end
 module Yast::WFM::Mode; end
 module Yast::WFM::Popup; end
+module Yast::WFM::Report; end

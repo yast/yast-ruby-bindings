@@ -1,7 +1,7 @@
 # typed: strong
 
 module Yast::Builtins
-  sig { params(arr: Array, e: T.untyped).returns(T::Boolean) }
+  sig { params(arr: T::Array[T.untyped], e: T.untyped).returns(T::Boolean) }
   def self.contains(arr, e);end
 
   sig do
@@ -11,9 +11,9 @@ module Yast::Builtins
 
   sig do
     params(
-      o: T.any(Array, Hash, NilClass),
+      o: T.any(T::Array[T.untyped], T::Hash[T.untyped, T.untyped], NilClass),
       blk: T.proc.returns(T::Boolean)
-    ).returns(T.any(Array, Hash, NilClass))
+    ).returns(T.any(T::Array[T.untyped], T::Hash[T.untyped, T.untyped], NilClass))
   end
   def self.filter(o, &blk); end
 
@@ -21,10 +21,10 @@ module Yast::Builtins
   # sig { params(o: T.nilable(Array), blk: T.proc.returns(T::Boolean)).returns(T.nilable(Array)) }
   sig do
     params(
-      o: T.any(Array, String, NilClass),
+      o: T.any(T::Array[T.untyped], String, NilClass),
       what: String,
       blk: T.nilable(T.proc.returns(T::Boolean))
-    ).returns(T.any(Array, Hash, NilClass))
+    ).returns(T.any(T::Array[T.untyped], T::Hash[T.untyped, T.untyped], NilClass))
   end
   def self.find(o, what = "not given", &blk); end
 
