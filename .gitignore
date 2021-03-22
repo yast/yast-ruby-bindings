@@ -3,3 +3,5 @@
 /.yardoc
 /package/*.tar.*
 *.pot
+/.bundle/
+/vendor/
