@@ -1,7 +1,7 @@
-# typed: ignore
+# typed: strong
 module Yast::WFM
   class NoParameter; end
-  YCPAny = T.type_alias(
+  YCPAny = T.type_alias do
     T.any(
       NilClass,
       T::Boolean,
@@ -9,12 +9,12 @@ module Yast::WFM
       Float,
       Symbol,
       String,
-      Array,
-      Hash,
+      T::Array[T.untyped],
+      T::Hash[T.untyped, T.untyped],
       Yast::Path,
       Yast::Term
     )
-  )
+  end
   sig do
     params(
       index: T.any(Integer, NoParameter)
