@@ -1,0 +1,28 @@
+
+# See https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  Package:
+    runs-on: ubuntu-latest
+    container: registry.opensuse.org/yast/head/containers/yast-cpp:latest
+
+    steps:
+
+    - name: Git Checkout
+      uses: actions/checkout@v2
+
+    - name: Install Dependencies
+      run: |
+        # Install tmux to make sure the libyui+YaST integration tests are run
+        zypper --non-interactive in tmux
+        # Enable installing docs...
+        sed -i 's/\(rpm\.install\.excludedocs =\).*/\1 no/' /etc/zypp/zypp.conf
+        # ... and reinstall the RPM containing the examples we use for tests
+        zypper --non-interactive in --force yast2-ycp-ui-bindings-devel
+
+    - name: Package Build
+      run:  yast-ci-cpp

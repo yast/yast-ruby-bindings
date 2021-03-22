@@ -187,8 +187,6 @@ extern "C" {
     return yrb_utf8_str_new(utf_res);
   }
 
-  // crypt part taken from y2crypt from yast core
-  // TODO refactor to use sharedddd functionality
   // TODO move to own module, it is stupid to have it as builtin
   enum crypt_ybuiltin_t { CRYPT, MD5, BLOWFISH, SHA256, SHA512 };
 
@@ -223,44 +221,43 @@ extern "C" {
   static char*
   make_crypt_salt (const char* crypt_prefix, int crypt_rounds)
   {
-#define CRYPT_GENSALT_OUTPUT_SIZE (7 + 22 + 1)
+    // use gensalt own auto entropy
+    char* retval = crypt_gensalt_ra (crypt_prefix, crypt_rounds, NULL, 0);
 
-#ifndef RANDOM_DEVICE
-#define RANDOM_DEVICE "/dev/urandom"
-#endif
-
-    int fd = open (RANDOM_DEVICE, O_RDONLY);
-    if (fd < 0)
+    // auto entropy might not be supported in some older systems (15.2 and older),
+    // if we get the EINVAL "Invalid argument" error then read some entropy from
+    // /dev/urandom and try again
+    if (!retval && errno == EINVAL)
     {
-      y2error ("Can't open %s for reading: %s\n", RANDOM_DEVICE,
-        strerror (errno));
-      return 0;
-    }
+      const char* device = "/dev/urandom";
 
-    char entropy[16];
-    if (read_loop (fd, entropy, sizeof(entropy)) != sizeof(entropy))
-    {
+      int fd = open (device, O_RDONLY);
+      if (fd < 0)
+      {
+        y2error ("Can't open %s for reading: %s\n", device, strerror (errno));
+        return 0;
+      }
+
+      char entropy[16];
+      const size_t entropy_len = sizeof(entropy);
+      int read_size = read_loop (fd, entropy, entropy_len);
       close (fd);
-      y2error ("Unable to obtain entropy from %s\n", RANDOM_DEVICE);
-      return 0;
+
+      if (read_size != entropy_len)
+      {
+        y2error ("Unable to obtain entropy from %s\n", device);
+        return 0;
+      }
+
+      retval = crypt_gensalt_ra (crypt_prefix, crypt_rounds, entropy, entropy_len);
     }
-
-    close (fd);
-
-    char output[CRYPT_GENSALT_OUTPUT_SIZE];
-    char* retval = crypt_gensalt_rn (crypt_prefix, crypt_rounds, entropy,
-      sizeof(entropy), output, sizeof(output));
-
-    memset (entropy, 0, sizeof (entropy));
 
     if (!retval)
-    {
-      y2error ("Unable to generate a salt, check your crypt settings.\n");
-      return 0;
-    }
+      y2error ("Unable to generate a salt, check your crypt settings: %s.\n", strerror(errno));
 
-    return strdup (retval);
+    return retval;
   }
+
 
   // the return value should be free'd
   char *
@@ -296,7 +293,7 @@ extern "C" {
     }
     if (!salt)
     {
-      y2error ("Cannot create salt for sha512 crypt");
+      y2error ("Cannot create salt for crypt type %d", use_crypt);
       return 0;
     }
 
@@ -316,7 +313,7 @@ extern "C" {
     y2debug ("encrypted %s", newencrypted);
 
     //data lives on stack so dup it
-    return strdup(newencrypted); 
+    return strdup(newencrypted);
   }
 
   VALUE crypt_internal(crypt_ybuiltin_t type, VALUE unencrypted)

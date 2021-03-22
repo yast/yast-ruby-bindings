@@ -5,6 +5,7 @@ require "yast/ops"
 require "yast/debugger"
 require "yast/profiler"
 require "yast/yast"
+require "cgi"
 
 # @private we need it as clients is called in global contenxt
 GLOBAL_WFM_CONTEXT = proc {}
@@ -209,35 +210,53 @@ module Yast
 
     private_class_method def self.ask_to_run_debugger?
       Yast.import "Mode"
+      !Mode.auto && !Debugger.unwanted? && Debugger.installed?
+    end
 
-      !Mode.auto && Debugger.installed?
+    # @param [CFA::AugeasParsingError] e the caught exception
+    # @return [String] human readable exception description
+    private_class_method def self.parsing_error_msg(e)
+      msg = "Parse error while reading file #{e.file}<br>" \
+            "YaST cannot continue and will quit.<br>" \
+            "<br>" \
+            "Possible causes and remedies:" \
+            "<ol>" \
+            "<li>You made a mistake when changing the file by hand," \
+            " the syntax is invalid. Try reverting the changes.</li>" \
+            "<li>The syntax is in fact valid but YaST does not recognize it." \
+            "  Please report a YaST bug.</li>" \
+            "<li>YaST made a mistake and wrote invalid syntax earlier." \
+            " Please report a YaST bug.</li>" \
+            "</ol>"
+      msg + "Caller:  #{CGI::escapeHTML(e.backtrace.first)}<br><br>" \
+            "Details: #{CGI::escapeHTML(e.message)}"
     end
 
     # @param [Exception] e the caught exception
     # @return [String] human readable exception description
     private_class_method def self.internal_error_msg(e)
-      msg = "Internal error. Please report a bug report with logs.\n" \
-        "Run save_y2logs to get complete logs.\n\n"
+      msg = "Internal error. Please report a bug report with logs.<br>" \
+        "Run save_y2logs to get complete logs.<br><br>"
 
       if e.is_a?(ArgumentError) && e.message =~ /invalid byte sequence in UTF-8/
-        msg += "A string was encountered that is not valid in UTF-8.\n" \
-               "The system encoding is #{Encoding.locale_charmap.inspect}.\n" \
-               "Refer to https://www.suse.com/support/kb/doc?id=7018056.\n\n"
+        msg += "A string was encountered that is not valid in UTF-8.<br>" \
+               "The system encoding is #{Encoding.locale_charmap.inspect}.<br>" \
+               "Refer to https://www.suse.com/support/kb/doc?id=7018056.<br><br>"
       end
 
-       msg + "Caller:  #{e.backtrace.first}\n\n" \
-             "Details: #{e.message}"
+      msg + "Caller:  #{CGI::escapeHTML(e.backtrace.first)}<br><br>" \
+            "Details: #{CGI::escapeHTML(e.message)}"
     end
 
     # Handles a SignalExpection
     private_class_method def self.handle_signal_exception(e)
       signame = Signal.signame(e.signo)
-      msg = "YaST received a signal %s and will exit.\n" % signame
+      msg = "YaST received a signal %s and will exit.<br>" % signame
       # sigterm are often sent by user
       if e.signo == 15
-        msg += "If termination is not sent by user then please report a bug report with logs.\n"
+        msg += "If termination is not sent by user then please report a bug report with logs.<br>"
       else
-        msg += "Please report a bug report with logs.\n"
+        msg += "Please report a bug report with logs.<br>"
       end
       msg += "Run save_y2logs to get complete logs."
 
@@ -254,18 +273,32 @@ module Yast
       Builtins.y2error("Client %1 failed with '%2' (%3).\nBacktrace:\n%4",
         client,
         e.message,
-        e.class,
+        e.class.to_s,
         e.backtrace.join("\n"))
 
-      msg = internal_error_msg(e)
+      if e.class.to_s == "CFA::AugeasParsingError"
+        msg = parsing_error_msg(e)
+      else
+        msg = internal_error_msg(e)
+      end
+      msg.gsub!(/\n/, "<br />")
+
+      # Pure approximation here
+      # 50 is for usable text area width, +6 is for additional lines like
+      # button line, Error caption and so. Whole dialog is at most 20 lines
+      # high to fit into screen
+      height = [msg.size / 50 + 6, 20].min
 
       if ask_to_run_debugger?
         Yast.import "Popup"
         Yast.import "Label"
-        msg += "\n\nStart the Ruby debugger now and debug the issue?" \
+        msg += "<br><br>Start the Ruby debugger now and debug the issue?" \
           " (Experts only!)"
 
-        if Popup.YesNoHeadline(Label.ErrorMsg, msg)
+        if Popup.AnyQuestionRichText(Label.ErrorMsg, msg, 60, height,
+          Label.YesButton,
+          Label.NoButton,
+          :focus_none)
           Debugger.start
           # Now you can restart the client and watch it step-by-step with
           # "next"/"step" commands or you can add some breakpoints into
@@ -274,12 +307,7 @@ module Yast
         end
       else
         Yast.import "Report"
-        # Pure approximation here
-        # 50 is for usable text area width, +6 is for additional lines like
-        # button line, Error caption and so. Whole dialog is at most 20 lines
-        # high to fit into screen
-        height = [msg.size / 50 + 6, 20].min
-        Report.LongError(msg.gsub(/\n/, '<br />'), height:height)
+        Report.LongError(msg, height: height)
       end
     rescue Exception => e
       Builtins.y2internal("Error reporting failed with '%1'.Backtrace:\n%2",
@@ -332,6 +360,9 @@ module Yast
         handle_abort_exception(e, client)
         exit
       rescue Exception => e
+        # Don't interfere with RSpec, such as RSpec::Mocks::MockExpectationError
+        raise e if e.class.to_s.start_with?("RSpec::")
+
         handle_exception(e, client)
         false
       end

@@ -243,6 +243,42 @@ static bool is_debug_event(YCPValue val)
 }
 
 /**
+ * Returns true if the input symbol starts special configuration.
+ * @param  val YCPSymbol returned from an UI input call
+ * @return true/false
+ */
+static bool is_config_symbol(YCPValue val)
+{
+    return !val.isNull() && val->isSymbol() &&
+        val->asSymbol()->symbol() == "special_key:config";
+}
+
+/**
+ * Returns true if the input is a config UI event.
+ * @param  val YCPMap returned from the UI::WaitForEvent call
+ * @return true/false
+ */
+static bool is_config_event(YCPValue val)
+{
+    // is it a map?
+    if (val.isNull() || !val->isMap())
+        return false;
+
+    YCPMap map = val->asMap();
+
+    YCPValue event_type = map->value(YCPString("EventType"));
+    // is map["EventType"] == "SpecialKeyEvent"?
+    if (event_type.isNull() || !event_type->isString() ||
+        event_type->asString()->value() != "SpecialKeyEvent")
+        return false;
+
+    YCPValue event_id = map->value(YCPString("ID"));
+    // is map["ID"] == :"special_key:config"?
+    return !event_id.isNull() && event_id->isSymbol() &&
+        event_id->asSymbol()->symbol() == "special_key:config";
+}
+
+/**
  * Start the Ruby debugger, it calls "Yast::Debugger.start" Ruby code.
  * See file ../ruby/yast/debugger.rb for more details.
  */
@@ -255,6 +291,39 @@ static void start_ruby_debugger()
     VALUE module = rb_const_get(rb_cObject, rb_intern("Yast"));
     VALUE klass = rb_const_get(module, rb_intern("Debugger"));
     rb_funcall(klass, rb_intern("start"), 0);
+}
+
+static VALUE require_console(...)
+{
+  rb_require("installation/console/menu");
+  return Qtrue;
+}
+
+static VALUE rescue_require_console(...)
+{
+  y2warning("Loading the console failed!");
+  return Qfalse;
+}
+
+/**
+ * Start the configuration console, it calls "Installation::Console::Menu.run" Ruby code.
+ */
+static void start_config_console()
+{
+    y2milestone("Starting the configuration console...");
+
+    // catch the LoadError exception
+    VALUE success = rb_rescue2( &require_console, Qnil, &rescue_require_console,
+      Qnil, rb_eLoadError, 0);
+
+    // LoadError caught
+    if (success == Qfalse) return;
+
+    // call "Installation::Console::Menu.run"
+    VALUE installation = rb_const_get(rb_cObject, rb_intern("Installation"));
+    VALUE console = rb_const_get(installation, rb_intern("Console"));
+    VALUE menu = rb_const_get(console, rb_intern("Menu"));
+    rb_funcall(menu, rb_intern("run"), 0);
 }
 
 /*
@@ -353,8 +422,9 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
       rb_funcall(argv[i->first], rb_intern("value="), 1, val);
     }
 
-    // hack: handle the Shift+Ctrl+Alt+D debugging magic key combination
-    // returned from UI calls, start the Ruby debugger when the magic key is received
+    // hack: handle the magic key combinations returned from UI calls,
+    // start the Ruby debugger or the installation console when the respective
+    // magic key is received
     if (strcmp(namespace_name, "UI") == 0)
     {
         if (
@@ -364,6 +434,18 @@ ycp_module_call_ycp_function(int argc, VALUE *argv, VALUE self)
         {
           y2milestone("UI::%s() caught magic debug key: %s", function_name, res->toString().c_str());
           start_ruby_debugger();
+        }
+        if (
+            (ui_input_function(function_name) && is_config_symbol(res)) ||
+            (ui_event_function(function_name) && is_config_event(res))
+        )
+        {
+          y2milestone("UI::%s() caught magic config key: %s", function_name, res->toString().c_str());
+          start_config_console();
+
+          // restart the UI call, handle the config event completely internally,
+          // return a real user input value
+          return ycp_module_call_ycp_function(argc, argv, self);
         }
     }
 
@@ -399,7 +481,8 @@ yast_y2_logger( int argc, VALUE *argv, VALUE self )
   {
     Check_Type(argv[i], T_STRING);
   }
-  y2_logger((loglevel_t)FIX2INT(argv[0]),RSTRING_PTR(argv[1]),RSTRING_PTR(argv[2]),FIX2INT(argv[3]),"",RSTRING_PTR(argv[5]));
+  y2_logger((loglevel_t)FIX2INT(argv[0]), RSTRING_PTR(argv[1]), RSTRING_PTR(argv[2]),
+    FIX2INT(argv[3]), RSTRING_PTR(argv[4]), RSTRING_PTR(argv[5]));
   return Qnil;
 }
 

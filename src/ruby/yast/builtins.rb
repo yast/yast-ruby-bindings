@@ -1,6 +1,5 @@
 # typed: false
 require "set"
-require "scanf"
 
 require "yastx"
 require "yast/yast"
@@ -318,13 +317,14 @@ module Yast
 
       case object
       when ::String
-        # ideally this should be enough: object.scanf("%i").first
-        # but to be 100% Yast compatible we need to do this,
-        # see https://github.com/yast/yast-core/blob/master/libyast/src/YastInteger.cc#L39
+        # To be 100% Yast compatible we need to do this,
+        # see https://github.com/yast/yast-core/blob/master/libycp/src/YCPInteger.cc#L39
         if object[0] == "0"
-          return object.scanf((object[1] == "x") ? "%x" : "%o").first
+          object[1] == "x" ? object[2..-1].to_i(16) : object.to_i(8)
+        else
+          cleaned = object[/-?\d+/]
+          cleaned and cleaned.to_i
         end
-        object.scanf("%d").first
       # use full qualified ::Float to avoid clash with Yast::Builtins::Float
       when ::Float, ::Integer
         object.to_i
