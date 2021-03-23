@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Mar 23 09:31:40 UTC 2021 - Martin Vidner <mvidner@suse.com>
+
+- Added Sorbet type declarations (RBI files) bsc#FIXME
+- 4.3.15
+
+-------------------------------------------------------------------
 Wed Mar 17 13:55:01 UTC 2021 - Ladislav Slezák <lslezak@suse.cz>
 
 - Fixed password encrypting functions to work correctly also
