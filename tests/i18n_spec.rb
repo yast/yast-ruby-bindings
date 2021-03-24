@@ -12,10 +12,6 @@ describe Yast do
     include Yast::I18n
     extend Yast::I18n
 
-    let(:translated) { "translated".freeze }
-    let(:singular) { "untranslated".freeze }
-    let(:plural) { "plural".freeze }
-
     before do
       # do not read the real translations from the system
       allow(FastGettext).to receive(:add_text_domain)
@@ -30,6 +26,8 @@ describe Yast do
 
     describe ".Nn_" do
       it "returns the original parameters" do
+        singular = "singular"
+        plural = "plural"
         count = 42
 
         expect(Nn_(singular, plural, count)).to eq [singular, plural, count]
@@ -37,6 +35,10 @@ describe Yast do
     end
 
     describe "._" do
+      TRANSLATED = "translated".freeze
+      SINGULAR = "untranslated".freeze
+      PLURAL = "plural".freeze
+
       before do
         allow(File).to receive(:exist?).with(Yast::I18n::LOCALE_DIR)
           .and_return(true)
@@ -45,9 +47,9 @@ describe Yast do
 
       it "returns the translated string" do
         allow(FastGettext).to receive(:key_exist?).and_return(true)
-        expect(Yast::Translation).to receive(:_).with(singular)
-          .and_return(translated)
-        expect(_(singular)).to eq(translated)
+        expect(Yast::Translation).to receive(:_).with(SINGULAR)
+          .and_return(TRANSLATED)
+        expect(_(SINGULAR)).to eq(TRANSLATED)
       end
 
       context "translation is not found" do
@@ -71,13 +73,13 @@ describe Yast do
         end
 
         it "returns the untranslated string" do
-          expect(_(singular)).to eq(singular)
+          expect(_(SINGULAR)).to eq(SINGULAR)
         end
 
         it "logs a warning message" do
           expect(Yast).to receive(:y2warning).at_least(1)
             .with(/File not found/)
-          _(singular)
+          _(SINGULAR)
         end
       end
     end
@@ -93,8 +95,8 @@ describe Yast do
         allow(FastGettext).to receive(:cached_plural_find)
           .and_return(true)
         expect(Yast::Translation).to receive(:n_)
-          .with(singular, plural, 1).and_return(translated)
-        expect(n_(singular, plural, 1)).to eq(translated)
+          .with(SINGULAR, PLURAL, 1).and_return(TRANSLATED)
+        expect(n_(SINGULAR, PLURAL, 1)).to eq(TRANSLATED)
       end
 
       context "when FastGettext throws an Errno::ENOENT exception" do
@@ -104,17 +106,17 @@ describe Yast do
         end
 
         it "returns the singular untranslated string if num is 1" do
-          expect(n_(singular, plural, 1)).to eq(singular)
+          expect(n_(SINGULAR, PLURAL, 1)).to eq(SINGULAR)
         end
 
         it "returns the plural untranslated string if num > 1" do
-          expect(n_(singular, plural, 2)).to eq(plural)
+          expect(n_(SINGULAR, PLURAL, 2)).to eq(PLURAL)
         end
 
         it "logs a warning message" do
           expect(Yast).to receive(:y2warning).at_least(1)
             .with(/File not found/)
-          expect(n_(singular, plural, 1)).to eq(singular)
+          expect(n_(SINGULAR, PLURAL, 1)).to eq(SINGULAR)
         end
       end
     end
