@@ -763,21 +763,25 @@ module Yast
     # Translates the text using the given text domain
     def self.dgettext(domain, text)
       old_text_domain = FastGettext.text_domain
-      textdomain domain
-      return _(text)
-    ensure
-      FastGettext.text_domain = old_text_domain
-      textdomain old_text_domain
+      begin
+        textdomain domain
+        return _(text)
+      ensure
+        FastGettext.text_domain = old_text_domain
+        textdomain old_text_domain
+      end
     end
 
     # Translates the text using a locale-aware plural form handling
     def self.dngettext(domain, singular, plural, num)
       old_text_domain = FastGettext.text_domain
-      textdomain domain
-      return n_(singular, plural, num)
-    ensure
-      FastGettext.text_domain = old_text_domain
-      textdomain old_text_domain
+      begin
+        textdomain domain
+        return n_(singular, plural, num)
+      ensure
+        FastGettext.text_domain = old_text_domain
+        textdomain old_text_domain
+      end
     end
 
     # Translates the text using the given text domain and path
