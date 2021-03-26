@@ -1,6 +1,5 @@
 # typed: strong
 module Yast::WFM
-  class NoParameter; end
   YCPAny = T.type_alias do
     T.any(
       NilClass,
@@ -15,6 +14,14 @@ module Yast::WFM
       Yast::Term
     )
   end
+
+  # Not an actual yast class but a helper to express
+  # an optional parameter for Args which has NOT a default value.
+  class NoParameter; end
+
+  # This sig is a union of
+  #  sig { params().returns(T::Array[YCPAny]) }
+  #  sig { params(i: Integer).returns(YCPAny) }
   sig do
     params(
       index: T.any(Integer, NoParameter)
