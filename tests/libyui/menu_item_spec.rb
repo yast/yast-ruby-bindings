@@ -1,3 +1,4 @@
+# typed: false
 require_relative "rspec_tmux_tui"
 
 describe "Menu Item" do
