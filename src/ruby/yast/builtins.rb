@@ -1,5 +1,6 @@
-# typed: false
+# typed: true
 require "set"
+require "sorbet-runtime"
 
 require "yastx"
 require "yast/yast"
@@ -25,7 +26,10 @@ module Yast
     def self.add(object, *params)
       case object
       when ::Array then return Yast.deep_copy(object).concat(Yast.deep_copy(params))
-      when ::Hash then  return Yast.deep_copy(object).merge(Yast.deep_copy(::Hash[*params]))
+      when ::Hash
+        # unsafe: sorbet cannot typecheck splats, https://srb.help/7019
+        added = Yast.deep_copy(T.unsafe(::Hash)[*params])
+        return Yast.deep_copy(object).merge(added)
       when Yast::Path then return object + params.first
       when Yast::Term then
         res = Yast.deep_copy(object)
@@ -42,7 +46,7 @@ module Yast
     # it's obsoleted, behaves like add() builtin now
     # @deprecated use ruby native methods
     def self.change(object, *params)
-      add object, *params
+      T.unsafe(self).add(object, *params)
     end
 
     # - Filters a List
@@ -614,42 +618,42 @@ module Yast
     # @deprecated Use {Yast::Logger} instead
     def self.y2debug(*args)
       shift_frame_number args
-      Yast.y2debug(*args)
+      T.unsafe(Yast).y2debug(*args)
     end
 
     # Log an error to the y2log.
     # @deprecated Use {Yast::Logger} instead
     def self.y2error(*args)
       shift_frame_number args
-      Yast.y2error(*args)
+      T.unsafe(Yast).y2error(*args)
     end
 
     # Log an internal message to the y2log.
     # @deprecated Use {Yast::Logger} instead
     def self.y2internal(*args)
       shift_frame_number args
-      Yast.y2internal(*args)
+      T.unsafe(Yast).y2internal(*args)
     end
 
     # Log a milestone to the y2log.
     # @deprecated Use {Yast::Logger} instead
     def self.y2milestone(*args)
       shift_frame_number args
-      Yast.y2milestone(*args)
+      T.unsafe(Yast).y2milestone(*args)
     end
 
     # Log a security message to the y2log.
     # @deprecated Use {Yast::Logger} instead
     def self.y2security(*args)
       shift_frame_number args
-      Yast.y2security(*args)
+      T.unsafe(Yast).y2security(*args)
     end
 
     # Log a warning to the y2log.
     # @deprecated Use {Yast::Logger} instead
     def self.y2warning(*args)
       shift_frame_number args
-      Yast.y2warning(*args)
+      T.unsafe(Yast).y2warning(*args)
     end
 
     # @private used only internal for frame shifting
@@ -1084,7 +1088,11 @@ module Yast
       when ::String
         Yast::Term.new(symbol.to_sym)
       when ::Symbol
-        list == DEF_LENGHT ? Yast::Term.new(symbol) : Yast::Term.new(symbol, *list)
+        if list == DEF_LENGHT
+          Yast::Term.new(symbol)
+        else
+          T.unsafe(Yast::Term).new(symbol, *list) # unsafe: splat workaround
+        end
       when Yast::Term
         symbol
       end

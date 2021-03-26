@@ -44,18 +44,18 @@ module Yast::Builtins
   end
   def self.substring(s, offset, len = -1); end
 
-  sig do
-    params(format: String, args: T.untyped).void
-  end
-  def self.y2debug(format, *args); end
+  sig { params(args: T.untyped).void }
+  def self.y2debug(*args); end
 
-  sig do
-    params(format: String, args: T.untyped).void
-  end
-  def self.y2error(format, *args); end
+  sig { params(args: T.untyped).void }
+  def self.y2error(*args); end
 
-  sig do
-    params(format: String, args: T.untyped).void
-  end
-  def self.y2milestone(format, *args); end
+  sig { params(args: T.untyped).void }
+  def self.y2internal(*args); end
+
+  sig { params(args: T.untyped).void }
+  def self.y2milestone(*args); end
+
+  sig { params(args: T.untyped).void }
+  def self.y2warning(*args); end
 end
