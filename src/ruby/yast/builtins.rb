@@ -324,7 +324,12 @@ module Yast
         # To be 100% Yast compatible we need to do this,
         # see https://github.com/yast/yast-core/blob/master/libycp/src/YCPInteger.cc#L39
         if object[0] == "0"
-          object[1] == "x" ? object[2..-1].to_i(16) : object.to_i(8)
+          if object[1] == "x"
+            # must: tell sorbet we're sure it is not nil
+            T.must(object[2..-1]).to_i(16)
+          else
+            object.to_i(8)
+          end
         else
           cleaned = object[/-?\d+/]
           cleaned and cleaned.to_i
@@ -462,7 +467,7 @@ module Yast
       return [] if sep.empty?
 
       # the big negative value forces keeping empty values in the list
-      string.split(/[#{Regexp.escape sep}]/, -1 * 2**20)
+      string.split(/[#{Regexp.escape sep}]/, -1_000_000)
     end
 
     # @private we must mark somehow default value for length

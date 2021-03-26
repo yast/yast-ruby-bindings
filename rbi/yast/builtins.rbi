@@ -44,6 +44,9 @@ module Yast::Builtins
   end
   def self.substring(s, offset, len = -1); end
 
+  sig { params(object: T.untyped).returns(T.nilable(Integer)) }
+  def self.tointeger(object); end
+
   sig { params(args: T.untyped).void }
   def self.y2debug(*args); end
 
