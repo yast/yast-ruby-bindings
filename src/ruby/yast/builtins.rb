@@ -1148,7 +1148,7 @@ module Yast
             ss1.pop
             ss2.pop
           else
-            raise "unknown value from comparison #{i1 <=> u2}"
+            raise "unknown value from comparison #{i1 <=> i2}"
           end
         end
 
@@ -1176,7 +1176,7 @@ module Yast
             ss1.pop
             ss2.pop
           else
-            raise "unknown value from comparison #{i1 <=> u2}"
+            raise "unknown value from comparison #{i1 <=> i2}"
           end
         end
         Yast.deep_copy(res.reverse)
@@ -1202,7 +1202,7 @@ module Yast
             ss1.pop
             ss2.pop
           else
-            raise "unknown value from comparison #{i1 <=> u2}"
+            raise "unknown value from comparison #{i1 <=> i2}"
           end
         end
 
