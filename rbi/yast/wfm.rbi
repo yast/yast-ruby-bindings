@@ -28,4 +28,12 @@ module Yast::WFM
     ).returns(T.any(YCPAny, T::Array[YCPAny]))
   end
   def self.Args(index = NoParameter); end
+
+  sig do
+    params(
+      client: String,
+      args: T::Array[YCPAny]
+    ).returns(YCPAny)
+  end
+  def self.CallFunction(client, args = []); end
 end

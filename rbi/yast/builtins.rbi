@@ -1,7 +1,12 @@
 # typed: strong
 
 module Yast::Builtins
-  sig { params(arr: T::Array[T.untyped], e: T.untyped).returns(T::Boolean) }
+  sig do
+    params(
+      arr: T.nilable(T::Array[T.untyped]),
+      e: T.untyped
+    ).returns(T.nilable(T::Boolean))
+  end
   def self.contains(arr, e);end
 
   sig do
@@ -74,9 +79,31 @@ module Yast::Builtins
   # - `block: T.proc` works on https://sorbet.run but fails with
   #    'Malformed T.proc: You must specify a return type' in a current version.
   # - `block: T.proc.returns(T.untyped)` restricts the arguments to NilClass.
+
+  sig do
+    params(
+      string: T.nilable(String),
+      substring: T.nilable(String)
+    ).returns(T.nilable(T::Boolean))
+  end
+  def self.issubstring(string, substring); end
+
+  sig do
+    params(
+      string: T.nilable(String),
+      pattern: T.nilable(String)
+    ).returns(T.nilable(T::Boolean))
+  end
+  def self.regexpmatch(string, pattern); end
+
+  sig do
+    params(format: T.untyped, args: T.untyped).returns(T.nilable(String))
+  end
+  def self.sformat(format, *args); end
+
   sig do
     # params(value: T.any(String, Array, Hash, Yast::Path, Yast::Term)).returns(Integer)
-    params(value: T.untyped).returns(Integer)
+    params(value: T.untyped).returns(T.nilable(Integer))
   end
   def self.size(value); end
 
