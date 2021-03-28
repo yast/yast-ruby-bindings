@@ -18,15 +18,16 @@ module Yast::Builtins
   def self.filter(o, &blk); end
 
   # sig { params(o: T.nilable(String), what: String).returns(T.nilable(Integer)) }
-  # sig { params(o: T.nilable(Array), blk: T.proc.returns(T::Boolean)).returns(T.nilable(Array)) }
+  # sig { params(o: T.nilable(Array), blk: T.proc.returns(T::Boolean)).returns(T.untyped) }
   sig do
     params(
-      o: T.any(T::Array[T.untyped], String, NilClass),
-      what: String,
-      blk: T.nilable(T.proc.returns(T::Boolean))
-    ).returns(T.any(T::Array[T.untyped], T::Hash[T.untyped, T.untyped], NilClass))
+      # the FalseClass is nonsense to fool the exhaustiveness checker
+      object: T.any(T::Array[T.untyped], String, NilClass, FalseClass),
+      what: T.nilable(String),
+      block: T.nilable(T.proc.params(e: T.untyped).returns(T::Boolean))
+    ).returns(T.untyped)
   end
-  def self.find(o, what = "not given", &blk); end
+  def self.find(object, what = nil, &block); end
 
   sig do
     # params(value: T.any(String, Array, Hash, Yast::Path, Yast::Term)).returns(Integer)

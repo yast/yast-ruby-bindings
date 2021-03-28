@@ -66,12 +66,14 @@ module Yast
 
       case object
       when ::String
-        ret = object.index what
-        return ret.nil? ? -1 : Yast.deep_copy(ret)
+        raise TypeError, "find in a String needs a plain argument, not a block" if what.nil?
+        ret = object.index(what)
+        return ret.nil? ? -1 : ret
       when ::Array
+        raise TypeError, "find in an Array needs a block, not a plain argument" if block.nil?
         Yast.deep_copy(object.find(&block))
       else
-        raise "Invalid object for find() builtin"
+        raise TypeError, "find works on Strings and Arrays, got a #{object.class}: #{object.inspect}"
       end
     end
 
