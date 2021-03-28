@@ -30,6 +30,51 @@ module Yast::Builtins
   def self.find(object, what = nil, &block); end
 
   sig do
+    params(
+      # YCP will just warn if it's not an Array or Hash
+      object: T.nilable(T.any(T::Array[T.untyped], T::Hash[T.untyped, T.untyped])),
+      # See "foreach block voodoo" below
+      #   block: T.any(
+      #     T.proc.params(elem: T.untyped).returns(T.untyped),
+      #     T.proc.params(key: T.untyped, value: T.untyped).returns(T.untyped)
+      #   )
+    ).void
+  end
+  def self.foreach(object, &block); end
+
+  # ^^^
+  # foreach block voodoo:
+  #
+  # Short: Sorbet bug. We'd like to specify the block type as commented, but
+  # if we do, downstream yast code will fail with "This code is unreachable,
+  # This expression always raises or can never be computed". Fortunately
+  # omitting the block param entirely falls back to block arguments getting
+  # T.untyped which is just what we want.
+  #
+  # Long:
+  #
+  # If we set the block type to the commented out any(one_param, two_params)
+  # then apparently it exposes a bug in sorbet which thinks the block should
+  # take zero arguments (and thus would raise at runtime when seeing one):
+  #
+  #   $ srb t -e 'Yast::Builtins.foreach([1,2,3,4,5,6]) { |i| puts i }'
+  #   -e:1: This code is unreachable https://srb.help/7006
+  #        1 |Yast::Builtins.foreach([1,2,3,4,5,6]) { |i| puts i }
+  #                                                    ^
+  #   $ srb t -e 'Yast::Builtins.foreach([1,2,3,4,5,6]) { puts 6 }'
+  #   No errors! Great job.
+  #
+  # With the declaration commented out, the correct one-param code passes.
+  # Unfortunately, incorrect no-param block or even no block at all passes too.
+  # That's an acceptable loophole until we get sorbet fixed.
+  #
+  # I have also tried these unsuccessfully:
+  #
+  # - `block: Proc` restricts the block arguments to BasicObject.
+  # - `block: T.proc` works on https://sorbet.run but fails with
+  #    'Malformed T.proc: You must specify a return type' in a current version.
+  # - `block: T.proc.returns(T.untyped)` restricts the arguments to NilClass.
+  sig do
     # params(value: T.any(String, Array, Hash, Yast::Path, Yast::Term)).returns(Integer)
     params(value: T.untyped).returns(Integer)
   end
