@@ -81,7 +81,7 @@ module Yast
     # - Processes the content of a list
     # @deprecated use ruby native each method
     def self.foreach(object, &block)
-      res = nil
+      res = T.let(nil, T.untyped)
       object = Yast.deep_copy(object)
       if object.is_a? ::Array
         begin
