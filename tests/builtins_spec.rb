@@ -1,4 +1,5 @@
 #!/usr/bin/env rspec
+# typed: false
 # encoding: utf-8
 
 # FIXME: this file was autoconverted from test/unit syntax without
@@ -75,6 +76,13 @@ describe Yast::Builtins do
         expect(Yast::Builtins.find("1234", "3")).to eq(2)
         expect(Yast::Builtins.find("1234", "9")).to eq(-1)
       end
+
+      it "raises TypeError when used incompatibly with YCP" do
+        # before introducing sorbet it would raise a confusing error:
+        # `index': type mismatch: NilClass given (TypeError)
+        # Now the type error is nicer
+        expect { Yast::Builtins.find("foo") { "o" } }.to raise_error(TypeError)
+      end
     end
 
     context "looking into a list" do
@@ -83,6 +91,19 @@ describe Yast::Builtins do
         expect(Yast::Builtins.find(nil) { |_i| next true }).to eq(nil)
         expect(Yast::Builtins.find(test_list) { |_i| next true }).to eq(2)
         expect(Yast::Builtins.find(test_list) { |i| next i > 2 }).to eq(3)
+      end
+
+      it "raises TypeError when used incompatibly with YCP" do
+        # before introducing sorbet it would confusingly return an Enumerator
+        expect { Yast::Builtins.find([1, 2], 3) }.to raise_error(TypeError)
+      end
+    end
+
+    context "looking into another type" do
+      it "raises TypeError" do
+        # before sorbet:
+        # `find': Invalid object for find() builtin (RuntimeError)
+        expect { Yast::Builtins.find({one: 1}, 2) }.to raise_error(TypeError)
       end
     end
   end

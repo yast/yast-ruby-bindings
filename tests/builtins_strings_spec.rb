@@ -1,4 +1,5 @@
 #!/usr/bin/env rspec
+# typed: false
 # encoding: utf-8
 
 # FIXME: this file was autoconverted from test/unit syntax without

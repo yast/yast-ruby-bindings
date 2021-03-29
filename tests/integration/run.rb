@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# typed: true
 
 # std_streams_spec.rb is used to verify that bnc#943757 is fixed in
 # libyui-ncurses >= 2.47.3. Thus, is an integration test for YaST+libyui

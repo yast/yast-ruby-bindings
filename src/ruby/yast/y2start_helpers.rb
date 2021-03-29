@@ -1,3 +1,4 @@
+# typed: true
 module Yast
   module Y2StartHelpers
     # Configure global environment for YaST

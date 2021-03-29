@@ -1,4 +1,5 @@
 #!/usr/bin/env rspec
+# typed: false
 # encoding: utf-8
 
 require_relative "test_helper"

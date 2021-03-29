@@ -1,3 +1,4 @@
+# typed: false
 module Yast
   module CoreExt
     module AnsiString

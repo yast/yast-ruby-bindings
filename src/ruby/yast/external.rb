@@ -1,3 +1,4 @@
+# typed: true
 module Yast
   # represent type YCPExternal for binary payload without operations.
   # Used for example to pass object from perl.

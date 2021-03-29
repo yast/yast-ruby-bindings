@@ -1,3 +1,4 @@
+# typed: true
 module Yast
   # Provides wrapper to pass by reference any value, even immutable like Fixnum or Symbol.
   # It is used by component system to allow passing by reference.

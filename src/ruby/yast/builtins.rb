@@ -1,4 +1,6 @@
+# typed: true
 require "set"
+require "sorbet-runtime"
 
 require "yastx"
 require "yast/yast"
@@ -24,7 +26,10 @@ module Yast
     def self.add(object, *params)
       case object
       when ::Array then return Yast.deep_copy(object).concat(Yast.deep_copy(params))
-      when ::Hash then  return Yast.deep_copy(object).merge(Yast.deep_copy(::Hash[*params]))
+      when ::Hash
+        # unsafe: sorbet cannot typecheck splats, https://srb.help/7019
+        added = Yast.deep_copy(T.unsafe(::Hash)[*params])
+        return Yast.deep_copy(object).merge(added)
       when Yast::Path then return object + params.first
       when Yast::Term then
         res = Yast.deep_copy(object)
@@ -41,7 +46,7 @@ module Yast
     # it's obsoleted, behaves like add() builtin now
     # @deprecated use ruby native methods
     def self.change(object, *params)
-      add object, *params
+      T.unsafe(self).add(object, *params)
     end
 
     # - Filters a List
@@ -61,12 +66,14 @@ module Yast
 
       case object
       when ::String
-        ret = object.index what
-        return ret.nil? ? -1 : Yast.deep_copy(ret)
+        raise TypeError, "find in a String needs a plain argument, not a block" if what.nil?
+        ret = object.index(what)
+        return ret.nil? ? -1 : ret
       when ::Array
+        raise TypeError, "find in an Array needs a block, not a plain argument" if block.nil?
         Yast.deep_copy(object.find(&block))
       else
-        raise "Invalid object for find() builtin"
+        raise TypeError, "find works on Strings and Arrays, got a #{object.class}: #{object.inspect}"
       end
     end
 
@@ -74,7 +81,7 @@ module Yast
     # - Processes the content of a list
     # @deprecated use ruby native each method
     def self.foreach(object, &block)
-      res = nil
+      res = T.let(nil, T.untyped)
       object = Yast.deep_copy(object)
       if object.is_a? ::Array
         begin
@@ -319,7 +326,12 @@ module Yast
         # To be 100% Yast compatible we need to do this,
         # see https://github.com/yast/yast-core/blob/master/libycp/src/YCPInteger.cc#L39
         if object[0] == "0"
-          object[1] == "x" ? object[2..-1].to_i(16) : object.to_i(8)
+          if object[1] == "x"
+            # must: tell sorbet we're sure it is not nil
+            T.must(object[2..-1]).to_i(16)
+          else
+            object.to_i(8)
+          end
         else
           cleaned = object[/-?\d+/]
           cleaned and cleaned.to_i
@@ -457,7 +469,7 @@ module Yast
       return [] if sep.empty?
 
       # the big negative value forces keeping empty values in the list
-      string.split(/[#{Regexp.escape sep}]/, -1 * 2**20)
+      string.split(/[#{Regexp.escape sep}]/, -1_000_000)
     end
 
     # @private we must mark somehow default value for length
@@ -613,42 +625,42 @@ module Yast
     # @deprecated Use {Yast::Logger} instead
     def self.y2debug(*args)
       shift_frame_number args
-      Yast.y2debug(*args)
+      T.unsafe(Yast).y2debug(*args)
     end
 
     # Log an error to the y2log.
     # @deprecated Use {Yast::Logger} instead
     def self.y2error(*args)
       shift_frame_number args
-      Yast.y2error(*args)
+      T.unsafe(Yast).y2error(*args)
     end
 
     # Log an internal message to the y2log.
     # @deprecated Use {Yast::Logger} instead
     def self.y2internal(*args)
       shift_frame_number args
-      Yast.y2internal(*args)
+      T.unsafe(Yast).y2internal(*args)
     end
 
     # Log a milestone to the y2log.
     # @deprecated Use {Yast::Logger} instead
     def self.y2milestone(*args)
       shift_frame_number args
-      Yast.y2milestone(*args)
+      T.unsafe(Yast).y2milestone(*args)
     end
 
     # Log a security message to the y2log.
     # @deprecated Use {Yast::Logger} instead
     def self.y2security(*args)
       shift_frame_number args
-      Yast.y2security(*args)
+      T.unsafe(Yast).y2security(*args)
     end
 
     # Log a warning to the y2log.
     # @deprecated Use {Yast::Logger} instead
     def self.y2warning(*args)
       shift_frame_number args
-      Yast.y2warning(*args)
+      T.unsafe(Yast).y2warning(*args)
     end
 
     # @private used only internal for frame shifting
@@ -753,21 +765,25 @@ module Yast
     # Translates the text using the given text domain
     def self.dgettext(domain, text)
       old_text_domain = FastGettext.text_domain
-      textdomain domain
-      return _(text)
-    ensure
-      FastGettext.text_domain = old_text_domain
-      textdomain old_text_domain
+      begin
+        textdomain domain
+        return _(text)
+      ensure
+        FastGettext.text_domain = old_text_domain
+        textdomain old_text_domain
+      end
     end
 
     # Translates the text using a locale-aware plural form handling
     def self.dngettext(domain, singular, plural, num)
       old_text_domain = FastGettext.text_domain
-      textdomain domain
-      return n_(singular, plural, num)
-    ensure
-      FastGettext.text_domain = old_text_domain
-      textdomain old_text_domain
+      begin
+        textdomain domain
+        return n_(singular, plural, num)
+      ensure
+        FastGettext.text_domain = old_text_domain
+        textdomain old_text_domain
+      end
     end
 
     # Translates the text using the given text domain and path
@@ -1083,7 +1099,11 @@ module Yast
       when ::String
         Yast::Term.new(symbol.to_sym)
       when ::Symbol
-        list == DEF_LENGHT ? Yast::Term.new(symbol) : Yast::Term.new(symbol, *list)
+        if list == DEF_LENGHT
+          Yast::Term.new(symbol)
+        else
+          T.unsafe(Yast::Term).new(symbol, *list) # unsafe: splat workaround
+        end
       when Yast::Term
         symbol
       end
@@ -1134,7 +1154,7 @@ module Yast
             ss1.pop
             ss2.pop
           else
-            raise "unknown value from comparison #{i1 <=> u2}"
+            raise "unknown value from comparison #{i1 <=> i2}"
           end
         end
 
@@ -1162,7 +1182,7 @@ module Yast
             ss1.pop
             ss2.pop
           else
-            raise "unknown value from comparison #{i1 <=> u2}"
+            raise "unknown value from comparison #{i1 <=> i2}"
           end
         end
         Yast.deep_copy(res.reverse)
@@ -1188,7 +1208,7 @@ module Yast
             ss1.pop
             ss2.pop
           else
-            raise "unknown value from comparison #{i1 <=> u2}"
+            raise "unknown value from comparison #{i1 <=> i2}"
           end
         end
 

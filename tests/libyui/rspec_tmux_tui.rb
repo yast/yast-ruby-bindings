@@ -1,3 +1,4 @@
+# typed: false
 require "shellwords"
 
 # Drive interactive TUI (textual user interface) with tmux.

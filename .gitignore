@@ -3,6 +3,8 @@
 /.yardoc
 /package/*.tar.*
 *.pot
+/.bundle/
+/vendor/
 # screen captures from the libyui tests
 *.out.txt
 *.out.esc

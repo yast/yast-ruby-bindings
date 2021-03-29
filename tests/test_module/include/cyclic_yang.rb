@@ -1,3 +1,4 @@
+# typed: true
 module Yast
   module CyclicYangInclude
     def initialize_cyclic_yang(include_target)

@@ -17,7 +17,7 @@
 
 
 Name:           yast2-ruby-bindings
-Version:        4.3.14
+Version:        4.3.15
 Release:        0
 URL:            https://github.com/yast/yast-ruby-bindings
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -35,7 +35,9 @@ Requires:       rubygem-fast_gettext < 3.0
 %else
 BuildRequires:  rubygem(%{rb_default_ruby_abi}:fast_gettext) < 3.0
 BuildRequires:  rubygem(%{rb_default_ruby_abi}:rspec)
+BuildRequires:  rubygem(%{rb_default_ruby_abi}:sorbet-runtime)
 Requires:       rubygem(%{rb_default_ruby_abi}:fast_gettext) < 3.0
+Requires:       rubygem(%{rb_default_ruby_abi}:sorbet-runtime)
 %endif
 BuildRequires:  ruby-devel
 Requires:       yast2-core >= 3.2.2
@@ -109,6 +111,9 @@ cd -
 %{_libdir}/ruby/vendor_ruby/%{rb_ver}/yast
 %{_libdir}/ruby/vendor_ruby/%{rb_ver}/%{rb_arch}/*x.so
 %{_libdir}/ruby/vendor_ruby/%{rb_ver}/%{rb_arch}/yast
+%dir %{_datadir}/YaST2/rbi/
+%dir %{_datadir}/YaST2/rbi/yast/
+%{_datadir}/YaST2/rbi/yast/*.rbi
 %license COPYING
 
 %changelog

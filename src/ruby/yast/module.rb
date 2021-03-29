@@ -1,3 +1,4 @@
+# typed: strong
 require "yast/yast"
 require "yast/i18n"
 require "yast/exportable"

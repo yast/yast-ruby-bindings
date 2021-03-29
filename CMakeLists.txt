@@ -52,6 +52,8 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DI
 
 add_subdirectory(src)
 
+add_subdirectory(rbi)
+
 #
 # -> tests/
 #
