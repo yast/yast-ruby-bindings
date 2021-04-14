@@ -95,7 +95,7 @@ module Yast
         architecture = ""
       end
       left_title = "YaST2 - #{client_name}#{hostname}"
-      left_title + architecture.rjust(80-left_title.size)
+      left_title + architecture.rjust(78-left_title.size)
     end
 
 
