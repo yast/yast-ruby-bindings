@@ -326,14 +326,15 @@ module Yast
       log.info "To abort the process was requested from client #{client}: #{e.class}: #{e.message}"
     end
 
-    private_class_method def self.check_client_result_type!(result)
+    # @param client [String]
+    private_class_method def self.check_client_result_type!(result, client)
       allowed_types = Ops::TYPES_MAP.values.flatten
       allowed_types.delete(::Object) # remove generic type for any
 
       # check if response is allowed
       allowed = allowed_types.any? { |t| result.is_a? t }
 
-      raise "Invalid type #{result.class} from client #{client}" unless allowed
+      raise "Non-YCP type #{result.class} returned from client #{client}" unless allowed
     end
 
     # @private wrapper to run client in ruby
@@ -344,7 +345,7 @@ module Yast
         Debugger.start_from_env
         Profiler.start_from_env
         result = eval(code, GLOBAL_WFM_CONTEXT.binding, client)
-        check_client_result_type!(result)
+        check_client_result_type!(result, client)
 
         return result
       # SystemExit < Exception, raised by Kernel#exit

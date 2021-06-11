@@ -4,6 +4,22 @@ require_relative "test_helper"
 
 require "yast"
 
+# due to dependencies lets create here fake Report and Mode classes
+# because ruby bindings does not depend on yast2 but uses some of its functionality
+module Yast
+  class Report
+    def self.LongError(msg, height: 0)
+      msg
+    end
+  end
+
+  class Mode
+    def self.auto
+      true # fake true to avoid debugger
+    end
+  end
+end
+
 module Yast
   describe WFM do
     describe ".CallFunction" do
@@ -27,6 +43,12 @@ module Yast
         EOS
         stdout_stderr = `ruby -e "#{script}" 2>&1`
         expect(stdout_stderr).to eq ""
+      end
+
+      it "returns false and reports error if result is not ycp type" do
+        expect(Yast::Report).to receive(:LongError)
+          .with(/Non-YCP type Regexp returned from client .*wrong_result\.rb/, anything)
+        expect(WFM.CallFunction("wrong_result")).to eq false
       end
 
       it "raises error if first parameter is not string" do
