@@ -137,7 +137,13 @@ module Yast
     private_class_method def self.signal_handler(name)
       Signal.trap(name, "IGNORE")
 
-      $stderr.puts "YaST got signal #{name}."
+      # Exception swallowing: writing to stderr could fail if the parent process was killed,
+      # see bsc#1154854. Note that $stderr.closed? returns false.
+      begin
+        $stderr.puts "YaST got signal #{name}."
+      rescue Errno::EIO
+        # Nothing to do
+      end
 
       signal_log_open do |f|
         f.puts "=== #{Time.now} ==="
