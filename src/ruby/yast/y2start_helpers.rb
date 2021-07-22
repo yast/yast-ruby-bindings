@@ -138,7 +138,7 @@ module Yast
       Signal.trap(name, "IGNORE")
 
       # Exception swallowing: writing to stderr could fail if the parent process was killed,
-      # see bsc#1154854.
+      # see bsc#1154854. Note that $stderr.closed? returns false.
       begin
         $stderr.puts "YaST got signal #{name}."
       rescue Errno::EIO
