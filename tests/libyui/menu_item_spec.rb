@@ -1,8 +1,11 @@
 require_relative "rspec_tmux_tui"
 
+log_dir = "#{__dir__}/log"
+Dir.mkdir log_dir if !File.exist?(log_dir)
+
 describe "Menu Item" do
   before(:all) do
-    @base = "multi_selection_box_basics"
+    @base = "#{log_dir}/multi_selection_box_basics"
     @tui = YastTui.new
     @tui.example("MenuBar-shortcuts-test")
     @tui.await(/File.*Edit.*View/)
@@ -14,7 +17,7 @@ describe "Menu Item" do
 
   bug = "1177760" # https://bugzilla.suse.com/show_bug.cgi?id=1177760
   it "has shortcuts in menu items, boo##{bug}" do
-    @base = "menu_shortcuts_#{bug}"
+    @base = "#{log_dir}/menu_shortcuts_#{bug}"
     @tui.capture_pane_to("#{@base}-1-initial")
 
     @tui.send_keys "M-V"        # &View menu
@@ -31,7 +34,7 @@ describe "Menu Item" do
 
   bug = nil
   it "menu shortcuts have higher priority than button shortcuts" do
-    @base = "menu_shortcuts_prio"
+    @base = "#{log_dir}/menu_shortcuts_prio"
     @tui.capture_pane_to("#{@base}-1-initial")
 
     # No extra buttons: The "&View" menu has shortcut "V"
@@ -67,7 +70,7 @@ describe "Menu Item" do
 
   bug = "1178394" # https://bugzilla.suse.com/show_bug.cgi?id=1178394
   it "remains disabled after shortcuts are recomputed" do
-    @base = "menu_disabled_#{bug}"
+    @base = "#{log_dir}/menu_disabled_#{bug}"
     @tui.capture_pane_to("#{@base}-1-initial")
 
     @tui.send_keys "M-E"        # &Edit menu
