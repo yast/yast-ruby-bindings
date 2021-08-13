@@ -13,36 +13,27 @@ end
 
 # If tmux is not available, just skip this without failing
 if !tmux_available?
-  puts "Test skipped."
+  puts "tmux not available, test skipped."
   exit true
 end
 
-RESULT = "/tmp/exit".freeze
-OUTPUT = "/tmp/test_cmd_output".freeze
+require "tempfile"
+RESULT = Tempfile.new("test_result")
+OUTPUT = Tempfile.new("test_output")
 
-def cleanup
-  [RESULT, OUTPUT].each do |file|
-    File.delete(file) if File.exist?(file)
-  end
-end
+test = File.join(__dir__, "std_streams_spec.rb")
+cmd = "rspec #{test} >#{OUTPUT.path} 2>&1"
 
-test = File.dirname(__FILE__) + "/std_streams_spec.rb"
-cmd = "rspec #{test} >#{OUTPUT} 2>&1"
-
-tmux_out = `TERM=screen tmux -c '#{cmd}; echo \$? > #{RESULT}'`
+tmux_out = `TERM=screen tmux -c '#{cmd}; echo \$? > #{RESULT.path}'`
 puts "Outside tmux output:"
 puts tmux_out
-if File.exist?(RESULT) && File.read(RESULT) == "0\n"
+if RESULT.read == "0\n"
   puts "Test succeeded."
-  cleanup
   exit true
 else
   puts "Test failed: '#{cmd}'."
-  puts "result: #{File.exist?(RESULT) ? "'#{File.read(RESULT)}'" : "file not exist"}"
-  if File.exist?(OUTPUT)
-    puts "Output was:"
-    puts File.read(OUTPUT)
-  end
-  cleanup
+  puts "result: '#{RESULT.read}'"
+  puts "Output was:"
+  puts OUTPUT.read
   exit false
 end
