@@ -122,6 +122,14 @@ class TmuxTui
   def ensure_no_session
     kill_session if has_session?
   end
+
+  # Create a logging directory
+  # @return [String] Path to the directory
+  def log_dir
+    log_dir = "#{__dir__}/log"
+    Dir.mkdir log_dir if !File.exist?(log_dir)
+    log_dir
+  end
 end
 
 class YastTui < TmuxTui

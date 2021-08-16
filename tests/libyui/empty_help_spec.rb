@@ -14,16 +14,17 @@ describe "Help text" do
   around(:each) do |example|
     y2start = "ruby -r #{__dir__}/../test_helper #{__dir__}/../../src/y2start/y2start"
     @base = "empty_help"
-    log_dir = "#{__dir__}/log"
-    Dir.mkdir log_dir if !File.exist?(log_dir)
-    @log_base = "#{log_dir}/#{@base}"
     @tui = TmuxTui.new
+    @log_base = "#{@tui.log_dir}/#{@base}"
     @tui.new_session "#{y2start} #{__dir__}/#{@base}.rb ncurses" do
       example.run
     end
   end
 
-  # check that the empty help text is properly displayed (bsc#972548)
+  # check that the empty help text is properly displayed (bsc#972548),
+  # in the original buggy behavior there was no popup and UI.UseInput()
+  # returned :help in the ncurses UI if the help text was empty,
+  # the Qt UI also displays an empty popup
   it "displays empty popup for empty help text" do
     @tui.await("[Help]")
     check_dialog
@@ -31,6 +32,8 @@ describe "Help text" do
 
     # show help by pressing F1
     @tui.send_keys "F1"
+    # check that the help popup is displayed, there is an empty popup
+    # so we cannot check anything better than the OK button :-/
     @tui.await("[OK]")
     @tui.capture_pane_to("#{@log_base}-2-help-activated")
 

@@ -1,15 +1,12 @@
 require_relative "rspec_tmux_tui"
 
-log_dir = "#{__dir__}/log"
-Dir.mkdir log_dir if !File.exist?(log_dir)
-
 describe "MultiSelectionBox" do
   context "Basics" do
     before(:all) do
-      @base = "#{log_dir}/multi_selection_box_basics"
       @tui = YastTui.new
       @tui.example("MultiSelectionBox-test")
       @tui.await("Select toppings")
+      @base = "#{@tui.log_dir}/multi_selection_box_basics"
       @tui.capture_pane_to("#{@base}-1")
     end
 
@@ -96,8 +93,8 @@ describe "MultiSelectionBox" do
   context "Known fixed bugs" do
 
     around(:each) do |ex|
-      @base = "#{log_dir}/multi_selection_box"
       @tui = YastTui.new
+      @base = "#{@tui.log_dir}/multi_selection_box"
       @tui.example("MultiSelectionBox-test") do
         @tui.await("Select toppings")
         ex.run
