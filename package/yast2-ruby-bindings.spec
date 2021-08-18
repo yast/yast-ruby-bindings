@@ -28,15 +28,9 @@ BuildRequires:  cmake
 BuildRequires:  gcc-c++
 BuildRequires:  yast2-core-devel
 BuildRequires:  yast2-devtools >= 3.1.10
-%if 0%{?suse_version} == 1310
-BuildRequires:  rubygem-fast_gettext < 3.0
-BuildRequires:  rubygem-rspec
-Requires:       rubygem-fast_gettext < 3.0
-%else
 BuildRequires:  rubygem(%{rb_default_ruby_abi}:fast_gettext) < 3.0
 BuildRequires:  rubygem(%{rb_default_ruby_abi}:rspec)
 Requires:       rubygem(%{rb_default_ruby_abi}:fast_gettext) < 3.0
-%endif
 BuildRequires:  ruby-devel
 Requires:       yast2-core >= 3.2.2
 BuildRequires:  yast2-core-devel >= 3.2.2
@@ -71,6 +65,7 @@ and also Ruby scripts can use YaST agents, APIs and modules.
 
 %prep
 %setup -n yast2-ruby-bindings-%{version}
+
 %build
 mkdir build
 cd build
