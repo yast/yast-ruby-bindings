@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Mon Nov 29 15:34:14 UTC 2021 - Josef Reidinger <jreidinger@suse.com>
+
+- Avoid warning in ruby3.0 ( lets just reuse bug for older change
+  of ruby version bsc#1044312 )
+- 4.4.5
+
+-------------------------------------------------------------------
 Wed Aug 18 14:32:24 UTC 2021 - Josef Reidinger <jreidinger@suse.com>
 
 - Fix dependency on s390 (revealed by previous fix for bsc#972548)
