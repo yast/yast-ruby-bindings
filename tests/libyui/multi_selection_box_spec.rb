@@ -47,8 +47,10 @@ describe "MultiSelectionBox" do
         @tui.send_keys "Home"     # first item
         @tui.send_keys "Down"
         @tui.send_keys "Down"
+        @tui.await(/Current:\s+:mushrooms/)
         expect(@tui.capture_pane).to match(/Current:\s+:mushrooms/)
         @tui.send_keys "End"        # last item
+        @tui.await(/Current:\s+:ham/)
         expect(@tui.capture_pane).to match(/Current:\s+:ham/)
       end
 
@@ -56,6 +58,7 @@ describe "MultiSelectionBox" do
         @tui.send_keys "M-S"      # &Select toppings
         @tui.send_keys "End"      # last item ("Ham")
         @tui.send_keys "Space"    # select/deselect item
+        @tui.await(/Selected:\s+\[:cheese, :tomatoes\, :ham\]/)
         expect(@tui.capture_pane).to match(/Selected:\s+\[:cheese, :tomatoes\, :ham\]/)
         expect(@tui.capture_pane).to include("[x] Ham")
       end
@@ -65,6 +68,7 @@ describe "MultiSelectionBox" do
         @tui.send_keys "Home"     # first item
         @tui.send_keys "Down"     # one item down to "Tomatoes"
         @tui.send_keys "Space"    # select/deselect item
+        @tui.await(/Selected:\s+\[:cheese\, :ham\]/)
         expect(@tui.capture_pane).to match(/Selected:\s+\[:cheese\, :ham\]/)
         expect(@tui.capture_pane).to include("[ ] Tomatoes")
       end
