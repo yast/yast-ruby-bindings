@@ -10,8 +10,11 @@ module Yast
       # as usually. If it is missing a substitute definition is created.
       #
       # @note This needs to be called *after* starting code coverage with
-      # `SimpleCov.start` so the coverage of the imported modules is correctly
-      # counted.
+      #   `SimpleCov.start` so the coverage of the imported modules is correctly
+      #   counted.
+      #
+      # @note You can force using the defined stubs although the modules are
+      #   present in the system, this might be useful to actually test the stubs.
       #
       # @example Mock the `Language` module and the `Language.language` method
       # Yast::RSpec::Helpers.define_yast_module("Language") do
@@ -40,11 +43,19 @@ module Yast
             "  Called from: #{caller(1).first}\n\n"
         end
 
-        # try loading the module, it might be present in the system (running locally
-        # or in GitHub Actions), mock it only when missing (e.g. in OBS build)
-        Yast.import(name)
-        puts "Found module Yast::#{name}"
+        if ENV["YAST_FORCE_MODULE_STUBS"]
+          define_missing_yast_module(name, &block)
+        else
+          # try loading the module, it might be present in the system (running locally
+          # or in GitHub Actions), mock it only when missing (e.g. in OBS build)
+          Yast.import(name)
+          puts "Found module Yast::#{name}"
+        end
       rescue NameError
+        define_missing_yast_module(name, &block)
+      end
+
+      private_class_method def self.define_missing_yast_module(name, &block)
         warn "Module Yast::#{name} not found"
         if block_given?
           block.call
