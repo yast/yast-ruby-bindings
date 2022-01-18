@@ -20,21 +20,22 @@ module Yast
       #   present in the system, this might be useful to actually test the stubs.
       #   Just define the YAST_FORCE_MODULE_STUBS environment variable.
       #
-      # @example Mock empty `AutoInstall` module
-      # Yast::RSpec::Helpers.define_yast_module("AutoInstall")
+      # @example Mock empty `Language` module
+      # Yast::RSpec::Helpers.define_yast_module("Language")
       #
       # @example Mock the `Language` module with the `language` method
       # Yast::RSpec::Helpers.define_yast_module("Language", methods: [:language])
       #
-      # @example Mock the `AutoinstStorage` module with `Import` taking one parameter
-      # Yast::RSpec::Helpers.define_yast_module("AutoinstStorage") do
-      #   def Import(_config); end
+      # @example Mock the `Language` module with `language` returning a default value
+      # Yast::RSpec::Helpers.define_yast_module("Language") do
+      #   def language
+      #     "en_US"
+      #   end
       # end
       #
       # @param name [String] name of the YaST module
       # @param methods [Array<Symbol>] optional list of defined methods,
-      #   the defined methods accept no parameter, if you need a parameter
-      #   then define it in the block
+      #   the defined methods accept any parameters
       # @param force [Boolean] force creating the fake implementation even when
       #   the module is present in the system, can be also set by the
       #   YAST_FORCE_MODULE_STUBS environment variable. This might be useful
@@ -77,7 +78,8 @@ module Yast
 
         # create a fake implementation of the module
         new_class = Class.new do
-          methods.each { |m| define_singleton_method(m) {} }
+          # the defined method takes any number of parameters, a block is allowed as well
+          methods.each { |m| define_singleton_method(m) {|*_a, **_k, &_b|} }
           instance_eval(&block) if block_given?
         end
 
