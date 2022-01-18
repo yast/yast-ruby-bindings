@@ -56,8 +56,8 @@ describe Yast::RSpec::Helpers do
         Yast::RSpec::Helpers.define_yast_module("VerySpecialNotExistingModule", methods: [:foo])
 
         expect(Yast::VerySpecialNotExistingModule.respond_to?(:foo)).to be true
-        # by default no parameter accepted
-        expect(Yast::VerySpecialNotExistingModule.method(:foo).arity).to eq(0)
+        # by default accepts any parameters
+        expect(Yast::VerySpecialNotExistingModule.method(:foo).arity).to eq(-1)
       end
 
       it "defines the methods passed in the block" do
