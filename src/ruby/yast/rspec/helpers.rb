@@ -18,7 +18,7 @@ module Yast
       #
       # @note You can force using the defined stubs although the modules are
       #   present in the system, this might be useful to actually test the stubs.
-      #   Just the define the YAST_FORCE_MODULE_STUBS environment variable.
+      #   Just define the YAST_FORCE_MODULE_STUBS environment variable.
       #
       # @example Mock empty `AutoInstall` module
       # Yast::RSpec::Helpers.define_yast_module("AutoInstall")
@@ -42,7 +42,8 @@ module Yast
       #   of mocking. But use it carefully, this defeats the purpose of the RSpec
       #   verifying doubles!
       # @param block [Block] optional method definitions, they should provide
-      #   the same API as the original module
+      #   the same API as the original module, this can be combined with the
+      #   "methods" parameter
       def self.define_yast_module(name, methods: [:fake_method], force: false, &block)
         # sanity check, make sure the code coverage is already running if it is enabled
         if ENV["COVERAGE"] && (!defined?(SimpleCov) || !SimpleCov.running)
