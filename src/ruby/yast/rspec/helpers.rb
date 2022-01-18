@@ -43,7 +43,9 @@ module Yast
       #   verifying doubles!
       # @param block [Block] optional method definitions, they should provide
       #   the same API as the original module, this can be combined with the
-      #   "methods" parameter
+      #   `methods` parameter. The block is evaluated in the context of the
+      #   defined modules so you can also use the helpers like `attr_reader`
+      #   or define constants.
       def self.define_yast_module(name, methods: [:fake_method], force: false, &block)
         # sanity check, make sure the code coverage is already running if it is enabled
         if ENV["COVERAGE"] && (!defined?(SimpleCov) || !SimpleCov.running)
