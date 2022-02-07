@@ -9,6 +9,10 @@ module Yast
   class YReference; end
   class Byteblock; end
 
+  # These emulate the YCP arithmetic and logic operators.
+  # In particular, `nil` as an argument mostly propagates to the results.
+  # You will probably want to check for `nil` beforehand
+  # and then use the normal Ruby operators.
   module Ops
     # map of YCPTypes to ruby types
     TYPES_MAP = {
