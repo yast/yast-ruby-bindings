@@ -2,15 +2,30 @@ module Yast
   module Y2StartHelpers
     # Configure global environment for YaST
     #
-    # Currently it only sets values for $PATH.
+    # Currently it only sets values for $PATH and $GODEBUG.
     #
     # By configuring $PATH, it ensures that correct external programs are executed when
     # relative paths are given, so possible CVEs are avoided when running YaST.
+    #
+    # $GODEBUG is configured to enable CN (Common Name) matching in SSL certificates
+    # used by Go programs (suseconnect-ng used by registration)
     #
     # Note that forked processes will inherit the environment configuration, for example
     # when executing commands via SCR or Cheetah.
     def self.config_env
       ENV["PATH"] = "/sbin:/usr/sbin:/usr/bin:/bin"
+
+      # Note: this setting was removed in go-1.17 (https://go.dev/doc/go1.17),
+      # SLE15 uses go-1.16
+      if ENV["GODEBUG"]
+        # check if already enabled
+        if !ENV["GODEBUG"].include?("x509ignoreCN=0")
+          # append to existing settings
+          ENV["GODEBUG"] = "#{ENV["GODEBUG"]},x509ignoreCN=0"
+        end
+      else
+        ENV["GODEBUG"] = "x509ignoreCN=0"
+      end
     end
 
     # Parses ARGV of y2start. it returns map with keys:
