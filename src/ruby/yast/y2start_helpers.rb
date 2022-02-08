@@ -8,7 +8,8 @@ module Yast
     # relative paths are given, so possible CVEs are avoided when running YaST.
     #
     # $GODEBUG is configured to enable CN (Common Name) matching in SSL certificates
-    # used by Go programs (suseconnect-ng used by registration)
+    # used by Go programs (suseconnect-ng used by registration).
+    # See https://bugzilla.suse.com/show_bug.cgi?id=1195220
     #
     # Note that forked processes will inherit the environment configuration, for example
     # when executing commands via SCR or Cheetah.
