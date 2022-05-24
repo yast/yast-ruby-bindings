@@ -2,7 +2,6 @@
 # encoding: utf-8
 
 require_relative "test_helper"
-require "yast"
 require "yast/y2start_helpers"
 
 describe Yast::Y2StartHelpers do
