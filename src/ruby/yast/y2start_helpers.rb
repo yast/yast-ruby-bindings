@@ -114,6 +114,16 @@ module Yast
       left_title + architecture.rjust(78-left_title.size)
     end
 
+    # Open a new SCR instance with chroot
+    #
+    # @param target [String] the chroot target location
+    # @return [Integer] the original SCR handle
+    def self.redirect_scr(target)
+      old_handle = Yast::WFM.SCRGetDefault
+      handle = Yast::WFM.SCROpen("chroot=#{target}:scr", false)
+      Yast::WFM.SCRSetDefault(handle)
+      old_handle
+    end
 
     # client returned special result, this is used as offset (or as generic error)
     RES_CLIENT_RESULT = 16
