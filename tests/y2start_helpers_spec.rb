@@ -137,4 +137,18 @@ describe Yast::Y2StartHelpers do
       expect(subject.generate_exit_code(3)).to eq 19
     end
   end
+
+  describe ".redirect_scr" do
+    it "opens a new SCR with chroot option" do
+      target = "/mnt"
+      handle = 42
+
+      allow(Yast::WFM).to receive(:SCRGetDefault)
+      expect(Yast::WFM).to receive(:SCROpen).with("chroot=#{target}:scr", false)
+        .and_return(handle)
+      expect(Yast::WFM).to receive(:SCRSetDefault).with(handle)
+
+      subject.redirect_scr(target)
+    end
+  end
 end

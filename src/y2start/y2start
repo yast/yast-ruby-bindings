@@ -55,6 +55,14 @@ set_title = args[:client_options][:params].empty? || NO_CLI_CLIENTS.include?(arg
 Yast::UI.SetApplicationTitle(
   Yast::Y2StartHelpers.application_title(args[:client_name])) if set_title
 
+target_dir = ENV["YAST_SCR_TARGET"] || ""
+if !target_dir.empty? && target_dir != "/"
+  if File.directory?(target_dir)
+    Yast::Y2StartHelpers.redirect_scr(target_dir)
+  else
+    abort "Cannot set the target, directory #{target_dir} not found"
+  end
+end
 
 exit Yast::Y2StartHelpers.generate_exit_code(
   Yast::WFM.CallFunction(args[:client_name], args[:client_options][:params])
