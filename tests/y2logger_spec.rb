@@ -5,6 +5,10 @@ require_relative "test_helper"
 require "yast/y2logger"
 
 module Yast
+
+  # testing exception class
+  class TestException < StandardError; end
+
   describe Y2Logger do
     TEST_MESSAGE = "Testing".freeze
 
@@ -40,6 +44,68 @@ module Yast
     it "handles a message passed via block" do
       expect(Yast).to receive(:y2milestone).with(Y2Logger::CALL_FRAME, TEST_MESSAGE)
       @test_logger.info { TEST_MESSAGE }
+    end
+
+    context "group logging" do
+      it "raises ArgumentError exception when no block is not passed" do
+        expect{ @test_logger.group(TEST_MESSAGE) }.to raise_error(ArgumentError)
+      end
+
+      it "evaluates the passed block" do
+        expect{ |b| @test_logger.group(TEST_MESSAGE, &b) }.to yield_control
+      end
+
+      it "returns the block result" do
+        value = "test"
+        ret = @test_logger.group(TEST_MESSAGE) { value }
+
+        # test the object identity, same object must be returned
+        expect(ret).to equal(value)
+      end
+
+      it "logs special group begin and group end markers" do
+        expect(Yast).to receive(:y2milestone).with(Y2Logger::CALL_FRAME, /::group::/)
+        expect(Yast).to receive(:y2milestone).with(Y2Logger::CALL_FRAME, /::endgroup::/)
+        @test_logger.group("") { }
+      end
+
+      it "logs the group description" do
+        allow(Yast).to receive(:y2milestone)
+        expect(Yast).to receive(:y2milestone) do |frame, message|
+          expect(message).to end_with(TEST_MESSAGE)
+        end
+
+        @test_logger.group(TEST_MESSAGE) { }
+      end
+
+      it "logs the optional summary text" do
+        summary = "optional summary text"
+        # remember whether the summary was logged or not
+        summary_included = false
+
+        allow(Yast).to receive(:y2milestone)
+        expect(Yast).to receive(:y2milestone) do |frame, message|
+          summary_included = true if summary.end_with?(summary)
+        end
+
+        @test_logger.group(TEST_MESSAGE) { |g| g.summary = summary }
+        expect(summary_included).to be true
+      end
+
+      it "logs error result when the block returns :abort" do
+        expect(Yast).to receive(:y2error).with(Y2Logger::CALL_FRAME, /::endgroup::/)
+        @test_logger.group(TEST_MESSAGE) { :abort }
+      end
+
+      it "logs error result when the failed status is set explicitly" do
+        expect(Yast).to receive(:y2error).with(Y2Logger::CALL_FRAME, /::endgroup::/)
+        @test_logger.group(TEST_MESSAGE) { |g| g.failed = true }
+      end
+
+      it "logs error result when reraises the exception from the block" do
+        expect(Yast).to receive(:y2error).with(Y2Logger::CALL_FRAME, /::endgroup::/)
+        expect{ @test_logger.group(TEST_MESSAGE) { raise TestException } }.to raise_error(TestException)
+      end
     end
 
     it "does not crash when logging an invalid UTF-8 string" do

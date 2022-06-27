@@ -6,6 +6,41 @@ require "singleton"
 require "yast/logger"
 
 module Yast
+
+  # class for storing the log group result data, used in the Y2Logger.group
+  class LogGroupResult
+    # @!attribute [rw] result summary, human readable description
+    # @return [String,nil] result of the step as a textual description
+    attr_accessor :summary
+
+    # @!attribute [rw] result of the block
+    # @return result of the step
+    attr_accessor :result
+
+    # @!attribute [w] set to true if the result of the group is a failure,
+    #  overrides the state evaluated from the the `result` attribute
+    attr_writer :failed
+
+    # these return values are considered failures by default,
+    # can be overridden by setting the `failed` attribute
+    FAILURES = [:abort, :cancel, false]
+
+    # did the execution of the block failed?
+    # @return [Boolean] true if the block failed
+    def failed?
+      if failed.nil?
+        FAILURES.include?(result)
+      else
+        failed
+      end
+    end
+
+  private
+
+    # @return [Boolean,nil] explicit failure
+    attr_reader :failed
+  end
+
   # A Ruby Logger which wraps Yast.y2*() calls
   class Y2Logger < ::Logger
     include Singleton
@@ -40,6 +75,37 @@ module Yast
       # process also debug messages but might not be logged in the end
       self.level = ::Logger::DEBUG
     end
+
+    # log a block of commands, adds a special begin and end markers into the log,
+    # the block should be one big logical step in the process,
+    # can be used recursively, e.g. log.group might call another log.group inside
+    # @param description [String] short description of the block
+    # @param block [Proc] block to call
+    # @yield param group [LogGroupResult] can be optionally used to pass result details
+    def group(description, &block)
+      details = LogGroupResult.new
+      # mark start of the group
+      info "::group::#{Process.clock_gettime(Process::CLOCK_MONOTONIC)}::#{description}"
+
+      if block_given?
+        ret = block.call(details)
+      else
+        raise ArgumentError, "Missing block parameter"
+      end
+      details.result = ret
+
+      ret
+    rescue StandardError => e
+      # mark a failure
+      details.failed = true
+      details.summary = "Raised exception: #{e}"
+      # reraise the original exception
+      raise
+    ensure
+      # mark end of the group with result data, if it failed log as an error
+      level = details.failed? ? :error : :info
+      send(level, "::endgroup::#{Process.clock_gettime(Process::CLOCK_MONOTONIC)}::#{details.summary}")
+    end
   end
 
   # This module provides access to Yast specific logging
@@ -60,6 +126,23 @@ module Yast
   #
   #          # Builtins.y2error() replacement
   #          log.error "error"
+  #
+  #          # log a logical group of commands, useful for big tasks which
+  #          # log too many details
+  #          log.group("Adding repositories")
+  #            add_repositories
+  #          end
+  #
+  #          # log a logical group of commands with result details
+  #          log.group("Adding repositories") do |group|
+  #            ret, repos = add_repositories
+  #            if ret == :failed
+  #              group.summary = "Could not add repositories"
+  #              group.failed = true
+  #            else
+  #              group.summary = "Added #{repos.size} repositories"
+  #            end
+  #          end
   #        end
   #      end
   #    end
