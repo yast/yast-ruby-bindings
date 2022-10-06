@@ -2,7 +2,6 @@ require "yast/builtinx"
 require "yast/builtins"
 require "yast/ops"
 require "yast/debugger"
-require "yast/profiler"
 require "yast/yast"
 require "cgi"
 
@@ -343,7 +342,6 @@ module Yast
       code = File.read client
       begin
         Debugger.start_from_env
-        Profiler.start_from_env
         result = eval(code, GLOBAL_WFM_CONTEXT.binding, client)
         check_client_result_type!(result, client)
 
