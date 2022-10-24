@@ -131,7 +131,7 @@ module Yast
   #
   #          # log a logical group of commands, useful for big tasks which
   #          # log too many details
-  #          log.group("Adding repositories")
+  #          log.group("Adding repositories") do
   #            add_repositories
   #          end
   #
