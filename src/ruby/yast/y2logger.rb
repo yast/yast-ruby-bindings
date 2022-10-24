@@ -7,18 +7,16 @@ require "yast/logger"
 
 module Yast
 
-  # class for storing the log group result data, used in the Y2Logger.group
+  # Stores the log group result data, used in {Y2Logger.group}.
   class LogGroupResult
-    # @!attribute [rw] result summary, human readable description
     # @return [String,nil] result of the step as a textual description
     attr_accessor :summary
 
-    # @!attribute [rw] result of the block
-    # @return result of the step
+    # @return [Object ]result of the block
     attr_accessor :result
 
-    # @!attribute [w] set to true if the result of the group is a failure,
-    #  overrides the state evaluated from the the `result` attribute
+    # @param value [Boolean] set to true if the result of the group is a failure,
+    #  overrides the state evaluated from the the {#result} attribute
     attr_writer :failed
 
     # these return values are considered failures by default,
@@ -81,7 +79,11 @@ module Yast
     # can be used recursively, e.g. log.group might call another log.group inside
     # @param description [String] short description of the block
     # @param block [Proc] block to call
-    # @yield param group [LogGroupResult] can be optionally used to pass result details
+    # @yieldparam group [LogGroupResult] can be optionally used to pass result details
+    # @yieldreturn [Object] passed on;
+    #   if one of `false`, `:abort`, `:cancel` ({LogGroupResult::FAILURES}),
+    #   the group is logged as failed (log.error)
+    # @return [Object] whatever the *block* returned
     def group(description, &block)
       details = LogGroupResult.new
       # mark start of the group
