@@ -92,7 +92,7 @@ module Yast
       if block_given?
         ret = block.call(details)
       else
-        raise ArgumentError, "Missing block parameter"
+        raise ArgumentError, "Missing a block"
       end
       details.result = ret
 
