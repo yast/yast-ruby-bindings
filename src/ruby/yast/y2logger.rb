@@ -15,28 +15,28 @@ module Yast
     # @return [Object ]result of the block
     attr_accessor :result
 
-    # @param value [Boolean] set to true if the result of the group is a failure,
+    # @param value [Boolean] set to false if the result of the group is a failure,
     #  overrides the state evaluated from the the {#result} attribute
-    attr_writer :failed
+    attr_writer :success
 
     # these return values are considered failures by default,
     # can be overridden by setting the `failed` attribute
     FAILURES = [:abort, :cancel, false]
 
-    # did the execution of the block failed?
-    # @return [Boolean] true if the block failed
-    def failed?
-      if failed.nil?
-        FAILURES.include?(result)
+    # was the execution of the block successful?
+    # @return [Boolean] true if the block succeeded, false otherwise
+    def success?
+      if success.nil?
+        !FAILURES.include?(result)
       else
-        failed
+        success
       end
     end
 
   private
 
     # @return [Boolean,nil] explicit failure
-    attr_reader :failed
+    attr_reader :success
   end
 
   # A Ruby Logger which wraps Yast.y2*() calls
@@ -99,14 +99,14 @@ module Yast
       ret
     rescue StandardError => e
       # mark a failure
-      details.failed = true
+      details.success = false
       details.summary = "Raised exception: #{e}"
       # reraise the original exception
       raise
     ensure
       # mark end of the group with result data, if it failed log as an error
-      level = details.failed? ? :error : :info
-      send(level, "::endgroup::#{Process.clock_gettime(Process::CLOCK_MONOTONIC)}::#{details.summary}")
+      level = details.success? ? :info : :error
+      public_send(level, "::endgroup::#{Process.clock_gettime(Process::CLOCK_MONOTONIC)}::#{details.summary}")
     end
   end
 

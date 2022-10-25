@@ -97,9 +97,9 @@ module Yast
         @test_logger.group(TEST_MESSAGE) { :abort }
       end
 
-      it "logs error result when the failed status is set explicitly" do
+      it "logs error result when the success status is explicitly set to false" do
         expect(Yast).to receive(:y2error).with(Y2Logger::CALL_FRAME, /::endgroup::/)
-        @test_logger.group(TEST_MESSAGE) { |g| g.failed = true }
+        @test_logger.group(TEST_MESSAGE) { |g| g.success = false }
       end
 
       it "logs error result when reraises the exception from the block" do
