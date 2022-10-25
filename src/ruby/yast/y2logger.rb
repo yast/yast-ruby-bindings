@@ -19,7 +19,7 @@ module Yast
     #  overrides the state evaluated from the the {#result} attribute
     attr_writer :success
 
-    # @return [Array] list of error values
+    # @return [Array] list of error values (*result* values that will make *success* false)
     attr_accessor :error_values
 
     # was the execution of the block successful?
