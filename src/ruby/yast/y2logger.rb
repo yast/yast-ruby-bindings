@@ -86,7 +86,7 @@ module Yast
     # @param block [Proc] block to call
     # @yieldparam group [LogGroupResult] can be optionally used to pass result details
     # @yieldreturn [Object] passed on;
-    #   if one of `false`, `:abort`, `:cancel` ({LogGroupResult::FAILURES}),
+    #   if one of `false`, `:abort`, `:cancel` ({LogGroupResult#error_values}),
     #   the group is logged as failed (log.error)
     # @return [Object] whatever the *block* returned
     def group(description, &block)
