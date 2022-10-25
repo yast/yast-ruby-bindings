@@ -12,25 +12,30 @@ module Yast
     # @return [String,nil] result of the step as a textual description
     attr_accessor :summary
 
-    # @return [Object ]result of the block
+    # @return [Object] result of the block
     attr_accessor :result
 
     # @param value [Boolean] set to false if the result of the group is a failure,
     #  overrides the state evaluated from the the {#result} attribute
     attr_writer :success
 
-    # these return values are considered failures by default,
-    # can be overridden by setting the `failed` attribute
-    FAILURES = [:abort, :cancel, false]
+    # @return [Array] list of error values
+    attr_accessor :error_values
 
     # was the execution of the block successful?
     # @return [Boolean] true if the block succeeded, false otherwise
     def success?
       if success.nil?
-        !FAILURES.include?(result)
+        !error_values.include?(result)
       else
         success
       end
+    end
+
+    def initialize
+      # these return values are considered failures by default,
+      # can be overridden by modifying the `error_values` list
+      @error_values = [:abort, :cancel, false]
     end
 
   private
