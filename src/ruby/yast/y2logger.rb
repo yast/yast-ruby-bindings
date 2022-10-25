@@ -145,7 +145,7 @@ module Yast
   #            ret, repos = add_repositories
   #            if ret == :failed
   #              group.summary = "Could not add repositories"
-  #              group.failed = true
+  #              group.success = false
   #            else
   #              group.summary = "Added #{repos.size} repositories"
   #            end
