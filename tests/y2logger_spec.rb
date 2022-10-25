@@ -97,6 +97,14 @@ module Yast
         @test_logger.group(TEST_MESSAGE) { :abort }
       end
 
+      it "allows using a custom error value" do
+        expect(Yast).to receive(:y2error).with(Y2Logger::CALL_FRAME, /::endgroup::/)
+        @test_logger.group(TEST_MESSAGE) do |g|
+          g.error_values << :error
+          :error
+        end
+      end
+
       it "logs error result when the success status is explicitly set to false" do
         expect(Yast).to receive(:y2error).with(Y2Logger::CALL_FRAME, /::endgroup::/)
         @test_logger.group(TEST_MESSAGE) { |g| g.success = false }
