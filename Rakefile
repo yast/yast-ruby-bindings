@@ -1,4 +1,6 @@
 require "yast/rake"
+
+Yast::Tasks.submit_to :sle15sp5
 require "rbconfig"
 
 Yast::Tasks.configuration do |conf|
