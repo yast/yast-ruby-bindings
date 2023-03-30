@@ -274,15 +274,12 @@ VALUE YRubyNamespace::getRubyModule()
 int YRubyNamespace::addMethods(VALUE module)
 {
   VALUE methods = rb_funcall(module, rb_intern("published_functions"),0);
-  methods = rb_funcall(methods,rb_intern("values"),0);
   int j = 0;
   for (int i = 0; i < RARRAY_LEN(methods); ++i)
   {
-    VALUE method = rb_ary_entry(methods,i);
-    if (getenv("Y2ALLGLOBAL") == NULL && RTEST(rb_funcall(method, rb_intern("private?"), 0)))
-      continue;
-    VALUE method_name = rb_funcall(method, rb_intern("function"), 0);
-    VALUE type = rb_funcall(method,rb_intern("type"),0);
+    VALUE method = rb_ary_entry(methods, i);
+    VALUE method_name = rb_hash_aref(method, rb_intern("name"));
+    VALUE type = rb_hash_aref(method, rb_intern("type"));
     string signature = StringValueCStr(type);
 
     addMethod(rb_id2name(SYM2ID(method_name)), signature, j++);
@@ -293,18 +290,12 @@ int YRubyNamespace::addMethods(VALUE module)
 int YRubyNamespace::addVariables(VALUE module, int offset)
 {
   VALUE variables = rb_funcall(module, rb_intern("published_variables"),0);
-  variables = rb_funcall(variables,rb_intern("values"),0);
   int j=0;
   for (int i = 0; i < RARRAY_LEN(variables); ++i)
   {
-    VALUE variable = rb_ary_entry(variables,i);
-    VALUE variable_name = rb_funcall(variable, rb_intern("variable"), 0);
-    if (getenv("Y2ALLGLOBAL") == NULL && RTEST(rb_funcall(variable, rb_intern("private?"), 0)))
-    {
-      y2debug("variable: '%s' is private and not needed", rb_id2name(SYM2ID(variable_name)));
-      continue;
-    }
-    VALUE type = rb_funcall(variable,rb_intern("type"),0);
+    VALUE variable = rb_ary_entry(variables, i);
+    VALUE variable_name = rb_hash_aref(variable, rb_intern("name"));
+    VALUE type = rb_hash_aref(variable, rb_intern("type"));
     string signature = StringValueCStr(type);
     constTypePtr sym_tp = Type::fromSignature(signature);
 
