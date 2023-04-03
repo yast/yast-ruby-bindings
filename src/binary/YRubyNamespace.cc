@@ -278,8 +278,8 @@ int YRubyNamespace::addMethods(VALUE module)
   for (int i = 0; i < RARRAY_LEN(methods); ++i)
   {
     VALUE method = rb_ary_entry(methods, i);
-    VALUE method_name = rb_hash_aref(method, rb_intern("name"));
-    VALUE type = rb_hash_aref(method, rb_intern("type"));
+    VALUE method_name = rb_hash_aref(method, ID2SYM(rb_intern("name")));
+    VALUE type = rb_hash_aref(method, ID2SYM(rb_intern("type")));
     string signature = StringValueCStr(type);
 
     addMethod(rb_id2name(SYM2ID(method_name)), signature, j++);
@@ -294,8 +294,8 @@ int YRubyNamespace::addVariables(VALUE module, int offset)
   for (int i = 0; i < RARRAY_LEN(variables); ++i)
   {
     VALUE variable = rb_ary_entry(variables, i);
-    VALUE variable_name = rb_hash_aref(variable, rb_intern("name"));
-    VALUE type = rb_hash_aref(variable, rb_intern("type"));
+    VALUE variable_name = rb_hash_aref(variable, ID2SYM(rb_intern("name")));
+    VALUE type = rb_hash_aref(variable, ID2SYM(rb_intern("type")));
     string signature = StringValueCStr(type);
     constTypePtr sym_tp = Type::fromSignature(signature);
 
