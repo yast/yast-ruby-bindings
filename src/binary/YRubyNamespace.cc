@@ -36,6 +36,14 @@ as published by the Free Software Foundation; either version
 #include "YRuby.h"
 #include "Y2RubyUtils.h"
 
+
+// HELPER method to inspect ruby values from C++. Useful for debugging
+static void log_inspect(const char * message, VALUE v)
+{
+  VALUE inspect = rb_funcall(v, rb_intern("inspect"), 0);
+  y2internal("%s: %s", message, StringValueCStr(inspect));
+}
+
 /**
  * Exception raised when type signature in ruby class is invalid
  */
