@@ -4,12 +4,24 @@ module Yast
   # Provides ability to export functions and variables to Yast component system.
   # The most important method is {Yast::Exportable#publish}
   module Exportable
-    # list of published functions
+    # @api private
+    # @return [Array<Array(Symbol,String)>] list of published functions
+    # @example
+    #   [
+    #     [:doit, "void()"],
+    #     [:is_odd, "boolean(integer)"]
+    #   ]
     def published_functions
       @__published_functions ||= []
     end
 
-    # list of published variables
+    # @api private
+    # @return [Array<Array(Symbol,String)>] list of published variables
+    # @example
+    #   [
+    #     [:answer, "integer"],
+    #     [:having_fun, "boolean"]
+    #   ]
     def published_variables
       @__published_variables ||= []
     end
@@ -30,9 +42,9 @@ module Yast
       type.gsub!(/map([^<]|$)/, 'map<any,any>\\1')
       type.gsub!(/list([^<]|$)/, 'list<any>\\1')
       if options[:function]
-        published_functions.push({ name: options[:function], type: type })
+        published_functions.push([options[:function], type])
       elsif options[:variable]
-        published_variables.push({ name: options[:variable], type: type })
+        published_variables.push([options[:variable], type])
         attr_accessor options[:variable]
       else
         raise "Missing publish kind"

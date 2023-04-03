@@ -27,13 +27,15 @@ MyTest = MyTestClass.new
 
 describe "ExportableTest" do
   it "tests publish methods" do
-    expect(MyTest.class.published_functions).to eq([{name: :test, type: "string(integer,term)"}])
+    expect(MyTest.class.published_functions).to eq([
+      [:test, "string(integer,term)"]
+    ])
   end
 
   it "tests publish variables" do
-    expect(MyTest.class.published_variables).to match_array([
-      {name: :variable_a, type: "map<any,any>"},
-      {name: :complex, type: "map<string,map<list<any>,map<any,any>>>"}
+    expect(MyTest.class.published_variables).to eq([
+      [:complex, "map<string,map<list<any>,map<any,any>>>"],
+      [:variable_a, "map<any,any>"]
     ])
   end
 
