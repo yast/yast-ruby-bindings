@@ -36,6 +36,17 @@ as published by the Free Software Foundation; either version
 #include "YRuby.h"
 #include "Y2RubyUtils.h"
 
+
+// HELPER method to inspect ruby values from C++. Useful for debugging
+/*
+// usage: log_inspect("surely not nil, foobar", foobar);
+static void log_inspect(const char * message, VALUE v)
+{
+  VALUE inspect = rb_funcall(v, rb_intern("inspect"), 0);
+  y2internal("%s: %s", message, StringValueCStr(inspect));
+}
+*/
+
 /**
  * Exception raised when type signature in ruby class is invalid
  */
@@ -274,15 +285,12 @@ VALUE YRubyNamespace::getRubyModule()
 int YRubyNamespace::addMethods(VALUE module)
 {
   VALUE methods = rb_funcall(module, rb_intern("published_functions"),0);
-  methods = rb_funcall(methods,rb_intern("values"),0);
   int j = 0;
   for (int i = 0; i < RARRAY_LEN(methods); ++i)
   {
-    VALUE method = rb_ary_entry(methods,i);
-    if (getenv("Y2ALLGLOBAL") == NULL && RTEST(rb_funcall(method, rb_intern("private?"), 0)))
-      continue;
-    VALUE method_name = rb_funcall(method, rb_intern("function"), 0);
-    VALUE type = rb_funcall(method,rb_intern("type"),0);
+    VALUE method = rb_ary_entry(methods, i);
+    VALUE method_name = rb_ary_entry(method, 0);
+    VALUE type = rb_ary_entry(method, 1);
     string signature = StringValueCStr(type);
 
     addMethod(rb_id2name(SYM2ID(method_name)), signature, j++);
@@ -293,18 +301,12 @@ int YRubyNamespace::addMethods(VALUE module)
 int YRubyNamespace::addVariables(VALUE module, int offset)
 {
   VALUE variables = rb_funcall(module, rb_intern("published_variables"),0);
-  variables = rb_funcall(variables,rb_intern("values"),0);
   int j=0;
   for (int i = 0; i < RARRAY_LEN(variables); ++i)
   {
-    VALUE variable = rb_ary_entry(variables,i);
-    VALUE variable_name = rb_funcall(variable, rb_intern("variable"), 0);
-    if (getenv("Y2ALLGLOBAL") == NULL && RTEST(rb_funcall(variable, rb_intern("private?"), 0)))
-    {
-      y2debug("variable: '%s' is private and not needed", rb_id2name(SYM2ID(variable_name)));
-      continue;
-    }
-    VALUE type = rb_funcall(variable,rb_intern("type"),0);
+    VALUE variable = rb_ary_entry(variables, i);
+    VALUE variable_name = rb_ary_entry(variable, 0);
+    VALUE type = rb_ary_entry(variable, 1);
     string signature = StringValueCStr(type);
     constTypePtr sym_tp = Type::fromSignature(signature);
 

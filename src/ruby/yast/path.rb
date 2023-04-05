@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Yast
   # Represents paths like it is in ycp. It is path elements separated by dot.
   # Elements can be simple or complex. Simple can contain only ascii characters [a-zA-Z0-9].
@@ -71,7 +72,7 @@ module Yast
     def load_components(value)
       state = :initial
       skip_next = false
-      buffer = ""
+      buffer = "".dup
       value.each_char do |c|
         case state
         when :initial
@@ -91,7 +92,7 @@ module Yast
             raise "Invalid path '#{value}'" if invalid_buffer?(buffer)
 
             @components << modify_buffer(buffer)
-            buffer = ""
+            buffer = "".dup
             next
           end
           buffer << c
@@ -107,7 +108,7 @@ module Yast
             state = :initial
             buffer << c
             @components << buffer
-            buffer = ""
+            buffer = "".dup
             next
           when '\\'
             skip_next = true

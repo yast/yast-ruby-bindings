@@ -1,5 +1,7 @@
 module Yast
   class InvalidTypeModuleClass < Module
+    include Yast::Logger
+
     def a
       puts "Fail"
     end

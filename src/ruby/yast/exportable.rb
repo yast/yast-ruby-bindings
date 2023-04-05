@@ -4,24 +4,26 @@ module Yast
   # Provides ability to export functions and variables to Yast component system.
   # The most important method is {Yast::Exportable#publish}
   module Exportable
-    # Holder for exported data
-    class ExportData < OpenStruct
-      # Is exported data only for private purpose.
-      # It is useful only to test private methods from old Yast testsuite.
-      def private?
-        table = marshal_dump
-        !!table[:private]
-      end
-    end
-
-    # list of published functions
+    # @api private
+    # @return [Array<Array(Symbol,String)>] list of published functions
+    # @example
+    #   [
+    #     [:doit, "void()"],
+    #     [:is_odd, "boolean(integer)"]
+    #   ]
     def published_functions
-      @__published_functions ||= {}
+      @__published_functions ||= []
     end
 
-    # list of published variables
+    # @api private
+    # @return [Array<Array(Symbol,String)>] list of published variables
+    # @example
+    #   [
+    #     [:answer, "integer"],
+    #     [:having_fun, "boolean"]
+    #   ]
     def published_variables
-      @__published_variables ||= {}
+      @__published_variables ||= []
     end
 
     # Publishes function or variable to component system
@@ -37,16 +39,13 @@ module Yast
       raise "Missing signature" unless options[:type]
       # convert type to full specification
       type = options[:type].delete " \t"
-      type = type.gsub(/map([^<]|$)/, 'map<any,any>\\1')
-      type = type.gsub(/list([^<]|$)/, 'list<any>\\1')
-      options[:type] = type
+      type.gsub!(/map([^<]|$)/, 'map<any,any>\\1')
+      type.gsub!(/list([^<]|$)/, 'list<any>\\1')
       if options[:function]
-        published_functions[options[:function]] = ExportData.new options
+        published_functions.push([options[:function], type])
       elsif options[:variable]
-        published_variables[options[:variable]] = ExportData.new options
-        if !options[:private] || ENV["Y2ALLGLOBAL"]
-          attr_accessor :"#{options[:variable]}"
-        end
+        published_variables.push([options[:variable], type])
+        attr_accessor options[:variable]
       else
         raise "Missing publish kind"
       end
