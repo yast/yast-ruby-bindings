@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Fri Sep 01 19:57:03 UTC 2023 - Josef Reidinger <jreidinger@suse.com>
+
+- Branch package for SP6 (bsc#1208913)
+
+-------------------------------------------------------------------
 Mon Oct 24 12:51:30 UTC 2022 - Ladislav Slezák <lslezak@suse.cz>
 
 - Added "log.group" method for grouping the log messages
