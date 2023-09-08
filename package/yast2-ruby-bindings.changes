@@ -1,7 +1,19 @@
 -------------------------------------------------------------------
-Fri Sep 01 19:57:03 UTC 2023 - Josef Reidinger <jreidinger@suse.com>
+Mon Apr  3 10:46:37 UTC 2023 - Josef Reidinger <jreidinger@suse.com>
 
-- Branch package for SP6 (bsc#1208913)
+- Improve YaST memory consumption related to import+publish (bsc#1210051)
+- 4.6.2
+
+-------------------------------------------------------------------
+Thu Mar  9 10:36:23 UTC 2023 - Martin Vidner <mvidner@suse.com>
+
+- Use ruby-devel versioned to match the gems (bsc#1209098)
+- 4.6.1
+
+-------------------------------------------------------------------
+Fri Mar 03 14:44:07 UTC 2023 - Ladislav Slezák <lslezak@suse.cz>
+
+- Bump version to 4.6.0 (bsc#1208913)
 
 -------------------------------------------------------------------
 Mon Oct 24 12:51:30 UTC 2022 - Ladislav Slezák <lslezak@suse.cz>
