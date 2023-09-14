@@ -179,7 +179,7 @@ module Yast
     # do not reimport if already imported and contain some methods
     # ( in case namespace contain some methods )
     if base.constants.include?(modules.last.to_sym) &&
-        !(base.const_get(modules.last).methods - Object.methods).empty?
+        !base.const_get(modules.last).public_methods(false).empty?
       return
     end
 
@@ -187,7 +187,7 @@ module Yast
 
     # do not create wrapper if module is in ruby and define itself object
     if base.constants.include?(modules.last.to_sym) &&
-        !(base.const_get(modules.last).methods - Object.methods).empty?
+        !base.const_get(modules.last).public_methods(false).empty?
       return
     end
 
