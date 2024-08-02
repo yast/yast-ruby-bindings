@@ -2,8 +2,7 @@
 
 [![Workflow Status](https://github.com/yast/yast-ruby-bindings/workflows/CI/badge.svg?branch=master)](
 https://github.com/yast/yast-ruby-bindings/actions?query=branch%3Amaster)
-[![Jenkins Status](https://ci.opensuse.org/buildStatus/icon?job=yast-yast-ruby-bindings-master)](
-https://ci.opensuse.org/view/Yast/job/yast-yast-ruby-bindings-master/)
+[![OBS](https://github.com/yast/yast-ruby-bindings/actions/workflows/submit.yml/badge.svg)](https://github.com/yast/yast-ruby-bindings/actions/workflows/submit.yml)
 
 It is part of [YaST](http://yast.github.io) where you can find more information
 about YaST and its component system. The Ruby bindings cover only the connection to
