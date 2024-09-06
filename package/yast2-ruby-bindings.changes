@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Fri Sep 06 06:45:59 UTC 2024 - Ladislav Slezák <lslezak@suse.com>
+
+- Branch package for SP7 (bsc#1230201)
+
+-------------------------------------------------------------------
 Mon Apr  3 10:46:37 UTC 2023 - Josef Reidinger <jreidinger@suse.com>
 
 - Improve YaST memory consumption related to import+publish (bsc#1210051)
