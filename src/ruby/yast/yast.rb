@@ -16,7 +16,7 @@ module Yast
   end
 
   # @private used to extract place from backtrace
-  BACKTRACE_REGEXP = /^(.*):(\d+):in `.*'$/
+  BACKTRACE_REGEXP = /^(.*):(\d+):in [`'].*'$/
 
   # shortcut to construct new Yast term
   # @see Yast::Term
