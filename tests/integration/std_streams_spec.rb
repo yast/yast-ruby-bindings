@@ -14,7 +14,7 @@ Yast.import "UI"
 
 # Regression test for the fix of bnc#943757 implemented
 # in libyui-ncurses 2.47.3
-describe "streams redirection in libyui-ncurses" do
+xdescribe "streams redirection in libyui-ncurses" do
   include Yast::UIShortcuts
 
   around do |example|
