@@ -45,24 +45,15 @@ if !Yast::WFM.ClientExists(args[:client_name])
 end
 
 NO_CLI_CLIENTS = ["installation", "view_anymsg", "firstboot", "scc"].freeze
-cli_mode = !args[:client_options][:params].empty? && !NO_CLI_CLIENTS.include?(args[:client_name])
-
-if cli_mode
-  # bsc#1243018: Drop yast-cli mode
-  msg = "FATAL: The YaST command line interface is not supported anymore. Exiting.".freeze
-  Yast.y2error(msg)
-  warn(msg)
-  exit(1)
-end
-
 Yast.ui_create(args[:server_name], args[:server_options])
 # set application title bsc#1033161
 Yast.import "UI"
 
 # set title only if it is not CLI (bsc#1033993)
 # modules do not have CLI arguments, except installation (bsc#1037891)
+set_title = args[:client_options][:params].empty? || NO_CLI_CLIENTS.include?(args[:client_name])
 Yast::UI.SetApplicationTitle(
-  Yast::Y2StartHelpers.application_title(args[:client_name])) unless cli_mode
+  Yast::Y2StartHelpers.application_title(args[:client_name])) if set_title
 
 target_dir = ENV["YAST_SCR_TARGET"] || ""
 if !target_dir.empty? && target_dir != "/"
