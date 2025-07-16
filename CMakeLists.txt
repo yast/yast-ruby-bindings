@@ -2,7 +2,7 @@
 # CMakeLists.txt for yast2/ruby-bindings
 #
 
-cmake_minimum_required(VERSION 2.4)
+cmake_minimum_required(VERSION 3.10)
 if(COMMAND cmake_policy)
   # let cmake escape preprocessor definitions
   cmake_policy(SET CMP0005 NEW)
